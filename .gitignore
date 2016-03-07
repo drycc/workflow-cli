@@ -1,44 +1,24 @@
-*.py[cod]
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
 
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
+# Folders
+_obj
+_test
 
-# Deis' config file
-controller/deis/local_settings.py
-controller/.secret_key
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
 
-# local binaries, installers, and artifacts
-client/deis
-client/client
-client/deis.exe
-client/*.run
-client/makeself/
-_dist/
-manifests/*.tmp.yml
-_tests/_tests.test
-_tests/example-*/
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
 
-# coverage reports
-.coverage
-coverage.out
-htmlcov/
+_testmain.go
 
-# python virtual environments for testing
-venv/
-
-# vendored go source code
-vendor/
-
-# generated bintray scripts during ci
-client/_scripts/ci/bintray-ci.json
+*.exe
+*.test
+*.prof
