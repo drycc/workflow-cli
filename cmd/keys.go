@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/deis/workflow-cli/client/controller/api"
-	"github.com/deis/workflow-cli/client/controller/client"
-	"github.com/deis/workflow-cli/client/controller/models/keys"
+	"github.com/deis/workflow-cli/controller/api"
+	"github.com/deis/workflow-cli/controller/client"
+	"github.com/deis/workflow-cli/controller/models/keys"
 )
 
 // KeysList lists a user's keys.
