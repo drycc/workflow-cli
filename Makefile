@@ -1,106 +1,99 @@
-# If DEIS_REGISTRY is not set, try to populate it from legacy DEV_REGISTRY
-DEIS_REGISTRY ?= $(DEV_REGISTRY)
-IMAGE_PREFIX ?= deis
-COMPONENT ?= workflow
-VERSION ?= git-$(shell git rev-parse --short HEAD)
-IMAGE = $(DEIS_REGISTRY)$(IMAGE_PREFIX)/$(COMPONENT):$(VERSION)
-SHELL_SCRIPTS = $(wildcard rootfs/bin/*) $(shell find "rootfs" -name '*.sh') $(wildcard _scripts/*.sh)
+export GO15VENDOREXPERIMENT=1
 
-# Get the component informtation to a tmp location and get replica count
-$(shell kubectl get rc deis-$(COMPONENT) --namespace deis -o yaml > /tmp/deis-$(COMPONENT))
-DESIRED_REPLICAS=$(shell kubectl get -o template rc/deis-$(COMPONENT) --template={{.status.replicas}} --namespace deis)
+# the filepath to this repository, relative to $GOPATH/src
+repo_path = github.com/deis/workflow/client
 
-info:
-	@echo "Build tag:  ${VERSION}"
-	@echo "Registry:   ${DEIS_REGISTRY}"
-	@echo "Image:      ${IMAGE}"
+HOST_OS := $(shell uname)
+ifeq ($(HOST_OS),Darwin)
+	GOOS=darwin
+else
+	GOOS=linux
+endif
 
-check-docker:
-	@if [ -z $$(which docker) ]; then \
-	  echo "Missing \`docker\` client which is required for development"; \
-	  exit 2; \
-	fi
+DEV_ENV_IMAGE := quay.io/deis/go-dev:0.9.0
+DEV_ENV_WORK_DIR := /go/src/${repo_path}
+DEV_ENV_PREFIX := docker run --rm -e GO15VENDOREXPERIMENT=1 -e CGO_ENABLED=0 -v ${CURDIR}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR}
+DEV_ENV_CMD := ${DEV_ENV_PREFIX} ${DEV_ENV_IMAGE}
+DIST_DIR := _dist
 
-build: docker-build
+GO_FILES = $(wildcard *.go)
+GO_LDFLAGS = -ldflags "-s -X ${repo_path}/version.BuildVersion=${VERSION}"
+GO_PACKAGES = cmd controller/api controller/client $(wildcard controller/models/*) parser $(wildcard pkg/*)
+GO_PACKAGES_REPO_PATH = $(addprefix $(repo_path)/,$(GO_PACKAGES))
+GOFMT = gofmt -e -l -s
+GOTEST = go test --cover --race -v
 
-docker-build: check-docker
-	docker build --rm -t $(IMAGE) rootfs
+VERSION ?= $(shell git rev-parse --short HEAD)
 
-docker-push: update-manifests
-	docker push ${IMAGE}
+define check-static-binary
+  if file $(1) | egrep -q "(statically linked|Mach-O)"; then \
+    echo -n ""; \
+  else \
+    echo "The binary file $(1) is not statically linked. Build canceled"; \
+    exit 1; \
+  fi
+endef
 
-kube-delete:
-	-kubectl delete service deis-workflow
-	-kubectl delete rc deis-workflow
+prep-bintray-json:
+# TRAVIS_TAG is set to the tag name if the build is a tag
+ifdef TRAVIS_TAG
+	@jq '.version.name |= "$(VERSION)"' _scripts/ci/bintray-template.json | \
+		jq '.package.repo |= "deis"' > _scripts/ci/bintray-ci.json
+else
+	@jq '.version.name |= "$(VERSION)"' _scripts/ci/bintray-template.json \
+		> _scripts/ci/bintray-ci.json
+endif
 
-kube-delete-database:
-	-kubectl delete service deis-database
-	-kubectl delete rc deis-database
+bootstrap:
+	${DEV_ENV_CMD} glide install
 
-kube-delete-all: kube-delete kube-delete-database
+glideup:
+	${DEV_ENV_CMD} glide up
 
-kube-create: update-manifests
-	kubectl create -f manifests/deis-workflow-service.yml
-	kubectl create -f manifests/deis-workflow-rc.tmp.yml
+build: binary-build
+	@$(call check-static-binary,deis)
 
-kube-create-database:
-	kubectl create -f manifests/deis-database-rc.yml
-	kubectl create -f manifests/deis-database-service.yml
+build-all:
+	${DEV_ENV_CMD} gox -verbose \
+	${GO_LDFLAGS} \
+	-os="linux darwin " \
+	-arch="amd64 386" \
+	-output="$(DIST_DIR)/deis-${VERSION}-{{.OS}}-{{.Arch}}" .
 
-kube-create-all: kube-create-database kube-create
+binary-build:
+	${DEV_ENV_PREFIX} -e GOOS=${GOOS} ${DEV_ENV_IMAGE} go build -a -installsuffix cgo ${GO_LDFLAGS} -o deis .
 
-kube-update: update-manifests
-	kubectl delete -f manifests/deis-workflow-rc.tmp.yml
-	kubectl create -f manifests/deis-workflow-rc.tmp.yml
+dist: build-all
 
-update-manifests:
-	sed 's#\(image:\) .*#\1 $(IMAGE)#' manifests/deis-workflow-rc.yml \
-		> manifests/deis-workflow-rc.tmp.yml
+install:
+	cp deis $$GOPATH/bin
 
-deploy: docker-build docker-push
-	sed 's#\(image:\) .*#\1 $(IMAGE)#' /tmp/deis-$(COMPONENT) | kubectl apply --validate=true -f -
-	kubectl scale rc deis-workflow --replicas 0 --namespace deis
-	kubectl scale rc deis-workflow --replicas $(DESIRED_REPLICAS) --namespace deis
+installer: build
+	@if [ ! -d makeself ]; then git clone -b single-binary https://github.com/deis/makeself.git; fi
+	PATH=./makeself:$$PATH BINARY=deis makeself.sh --bzip2 --current --nox11 . \
+		deis-cli-`cat deis-version`-`go env GOOS`-`go env GOARCH`.run \
+		"Deis CLI" "echo \
+		&& echo 'deis is in the current directory. Please' \
+		&& echo 'move deis to a directory in your search PATH.' \
+		&& echo \
+		&& echo 'See http://docs.deis.io/ for documentation.' \
+		&& echo"
 
-clean: check-docker
-	docker rmi $(IMAGE)
+setup-gotools:
+	go get -u github.com/golang/lint/golint
+	go get -u golang.org/x/tools/cmd/cover
+	go get -u golang.org/x/tools/cmd/vet
 
-commit-hook:
-	cp contrib/util/commit-msg .git/hooks/commit-msg
-
-full-clean: check-docker
-	docker images -q $(IMAGE_PREFIX)$(COMPONENT) | xargs docker rmi -f
-
-postgres:
-	docker start postgres || docker run --restart="always" -d -p 5432:5432 --name postgres postgres:9.3
-	docker exec postgres createdb -U postgres deis 2>/dev/null || true
-	@echo "To use postgres for local development:"
-	@echo "    export PGHOST=`docker-machine ip $$(docker-machine active) 2>/dev/null || echo 127.0.0.1`"
-	@echo "    export PGPORT=5432"
-	@echo "    export PGUSER=postgres"
-
-setup-venv:
-	@if [ ! -d venv ]; then virtualenv venv; fi
-	venv/bin/pip install --disable-pip-version-check -q -r rootfs/requirements.txt -r rootfs/dev_requirements.txt
-
-test: test-style test-check test-unit test-functional
-
-test-check:
-	cd rootfs && python manage.py check
+test: test-style test-unit
 
 test-style:
-	cd rootfs && flake8 --show-pep8 --show-source
-	shellcheck $(SHELL_SCRIPTS)
+	@if [ $(shell $(GOFMT) $(GO_FILES) $(GO_PACKAGES)) ]; then \
+		echo "gofmt check failed:"; $(GOFMT) $(GO_FILES) $(GO_PACKAGES); exit 1; \
+	fi
+	@go vet $(repo_path) $(GO_PACKAGES_REPO_PATH)
+	@for i in $(addsuffix /...,$(GO_PACKAGES)); do \
+		golint $$i; \
+	done
 
 test-unit:
-	cd rootfs \
-		&& coverage run manage.py test --noinput registry api \
-		&& coverage report -m
-
-test-functional:
-	@echo "Implement functional tests in _tests directory"
-
-test-integration:
-	@echo "Check https://github.com/deis/workflow-e2e for the complete interation test suite"
-
-.PHONY: build clean commit-hook full-clean postgres setup-venv test test-style test-unit test-functional
+	$(GOTEST) $(shell glide novendor)
