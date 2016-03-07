@@ -1,7 +1,7 @@
 export GO15VENDOREXPERIMENT=1
 
 # the filepath to this repository, relative to $GOPATH/src
-repo_path = github.com/deis/workflow/client
+repo_path = github.com/deis/workflow-cli/client
 
 HOST_OS := $(shell uname)
 ifeq ($(HOST_OS),Darwin)
