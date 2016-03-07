@@ -88,12 +88,9 @@ setup-gotools:
 test: test-style test-unit
 
 test-style:
-	@if [ $(shell $(GOFMT) $(GO_FILES) $(GO_PACKAGES)) ]; then \
-		echo "gofmt check failed:"; $(GOFMT) $(GO_FILES) $(GO_PACKAGES); exit 1; \
-	fi
-	@go vet $(repo_path) $(GO_PACKAGES_REPO_PATH)
+	${DEV_ENV_CMD} sh -c '${GOFMT} ${GO_FILES} ${GO_PACKAGES} && go vet $(repo_path) $(GO_PACKAGES_REPO_PATH)'
 	@for i in $(addsuffix /...,$(GO_PACKAGES)); do \
-		golint $$i; \
+		${DEV_ENV_CMD} golint $$i; \
 	done
 
 test-unit:
