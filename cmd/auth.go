@@ -9,8 +9,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/deis/workflow-cli/client/controller/client"
-	"github.com/deis/workflow-cli/client/controller/models/auth"
+	"github.com/deis/workflow-cli/controller/client"
+	"github.com/deis/workflow-cli/controller/models/auth"
 	"golang.org/x/crypto/ssh/terminal"
 )
 

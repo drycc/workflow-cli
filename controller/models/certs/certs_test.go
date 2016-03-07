@@ -10,9 +10,9 @@ import (
 	"testing"
 
 	"github.com/deis/pkg/time"
-	"github.com/deis/workflow-cli/client/controller/api"
-	"github.com/deis/workflow-cli/client/controller/client"
-	"github.com/deis/workflow-cli/client/version"
+	"github.com/deis/workflow-cli/controller/api"
+	"github.com/deis/workflow-cli/controller/client"
+	"github.com/deis/workflow-cli/version"
 )
 
 const certsFixture string = `

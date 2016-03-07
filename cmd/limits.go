@@ -6,8 +6,8 @@ import (
 
 	"github.com/deis/pkg/prettyprint"
 
-	"github.com/deis/workflow-cli/client/controller/api"
-	"github.com/deis/workflow-cli/client/controller/models/config"
+	"github.com/deis/workflow-cli/controller/api"
+	"github.com/deis/workflow-cli/controller/models/config"
 )
 
 // LimitsList lists an app's limits.

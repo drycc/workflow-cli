@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 
-	"github.com/deis/workflow-cli/client/version"
+	"github.com/deis/workflow-cli/version"
 	docopt "github.com/docopt/docopt-go"
 )
 
