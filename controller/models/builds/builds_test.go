@@ -9,9 +9,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/deis/workflow/client/controller/api"
-	"github.com/deis/workflow/client/controller/client"
-	"github.com/deis/workflow/client/version"
+	"github.com/deis/workflow-cli/client/controller/api"
+	"github.com/deis/workflow-cli/client/controller/client"
+	"github.com/deis/workflow-cli/client/version"
 )
 
 const buildsFixture string = `

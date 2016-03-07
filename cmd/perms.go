@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/deis/workflow/client/controller/client"
-	"github.com/deis/workflow/client/controller/models/perms"
-	"github.com/deis/workflow/client/pkg/git"
+	"github.com/deis/workflow-cli/client/controller/client"
+	"github.com/deis/workflow-cli/client/controller/models/perms"
+	"github.com/deis/workflow-cli/client/pkg/git"
 )
 
 // PermsList prints which users have permissions.

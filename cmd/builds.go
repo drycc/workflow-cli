@@ -7,7 +7,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/deis/workflow/client/controller/models/builds"
+	"github.com/deis/workflow-cli/client/controller/models/builds"
 )
 
 // BuildsList lists an app's builds.
