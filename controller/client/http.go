@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/deis/workflow/client/version"
+	"github.com/deis/workflow-cli/client/version"
 )
 
 // CreateHTTPClient creates a HTTP Client with proper SSL options.

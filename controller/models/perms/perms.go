@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/deis/workflow/client/controller/api"
-	"github.com/deis/workflow/client/controller/client"
+	"github.com/deis/workflow-cli/client/controller/api"
+	"github.com/deis/workflow-cli/client/controller/client"
 )
 
 // List users that can access an app.

@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/deis/workflow/client/controller/api"
+	"github.com/deis/workflow-cli/client/controller/api"
 )
 
 func TestGetKey(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/deis/workflow/client/controller/models/releases"
+	"github.com/deis/workflow-cli/client/controller/models/releases"
 )
 
 // ReleasesList lists an app's releases.

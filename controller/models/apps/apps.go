@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/deis/workflow/client/controller/api"
-	"github.com/deis/workflow/client/controller/client"
+	"github.com/deis/workflow-cli/client/controller/api"
+	"github.com/deis/workflow-cli/client/controller/client"
 )
 
 const workflowURLPrefix = "deis."

@@ -9,8 +9,8 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/deis/workflow/client/controller/client"
-	"github.com/deis/workflow/client/controller/models/certs"
+	"github.com/deis/workflow-cli/client/controller/client"
+	"github.com/deis/workflow-cli/client/controller/models/certs"
 )
 
 // CertsList lists certs registered with the controller.

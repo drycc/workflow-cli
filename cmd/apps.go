@@ -8,12 +8,12 @@ import (
 
 	"github.com/deis/pkg/prettyprint"
 
-	"github.com/deis/workflow/client/controller/api"
-	"github.com/deis/workflow/client/controller/client"
-	"github.com/deis/workflow/client/controller/models/apps"
-	"github.com/deis/workflow/client/controller/models/config"
-	"github.com/deis/workflow/client/pkg/git"
-	"github.com/deis/workflow/client/pkg/webbrowser"
+	"github.com/deis/workflow-cli/client/controller/api"
+	"github.com/deis/workflow-cli/client/controller/client"
+	"github.com/deis/workflow-cli/client/controller/models/apps"
+	"github.com/deis/workflow-cli/client/controller/models/config"
+	"github.com/deis/workflow-cli/client/pkg/git"
+	"github.com/deis/workflow-cli/client/pkg/webbrowser"
 )
 
 // AppCreate creates an app.
