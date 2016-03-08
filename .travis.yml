@@ -13,16 +13,16 @@ install:
 script:
   - make build test dist prep-bintray-json
 deploy:
-  - provider: bintray
-    # ensure client/doc builds aren't removed
-    # see https://docs.travis-ci.com/user/deployment/#Uploading-Files
-    skip_cleanup: true
-    file: _scripts/ci/bintray-ci.json
-    user: deis-admin
-    key:
-      secure: "BLp6r5pe12fhFLcvljhx3qp7RIGE9QBn6kmF9SwThI8wjtOeXGZxzU7ZBElHQt26S0s5rKOPO4x64Ql0jngPwoQZ66uhXU1xJ7QqsFoCjZZaEVMIIkdeuNkxEOxu8lxqRVPh2JT7BiSHCKOf+RY8JT7+1JBojIccfGUUlM1rpB+/xAO5GEekJZYg/Qj5ihCHHX+gn+x33HC3ekjV2iaLofp8WCh3WgTIXAkeBJJ5E8ngxQestmlr0AwW9xO+ReQWHJQi+S4VqN13hRn1Jk5PLPRvxEjc+xu09ONQ2WY79b4kaDYVpcPGGCRvfEv6lWbDQrtr/w/NsengWpgOZvJ4c9ooxmFM+QsJuCCFOro3G8g/FBFNvKvV8akXKslFATJPYrffTH/aLyZhFltcMiUdp0ZDOkHjt0FqrAnexn7uTeN9gr57nRUSsKo9oZNj0YNZ6+olLrathhAdQq/coHfkiX2Sy9whwHQD+73iqZAJSd6ENYBeEiqK+FjAH8Y8xEqu3XXbklyDxn1KJstsIeKWhkhWT7ssy1vJJElcAVKU1DW/fbJ+Y7d31HF+IZBeLjT9hha0o8zykgM4VnoRJzcgP3oNpZwXW6R46RgYYll3jvbOGwcu9Lq+puj2PUk8nJMkb2jtR5jmqCWfW6wjzqxLPdIIsQexiLQcicF09UctlKU="
-    on:
-      branch: master
+  provider: bintray
+  # ensure client/doc builds aren't removed
+  # see https://docs.travis-ci.com/user/deployment/#Uploading-Files
+  skip_cleanup: true
+  file: "_scripts/ci/bintray-ci.json"
+  user: "deis-admin"
+  key:
+    secure: "BLp6r5pe12fhFLcvljhx3qp7RIGE9QBn6kmF9SwThI8wjtOeXGZxzU7ZBElHQt26S0s5rKOPO4x64Ql0jngPwoQZ66uhXU1xJ7QqsFoCjZZaEVMIIkdeuNkxEOxu8lxqRVPh2JT7BiSHCKOf+RY8JT7+1JBojIccfGUUlM1rpB+/xAO5GEekJZYg/Qj5ihCHHX+gn+x33HC3ekjV2iaLofp8WCh3WgTIXAkeBJJ5E8ngxQestmlr0AwW9xO+ReQWHJQi+S4VqN13hRn1Jk5PLPRvxEjc+xu09ONQ2WY79b4kaDYVpcPGGCRvfEv6lWbDQrtr/w/NsengWpgOZvJ4c9ooxmFM+QsJuCCFOro3G8g/FBFNvKvV8akXKslFATJPYrffTH/aLyZhFltcMiUdp0ZDOkHjt0FqrAnexn7uTeN9gr57nRUSsKo9oZNj0YNZ6+olLrathhAdQq/coHfkiX2Sy9whwHQD+73iqZAJSd6ENYBeEiqK+FjAH8Y8xEqu3XXbklyDxn1KJstsIeKWhkhWT7ssy1vJJElcAVKU1DW/fbJ+Y7d31HF+IZBeLjT9hha0o8zykgM4VnoRJzcgP3oNpZwXW6R46RgYYll3jvbOGwcu9Lq+puj2PUk8nJMkb2jtR5jmqCWfW6wjzqxLPdIIsQexiLQcicF09UctlKU="
+  on:
+    branch: master
 notifications:
   webhooks:
     urls:
