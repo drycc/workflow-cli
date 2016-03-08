@@ -9,7 +9,7 @@
   },
   "files": [
     {
-      "includePattern": "client/_dist/(.*)",
+      "includePattern": "_dist/(.*)",
       "uploadPattern": "$1"
     }
   ],
