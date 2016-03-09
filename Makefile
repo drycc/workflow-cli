@@ -94,4 +94,4 @@ test-style:
 	done
 
 test-unit:
-	${DEV_ENV_PREFIX_CGO_ENABLED} ${DEV_ENV_IMAGE} ${GOTEST} $$(glide nv)
+	${DEV_ENV_PREFIX_CGO_ENABLED} ${DEV_ENV_IMAGE} sh -c '${GOTEST} $$(glide nv)'
