@@ -10,7 +10,7 @@ import (
 	"github.com/deis/workflow-cli/controller/api"
 	"github.com/deis/workflow-cli/controller/client"
 	"github.com/deis/workflow-cli/controller/models/keys"
-	"github.com/deis/workflow-cli/util"
+	"github.com/deis/workflow-cli/pkg/ssh"
 )
 
 // KeysList lists a user's keys.
@@ -164,7 +164,7 @@ func getKey(filename string) (api.KeyCreateRequest, error) {
 	}
 
 	backupID := strings.Split(path.Base(filename), ".")[0]
-	keyInfo, err := util.ParseSSHPubKey(backupID, keyContents)
+	keyInfo, err := ssh.ParsePubKey(backupID, keyContents)
 	if err != nil {
 		return api.KeyCreateRequest{}, fmt.Errorf("%s is not a valid ssh key", filename)
 	}

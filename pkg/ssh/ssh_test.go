@@ -1,4 +1,4 @@
-package util
+package ssh
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ const (
 )
 
 func TestParseSSHPubKey(t *testing.T) {
-	info, err := ParseSSHPubKey(backupKeyID, []byte(pubKey))
+	info, err := ParsePubKey(backupKeyID, []byte(pubKey))
 	if err != nil {
 		t.Fatalf("Error parsing well formed key (%s)", err)
 	}
