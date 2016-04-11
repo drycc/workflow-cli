@@ -1,8 +1,8 @@
 # Deis Client
 
-[![Download](https://api.bintray.com/packages/deis/deisci/deis/images/download.svg)](https://bintray.com/deis/deisci/deis/_latestVersion)
 [![Build Status](https://travis-ci.org/deis/workflow-cli.svg?branch=master)](https://travis-ci.org/deis/workflow-cli)
 [![Go Report Card](http://goreportcard.com/badge/deis/workflow-cli)](http://goreportcard.com/report/deis/workflow-cli)
+[![Download](https://api.bintray.com/packages/deis/deisci/deis/images/download.svg)](https://bintray.com/deis/deisci/deis/_latestVersion)
 
 `deis` is a command line utility used to interact with the [Deis](http://deis.io) open source PaaS.
 
