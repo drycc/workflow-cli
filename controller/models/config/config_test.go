@@ -31,6 +31,9 @@ const configFixture string = `
     "tags": {
       "test": "tests"
     },
+    "registry": {
+      "username": "bob"
+    },
     "created": "2014-01-01T00:00:00UTC",
     "updated": "2014-01-01T00:00:00UTC",
     "uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
@@ -45,14 +48,15 @@ const configUnsetFixture string = `
     "memory": {},
     "cpu": {},
     "tags": {},
+	"registry": {},
     "created": "2014-01-01T00:00:00UTC",
     "updated": "2014-01-01T00:00:00UTC",
     "uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
 }
 `
 
-const configSetExpected string = `{"values":{"FOO":"bar","TEST":"testing"},"memory":{"web":"1G"},"cpu":{"web":"1000"},"tags":{"test":"tests"}}`
-const configUnsetExpected string = `{"values":{"FOO":null,"TEST":null},"memory":{"web":null},"cpu":{"web":null},"tags":{"test":null}}`
+const configSetExpected string = `{"values":{"FOO":"bar","TEST":"testing"},"memory":{"web":"1G"},"cpu":{"web":"1000"},"tags":{"test":"tests"},"registry":{"username":"bob"}}`
+const configUnsetExpected string = `{"values":{"FOO":null,"TEST":null},"memory":{"web":null},"cpu":{"web":null},"tags":{"test":null},"registry":{"username":null}}`
 
 type fakeHTTPServer struct{}
 
@@ -144,6 +148,9 @@ func TestConfigSet(t *testing.T) {
 		Tags: map[string]interface{}{
 			"test": "tests",
 		},
+		Registry: map[string]interface{}{
+			"username": "bob",
+		},
 		Created: "2014-01-01T00:00:00UTC",
 		Updated: "2014-01-01T00:00:00UTC",
 		UUID:    "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75",
@@ -162,6 +169,9 @@ func TestConfigSet(t *testing.T) {
 		},
 		Tags: map[string]interface{}{
 			"test": "tests",
+		},
+		Registry: map[string]interface{}{
+			"username": "bob",
 		},
 	}
 
@@ -194,15 +204,16 @@ func TestConfigUnset(t *testing.T) {
 	client := client.Client{HTTPClient: httpClient, ControllerURL: *u, Token: "abc"}
 
 	expected := api.Config{
-		Owner:   "test",
-		App:     "unset-test",
-		Values:  map[string]interface{}{},
-		Memory:  map[string]interface{}{},
-		CPU:     map[string]interface{}{},
-		Tags:    map[string]interface{}{},
-		Created: "2014-01-01T00:00:00UTC",
-		Updated: "2014-01-01T00:00:00UTC",
-		UUID:    "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75",
+		Owner:    "test",
+		App:      "unset-test",
+		Values:   map[string]interface{}{},
+		Memory:   map[string]interface{}{},
+		CPU:      map[string]interface{}{},
+		Tags:     map[string]interface{}{},
+		Registry: map[string]interface{}{},
+		Created:  "2014-01-01T00:00:00UTC",
+		Updated:  "2014-01-01T00:00:00UTC",
+		UUID:     "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75",
 	}
 
 	configVars := api.Config{
@@ -218,6 +229,9 @@ func TestConfigUnset(t *testing.T) {
 		},
 		Tags: map[string]interface{}{
 			"test": nil,
+		},
+		Registry: map[string]interface{}{
+			"username": nil,
 		},
 	}
 
@@ -264,6 +278,9 @@ func TestConfigList(t *testing.T) {
 		},
 		Tags: map[string]interface{}{
 			"test": "tests",
+		},
+		Registry: map[string]interface{}{
+			"username": "bob",
 		},
 		Created: "2014-01-01T00:00:00UTC",
 		Updated: "2014-01-01T00:00:00UTC",
