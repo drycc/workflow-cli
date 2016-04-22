@@ -46,7 +46,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   tags          manage tags for application containers
   releases      manage releases of an application
   certs         manage SSL endpoints for an app
-
+  registry      manage private registry information for your application
   keys          manage ssh keys used for 'git push' deployments
   perms         manage permissions for applications
   git           manage git for applications
