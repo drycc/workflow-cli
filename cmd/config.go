@@ -239,8 +239,16 @@ func ConfigPush(appID, fileName string) error {
 		}
 	}
 
-	config := strings.Split(string(contents), "\n")
-	return ConfigSet(appID, config[:len(config)-1])
+	file := strings.Split(string(contents), "\n")
+	config := []string{}
+
+	for _, configVar := range file {
+		if len(configVar) > 0 {
+			config = append(config, configVar)
+		}
+	}
+
+	return ConfigSet(appID, config)
 }
 
 func parseConfig(configVars []string) map[string]interface{} {
@@ -248,6 +256,11 @@ func parseConfig(configVars []string) map[string]interface{} {
 
 	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*)=([\s\S]+)$`)
 	for _, config := range configVars {
+		// Skip config that starts with an comment
+		if config[0] == '#' {
+			continue
+		}
+
 		if regex.MatchString(config) {
 			captures := regex.FindStringSubmatch(config)
 			configMap[captures[1]] = captures[2]
