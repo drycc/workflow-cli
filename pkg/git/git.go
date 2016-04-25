@@ -95,10 +95,11 @@ func findRemote(host string) (string, error) {
 
 	// Strip off any trailing :port number after the host name.
 	host = strings.Split(host, ":")[0]
+	builderHost := getBuilderHostname(host)
 
 	for _, line := range strings.Split(cmd, "\n") {
 		for _, remote := range strings.Split(line, " ") {
-			if strings.Contains(remote, host) {
+			if strings.Contains(remote, host) || strings.Contains(remote, builderHost) {
 				return strings.Split(remote, "\t")[1], nil
 			}
 		}
@@ -111,5 +112,12 @@ func findRemote(host string) (string, error) {
 func RemoteURL(host, appID string) string {
 	// Strip off any trailing :port number after the host name.
 	host = strings.Split(host, ":")[0]
-	return fmt.Sprintf("ssh://git@%s:2222/%s.git", host, appID)
+	return fmt.Sprintf("ssh://git@%s:2222/%s.git", getBuilderHostname(host), appID)
+}
+
+// getBuilderHostname derives the builder host name from the controller host name.
+func getBuilderHostname(host string) string {
+	hostTokens := strings.Split(host, ".")
+	hostTokens[0] = fmt.Sprintf("%s-builder", hostTokens[0])
+	return strings.Join(hostTokens, ".")
 }
