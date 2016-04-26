@@ -108,7 +108,7 @@ func Logs(c *client.Client, appID string, lines int) (string, error) {
 	}
 
 	// We need to trim a few characters off the front and end of the string
-	return body[3 : len(body)-2], nil
+	return body[2 : len(body)-1], nil
 }
 
 // Run one time command in an app.

@@ -337,11 +337,11 @@ func TestAppsLogs(t *testing.T) {
 	tests := []testExpected{
 		{
 			Input:    -1,
-			Expected: "test foo bar",
+			Expected: "\"test foo bar\"",
 		},
 		{
 			Input:    1,
-			Expected: "test",
+			Expected: "\"test\"",
 		},
 	}
 
