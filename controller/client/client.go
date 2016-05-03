@@ -15,7 +15,7 @@ type Client struct {
 	// HTTP client used to communicate with the API.
 	HTTPClient *http.Client
 
-	// SSLVerify determines whether or not to verify SSL conections.
+	// SSLVerify determines whether or not to verify SSL connections.
 	SSLVerify bool
 
 	// URL used to communicate with the controller.

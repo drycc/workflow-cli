@@ -28,7 +28,7 @@ type CertCreateRequest struct {
 	Name        string `json:"name"`
 }
 
-// CertAttachRequest is the defintion of post to /v2/certs/<cert>/domain
+// CertAttachRequest is the definition of POST to /v2/certs/<cert>/domain
 type CertAttachRequest struct {
 	Domain string `json:"domain"`
 }
