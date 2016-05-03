@@ -71,7 +71,7 @@ func PermCreate(appID string, username string, admin bool) error {
 	return nil
 }
 
-// PermDelete removes a user from an app or revokes admin privilages.
+// PermDelete removes a user from an app or revokes admin privileges.
 func PermDelete(appID string, username string, admin bool) error {
 
 	c, appID, err := permsLoad(appID, admin)

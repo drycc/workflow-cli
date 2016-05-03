@@ -79,7 +79,7 @@ func Delete(c *client.Client, appID string, username string) error {
 	return doDelete(c, fmt.Sprintf("/v2/apps/%s/perms/%s", appID, username))
 }
 
-// DeleteAdmin removes administrative privilages from a user.
+// DeleteAdmin removes administrative privileges from a user.
 func DeleteAdmin(c *client.Client, username string) error {
 	return doDelete(c, fmt.Sprintf("/v2/admin/perms/%s", username))
 }
