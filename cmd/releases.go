@@ -22,6 +22,10 @@ func ReleasesList(appID string, results int) error {
 
 	releases, count, err := releases.List(c, appID, results)
 
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("=== %s Releases%s", appID, limitCount(len(releases), count))
 
 	w := new(tabwriter.Writer)

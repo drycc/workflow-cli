@@ -20,6 +20,10 @@ func TagsList(appID string) error {
 
 	config, err := config.List(c, appID)
 
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("=== %s Tags\n", appID)
 
 	tagMap := make(map[string]string)
