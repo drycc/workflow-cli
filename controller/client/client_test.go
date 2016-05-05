@@ -86,6 +86,10 @@ func TestLoadSave(t *testing.T) {
 
 	client, err = New()
 
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	expectedB = true
 	if client.SSLVerify != expectedB {
 		t.Errorf("Expected %t, Got %t", expectedB, client.SSLVerify)

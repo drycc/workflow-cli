@@ -20,6 +20,10 @@ func LimitsList(appID string) error {
 
 	config, err := config.List(c, appID)
 
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("=== %s Limits\n\n", appID)
 
 	fmt.Println("--- Memory")
