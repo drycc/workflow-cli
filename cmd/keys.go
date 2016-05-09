@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
-	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/deis/workflow-cli/controller/api"
 	"github.com/deis/workflow-cli/controller/client"
 	"github.com/deis/workflow-cli/controller/models/keys"
+	"github.com/deis/workflow-cli/pkg/ssh"
 )
 
 // KeysList lists a user's keys.
@@ -157,22 +157,16 @@ func listKeys() ([]api.KeyCreateRequest, error) {
 }
 
 func getKey(filename string) (api.KeyCreateRequest, error) {
-	regex := regexp.MustCompile("^(ssh-...|ecdsa-[^ ]+) ([^ ]+) ?(.*)")
-	contents, err := ioutil.ReadFile(filename)
+	keyContents, err := ioutil.ReadFile(filename)
 
 	if err != nil {
 		return api.KeyCreateRequest{}, err
 	}
 
-	if regex.Match(contents) {
-		capture := regex.FindStringSubmatch(string(contents))
-		if capture[3] != "" {
-			return api.KeyCreateRequest{ID: capture[3], Public: string(contents), Name: filename}, nil
-		}
-
-		id := strings.Split(path.Base(filename), ".")[0]
-		return api.KeyCreateRequest{ID: id, Public: string(contents), Name: filename}, nil
+	backupID := strings.Split(path.Base(filename), ".")[0]
+	keyInfo, err := ssh.ParsePubKey(backupID, keyContents)
+	if err != nil {
+		return api.KeyCreateRequest{}, fmt.Errorf("%s is not a valid ssh key", filename)
 	}
-
-	return api.KeyCreateRequest{}, fmt.Errorf("%s is not a valid ssh key", filename)
+	return api.KeyCreateRequest{ID: keyInfo.ID, Public: keyInfo.Public, Name: filename}, nil
 }
