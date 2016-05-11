@@ -3,7 +3,7 @@ package cmd
 import (
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -54,7 +54,7 @@ func TestGetKeyNoComment(t *testing.T) {
 	toWrite := []byte("ssh-rsa abc")
 
 	expected := api.KeyCreateRequest{
-		ID:     path.Base(file.Name()),
+		ID:     filepath.Base(file.Name()),
 		Public: string(toWrite),
 		Name:   file.Name(),
 	}
@@ -83,7 +83,7 @@ func TestListKeys(t *testing.T) {
 
 	os.Setenv("HOME", name)
 
-	folder := path.Join(name, ".ssh")
+	folder := filepath.Join(name, ".ssh")
 
 	if err = os.Mkdir(folder, 0755); err != nil {
 		t.Fatal(err)
@@ -96,17 +96,17 @@ func TestListKeys(t *testing.T) {
 		{
 			ID:     "test@example.com",
 			Public: string(toWrite),
-			Name:   path.Join(folder, fileNames[0]),
+			Name:   filepath.Join(folder, fileNames[0]),
 		},
 		{
 			ID:     "test@example.com",
 			Public: string(toWrite),
-			Name:   path.Join(folder, fileNames[1]),
+			Name:   filepath.Join(folder, fileNames[1]),
 		},
 	}
 
 	for _, file := range fileNames {
-		if err = ioutil.WriteFile(path.Join(folder, file), toWrite, 0775); err != nil {
+		if err = ioutil.WriteFile(filepath.Join(folder, file), toWrite, 0775); err != nil {
 			t.Fatal(err)
 		}
 	}
