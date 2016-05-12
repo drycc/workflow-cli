@@ -57,7 +57,11 @@ func AppCreate(id string, buildpack string, remote string, noRemote bool) error 
 		}
 	}
 
-	fmt.Println("remote available at", git.RemoteURL(c.ControllerURL.Host, app.ID))
+	if noRemote {
+		fmt.Printf("If you want to add a git remote for this app later, use `deis git:remote -a %s`\n", app.ID)
+	} else {
+		fmt.Println("remote available at", git.RemoteURL(c.ControllerURL.Host, app.ID))
+	}
 
 	return nil
 }
