@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -77,7 +77,7 @@ func DetectAppName(host string) (string, error) {
 	// Don't return an error if remote can't be found, return directory name instead.
 	if err != nil {
 		dir, err := os.Getwd()
-		return strings.ToLower(path.Base(dir)), err
+		return strings.ToLower(filepath.Base(dir)), err
 	}
 
 	ss := strings.Split(remote, "/")

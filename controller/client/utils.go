@@ -3,7 +3,7 @@ package client
 import (
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/deis/workflow-cli/version"
 )
@@ -15,7 +15,7 @@ func locateSettingsFile() string {
 		filename = "client"
 	}
 
-	return path.Join(FindHome(), ".deis", filename+".json")
+	return filepath.Join(FindHome(), ".deis", filename+".json")
 }
 
 func checkAPICompatibility(serverAPIVersion string) {

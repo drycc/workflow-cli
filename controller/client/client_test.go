@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"net/url"
 	"os"
-	"path"
+	"path/filepath"
 	"testing"
 )
 
@@ -19,12 +19,12 @@ func createTempProfile(contents string) error {
 
 	os.Unsetenv("DEIS_PROFILE")
 	os.Setenv("HOME", name)
-	folder := path.Join(name, "/.deis/")
+	folder := filepath.Join(name, ".deis")
 	if err = os.Mkdir(folder, 0755); err != nil {
 		return err
 	}
 
-	if err = ioutil.WriteFile(path.Join(folder, "client.json"), []byte(contents), 0775); err != nil {
+	if err = ioutil.WriteFile(filepath.Join(folder, "client.json"), []byte(contents), 0775); err != nil {
 		return err
 	}
 

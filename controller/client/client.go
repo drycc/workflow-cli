@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path"
+	"path/filepath"
 )
 
 // Client oversees the interaction between the client and controller
@@ -94,7 +94,7 @@ func (c Client) Save() error {
 		return err
 	}
 
-	if err = os.MkdirAll(path.Join(FindHome(), "/.deis/"), 0775); err != nil {
+	if err = os.MkdirAll(filepath.Join(FindHome(), "/.deis/"), 0775); err != nil {
 		return err
 	}
 

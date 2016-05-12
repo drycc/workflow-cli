@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
-	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -78,7 +78,7 @@ func KeyAdd(keyLocation string) error {
 		return err
 	}
 
-	fmt.Printf("Uploading %s to deis...", path.Base(key.Name))
+	fmt.Printf("Uploading %s to deis...", filepath.Base(key.Name))
 
 	if _, err = keys.New(c, key.ID, key.Public); err != nil {
 		fmt.Println()
@@ -99,7 +99,7 @@ func chooseKey() (api.KeyCreateRequest, error) {
 	fmt.Println("Found the following SSH public keys:")
 
 	for i, key := range keys {
-		fmt.Printf("%d) %s %s\n", i+1, path.Base(key.Name), key.ID)
+		fmt.Printf("%d) %s %s\n", i+1, filepath.Base(key.Name), key.ID)
 	}
 
 	fmt.Println("0) Enter path to pubfile (or use keys:add <key_path>)")
@@ -132,7 +132,7 @@ func chooseKey() (api.KeyCreateRequest, error) {
 }
 
 func listKeys() ([]api.KeyCreateRequest, error) {
-	folder := path.Join(client.FindHome(), ".ssh")
+	folder := filepath.Join(client.FindHome(), ".ssh")
 	files, err := ioutil.ReadDir(folder)
 
 	if err != nil {
@@ -142,8 +142,8 @@ func listKeys() ([]api.KeyCreateRequest, error) {
 	var keys []api.KeyCreateRequest
 
 	for _, file := range files {
-		if path.Ext(file.Name()) == ".pub" {
-			key, err := getKey(path.Join(folder, file.Name()))
+		if filepath.Ext(file.Name()) == ".pub" {
+			key, err := getKey(filepath.Join(folder, file.Name()))
 
 			if err == nil {
 				keys = append(keys, key)
@@ -163,7 +163,7 @@ func getKey(filename string) (api.KeyCreateRequest, error) {
 		return api.KeyCreateRequest{}, err
 	}
 
-	backupID := strings.Split(path.Base(filename), ".")[0]
+	backupID := strings.Split(filepath.Base(filename), ".")[0]
 	keyInfo, err := ssh.ParsePubKey(backupID, keyContents)
 	if err != nil {
 		return api.KeyCreateRequest{}, fmt.Errorf("%s is not a valid ssh key", filename)
