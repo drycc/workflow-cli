@@ -104,7 +104,7 @@ func ConfigSet(appID string, configVars []string) error {
 		return err
 	}
 
-	if release, ok := configObj.Values["DEIS_RELEASE"]; ok {
+	if release, ok := configObj.Values["WORKFLOW_RELEASE"]; ok {
 		fmt.Printf("done, %s\n\n", release)
 	} else {
 		fmt.Print("done\n\n")
