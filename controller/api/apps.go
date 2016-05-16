@@ -28,5 +28,5 @@ type AppRunRequest struct {
 // AppRunResponse is the definition of /v2/apps/<app id>/run.
 type AppRunResponse struct {
 	Output     string `json:"output"`
-	ReturnCode int    `json:"rc"`
+	ReturnCode int    `json:"exit_code"`
 }
