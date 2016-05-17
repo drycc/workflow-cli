@@ -126,7 +126,7 @@ func (f *fakeHTTPServer) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		res.Write([]byte(`{"rc":0,"output":"hi\n"}`))
+		res.Write([]byte(`{"exit_code":0,"output":"hi\n"}`))
 		return
 	}
 
