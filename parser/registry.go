@@ -61,15 +61,17 @@ Options:
 
 func registrySet(argv []string) error {
 	usage := `
-Sets registry information for an application.
-
-key/value pairs used to configure / authenticate against external registries
+Sets registry information for an application. These credentials are the same as those used for
+'docker login' to the private registry.
 
 Usage: deis registry:set [options] <key>=<value>...
 
 Arguments:
-  <key> the registry key, for example: "username" or "password"
-  <value> the registry value, for example: "bob" or "s3cur3pw1"
+  <key>
+    the uniquely identifiable name for logging into the registry. Valid keys are "username" or
+    "password"
+  <value>
+    the value of said environment variable. For example, "bob" or "mysecretpassword"
 
 Options:
   -a --app=<app>

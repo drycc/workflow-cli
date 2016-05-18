@@ -124,8 +124,12 @@ func parseInfo(item string) (string, string, error) {
 	parts := strings.SplitN(item, "=", 2)
 
 	if len(parts) != 2 {
-		return "", "", fmt.Errorf(`%s is invalid, Must be in format key=value
+		return "", "", fmt.Errorf(`%s is invalid. Must be in format key=value
 Examples: username=bob password=s3cur3pw1`, item)
+	}
+
+	if parts[0] != "username" && parts[0] != "password" {
+		return "", "", fmt.Errorf(`%s is invalid. Valid keys are "username" or "password".`, parts[0])
 	}
 
 	return parts[0], parts[1], nil
