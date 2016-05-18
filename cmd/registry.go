@@ -121,7 +121,7 @@ func parseInfos(items []string) map[string]interface{} {
 }
 
 func parseInfo(item string) (string, string, error) {
-	parts := strings.Split(item, "=")
+	parts := strings.SplitN(item, "=", 2)
 
 	if len(parts) != 2 {
 		return "", "", fmt.Errorf(`%s is invalid, Must be in format key=value
