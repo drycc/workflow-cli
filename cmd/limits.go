@@ -63,7 +63,10 @@ func LimitsSet(appID string, limits []string, limitType string) error {
 		return err
 	}
 
-	limitsMap := parseLimits(limits)
+	limitsMap, err := parseLimits(limits)
+	if err != nil {
+		return err
+	}
 
 	fmt.Print("Applying limits... ")
 
@@ -130,21 +133,20 @@ func LimitsUnset(appID string, limits []string, limitType string) error {
 	return LimitsList(appID)
 }
 
-func parseLimits(limits []string) map[string]interface{} {
+func parseLimits(limits []string) (map[string]interface{}, error) {
 	limitsMap := make(map[string]interface{})
 
 	for _, limit := range limits {
 		key, value, err := parseLimit(limit)
 
 		if err != nil {
-			fmt.Println(err)
-			continue
+			return nil, fmt.Errorf("Error parsing limit %s: %s", limit, err)
 		}
 
 		limitsMap[key] = value
 	}
 
-	return limitsMap
+	return limitsMap, nil
 }
 
 func parseLimit(limit string) (string, string, error) {
