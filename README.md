@@ -21,6 +21,10 @@ The installer will fetch the latest version of the client into your current dire
 
 	$ ./deis --version
 
+You can then move it anywhere in your path:
+
+    $ mv deis /usr/local/bin
+
 ### From Scratch
 
 To compile the client from scratch, ensure you have Docker installed and run
