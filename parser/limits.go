@@ -63,10 +63,10 @@ func limitSet(argv []string) error {
 	usage := `
 Sets resource limits for an application.
 
-A resource limit is a finite resource within a container which we can apply
-restrictions to either through the scheduler or through the Docker API. This limit
-is applied to each individual container, so setting a memory limit of 1G for an
-application means that each container gets 1G of memory.
+A resource limit is a finite resource within a pod which we can apply
+restrictions through Kubernetes. This limit is applied to each individual
+pod, so setting a memory limit of 1G for an application means that each
+pod gets 1G of memory.
 
 Usage: deis limits:set [options] <type>=<limit>...
 
@@ -82,15 +82,17 @@ Arguments:
     (M), or Gigabytes (G). For example, 'deis limit:set cmd=1G' will restrict all
     "cmd" processes to a maximum of 1 Gigabyte of memory each.
 
-    With --cpu, units are represented in the number of cpu shares. For example,
-    'deis limit:set --cpu cmd=1024' will restrict all "cmd" processes to a
-    maximum of 1024 cpu shares.
+    With --cpu, units are represented in the number of CPUs. For example,
+    'deis limit:set --cpu cmd=1' will restrict all "cmd" processes to a
+    maximum of 1 CPU. Alternatively, you can also use milli units to specify the
+    number of CPU shares the pod can use. For example, 'deis limits:set --cpu cmd=500m'
+    will restrict all "cmd" processes to half of a CPU.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -c --cpu
-    limits cpu shares.
+    limits CPU.
   -m --memory
     limits memory. [default: true]
 `
