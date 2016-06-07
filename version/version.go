@@ -1,7 +1,7 @@
 package version
 
 // Version identifies this Deis product revision.
-const Version = "2.0.0-dev"
+const Version = "2.0.0"
 
 // APIVersion identifies the latest Deis api version
 const APIVersion = "2.0"
