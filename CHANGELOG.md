@@ -1,4 +1,4 @@
-### v2.0.0-beta2 -> HEAD
+### v2.0.0-beta3 -> v2.0.0
 
 #### Features
 
