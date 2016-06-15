@@ -38,31 +38,31 @@ Auth commands::
 Subcommands, use 'deis help [subcommand]' to learn more::
 
   apps          manage applications used to provide services
-  ps            manage processes inside an app container
+  builds        manage builds created using 'git push'
+  certs         manage SSL endpoints for an app
   config        manage environment variables that define app config
   domains       manage and assign domain names to your applications
-  builds        manage builds created using 'git push'
-  limits        manage resource limits for your application
-  tags          manage tags for application containers
-  releases      manage releases of an application
-  certs         manage SSL endpoints for an app
-  registry      manage private registry information for your application
-  keys          manage ssh keys used for 'git push' deployments
-  perms         manage permissions for applications
   git           manage git for applications
+  keys          manage ssh keys used for 'git push' deployments
+  limits        manage resource limits for your application
+  perms         manage permissions for applications
+  ps            manage processes inside an app container
+  registry      manage private registry information for your application
+  releases      manage releases of an application
+  tags          manage tags for application containers
   users         manage users
   version       display client version
 
 Shortcut commands, use 'deis shortcuts' to see all::
 
   create        create a new application
-  scale         scale processes by type (web=2, worker=1)
-  info          view information about the current app
-  open          open a URL to the app in a browser
-  logs          view aggregated log info for the app
-  run           run a command in an ephemeral app container
   destroy       destroy an application
+  info          view information about the current app
+  logs          view aggregated log info for the app
+  open          open a URL to the app in a browser
   pull          imports an image and deploys as a new release
+  run           run a command in an ephemeral app container
+  scale         scale processes by type (web=2, worker=1)
 
 Use 'git push deis master' to deploy to an application.
 `
@@ -84,41 +84,41 @@ Use 'git push deis master' to deploy to an application.
 	// Dispatch the command, passing the argv through so subcommands can
 	// re-parse it according to their usage strings.
 	switch command {
-	case "auth":
-		err = parser.Auth(argv)
-	case "ps":
-		err = parser.Ps(argv)
 	case "apps":
 		err = parser.Apps(argv)
+	case "auth":
+		err = parser.Auth(argv)
+	case "builds":
+		err = parser.Builds(argv)
+	case "certs":
+		err = parser.Certs(argv)
 	case "config":
 		err = parser.Config(argv)
 	case "domains":
 		err = parser.Domains(argv)
-	case "builds":
-		err = parser.Builds(argv)
+	case "git":
+		err = parser.Git(argv)
+	case "help":
+		fmt.Print(usage)
+		return 0
+	case "keys":
+		err = parser.Keys(argv)
 	case "limits":
 		err = parser.Limits(argv)
-	case "tags":
-		err = parser.Tags(argv)
+	case "perms":
+		err = parser.Perms(argv)
+	case "ps":
+		err = parser.Ps(argv)
 	case "registry":
 		err = parser.Registry(argv)
 	case "releases":
 		err = parser.Releases(argv)
-	case "certs":
-		err = parser.Certs(argv)
-	case "keys":
-		err = parser.Keys(argv)
-	case "perms":
-		err = parser.Perms(argv)
-	case "git":
-		err = parser.Git(argv)
+	case "tags":
+		err = parser.Tags(argv)
 	case "users":
 		err = parser.Users(argv)
 	case "version":
 		err = parser.Version(argv)
-	case "help":
-		fmt.Print(usage)
-		return 0
 	default:
 		env := os.Environ()
 		extCmd := "deis-" + command
