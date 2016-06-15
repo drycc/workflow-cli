@@ -43,6 +43,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   config        manage environment variables that define app config
   domains       manage and assign domain names to your applications
   git           manage git for applications
+  healthchecks  manage healthchecks for applications
   keys          manage ssh keys used for 'git push' deployments
   limits        manage resource limits for your application
   perms         manage permissions for applications
@@ -98,6 +99,8 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Domains(argv)
 	case "git":
 		err = parser.Git(argv)
+	case "healthchecks":
+		err = parser.Healthchecks(argv)
 	case "help":
 		fmt.Print(usage)
 		return 0

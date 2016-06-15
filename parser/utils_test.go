@@ -32,6 +32,25 @@ func TestSafeGetNil(t *testing.T) {
 	}
 }
 
+func TestSafeGetInt(t *testing.T) {
+	t.Parallel()
+
+	expected := 1
+
+	test := make(map[string]interface{}, 1)
+	test["test"] = "1"
+
+	actual := safeGetInt(test, "test")
+
+	if expected != actual {
+		t.Errorf("Expected %d, Got %d", expected, actual)
+	}
+
+	if actual = safeGetInt(test, "foo"); actual != 0 {
+		t.Errorf("Expected 0, Got %d", actual)
+	}
+}
+
 func TestPrintHelp(t *testing.T) {
 	t.Parallel()
 

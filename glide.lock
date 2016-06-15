@@ -1,8 +1,8 @@
 hash: efb390ce6569c895e553582bd010493901e3fa4733fb9037970003c870cb5df2
-updated: 2016-06-22T22:40:27.56890943Z
+updated: 2016-06-27T11:56:08.014343879-07:00
 imports:
 - name: github.com/deis/controller-sdk-go
-  version: 3b277af9c00d5e5368862e09effa8ac18c93c0a3
+  version: 3b6502cecedc6ebd7b0f42a8c01c31e8292d1e0d
   subpackages:
   - api
   - apps
@@ -35,7 +35,7 @@ imports:
 - name: github.com/PuerkitoBio/urlesc
   version: 5fa9ff0392746aeae1c4b37fcc42c65afa7a9587
 - name: golang.org/x/crypto
-  version: f3241ce8505855877cc8a9717bd61a0f7c4ea83c
+  version: 811831de4c4dd03a0b8737233af3b36852386373
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
