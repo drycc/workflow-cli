@@ -91,9 +91,10 @@ func PsRestart(appID, target string) error {
 
 	if target != "" {
 		if strings.Contains(target, "-") {
-			parts := strings.Split(target, "-")
+			replaced := strings.Replace(target, appID + "-", "", 1)
+			parts := strings.Split(replaced, "-")
 			// the API requires the type, for now
-			psType = parts[len(parts)-2]
+			psType = parts[0]
 			// process name is the full pod
 			psName = target
 		} else {
