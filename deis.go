@@ -29,7 +29,7 @@ Option flags::
   -h --help     display help information
   -v --version  display client version
 
-Auth commands::
+Auth commands, use 'deis help auth' to learn more::
 
   register      register a new user with a controller
   login         login to a controller
