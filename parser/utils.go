@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 )
@@ -11,6 +12,17 @@ func safeGetValue(args map[string]interface{}, key string) string {
 		return ""
 	}
 	return args[key].(string)
+}
+
+func safeGetInt(args map[string]interface{}, key string) int {
+	if args[key] == nil {
+		return 0
+	}
+	retVal, err := strconv.Atoi(args[key].(string))
+	if err != nil {
+		log.Fatalf("could not convert %s to int: %v", args[key], err)
+	}
+	return retVal
 }
 
 func responseLimit(limit string) (int, error) {
