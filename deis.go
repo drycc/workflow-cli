@@ -7,6 +7,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/deis/workflow-cli/cli"
 	"github.com/deis/workflow-cli/parser"
 	docopt "github.com/docopt/docopt-go"
 )
@@ -116,6 +117,8 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Registry(argv)
 	case "releases":
 		err = parser.Releases(argv)
+	case "shortcuts":
+		err = parser.Shortcuts(argv)
 	case "tags":
 		err = parser.Tags(argv)
 	case "users":
@@ -192,28 +195,7 @@ func parseArgs(argv []string) (string, []string) {
 }
 
 func replaceShortcut(command string) string {
-	shortcuts := map[string]string{
-		"create":         "apps:create",
-		"destroy":        "apps:destroy",
-		"info":           "apps:info",
-		"login":          "auth:login",
-		"logout":         "auth:logout",
-		"logs":           "apps:logs",
-		"open":           "apps:open",
-		"passwd":         "auth:passwd",
-		"pull":           "builds:create",
-		"register":       "auth:register",
-		"rollback":       "releases:rollback",
-		"run":            "apps:run",
-		"scale":          "ps:scale",
-		"sharing":        "perms:list",
-		"sharing:list":   "perms:list",
-		"sharing:add":    "perms:create",
-		"sharing:remove": "perms:delete",
-		"whoami":         "auth:whoami",
-	}
-
-	expandedCommand := shortcuts[command]
+	expandedCommand := cli.Shortcuts[command]
 	if expandedCommand == "" {
 		return command
 	}
