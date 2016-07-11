@@ -87,20 +87,9 @@ func PsRestart(appID, target string) error {
 		return err
 	}
 
-	psType := ""
-	psName := ""
-
+	psType, psName := "", ""
 	if target != "" {
-		if strings.Contains(target, "-") {
-			replaced := strings.Replace(target, appID + "-", "", 1)
-			parts := strings.Split(replaced, "-")
-			// the API requires the type, for now
-			psType = parts[0]
-			// process name is the full pod
-			psName = target
-		} else {
-			psType = target
-		}
+		psType, psName = parseType(target, appID)
 	}
 
 	fmt.Printf("Restarting processes... but first, %s!\n", drinkOfChoice())
@@ -138,4 +127,27 @@ func printProcesses(appID string, processes []api.Pods) {
 			fmt.Printf("%s %s (%s)\n", proc.Name, proc.State, proc.Release)
 		}
 	}
+}
+
+func parseType(target string, appID string) (string, string) {
+	psType, psName := "", ""
+
+	if strings.Contains(target, "-") {
+		replaced := strings.Replace(target, appID + "-", "", 1)
+		parts := strings.Split(replaced, "-")
+		// the API requires the type, for now
+		// regex matches against how Deployment pod name is constructed
+		regex := regexp.MustCompile("[0-9]{8,10}-[a-z0-9]{5}$")
+		if regex.MatchString(replaced) {
+			psType = parts[0]
+		} else {
+			psType = parts[1]
+		}
+		// process name is the full pod
+		psName = target
+	} else {
+		psType = target
+	}
+
+	return psType, psName
 }
