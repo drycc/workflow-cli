@@ -53,7 +53,7 @@ func PsScale(appID string, targets []string) error {
 				return err
 			}
 		} else {
-			fmt.Printf("'%s' does not match the pattern 'type=num', ex: web=2\n", target)
+			return fmt.Errorf("'%s' does not match the pattern 'type=num', ex: web=2\n", target)
 		}
 	}
 
