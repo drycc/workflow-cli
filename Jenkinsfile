@@ -2,7 +2,7 @@ def workpath_linux = "/src/github.com/deis/workflow-cli"
 def keyfile = "tmp/key.json"
 
 def getBasePath = { String filepath ->
-	def filename = filepath.lastIndexOf("/")
+	def filename = filepath.lastIndexOf(File.separator)
 	return filepath.substring(0, filename)
 }
 
@@ -23,6 +23,18 @@ def gopath_linux = {
 def workdir_linux = { String gopath ->
 	gopath + workpath_linux
 }
+
+properties([[$class: 'ParametersDefinitionProperty',
+	parameterDefinitions: [
+		[$class: 'StringParameterDefinition',
+			defaultValue: '',
+			description: 'controller-sdk-go commit sha to use in glide.yaml (not updated if empty)',
+			name : 'SDK_SHA'],
+		[$class: 'StringParameterDefinition',
+			defaultValue: '',
+			description: 'controller-sdk-go repo to use in glide.yaml (not updated if empty)',
+			name: 'SDK_GO_REPO']
+		]]])
 
 node('windows') {
 	def gopath = pwd() + "\\gopath"
@@ -95,6 +107,20 @@ parallel(
 					}
 
 					sh 'make bootstrap'
+
+					if (SDK_GO_REPO && SDK_SHA) {
+						echo "Updating local glide.yaml with controller-sdk-go repo '${SDK_GO_REPO}' and version '${SDK_SHA}'"
+
+						def pattern = "github\\.com\\/deis\\/controller-sdk-go\\n\\s+version:\\s+[a-f0-9]+"
+						def replacement = "${SDK_GO_REPO.replace("/", "\\/")}\\n  version: ${SDK_SHA}"
+						sh "perl -i -0pe 's/${pattern}/${replacement}/' glide.yaml"
+
+						def glideYaml = readFile('glide.yaml')
+						echo "Updated glide.yaml:\n${glideYaml}"
+
+						sh 'make glideup'
+					}
+
 					sh 'make build-revision'
 
 					upload_artifacts(keyfile)
@@ -132,9 +158,9 @@ waitUntil {
 		} else {
 			build job: '/workflow-test-pr', parameters: [[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit]]
 		}
+		true
 	} catch(error) {
 		 input "Retry the e2e tests?"
 		 false
 	}
-	true
 }
