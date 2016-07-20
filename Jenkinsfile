@@ -121,7 +121,7 @@ parallel(
 						sh 'make glideup'
 					}
 
-					sh 'make build-revision'
+					sh "VERSION=${git_commit.take(7)} make build-revision"
 
 					upload_artifacts(keyfile)
 			}
