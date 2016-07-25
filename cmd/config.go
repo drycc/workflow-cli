@@ -92,7 +92,7 @@ func ConfigSet(appID string, configVars []string) error {
 
 	// NOTE(bacongobbler): check if the user is using the old way to set healthchecks. If so,
 	// send them a deprecation notice.
-	for key, _ := range configMap {
+	for key := range configMap {
 		if strings.Contains(key, "HEALTHCHECK_") {
 			fmt.Println(`Hey there! We've noticed that you're using 'deis config:set HEALTHCHECK_URL'
 to set up healthchecks. This functionality has been deprecated. In the future, please use

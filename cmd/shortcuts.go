@@ -7,10 +7,16 @@ import (
 	"github.com/deis/workflow-cli/cli"
 )
 
-// Shortcuts displays all relevant shortcuts for the CLI.
+// ShortcutsList displays all relevant shortcuts for the CLI.
 func ShortcutsList() error {
+	fmt.Println(sortShortcuts())
+
+	return nil
+}
+
+func sortShortcuts() string {
 	var (
-		strBuilder string = ""
+		strBuilder string
 		keys       []string
 	)
 
@@ -25,7 +31,5 @@ func ShortcutsList() error {
 		strBuilder += fmt.Sprintf("%s -> %s\n", k, cli.Shortcuts[k])
 	}
 
-	fmt.Println(strBuilder)
-
-	return nil
+	return strBuilder
 }
