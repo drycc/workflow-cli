@@ -124,7 +124,7 @@ Examples: username=bob password=s3cur3pw1`, item)
 	}
 
 	if parts[0] != "username" && parts[0] != "password" {
-		return "", "", fmt.Errorf(`%s is invalid. Valid keys are "username" or "password".`, parts[0])
+		return "", "", fmt.Errorf(`%s is invalid. Valid keys are "username" or "password"`, parts[0])
 	}
 
 	return parts[0], parts[1], nil
