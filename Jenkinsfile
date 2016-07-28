@@ -90,6 +90,21 @@ node('linux') {
 		sh 'git rev-parse HEAD > tmp/GIT_COMMIT'
 		git_branch = readFile('tmp/GIT_BRANCH').trim()
 		git_commit = readFile('tmp/GIT_COMMIT').trim()
+
+		if (git_branch != "remotes/origin/master") {
+			// Determine actual PR commit, if necessary
+			sh 'git rev-parse HEAD | git log --pretty=%P -n 1 --date-order > tmp/MERGE_COMMIT_PARENTS'
+			sh 'cat tmp/MERGE_COMMIT_PARENTS'
+			merge_commit_parents = readFile('tmp/MERGE_COMMIT_PARENTS').trim()
+			if (merge_commit_parents.length() > 40) {
+				echo 'More than one merge commit parent signifies that the merge commit is not the PR commit'
+				echo "Changing git_commit from '${git_commit}' to '${merge_commit_parents.take(40)}'"
+				git_commit = merge_commit_parents.take(40)
+			} else {
+				echo 'Only one merge commit parent signifies that the merge commit is also the PR commit'
+				echo "Keeping git_commit as '${git_commit}'"
+			}
+		}
 	}
 }
 
