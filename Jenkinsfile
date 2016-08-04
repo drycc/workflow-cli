@@ -178,9 +178,11 @@ stage 'Trigger e2e tests'
 waitUntil {
 	try {
 		if (git_branch == "remotes/origin/master") {
-			build job: '/workflow-test', parameters: [[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit]]
+			build job: '/workflow-test', parameters: [[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit],
+				[$class: 'StringParameterValue', name: 'COMPONENT_REPO', value: 'workflow-cli']]
 		} else {
-			build job: '/workflow-test-pr', parameters: [[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit]]
+			build job: '/workflow-test-pr', parameters: [[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit],
+				[$class: 'StringParameterValue', name: 'COMPONENT_REPO', value: 'workflow-cli']]
 		}
 		true
 	} catch(error) {
