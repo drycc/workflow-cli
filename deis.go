@@ -51,6 +51,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   ps            manage processes inside an app container
   registry      manage private registry information for your application
   releases      manage releases of an application
+  routing       manage routability of an application
   tags          manage tags for application containers
   users         manage users
   version       display client version
@@ -117,6 +118,8 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Registry(argv)
 	case "releases":
 		err = parser.Releases(argv)
+	case "routing":
+		err = parser.Routing(argv)
 	case "shortcuts":
 		err = parser.Shortcuts(argv)
 	case "tags":

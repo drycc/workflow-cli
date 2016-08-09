@@ -1,10 +1,10 @@
-hash: 96bf945662d4122cb32668500f71a965cb01cbb0758373c44377d9ef6d187a9c
-updated: 2016-08-05T11:39:35.360758304-07:00
+hash: 3acaaa5ffc73e878a947ddd0eed1838af0e977941e70138fc6189b3681bfb63c
+updated: 2016-08-09T09:56:23.423387789-07:00
 imports:
 - name: github.com/arschles/assert
   version: fc2da9844984ce5093111298174706e14d4c0c47
 - name: github.com/deis/controller-sdk-go
-  version: 09f8465bf5598f84987734082d22f4201632a320
+  version: cd0f563b127736127e0e9debeddcbcb014621b04
   subpackages:
   - api
   - apps
@@ -27,17 +27,17 @@ imports:
 - name: github.com/docopt/docopt-go
   version: 784ddc588536785e7299f7272f39101f7faccc3f
 - name: github.com/goware/urlx
-  version: 86bdc24560383254e8b977da31a823eddf904409
+  version: 8bb4a2e4339f55b15164907177e96e9faf885504
 - name: github.com/mattn/go-runewidth
   version: d6bea18f789704b5f83375793155289da36a3c7f
 - name: github.com/olekukonko/tablewriter
   version: daf2955e742cf123959884fdff4685aa79b63135
 - name: github.com/PuerkitoBio/purell
-  version: 1d5d1cfad45d42ec5f81fa8ef23de09cebc6dcc3
+  version: 8a290539e2e8629dbc4e6bad948158f790ec31f4
 - name: github.com/PuerkitoBio/urlesc
-  version: 5fa9ff0392746aeae1c4b37fcc42c65afa7a9587
+  version: 5bd2802263f21d8788851d5305584c82a5c75d7e
 - name: golang.org/x/crypto
-  version: 2c99acdd1e9b90d779ca23f632aad86af9909c62
+  version: e0d166c33c321d0ff863f459a5882096e334f508
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
@@ -45,6 +45,19 @@ imports:
   subpackages:
   - context
   - idna
+- name: golang.org/x/text
+  version: 2910a502d2bf9e43193af9d68ca516529614eed3
+  subpackages:
+  - secure/precis
+  - unicode/norm
+  - cases
+  - runes
+  - secure/bidirule
+  - transform
+  - width
+  - language
+  - unicode/bidi
+  - internal/tag
 - name: gopkg.in/yaml.v2
-  version: a83829b6f1293c91addabc89d0571c246397bbf4
-testImports: []
+  version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
+devImports: []
