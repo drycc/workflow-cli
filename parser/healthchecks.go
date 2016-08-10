@@ -11,6 +11,12 @@ import (
 	docopt "github.com/docopt/docopt-go"
 )
 
+// TODO: This is for supporting backward compatibility and should be removed
+// in future when next major version will be released.
+const (
+	defaultProcType string = "web/cmd"
+)
+
 // Healthchecks routes ealthcheck commands to their specific function
 func Healthchecks(argv []string) error {
 	usage := `
@@ -54,6 +60,8 @@ Usage: deis healthchecks:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
+  --type=<type>
+    the procType for which the health check needs to be listed.
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -62,7 +70,13 @@ Options:
 		return err
 	}
 
-	return cmd.HealthchecksList(safeGetValue(args, "--app"))
+	app := safeGetValue(args, "--app")
+	procType := safeGetValue(args, "--type")
+	if procType == "" {
+		procType = defaultProcType
+	}
+
+	return cmd.HealthchecksList(app, procType)
 }
 
 func healthchecksSet(argv []string) error {
@@ -111,6 +125,8 @@ Options:
     the uniquely identifiable name for the application.
   -p --path=<path>
     the relative URL path for 'httpGet' probes. [default: /]
+  --type=<type>
+    the procType for which the health check needs to be applied.
   --header=<header>...
     the HTTP headers to send for 'httpGet' probes, separated by commas.
   --initial-delay-timeout=<initial-delay-timeout>
@@ -133,6 +149,7 @@ Options:
 
 	app := safeGetValue(args, "--app")
 	path := safeGetValue(args, "--path")
+	procType := safeGetValue(args, "--type")
 	initialDelayTimeout := safeGetInt(args, "--initial-delay-timeout")
 	timeoutSeconds := safeGetInt(args, "--timeout-seconds")
 	periodSeconds := safeGetInt(args, "--period-seconds")
@@ -141,6 +158,9 @@ Options:
 	headers := []string{}
 	if args["--headers"] != nil {
 		headers = args["--headers"].([]string)
+	}
+	if procType == "" {
+		procType = defaultProcType
 	}
 
 	healthcheckType := args["<health-type>"].(string)
@@ -193,22 +213,24 @@ Options:
 	default:
 		return fmt.Errorf("Invalid probe type. Must be one of: \"httpGet\", \"exec\"")
 	}
-	return cmd.HealthchecksSet(app, healthcheckType, probe)
+	return cmd.HealthchecksSet(app, healthcheckType, procType, probe)
 }
 
 func healthchecksUnset(argv []string) error {
 	usage := `
 Unsets healthchecks for an application.
 
-Usage: deis healthchecks:unset [options] <type>...
+Usage: deis healthchecks:unset [options] <health-type>...
 
 Arguments:
-  <type>
+  <health-type>
     the healthcheck type, such as 'liveness' or 'readiness'.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  --type=<type>
+    the procType for which the health check needs to be removed.
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -218,7 +240,11 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-	healthchecks := args["<type>"].([]string)
+	healthchecks := args["<health-type>"].([]string)
+	procType := safeGetValue(args, "--type")
+	if procType == "" {
+		procType = defaultProcType
+	}
 
 	// NOTE(bacongobbler): k8s healthchecks use the term "livenessProbe" and "readinessProbe", so let's
 	// add that to the end of the healthcheck type so the controller sees the right probe type
@@ -226,7 +252,7 @@ Options:
 		healthchecks[healthcheck] += "Probe"
 	}
 
-	return cmd.HealthchecksUnset(app, healthchecks)
+	return cmd.HealthchecksUnset(app, procType, healthchecks)
 }
 
 func parseHeaders(headers []string) ([]*api.KVPair, error) {

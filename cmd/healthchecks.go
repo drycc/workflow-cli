@@ -1,14 +1,33 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/deis/controller-sdk-go/api"
 	"github.com/deis/controller-sdk-go/config"
 )
 
+func printHealthCheck(out io.Writer, healthcheck api.Healthchecks) {
+	fmt.Fprintln(out, "--- Liveness")
+	if livenessProbe, found := healthcheck["livenessProbe"]; found {
+		fmt.Fprintln(out, livenessProbe)
+	} else {
+		fmt.Fprintln(out, "No liveness probe configured.")
+	}
+
+	fmt.Fprintln(out, "\n--- Readiness")
+	if readinessProbe, found := healthcheck["readinessProbe"]; found {
+		fmt.Fprintln(out, readinessProbe)
+	} else {
+		fmt.Fprintln(out, "No readiness probe configured.")
+	}
+}
+
 // HealthchecksList lists an app's healthchecks.
-func HealthchecksList(appID string) error {
+func HealthchecksList(appID, procType string) error {
 	s, appID, err := load(appID)
 
 	if err != nil {
@@ -22,25 +41,25 @@ func HealthchecksList(appID string) error {
 	}
 
 	fmt.Printf("=== %s Healthchecks\n\n", appID)
-
-	fmt.Println("--- Liveness")
-	if livenessProbe, found := config.Healthcheck["livenessProbe"]; found {
-		fmt.Println(livenessProbe)
+	if procType == "" {
+		for proc, healthcheck := range config.Healthcheck {
+			fmt.Println(proc + ":")
+			printHealthCheck(os.Stdout, *healthcheck)
+		}
 	} else {
-		fmt.Println("No liveness probe configured.")
+		fmt.Println(procType + ":")
+		if healthcheck, found := config.Healthcheck[procType]; found {
+			printHealthCheck(os.Stdout, *healthcheck)
+		} else {
+			return errors.New(appID + " doesn't have proctype" + procType)
+		}
 	}
 
-	fmt.Println("\n--- Readiness")
-	if readinessProbe, found := config.Healthcheck["readinessProbe"]; found {
-		fmt.Println(readinessProbe)
-	} else {
-		fmt.Println("No readiness probe configured.")
-	}
 	return nil
 }
 
 // HealthchecksSet sets an app's healthchecks.
-func HealthchecksSet(appID, healthcheckType string, probe *api.Healthcheck) error {
+func HealthchecksSet(appID, healthcheckType, procType string, probe *api.Healthcheck) error {
 	s, appID, err := load(appID)
 
 	if err != nil {
@@ -50,10 +69,11 @@ func HealthchecksSet(appID, healthcheckType string, probe *api.Healthcheck) erro
 	fmt.Printf("Applying %s healthcheck... ", healthcheckType)
 
 	quit := progress()
-	configObj := api.Config{}
-	configObj.Healthcheck = make(map[string]*api.Healthcheck)
 
-	configObj.Healthcheck[healthcheckType] = probe
+	healthcheckMap := make(api.Healthchecks)
+	healthcheckMap[healthcheckType] = probe
+	configObj := api.Config{Healthcheck: make(map[string]*api.Healthchecks)}
+	configObj.Healthcheck[procType] = &healthcheckMap
 
 	_, err = config.Set(s.Client, appID, configObj)
 
@@ -66,11 +86,11 @@ func HealthchecksSet(appID, healthcheckType string, probe *api.Healthcheck) erro
 
 	fmt.Print("done\n\n")
 
-	return HealthchecksList(appID)
+	return HealthchecksList(appID, procType)
 }
 
 // HealthchecksUnset removes an app's healthchecks.
-func HealthchecksUnset(appID string, healthchecks []string) error {
+func HealthchecksUnset(appID, procType string, healthchecks []string) error {
 	s, appID, err := load(appID)
 
 	if err != nil {
@@ -83,13 +103,15 @@ func HealthchecksUnset(appID string, healthchecks []string) error {
 
 	configObj := api.Config{}
 
-	healthcheckMap := make(map[string]*api.Healthcheck)
+	healthchecksMap := make(map[string]*api.Healthchecks)
+	healthcheckMap := make(api.Healthchecks)
 
 	for _, healthcheck := range healthchecks {
 		healthcheckMap[healthcheck] = nil
 	}
+	healthchecksMap[procType] = &healthcheckMap
 
-	configObj.Healthcheck = healthcheckMap
+	configObj.Healthcheck = healthchecksMap
 
 	_, err = config.Set(s.Client, appID, configObj)
 
@@ -102,5 +124,5 @@ func HealthchecksUnset(appID string, healthchecks []string) error {
 
 	fmt.Print("done\n\n")
 
-	return HealthchecksList(appID)
+	return HealthchecksList(appID, procType)
 }
