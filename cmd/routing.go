@@ -19,7 +19,7 @@ func RoutingInfo(appID string) error {
 		return err
 	}
 
-	if config.Routable {
+	if *config.Routable {
 		fmt.Println("Routing is enabled.")
 	} else {
 		fmt.Println("Routing is disabled.")
@@ -38,7 +38,8 @@ func RoutingEnable(appID string) error {
 	fmt.Printf("Enabling routing for %s... ", appID)
 
 	quit := progress()
-	_, err = config.Set(s.Client, appID, api.Config{Routable: true})
+	configObj := api.Config{Routable: api.NewRoutable()}
+	_, err = config.Set(s.Client, appID, configObj)
 
 	quit <- true
 	<-quit
@@ -62,7 +63,9 @@ func RoutingDisable(appID string) error {
 	fmt.Printf("Disabling routing for %s... ", appID)
 
 	quit := progress()
-	_, err = config.Set(s.Client, appID, api.Config{Routable: false})
+	configObj := api.Config{Routable: api.NewRoutable()}
+	*configObj.Routable = false
+	_, err = config.Set(s.Client, appID, configObj)
 
 	quit <- true
 	<-quit
