@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -41,18 +40,11 @@ func HealthchecksList(appID, procType string) error {
 	}
 
 	fmt.Printf("=== %s Healthchecks\n\n", appID)
-	if procType == "" {
-		for proc, healthcheck := range config.Healthcheck {
-			fmt.Println(proc + ":")
-			printHealthCheck(os.Stdout, *healthcheck)
-		}
+	fmt.Println(procType + ":")
+	if healthcheck, found := config.Healthcheck[procType]; found {
+		printHealthCheck(os.Stdout, *healthcheck)
 	} else {
-		fmt.Println(procType + ":")
-		if healthcheck, found := config.Healthcheck[procType]; found {
-			printHealthCheck(os.Stdout, *healthcheck)
-		} else {
-			return errors.New(appID + " doesn't have proctype" + procType)
-		}
+		printHealthCheck(os.Stdout, api.Healthchecks{})
 	}
 
 	return nil
