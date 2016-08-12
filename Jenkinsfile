@@ -1,4 +1,6 @@
 def workpath_linux = "/src/github.com/deis/workflow-cli"
+def windows = 'windows'
+def linux = 'linux'
 
 def getBasePath = { String filepath ->
 	def filename = filepath.lastIndexOf(File.separator)
@@ -54,26 +56,40 @@ def sh = { String cmd ->
 	}
 }
 
-node('windows') {
+def pscmd = { String cmd ->
+	"powershell -NoProfile -ExecutionPolicy Bypass -Command \"${cmd}\""
+}
+
+def bootstrap = { String node ->
+	bootstrapCmd = node == windows ? bat(pscmd('.\\make bootstrap')) : make('bootstrap')
+
+	try {
+		bootstrapCmd
+	} catch(error) {
+		echo "bootstrap failed; wiping 'vendor' directory and trying again..."
+		retry(1) {
+			dir('vendor') { deleteDir() }
+			bootstrapCmd
+		}
+	}
+}
+
+node(windows) {
 	def gopath = pwd() + "\\gopath"
 	env.GOPATH = gopath
 	def workdir = gopath + "\\src\\github.com\\deis\\workflow-cli"
-
-	def pscmd = { String cmd ->
-		"powershell -NoProfile -ExecutionPolicy Bypass -Command \"${cmd}\""
-	}
 
 	dir(workdir) {
 		stage 'Checkout Windows'
 			checkout scm
 		stage 'Install Windows'
-			bat pscmd('.\\make bootstrap')
+			bootstrap windows
 		stage 'Test Windows'
 			bat pscmd('.\\make test')
 	}
 }
 
-node('linux') {
+node(linux) {
 	def gopath = gopath_linux()
 	def workdir = workdir_linux(gopath)
 
@@ -81,7 +97,7 @@ node('linux') {
 		stage 'Checkout Linux'
 			checkout scm
 		stage 'Install Linux'
-			make 'bootstrap'
+			bootstrap linux
 		stage 'Test Linux'
 			make 'test-cover'
 		stage 'Upload to Codeconv'
@@ -95,7 +111,7 @@ def git_commit = ''
 def git_branch = ''
 
 stage 'Git Info'
-node('linux') {
+node(linux) {
 
 	def gopath = gopath_linux()
 	def workdir = workdir_linux(gopath)
@@ -131,7 +147,7 @@ stage 'Build and Upload Artifacts'
 
 parallel(
 	revision: {
-		node('linux') {
+		node(linux) {
 			def gopath = gopath_linux()
 			def workdir = workdir_linux(gopath)
 
@@ -152,7 +168,7 @@ parallel(
 		}
 	},
 	latest: {
-		node('linux') {
+		node(linux) {
 			def gopath = gopath_linux()
 			def workdir = workdir_linux(gopath)
 
@@ -190,7 +206,7 @@ waitUntil {
 			throw error
 		}
 
-		node('linux') {
+		node(linux) {
 			withCredentials([[$class: 'StringBinding', credentialsId: '8a727911-596f-4057-97c2-b9e23de5268d', variable: 'SLACKEMAIL']]) {
 				mail body: """<!DOCTYPE html>
 <html>
