@@ -1,6 +1,8 @@
 def workpath_linux = "/src/github.com/deis/workflow-cli"
 def windows = 'windows'
 def linux = 'linux'
+def git_commit = ''
+def git_branch = ''
 
 def getBasePath = { String filepath ->
 	def filename = filepath.lastIndexOf(File.separator)
@@ -35,9 +37,14 @@ def upload_artifacts = { boolean cache ->
 		sh "mkdir -p ${getBasePath(gcs_key)}"
 		sh "cat \"\${GCSKEY}\" > ${gcs_key}"
 		gcs_cmd 'gcloud auth activate-service-account -q --key-file /.config/key.json'
-		headers = ""
+
+		headers  = "-h 'x-goog-meta-git-branch:${git_branch}' "
+        headers += "-h 'x-goog-meta-git-sha:${git_commit}' "
+        headers += "-h 'x-goog-meta-ci-job:${env.JOB_NAME}' "
+        headers += "-h 'x-goog-meta-ci-number:${env.BUILD_NUMBER}' "
+        headers += "-h 'x-goog-meta-ci-url:${env.BUILD_URL}'"
 		if(!cache) {
-			headers += '-h "Cache-Control:no-cache"'
+			headers += ' -h "Cache-Control:no-cache"'
 		}
 		gcs_cmd "gsutil -mq ${headers} cp -a public-read -r /upload/* ${gcs_bucket}"
 		gcs_cmd gcs_cleanup_cmd
@@ -110,9 +117,6 @@ node(linux) {
 			}
 	}
 }
-
-def git_commit = ''
-def git_branch = ''
 
 stage 'Git Info'
 node(linux) {
