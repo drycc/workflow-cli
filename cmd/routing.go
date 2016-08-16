@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/deis/controller-sdk-go/api"
-	"github.com/deis/controller-sdk-go/config"
+	"github.com/deis/controller-sdk-go/appsettings"
 )
 
 func RoutingInfo(appID string) error {
@@ -14,12 +14,12 @@ func RoutingInfo(appID string) error {
 		return err
 	}
 
-	config, err := config.List(s.Client, appID)
+	appSettings, err := appsettings.List(s.Client, appID)
 	if checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	if *config.Routable {
+	if *appSettings.Routable {
 		fmt.Println("Routing is enabled.")
 	} else {
 		fmt.Println("Routing is disabled.")
@@ -38,8 +38,8 @@ func RoutingEnable(appID string) error {
 	fmt.Printf("Enabling routing for %s... ", appID)
 
 	quit := progress()
-	configObj := api.Config{Routable: api.NewRoutable()}
-	_, err = config.Set(s.Client, appID, configObj)
+	appSettings := api.AppSettings{Routable: api.NewRoutable()}
+	_, err = appsettings.Set(s.Client, appID, appSettings)
 
 	quit <- true
 	<-quit
@@ -63,9 +63,9 @@ func RoutingDisable(appID string) error {
 	fmt.Printf("Disabling routing for %s... ", appID)
 
 	quit := progress()
-	configObj := api.Config{Routable: api.NewRoutable()}
-	*configObj.Routable = false
-	_, err = config.Set(s.Client, appID, configObj)
+	appSettings := api.AppSettings{Routable: api.NewRoutable()}
+	*appSettings.Routable = false
+	_, err = appsettings.Set(s.Client, appID, appSettings)
 
 	quit <- true
 	<-quit
