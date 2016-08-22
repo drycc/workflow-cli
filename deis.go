@@ -62,6 +62,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   routing       manage routability of an application
   maintenance   manage maintenance mode of an application
   tags          manage tags for application containers
+  tls           manage TLS settings for applications
   users         manage users
   version       display client version
   whitelist     manage whitelisted addresses of an application
@@ -143,6 +144,8 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Shortcuts(argv, &cmdr)
 	case "tags":
 		err = parser.Tags(argv, &cmdr)
+	case "tls":
+		err = parser.TLS(argv, &cmdr)
 	case "users":
 		err = parser.Users(argv, &cmdr)
 	case "version":
