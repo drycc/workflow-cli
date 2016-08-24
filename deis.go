@@ -63,6 +63,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   tags          manage tags for application containers
   users         manage users
   version       display client version
+  whitelist     manage whitelisted addresses of an application
 
 Shortcut commands, use 'deis shortcuts' to see all::
 
@@ -143,6 +144,8 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Users(argv, &cmdr)
 	case "version":
 		err = parser.Version(argv)
+	case "whitelist":
+		err = parser.Whitelist(argv, &cmdr)
 	default:
 		env := os.Environ()
 		extCmd := "deis-" + command
