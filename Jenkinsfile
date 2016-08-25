@@ -8,7 +8,7 @@ def getBasePath = { String filepath ->
 	return filepath.substring(0, filename)
 }
 
-def sh = { String cmd ->
+def sh = { cmd ->
 	wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
 		sh cmd
 	}
@@ -51,18 +51,12 @@ stage 'Git Info'
 node(linux) {
 	checkout scm
 
-	// HACK: Recommended approach for getting command output is writing to and then reading a file.
-	sh 'mkdir -p tmp'
-	sh 'git describe --all > tmp/GIT_BRANCH'
-	sh 'git rev-parse HEAD > tmp/GIT_COMMIT'
-	git_branch = readFile('tmp/GIT_BRANCH').trim()
-	git_commit = readFile('tmp/GIT_COMMIT').trim()
+	git_branch = sh(returnStdout: true, script: 'git describe --all').trim()
+	git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
 
 	if (git_branch != "remotes/origin/master") {
 		// Determine actual PR commit, if necessary
-		sh 'git rev-parse HEAD | git log --pretty=%P -n 1 --date-order > tmp/MERGE_COMMIT_PARENTS'
-		sh 'cat tmp/MERGE_COMMIT_PARENTS'
-		merge_commit_parents = readFile('tmp/MERGE_COMMIT_PARENTS').trim()
+		merge_commit_parents= sh(returnStdout: true, script: 'git rev-parse HEAD | git log --pretty=%P -n 1 --date-order').trim()
 		if (merge_commit_parents.length() > 40) {
 			echo 'More than one merge commit parent signifies that the merge commit is not the PR commit'
 			echo "Changing git_commit from '${git_commit}' to '${merge_commit_parents.take(40)}'"
