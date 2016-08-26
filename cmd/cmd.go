@@ -74,6 +74,9 @@ type Commander interface {
 	TagsSet(string, []string) error
 	TagsUnset(string, []string) error
 	UsersList(results int) error
+	WhitelistAdd(string, string) error
+	WhitelistList(string) error
+	WhitelistRemove(string, string) error
 	Println(...interface{}) (int, error)
 	Print(...interface{}) (int, error)
 	Printf(string, ...interface{}) (int, error)
