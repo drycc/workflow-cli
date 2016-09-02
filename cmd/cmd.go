@@ -77,6 +77,9 @@ type Commander interface {
 	TagsList(string) error
 	TagsSet(string, []string) error
 	TagsUnset(string, []string) error
+	TLSInfo(string) error
+	TLSEnable(string) error
+	TLSDisable(string) error
 	UsersList(results int) error
 	WhitelistAdd(string, string) error
 	WhitelistList(string) error
