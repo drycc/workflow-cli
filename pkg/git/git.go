@@ -26,8 +26,17 @@ func gitError(err *exec.ExitError, cmd []string) error {
 // CreateRemote adds a git remote in the current directory.
 func CreateRemote(host, remote, appID string) error {
 	cmd := []string{"git", "remote", "add", remote, RemoteURL(host, appID)}
-	_, err := exec.Command(cmd[0], cmd[1:]...).Output()
-	if err != nil {
+	if _, err := exec.Command(cmd[0], cmd[1:]...).Output(); err != nil {
+		return gitError(err.(*exec.ExitError), cmd)
+	}
+
+	return nil
+}
+
+// Init creates a new git repository in the local directory.
+func Init() error {
+	cmd := []string{"git", "init"}
+	if _, err := exec.Command(cmd[0], cmd[1:]...).Output(); err != nil {
 		return gitError(err.(*exec.ExitError), cmd)
 	}
 
@@ -54,8 +63,7 @@ func DeleteAppRemotes(host, appID string) error {
 // DeleteRemote removes a remote from the repository
 func DeleteRemote(name string) error {
 	cmd := []string{"git", "remote", "remove", name}
-	_, err := exec.Command(cmd[0], cmd[1:]...).Output()
-	if err != nil {
+	if _, err := exec.Command(cmd[0], cmd[1:]...).Output(); err != nil {
 		return gitError(err.(*exec.ExitError), cmd)
 	}
 
