@@ -19,7 +19,7 @@ func (d DeisCmd) WhitelistList(appID string) error {
 		return err
 	}
 
-	d.Printf("=== %s Whitelisted Addresses", appID)
+	d.Printf("=== %s Whitelisted Addresses\n", appID)
 
 	for _, ip := range whitelist.Addresses {
 		d.Println(ip)

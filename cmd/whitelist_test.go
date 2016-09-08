@@ -31,7 +31,7 @@ func TestWhitelistList(t *testing.T) {
 	err = cmdr.WhitelistList("foo")
 	assert.NoErr(t, err)
 
-	assert.Equal(t, b.String(), "=== foo Whitelisted Addresses1.2.3.4\n0.0.0.0/0\n", "output")
+	assert.Equal(t, b.String(), "=== foo Whitelisted Addresses\n1.2.3.4\n0.0.0.0/0\n", "output")
 }
 
 func TestWhitelistAdd(t *testing.T) {
