@@ -6,12 +6,12 @@
 
 Download Links:
 
-- [64 Bit Linux](https://storage.googleapis.com/workflow-cli/deis-latest-linux-amd64)
-- [32 Bit Linux](https://storage.googleapis.com/workflow-cli/deis-latest-linux-386)
-- [64 Bit Mac OS X](https://storage.googleapis.com/workflow-cli/deis-latest-darwin-amd64)
-- [32 Bit Max OS X](https://storage.googleapis.com/workflow-cli/deis-latest-darwin-386)
-- [64 Bit Windows](https://storage.googleapis.com/workflow-cli/deis-latest-windows-amd64.exe)
-- [32 Bit Windows](https://storage.googleapis.com/workflow-cli/deis-latest-windows-386.exe)
+- [64 Bit Linux](https://storage.googleapis.com/workflow-cli-master/deis-latest-linux-amd64)
+- [32 Bit Linux](https://storage.googleapis.com/workflow-cli-master/deis-latest-linux-386)
+- [64 Bit Mac OS X](https://storage.googleapis.com/workflow-cli-master/deis-latest-darwin-amd64)
+- [32 Bit Max OS X](https://storage.googleapis.com/workflow-cli-master/deis-latest-darwin-386)
+- [64 Bit Windows](https://storage.googleapis.com/workflow-cli-master/deis-latest-windows-amd64.exe)
+- [32 Bit Windows](https://storage.googleapis.com/workflow-cli-master/deis-latest-windows-386.exe)
 
 `deis` is a command line utility used to interact with the [Deis](http://deis.io) open source PaaS.
 
@@ -26,37 +26,37 @@ See the appropriate sub-section below for your system to download and install th
 #### 64 Bit Linux
 
 ```console
-curl -o deis https://storage.googleapis.com/workflow-cli/deis-latest-linux-amd64 && chmod +x deis
+curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-linux-amd64 && chmod +x deis
 ```
 
 #### 32 Bit Linux
 
 ```console
-curl -o deis https://storage.googleapis.com/workflow-cli/deis-latest-linux-386 && chmod +x deis
+curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-linux-386 && chmod +x deis
 ```
 
 #### 64 Bit Mac OS X
 
 ```console
-curl -o deis https://storage.googleapis.com/workflow-cli/deis-latest-darwin-amd64 && chmod +x deis
+curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-darwin-amd64 && chmod +x deis
 ```
 
 #### 32 Bit Max OS X
 
 ```console
-curl -o deis https://storage.googleapis.com/workflow-cli/deis-latest-darwin-386 && chmod +x deis
+curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-darwin-386 && chmod +x deis
 ```
 
 #### 64 Bit Windows
 
 ```console
-powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli/deis-latest-windows-amd64.exe', 'deis.exe')"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli-master/deis-latest-windows-amd64.exe', 'deis.exe')"
 ```
 
 #### 32 Bit Windows
 
 ```console
-powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli/deis-latest-windows-386.exe', 'deis.exe')"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli-master/deis-latest-windows-386.exe', 'deis.exe')"
 ```
 
 
