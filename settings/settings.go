@@ -90,13 +90,13 @@ func (s *Settings) Save(cf string) (string, error) {
 		return "", err
 	}
 
-	if err = os.MkdirAll(filepath.Join(FindHome(), "/.deis/"), 0775); err != nil {
+	if err = os.MkdirAll(filepath.Join(FindHome(), "/.deis/"), 0700); err != nil {
 		return "", err
 	}
 
 	filename := locateSettingsFile(cf)
 
-	return filename, ioutil.WriteFile(filename, settingsContents, 0775)
+	return filename, ioutil.WriteFile(filename, settingsContents, 0600)
 }
 
 // Delete user's settings file.
