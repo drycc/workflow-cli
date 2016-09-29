@@ -14,6 +14,8 @@ import (
 	docopt "github.com/docopt/docopt-go"
 )
 
+const extensionPrefix = "deis-"
+
 // main exits with the return value of Command(os.Args[1:]), deferring all logic to
 // a func we can test.
 func main() {
@@ -154,23 +156,14 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Whitelist(argv, &cmdr)
 	default:
 		env := os.Environ()
-		extCmd := "deis-" + command
 
-		binary, err := exec.LookPath(extCmd)
+		binary, err := exec.LookPath(extensionPrefix + command)
 		if err != nil {
 			parser.PrintUsage(&cmdr)
 			return 1
 		}
 
-		cmdArgv := []string{extCmd}
-
-		cmdSplit := strings.Split(argv[0], command+":")
-
-		if len(cmdSplit) > 1 {
-			argv[0] = cmdSplit[1]
-		}
-
-		cmdArgv = append(cmdArgv, argv...)
+		cmdArgv := prepareCmdArgs(command, argv)
 
 		err = syscall.Exec(binary, cmdArgv, env)
 		if err != nil {
@@ -247,6 +240,18 @@ func parseArgs(argv []string) (string, []string) {
 	}
 
 	return "", argv
+}
+
+// split original command and pass its first element in arguments
+func prepareCmdArgs(command string, argv []string) []string {
+	cmdArgv := []string{extensionPrefix + command}
+	cmdSplit := strings.Split(argv[0], command+":")
+
+	if len(cmdSplit) > 1 {
+		cmdArgv = append(cmdArgv, cmdSplit[1])
+	}
+
+	return append(cmdArgv, argv[1:]...)
 }
 
 func replaceShortcut(command string) string {
