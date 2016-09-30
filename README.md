@@ -79,25 +79,19 @@ $ mv deis /usr/local/bin
 
 To compile the client from scratch, ensure you have Docker installed and run
 
-	$ make bootstrap
-	$ make build
-
-`make bootstrap` will fetch all required dependencies, while `make build` will compile and install
-the client in the current directory.
-
-	$ ./deis --version
+    $ make
 
 ### From Scratch on Windows
 
 To compile the client from scratch, open PowerShell and execute the following commands in the source directory.
 
-	$ .\make bootstrap
-	$ .\make build
+    $ .\make bootstrap
+    $ .\make build
 
 `.\make bootstrap` will fetch all required dependencies, while `.\make build` will compile and install
 the client in the current directory.
 
-	$ .\deis --version
+    $ .\deis --version
 
 ## Usage
 
