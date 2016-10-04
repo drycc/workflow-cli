@@ -93,6 +93,130 @@ No readiness probe configured.
 `, "output")
 }
 
+func TestHealthchecksListNoHealthCheck(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+  "uuid": "c039a380-6068-4511-b35a-535a73b86ef5",
+  "app": "foo",
+  "owner": "bar",
+  "values": {},
+  "memory": {},
+  "cpu": {},
+  "tags": {},
+  "registry": {},
+  "healthcheck": {},
+  "created": "2016-09-12T22:20:14Z",
+  "updated": "2016-09-12T22:20:14Z"
+}`)
+	})
+
+	err = cmdr.HealthchecksList("foo", "")
+	assert.NoErr(t, err)
+
+	assert.Equal(t, b.String(), `=== foo Healthchecks
+No health checks configured.
+`, "output")
+}
+
+func TestHealthchecksListAllHealthChecks(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+  "uuid": "c039a380-6068-4511-b35a-535a73b86ef5",
+  "app": "foo",
+  "owner": "bar",
+  "values": {},
+  "memory": {},
+  "cpu": {},
+  "tags": {},
+  "registry": {},
+  "healthcheck": {
+    "web/cmd": {
+      "livenessProbe": {
+        "initialDelaySeconds": 50,
+        "timeoutSeconds": 50,
+        "periodSeconds": 10,
+        "failureThreshold": 3,
+        "httpGet": {
+          "port": 80,
+          "path": "/"
+        },
+        "successThreshold": 1
+      }
+    },
+		"web": {
+      "livenessProbe": {
+        "initialDelaySeconds": 50,
+        "timeoutSeconds": 50,
+        "periodSeconds": 10,
+        "failureThreshold": 3,
+        "httpGet": {
+          "port": 80,
+          "path": "/"
+        },
+        "successThreshold": 1
+      }
+    }
+  },
+  "created": "2016-09-12T22:20:14Z",
+  "updated": "2016-09-12T22:20:14Z"
+}`)
+	})
+
+	err = cmdr.HealthchecksList("foo", "")
+	assert.NoErr(t, err)
+
+	assert.Equal(t, b.String(), `=== foo Healthchecks
+
+web:
+--- Liveness
+Initial Delay (seconds): 50
+Timeout (seconds): 50
+Period (seconds): 10
+Success Threshold: 1
+Failure Threshold: 3
+Exec Probe: N/A
+HTTP GET Probe: Path="/" Port=80 HTTPHeaders=[]
+TCP Socket Probe: N/A
+
+--- Readiness
+No readiness probe configured.
+
+web/cmd:
+--- Liveness
+Initial Delay (seconds): 50
+Timeout (seconds): 50
+Period (seconds): 10
+Success Threshold: 1
+Failure Threshold: 3
+Exec Probe: N/A
+HTTP GET Probe: Path="/" Port=80 HTTPHeaders=[]
+TCP Socket Probe: N/A
+
+--- Readiness
+No readiness probe configured.
+`, "output")
+}
+
 func TestHealthchecksSet(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
