@@ -72,9 +72,6 @@ Options:
 
 	app := safeGetValue(args, "--app")
 	procType := safeGetValue(args, "--type")
-	if procType == "" {
-		procType = defaultProcType
-	}
 
 	return cmdr.HealthchecksList(app, procType)
 }

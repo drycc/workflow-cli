@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"sort"
+
 	"github.com/deis/controller-sdk-go/api"
 	"github.com/deis/controller-sdk-go/config"
 )
@@ -34,12 +36,28 @@ func (d *DeisCmd) HealthchecksList(appID, procType string) error {
 		return err
 	}
 
-	d.Printf("=== %s Healthchecks\n\n", appID)
-	d.Println(procType + ":")
-	if healthcheck, found := config.Healthcheck[procType]; found {
-		d.printHealthCheck(*healthcheck)
+	d.Printf("=== %s Healthchecks\n", appID)
+	if procType == "" {
+		if len(config.Healthcheck) == 0 {
+			d.Println("No health checks configured.")
+			return nil
+		}
+		var keys []string
+		for k := range config.Healthcheck {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, key := range keys {
+			d.Printf("\n%s:\n", key)
+			d.printHealthCheck(*config.Healthcheck[key])
+		}
 	} else {
-		d.printHealthCheck(api.Healthchecks{})
+		d.Printf("\n%s:\n", procType)
+		if healthcheck, found := config.Healthcheck[procType]; found {
+			d.printHealthCheck(*healthcheck)
+		} else {
+			d.printHealthCheck(api.Healthchecks{})
+		}
 	}
 
 	return nil
