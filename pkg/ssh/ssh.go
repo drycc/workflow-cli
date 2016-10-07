@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	pubKeyRegex = regexp.MustCompile("^(ssh-...|ecdsa-[^ ]+) ([^ ]+) ?(.*)")
+	pubKeyRegex = regexp.MustCompile("^(ssh-rsa|ssh-dss|ssh-ed25519|ecdsa-[^ ]+) ([^ ]+) ?(.*)")
 )
 
 // PubKeyInfo contains the information on an SSH public key
