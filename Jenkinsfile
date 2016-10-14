@@ -203,13 +203,11 @@ stage 'Trigger e2e tests'
 // If build is on master, trigger workflow-test, otherwise, assume build is a PR and trigger workflow-test-pr
 waitUntil {
 	try {
-		if (git_branch == "remotes/origin/master") {
-			build job: '/workflow-test', parameters: [[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit],
-				[$class: 'StringParameterValue', name: 'COMPONENT_REPO', value: 'workflow-cli']]
-		} else {
-			build job: '/workflow-test-pr', parameters: [[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit],
-				[$class: 'StringParameterValue', name: 'COMPONENT_REPO', value: 'workflow-cli']]
-		}
+		def downstreamJob = git_branch == "remotes/origin/master" ? '/workflow-test' : '/workflow-test-pr'
+		build job: downstreamJob, parameters: [
+			[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit],
+			[$class: 'StringParameterValue', name: 'COMPONENT_REPO', value: 'workflow-cli'],
+			[$class: 'StringParameterValue', name: 'UPSTREAM_SLACK_CHANNEL', value: '#controller']]
 		true
 	} catch(error) {
 		if (git_branch == "remotes/origin/master") {
