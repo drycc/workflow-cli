@@ -145,11 +145,11 @@ func parseLimits(limits []string) (map[string]interface{}, error) {
 }
 
 func parseLimit(limit string) (string, string, error) {
-	regex := regexp.MustCompile("^([A-z]+)=([0-9]+[bkmgBKMG]{1,2}|[0-9.]{1,5}|[0-9.]{1,5}[m]{0,1})$")
+	regex := regexp.MustCompile("^([A-z]+)=(([0-9]+[bkmgBKMG]{1,2}|[0-9.]{1,5}|[0-9.]{1,5}m?)(/([0-9]+[bkmgBKMG]{1,2}|[0-9.]{1,5}|[0-9.]{1,5}m?}))?)$")
 
 	if !regex.MatchString(limit) {
-		return "", "", fmt.Errorf(`%s doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M web=300`, limit)
+		return "", "", fmt.Errorf(`%s doesn't fit format type=#unit or type=# or type=#/#
+Examples: web=2G worker=500M db=1G/2G`, limit)
 	}
 
 	capture := regex.FindStringSubmatch(limit)

@@ -22,16 +22,26 @@ type parseLimitCase struct {
 func TestParseLimit(t *testing.T) {
 	t.Parallel()
 
+	var errorHint = ` doesn't fit format type=#unit or type=# or type=#/#
+Examples: web=2G worker=500M db=1G/2G`
+
 	cases := []parseLimitCase{
 		{"web=2G", "web", "2G", false, ""},
-		{"=1", "", "", true, `=1 doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M web=300`},
-		{"web=", "", "", true, `web= doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M web=300`},
-		{"1=", "", "", true, `1= doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M web=300`},
-		{"web=G", "", "", true, `web=G doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M web=300`},
+		{"web=2", "web", "2", false, ""},
+		{"web=100m", "web", "100m", false, ""},
+		{"web=0.1", "web", "0.1", false, ""},
+		{"web=.123", "web", ".123", false, ""},
+		{"web=2G/4G", "web", "2G/4G", false, ""},
+		{"web=2/4", "web", "2/4", false, ""},
+		{"web=200m/400m", "web", "200m/400m", false, ""},
+		{"web=0.2/0.4", "web", "0.2/0.4", false, ""},
+		{"web=.2/.4", "web", ".2/.4", false, ""},
+		{"=1", "", "", true, "=1" + errorHint},
+		{"web=", "", "", true, "web=" + errorHint},
+		{"1=", "", "", true, "1=" + errorHint},
+		{"web=G", "", "", true, "web=G" + errorHint},
+		{"web=/", "", "", true, "web=/" + errorHint},
+		{"web=/1", "", "", true, "web=/1" + errorHint},
 	}
 
 	for _, check := range cases {
@@ -58,8 +68,8 @@ func TestLimitTags(t *testing.T) {
 
 	cases := []parseLimitsCase{
 		{[]string{"web=1G", "worker=2"}, map[string]interface{}{"web": "1G", "worker": "2"}, false, ""},
-		{[]string{"foo=", "web=1G"}, nil, true, `foo= doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M web=300`},
+		{[]string{"foo=", "web=1G"}, nil, true, `foo= doesn't fit format type=#unit or type=# or type=#/#
+Examples: web=2G worker=500M db=1G/2G`},
 	}
 
 	for _, check := range cases {
@@ -88,11 +98,13 @@ func TestLimitsList(t *testing.T) {
 			"app": "enterprise",
 			"values": {},
 			"memory": {
-				"web": "2G"
+				"web": "2G",
+				"db": "1000M/1500M"
 			},
 			"cpu": {
 				"web": "2",
-				"worker": "1"
+				"worker": "1",
+				"db": "500m/2000m"
 			},
 			"tags": {},
 			"registry": {},
@@ -110,9 +122,11 @@ func TestLimitsList(t *testing.T) {
 	assert.Equal(t, b.String(), `=== enterprise Limits
 
 --- Memory
+db      1000M/1500M
 web     2G
 
 --- CPU
+db         500m/2000m
 web        2
 worker     1
 `, "output")
@@ -236,6 +250,102 @@ web     1G
 
 --- CPU
 Unlimited
+`, "output")
+
+	// with requests/limit parameter
+	server.Mux.HandleFunc("/v2/apps/jim/config/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		if r.Method == "POST" {
+			testutil.AssertBody(t, api.Config{
+				Memory: map[string]interface{}{
+					"web": "2000M",
+					"worker": "0/3G",
+					"db": "4G/5G",
+				},
+			}, r)
+		}
+
+		fmt.Fprintf(w, `{
+			"owner": "foo",
+			"app": "jim",
+			"values": {},
+			"memory": {
+				"web": "2000M",
+				"worker": "0/3G",
+				"db": "4G/5G"
+			},
+			"cpu": {},
+			"tags": {},
+			"registry": {},
+			"created": "2014-01-01T00:00:00UTC",
+			"updated": "2014-01-01T00:00:00UTC",
+			"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
+		}`)
+	})
+	b.Reset()
+
+	err = cmdr.LimitsSet("jim", []string{"web=2000M", "worker=0/3G", "db=4G/5G"}, "memory")
+	assert.NoErr(t, err)
+
+	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
+
+=== jim Limits
+
+--- Memory
+db         4G/5G
+web        2000M
+worker     0/3G
+
+--- CPU
+Unlimited
+`, "output")
+
+	// with requests/limit parameter
+	server.Mux.HandleFunc("/v2/apps/phew/config/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		if r.Method == "POST" {
+			testutil.AssertBody(t, api.Config{
+				CPU: map[string]interface{}{
+					"web": "2",
+					"worker": "0/300m",
+					"db": "4/5.6",
+				},
+			}, r)
+		}
+
+		fmt.Fprintf(w, `{
+			"owner": "foo",
+			"app": "jim",
+			"values": {},
+			"cpu": {
+				"web": "2",
+				"worker": "0/300m",
+				"db": "4/5.6"
+			},
+			"cpu": {},
+			"tags": {},
+			"registry": {},
+			"created": "2014-01-01T00:00:00UTC",
+			"updated": "2014-01-01T00:00:00UTC",
+			"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
+		}`)
+	})
+	b.Reset()
+
+	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=0/300m", "db=4/5.6"}, "cpu")
+	assert.NoErr(t, err)
+
+	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
+
+=== phew Limits
+
+--- Memory
+Unlimited
+
+--- CPU
+db         4/5.6
+web        2
+worker     0/300m
 `, "output")
 }
 

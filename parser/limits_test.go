@@ -50,6 +50,14 @@ func TestLimits(t *testing.T) {
 			expected: "",
 		},
 		{
+			args:     []string{"limits:set", "web=1G worker=2G"},
+			expected: "",
+		},
+		{
+			args:     []string{"limits:set", "web=1G/2G worker=2G/4G"},
+			expected: "",
+		},
+		{
 			args:     []string{"limits:set", "--cpu", "web=1"},
 			expected: "",
 		},

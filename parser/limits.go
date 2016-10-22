@@ -118,12 +118,14 @@ func limitUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets resource limits for an application.
 
-Usage: deis limits:unset [options] [--memory | --cpu] <type>...
+Usage: deis limits:unset [options] [--memory | --cpu] <type>=<value>...
 
 Arguments:
   <type>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
     Note that Dockerfile apps have a default 'cmd' process type.
+  <value>
+    the number of limits or requests/limits value.
 
 Options:
   -a --app=<app>
@@ -141,7 +143,7 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-	limits := args["<type>"].([]string)
+	limits := args["<type>=<value>"].([]string)
 	limitType := "memory"
 
 	if args["--cpu"].(bool) {
