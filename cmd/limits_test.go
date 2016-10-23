@@ -258,9 +258,9 @@ Unlimited
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
 				Memory: map[string]interface{}{
-					"web": "2000M",
+					"web":    "2000M",
 					"worker": "0/3G",
-					"db": "4G/5G",
+					"db":     "4G/5G",
 				},
 			}, r)
 		}
@@ -306,9 +306,9 @@ Unlimited
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
 				CPU: map[string]interface{}{
-					"web": "2",
+					"web":    "2",
 					"worker": "0/300m",
-					"db": "4/5.6",
+					"db":     "4/5.6",
 				},
 			}, r)
 		}
