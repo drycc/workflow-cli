@@ -64,8 +64,8 @@ Options:
     provide a password for the new account.
   --email=<email>
     provide an email address.
-  --ssl-verify=false
-    disables SSL certificate verification for API requests
+  --ssl-verify=true
+    enables/disables SSL certificate verification for API requests
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -78,10 +78,10 @@ Options:
 	username := safeGetValue(args, "--username")
 	password := safeGetValue(args, "--password")
 	email := safeGetValue(args, "--email")
-	sslVerify := false
+	sslVerify := true
 
-	if args["--ssl-verify"] != nil && args["--ssl-verify"].(string) == "true" {
-		sslVerify = true
+	if args["--ssl-verify"] != nil && args["--ssl-verify"].(string) == "false" {
+		sslVerify = false
 	}
 
 	return cmdr.Register(controller, username, password, email, sslVerify)
@@ -102,8 +102,8 @@ Options:
     provide a username for the account.
   --password=<password>
     provide a password for the account.
-  --ssl-verify=false
-    disables SSL certificate verification for API requests
+  --ssl-verify=true
+    enables/disables SSL certificate verification for API requests
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -115,10 +115,10 @@ Options:
 	controller := safeGetValue(args, "<controller>")
 	username := safeGetValue(args, "--username")
 	password := safeGetValue(args, "--password")
-	sslVerify := false
+	sslVerify := true
 
-	if args["--ssl-verify"] != nil && args["--ssl-verify"].(string) == "true" {
-		sslVerify = true
+	if args["--ssl-verify"] != nil && args["--ssl-verify"].(string) == "false" {
+		sslVerify = false
 	}
 
 	return cmdr.Login(controller, username, password, sslVerify)
