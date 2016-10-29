@@ -61,21 +61,24 @@ Options:
 
 func limitSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Sets resource limits for an application.
+Sets resource requests and limits for an application.
 
 A resource limit is a finite resource within a pod which we can apply
-restrictions through Kubernetes. This limit is applied to each individual
-pod, so setting a memory limit of 1G for an application means that each
-pod gets 1G of memory.
+restrictions through Kubernetes. A resource request is used by Kubernetes scheduler
+to select a node that can guarantee requested resource. If provided only one value,
+it'll be default by Kubernetes as both request and limit. These request and limit
+are applied to each individual pod, so setting a memory limit of 1G for an application
+means that each pod gets 1G of memory. Value needs to be within 0 <= request <= limit
 
-Usage: deis limits:set [options] <type>=<limit>...
+Usage: deis limits:set [options] <type>=<value>...
 
 Arguments:
   <type>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
     Note that Dockerfile apps have a default 'cmd' process type.
-  <limit>
-    The limit to apply to the process type. By default, this is set to --memory.
+  <value>
+    The value to apply to the process type. By default, this is set to --memory.
+    Can be in <limit> or <request>/<limit> format eg. web=2G db=1G/2G
     You can only set one type of limit per call.
 
     With --memory, units are represented in Bytes (B), Kilobytes (K), Megabytes
@@ -92,9 +95,9 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   --cpu
-    limits CPU.
+    value apply to CPU.
   -m --memory
-    limits memory. [default: true]
+    value apply to memory. [default: true]
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -104,7 +107,7 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-	limits := args["<type>=<limit>"].([]string)
+	limits := args["<type>=<value>"].([]string)
 	limitType := "memory"
 
 	if args["--cpu"].(bool) {
