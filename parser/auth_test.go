@@ -62,6 +62,14 @@ func TestAuth(t *testing.T) {
 			expected: "",
 		},
 		{
+			args:     []string{"auth:register", server.Server.URL, "--ssl-verify=true"},
+			expected: "",
+		},
+		{
+			args:     []string{"auth:register", server.Server.URL, "--login=false"},
+			expected: "",
+		},
+		{
 			args:     []string{"auth:login", server.Server.URL},
 			expected: "",
 		},
