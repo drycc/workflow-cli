@@ -64,6 +64,8 @@ Options:
     provide a password for the new account.
   --email=<email>
     provide an email address.
+  --login=true
+    logs into the new account after registering.
   --ssl-verify=true
     enables/disables SSL certificate verification for API requests
 `
@@ -84,7 +86,19 @@ Options:
 		sslVerify = false
 	}
 
-	return cmdr.Register(controller, username, password, email, sslVerify)
+	if err := cmdr.Register(controller, username, password, email, sslVerify); err != nil {
+		return err
+	}
+
+	// NOTE(bacongobbler): two use cases to check here:
+	//
+	// 1) Legacy; calling `deis auth:register` without --login
+	// 2) calling `deis auth:register --login true`
+	if args["--login"] == nil || args["--login"].(string) == "true" {
+		return cmdr.Login(controller, username, password, sslVerify)
+	}
+
+	return nil
 }
 
 func authLogin(argv []string, cmdr cmd.Commander) error {

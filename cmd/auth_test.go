@@ -53,7 +53,7 @@ func TestRegister(t *testing.T) {
 
 	err = cmdr.Register(server.Server.URL, username, password, email, true)
 	assert.NoErr(t, err)
-	expected := fmt.Sprintf("Registered %s\nLogged in as %s\nConfiguration file written to %s\n", username, username, cf)
+	expected := fmt.Sprintf("Registered %s\n", username)
 
 	assert.Equal(t, b.String(), expected, "output")
 }

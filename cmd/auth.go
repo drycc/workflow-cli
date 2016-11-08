@@ -72,8 +72,7 @@ func (d *DeisCmd) Register(controller string, username string, password string, 
 
 	d.Printf("Registered %s\n", username)
 
-	s := settings.Settings{Client: c}
-	return d.doLogin(s, username, password)
+	return nil
 }
 
 func (d *DeisCmd) doLogin(s settings.Settings, username, password string) error {
