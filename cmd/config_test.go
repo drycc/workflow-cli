@@ -20,6 +20,10 @@ func TestParseConfig(t *testing.T) {
 	actual, err := parseConfig([]string{"FOO=bar"})
 	assert.NoErr(t, err)
 	assert.Equal(t, actual, map[string]interface{}{"FOO": "bar"}, "map")
+
+	actual, err = parseConfig([]string{"FOO="})
+	assert.NoErr(t, err)
+	assert.Equal(t, actual, map[string]interface{}{"FOO": ""}, "map")
 }
 
 func TestFormatConfig(t *testing.T) {

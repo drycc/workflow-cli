@@ -265,7 +265,7 @@ func (d *DeisCmd) ConfigPush(appID, fileName string) error {
 func parseConfig(configVars []string) (map[string]interface{}, error) {
 	configMap := make(map[string]interface{})
 
-	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*)=([\s\S]+)$`)
+	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*)=([\s\S]*)$`)
 	for _, config := range configVars {
 		// Skip config that starts with an comment
 		if config[0] == '#' {
