@@ -1,10 +1,10 @@
-hash: 49b9fbe2ae681ee784fecd3bd18206bb7b50bdfabba50896bc8cfedd28d3fddf
-updated: 2016-09-06T15:42:05.704733871-07:00
+hash: 504e2e8ec90406631aee3185e8e49dfee12be12de6f49ed6ffa7593916863139
+updated: 2016-11-17T16:44:48.821907177-07:00
 imports:
 - name: github.com/arschles/assert
-  version: fc2da9844984ce5093111298174706e14d4c0c47
+  version: bb58b908265b5931732079df03f2818bf2167ba0
 - name: github.com/deis/controller-sdk-go
-  version: c71a2e5efa5dea38c8dfb94c11305c2f05c9af9c
+  version: bb310847bd314e0f170e807db61acdc33246e0c0
   subpackages:
   - api
   - apps
@@ -23,43 +23,31 @@ imports:
   - users
   - whitelist
 - name: github.com/deis/pkg
-  version: 189ed6bd6b6aa6629b72c2c5472095e176eec8a6
+  version: 28bd07fbcbec5aaaaeda05d362d8ff81f55f4f6c
   subpackages:
   - prettyprint
   - time
 - name: github.com/docopt/docopt-go
   version: 784ddc588536785e7299f7272f39101f7faccc3f
 - name: github.com/goware/urlx
-  version: 8bb4a2e4339f55b15164907177e96e9faf885504
+  version: 86bdc24560383254e8b977da31a823eddf904409
 - name: github.com/mattn/go-runewidth
   version: d6bea18f789704b5f83375793155289da36a3c7f
 - name: github.com/olekukonko/tablewriter
-  version: daf2955e742cf123959884fdff4685aa79b63135
+  version: bdcc175572fd7abece6c831e643891b9331bc9e7
 - name: github.com/PuerkitoBio/purell
-  version: 8a290539e2e8629dbc4e6bad948158f790ec31f4
+  version: 1d5d1cfad45d42ec5f81fa8ef23de09cebc6dcc3
 - name: github.com/PuerkitoBio/urlesc
-  version: 5bd2802263f21d8788851d5305584c82a5c75d7e
+  version: 5fa9ff0392746aeae1c4b37fcc42c65afa7a9587
 - name: golang.org/x/crypto
-  version: 9e590154d2353f3f5e1b24da7275686040dcf491
+  version: 1f22c0103821b9390939b6776727195525381532
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: 1358eff22f0dd0c54fc521042cc607f6ff4b531a
+  version: c2528b2dd8352441850638a8bb678c2ad056fd3e
   subpackages:
+  - context
   - idna
-- name: golang.org/x/text
-  version: ceefd2213ed29504fff30155163c8f59827734f3
-  subpackages:
-  - cases
-  - internal/tag
-  - language
-  - runes
-  - secure/bidirule
-  - secure/precis
-  - transform
-  - unicode/bidi
-  - unicode/norm
-  - width
 - name: gopkg.in/yaml.v2
-  version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
+  version: a83829b6f1293c91addabc89d0571c246397bbf4
 testImports: []
