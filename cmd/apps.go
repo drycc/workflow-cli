@@ -135,6 +135,12 @@ func (d *DeisCmd) AppInfo(appID string) error {
 	}
 
 	d.Println()
+	// print the app labels
+	if err = d.LabelsList(app.ID); err != nil {
+		return err
+	}
+
+	d.Println()
 
 	return nil
 }

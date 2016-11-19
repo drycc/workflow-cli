@@ -52,6 +52,9 @@ type Commander interface {
 	KeysList(int) error
 	KeyRemove(string) error
 	KeyAdd(string, string) error
+	LabelsList(string) error
+	LabelsSet(string, []string) error
+	LabelsUnset(string, []string) error
 	LimitsList(string) error
 	LimitsSet(string, []string, string) error
 	LimitsUnset(string, []string, string) error
