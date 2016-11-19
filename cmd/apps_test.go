@@ -165,6 +165,20 @@ func TestAppsInfo(t *testing.T) {
 }`)
 	})
 
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/settings/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+			"owner": "elrond",
+			"app": "lorem-ipsum",
+			"created": "2014-01-01T00:00:00UTC",
+			"updated": "2014-01-01T00:00:00UTC",
+			"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75",
+			"label": {
+				"team": "frontend"
+			}
+		}`)
+	})
+
 	s, err := settings.Load(cmdr.ConfigFile)
 	if err != nil {
 		t.Fatal(err)
@@ -195,6 +209,9 @@ lorem-ipsum-cmd-1911796442-48b58 up (v2)
 
 === lorem-ipsum Domains
 lorem-ipsum
+
+=== lorem-ipsum Label
+team:            frontend
 
 `, "output")
 }
