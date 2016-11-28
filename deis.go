@@ -56,6 +56,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   git           manage git for applications
   healthchecks  manage healthchecks for applications
   keys          manage ssh keys used for 'git push' deployments
+  labels        manage labels of application
   limits        manage resource limits for your application
   perms         manage permissions for applications
   ps            manage processes inside an app container
@@ -128,6 +129,8 @@ Use 'git push deis master' to deploy to an application.
 		return 0
 	case "keys":
 		err = parser.Keys(argv, &cmdr)
+	case "labels":
+		err = parser.Labels(argv, &cmdr)
 	case "limits":
 		err = parser.Limits(argv, &cmdr)
 	case "perms":

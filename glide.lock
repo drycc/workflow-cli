@@ -4,7 +4,7 @@ imports:
 - name: github.com/arschles/assert
   version: bb58b908265b5931732079df03f2818bf2167ba0
 - name: github.com/deis/controller-sdk-go
-  version: bb310847bd314e0f170e807db61acdc33246e0c0
+  version: 685c7f75bc1c4b57899a7cde55d945aa16129513
   subpackages:
   - api
   - apps
