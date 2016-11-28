@@ -27,7 +27,7 @@ func TestLabelsList(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jim",
 			"app": "rivendell",
-		    "label": {"git_repo": "https://github.com/deis/controller-sdk-go", "team" : "deis"},
+		    "label": {"team" : "deis", "git_repo": "https://github.com/deis/controller-sdk-go"},
 			"created": "2014-01-01T00:00:00UTC",
 			"updated": "2014-01-01T00:00:00UTC",
 			"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
@@ -37,8 +37,8 @@ func TestLabelsList(t *testing.T) {
 	err = cmdr.LabelsList("rivendell")
 	assert.NoErr(t, err)
 	assert.Equal(t, strings.TrimSpace(b.String()), `=== rivendell Label
-git_repo:        https://github.com/deis/controller-sdk-go
-team:            deis`, "output")
+git_repo:      https://github.com/deis/controller-sdk-go
+team:          deis`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)

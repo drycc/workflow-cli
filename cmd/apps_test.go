@@ -211,7 +211,7 @@ lorem-ipsum-cmd-1911796442-48b58 up (v2)
 lorem-ipsum
 
 === lorem-ipsum Label
-team:            frontend
+team:      frontend
 
 `, "output")
 }
