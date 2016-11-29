@@ -2,9 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
+	"github.com/deis/pkg/prettyprint"
+
 	"github.com/deis/controller-sdk-go/api"
 	"github.com/deis/controller-sdk-go/appsettings"
-	"strings"
 )
 
 // LabelsList list app's labels
@@ -20,12 +23,21 @@ func (d *DeisCmd) LabelsList(appID string) error {
 		return err
 	}
 
+	sortedLabels := sortKeys(appSettings.Label)
+
 	d.Printf("=== %s Label\n", appID)
 
-	if appSettings.Label == nil || len(appSettings.Label) == 0 {
+	if len(sortedLabels) == 0 {
 		d.Println("No labels found.")
 	} else {
-		d.Println(appSettings.Label)
+		labels := make(map[string]string)
+
+		// appSettings.Label is type interface, so it needs to be converted to a string
+		for _, label := range sortedLabels {
+			labels[label+":"] = fmt.Sprintf("%v", appSettings.Label[label])
+		}
+
+		d.Print(prettyprint.PrettyTabs(labels, 6))
 	}
 
 	return nil
