@@ -21,7 +21,7 @@ type Commander interface {
 	AutoscaleList(string) error
 	AutoscaleSet(string, string, int, int, int) error
 	AutoscaleUnset(string, string) error
-	Register(string, string, string, string, bool) error
+	Register(string, string, string, string, bool, bool) error
 	Login(string, string, string, bool) error
 	Logout() error
 	Passwd(string, string, string) error

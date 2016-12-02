@@ -51,7 +51,7 @@ func TestRegister(t *testing.T) {
 		fmt.Fprintf(w, `{}`)
 	})
 
-	err = cmdr.Register(server.Server.URL, username, password, email, true)
+	err = cmdr.Register(server.Server.URL, username, password, email, true, false)
 	assert.NoErr(t, err)
 	expected := fmt.Sprintf("Registered %s\n", username)
 

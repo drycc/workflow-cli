@@ -12,7 +12,7 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDeisCmd) Register(string, string, string, string, bool) error {
+func (d FakeDeisCmd) Register(string, string, string, string, bool, bool) error {
 	return errors.New("auth:register")
 }
 
