@@ -14,7 +14,7 @@ import (
 
 // Register creates a account on a Deis controller.
 func (d *DeisCmd) Register(controller string, username string, password string, email string,
-	sslVerify bool) error {
+	sslVerify, login bool) error {
 
 	c, err := deis.New(sslVerify, controller, "")
 
@@ -71,6 +71,10 @@ func (d *DeisCmd) Register(controller string, username string, password string, 
 	}
 
 	d.Printf("Registered %s\n", username)
+
+	if login {
+		return d.Login(controller, username, password, sslVerify)
+	}
 
 	return nil
 }

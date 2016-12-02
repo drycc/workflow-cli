@@ -81,24 +81,21 @@ Options:
 	password := safeGetValue(args, "--password")
 	email := safeGetValue(args, "--email")
 	sslVerify := true
+	login := true
 
 	if args["--ssl-verify"] != nil && args["--ssl-verify"].(string) == "false" {
 		sslVerify = false
 	}
 
-	if err := cmdr.Register(controller, username, password, email, sslVerify); err != nil {
-		return err
-	}
-
 	// NOTE(bacongobbler): two use cases to check here:
 	//
 	// 1) Legacy; calling `deis auth:register` without --login
-	// 2) calling `deis auth:register --login true`
-	if args["--login"] == nil || args["--login"].(string) == "true" {
-		return cmdr.Login(controller, username, password, sslVerify)
+	// 2) calling `deis auth:register --login false`
+	if args["--login"] != nil && args["--login"].(string) == "false" {
+		login = false
 	}
 
-	return nil
+	return cmdr.Register(controller, username, password, email, sslVerify, login)
 }
 
 func authLogin(argv []string, cmdr cmd.Commander) error {
