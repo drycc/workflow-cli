@@ -51,7 +51,7 @@ func TestHealthchecks(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"healthchecks:set", "liveness", "httpGet", "80", "--header=test-header:test-value"},
+			args:     []string{"healthchecks:set", "liveness", "httpGet", "80", "--headers=test-header:test-value"},
 			expected: "",
 		},
 		{

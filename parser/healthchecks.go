@@ -124,7 +124,7 @@ Options:
     the relative URL path for 'httpGet' probes. [default: /]
   --type=<type>
     the procType for which the health check needs to be applied.
-  --header=<header>...
+  --headers=<headers>...
     the HTTP headers to send for 'httpGet' probes, separated by commas.
   --initial-delay-timeout=<initial-delay-timeout>
     the initial delay timeout for the probe [default: 50]
@@ -154,7 +154,7 @@ Options:
 	failureThreshold := safeGetInt(args, "--failure-threshold")
 	headers := []string{}
 	if args["--headers"] != nil {
-		headers = args["--headers"].([]string)
+		headers = strings.Split(args["--headers"].(string), ",")
 	}
 	if procType == "" {
 		procType = defaultProcType
@@ -271,7 +271,7 @@ func parseHeader(header string) (*api.KVPair, error) {
 		return nil, fmt.Errorf("could not find separator in header (%s)", header)
 	}
 	return &api.KVPair{
-		Key:   strings.TrimSpace(headerParts[0]),
+		Name:  strings.TrimSpace(headerParts[0]),
 		Value: strings.TrimSpace(headerParts[1]),
 	}, nil
 }
