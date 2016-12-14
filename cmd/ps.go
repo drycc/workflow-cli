@@ -118,7 +118,7 @@ func printProcesses(appID string, input []api.Pods, wOut io.Writer) {
 }
 
 func parseType(target string, appID string) (string, string) {
-	psType, psName := "", ""
+	var psType, psName string
 
 	if strings.Contains(target, "-") {
 		replaced := strings.Replace(target, appID+"-", "", 1)

@@ -64,7 +64,7 @@ func labelsSet(argv []string, cmdr cmd.Commander) error {
 Sets labels for an application.
 
 A label is a key/value pair used to label an application. This label is a general information for deis user.
-Mostly used for administraton/maintenance information, note for application. This information isn't send to scheduler.
+Mostly used for administration/maintenance information, note for application. This information isn't send to scheduler.
 
 Usage: deis labels:set [options] <key>=<value>...
 
