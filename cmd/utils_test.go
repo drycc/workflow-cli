@@ -29,6 +29,7 @@ func TestLoad(t *testing.T) {
 	}
 
 	filename, err = config.Save(filename)
+	assert.NoErr(t, err)
 
 	_, appID, err := load(filename, "test")
 	assert.NoErr(t, err)

@@ -43,9 +43,8 @@ func chooseColor(input string) string {
 
 // PrintLog prints a log line with a color matched to its category.
 func PrintLog(out io.Writer, log string) {
-	category := "unknown"
 	parts := strings.Split(strings.Split(log, " -- ")[0], " ")
-	category = parts[0]
+	category := parts[0]
 	colorVars := map[string]string{
 		"Color": chooseColor(category),
 		"Log":   log,

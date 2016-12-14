@@ -43,6 +43,10 @@ func (d *DeisCmd) Register(controller string, username string, password string, 
 	if password == "" {
 		d.Print("password: ")
 		password, err = readPassword()
+		if err != nil {
+			return err
+		}
+
 		d.Printf("\npassword (confirm): ")
 		passwordConfirm, err := readPassword()
 		d.Println()
@@ -164,6 +168,10 @@ func (d *DeisCmd) Passwd(username, password, newPassword string) error {
 	if newPassword == "" {
 		d.Print("new password: ")
 		newPassword, err = readPassword()
+		if err != nil {
+			return err
+		}
+
 		d.Printf("\nnew password (confirm): ")
 		passwordConfirm, err := readPassword()
 

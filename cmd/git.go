@@ -12,6 +12,9 @@ const remoteDeletionMsg = "Git remotes for app %s removed.\n"
 // GitRemote creates a git remote for a deis app.
 func (d *DeisCmd) GitRemote(appID, remote string, force bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
 
 	remoteURL, err := git.RemoteURL(git.DefaultCmd, remote)
 

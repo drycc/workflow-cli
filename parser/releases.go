@@ -86,6 +86,9 @@ Options:
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	if err != nil {
+		return err
+	}
 
 	version, err := versionFromString(args["<version>"].(string))
 
@@ -114,6 +117,9 @@ Options:
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	if err != nil {
+		return err
+	}
 
 	var version int
 
