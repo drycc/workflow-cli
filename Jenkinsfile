@@ -52,11 +52,11 @@ stage 'Git Info'
 node(linux) {
 	checkout scm
 
-	git_branch = sh(returnStdout: true, script: 'git describe --all').trim()
+	git_branch = env.BRANCH_NAME
 	git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
 	git_tag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
 
-	if (git_branch != "remotes/origin/master") {
+	if (git_branch != "master") {
 		// Determine actual PR commit, if necessary
 		merge_commit_parents= sh(returnStdout: true, script: 'git rev-parse HEAD | git log --pretty=%P -n 1 --date-order').trim()
 		if (merge_commit_parents.length() > 40) {
@@ -88,7 +88,7 @@ node(linux) {
 					docker push ${test_image}
 				"""
 
-				if (git_branch == "remotes/origin/master") {
+				if (git_branch == "master") {
 					sh """
 						docker tag ${test_image} ${mutable_image}
 						docker push ${mutable_image}
@@ -107,14 +107,11 @@ stage 'Lint and test container'
 			withCredentials([[$class: 'StringBinding',
 												credentialsId: '995d99a7-466b-4beb-bf75-f3ba91cbbc18',
 												variable: 'CODECOV_TOKEN']]) {
-				def codecov = "codecov -Z -C ${git_commit} "
-				if (git_branch == "remotes/origin/master") {
-					codecov += "-B master"
-				} else {
-					def branch_name = env.BRANCH_NAME
+				def codecov = "codecov -Z -C ${git_commit} -B ${branch_name}"
+				if (branch_name != "master") {
 					def branch_index = branch_name.indexOf('-')
 					def pr = branch_name.substring(branch_index+1, branch_name.length())
-					codecov += "-P ${pr}"
+					codecov += " -P ${pr}"
 				}
 				sh "docker run -e CODECOV_TOKEN=\${CODECOV_TOKEN} --rm ${test_image} sh -c 'test-cover.sh &&  ${codecov}'"
 			}
@@ -163,7 +160,7 @@ parallel(
 		node(linux) {
 
 			def flags = ""
-			if (git_branch != "remotes/origin/master") {
+			if (git_branch != "master") {
 				echo "Skipping build of 386 binaries to shorten CI for Pull Requests"
 				flags += "-e BUILD_ARCH=amd64"
 			}
@@ -172,7 +169,7 @@ parallel(
 			def dist_dir = "-e DIST_DIR=/upload -v ${tmp_dir}:/upload"
 			sh "docker run ${flags} ${version_flags} ${dist_dir} --rm ${test_image} make build-revision"
 
-			if (git_branch == "remotes/origin/master") {
+			if (git_branch == "master") {
 				upload_artifacts(dist_dir, '6029cf4e-eaa3-4a8e-9dc7-744d118ebe6a', master_gcs_bucket, true)
 			} else {
 				upload_artifacts(dist_dir, '6029cf4e-eaa3-4a8e-9dc7-744d118ebe6a', pr_gcs_bucket, true)
@@ -183,7 +180,7 @@ parallel(
 	},
 	latest: {
 		node(linux) {
-			if (git_branch == "remotes/origin/master") {
+			if (git_branch == "master") {
 				def tmp_dir = mktmp()
 				def dist_dir = "-e DIST_DIR=/upload -v ${tmp_dir}:/upload"
 				sh "docker run ${dist_dir} ${version_flags} --rm ${test_image} make build-latest"
@@ -202,7 +199,7 @@ stage 'Trigger e2e tests'
 
 waitUntil {
 	try {
-		def chartRepoType = git_branch == "remotes/origin/master" ? 'dev' : 'pr'
+		def chartRepoType = git_branch == "master" ? 'dev' : 'pr'
 		build job: 'workflow-chart-e2e', parameters: [
 			[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit],
 			[$class: 'StringParameterValue', name: 'ACTUAL_COMMIT', value: git_commit],
@@ -211,7 +208,7 @@ waitUntil {
 			[$class: 'StringParameterValue', name: 'UPSTREAM_SLACK_CHANNEL', value: '#controller']]
 		true
 	} catch(error) {
-		if (git_branch == "remotes/origin/master") {
+		if (git_branch == "master") {
 			throw error
 		}
 
