@@ -200,13 +200,14 @@ parallel(
 
 stage 'Trigger e2e tests'
 
-// If build is on master, trigger workflow-test, otherwise, assume build is a PR and trigger workflow-test-pr
 waitUntil {
 	try {
-		def downstreamJob = git_branch == "remotes/origin/master" ? '/workflow-test' : '/workflow-test-pr'
-		build job: downstreamJob, parameters: [
+		def chartRepoType = git_branch == "remotes/origin/master" ? 'dev' : 'pr'
+		build job: 'workflow-chart-e2e', parameters: [
 			[$class: 'StringParameterValue', name: 'WORKFLOW_CLI_SHA', value: git_commit],
+			[$class: 'StringParameterValue', name: 'ACTUAL_COMMIT', value: git_commit],
 			[$class: 'StringParameterValue', name: 'COMPONENT_REPO', value: 'workflow-cli'],
+			[$class: 'StringParameterValue', name: 'CHART_REPO_TYPE', value: chartRepoType],
 			[$class: 'StringParameterValue', name: 'UPSTREAM_SLACK_CHANNEL', value: '#controller']]
 		true
 	} catch(error) {
