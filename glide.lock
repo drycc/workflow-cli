@@ -1,10 +1,10 @@
-hash: 6ae1b56f1a4697e0cb1d61b22236897f7678dd2ae32a531948ca62ab68c5c6bb
-updated: 2016-12-14T12:52:24.333134278-07:00
+hash: 29de306ee50d8a78aef17159eb5274c4829c37701bcd0928944feae8b19011b4
+updated: 2016-12-16T12:44:01.134826779-08:00
 imports:
 - name: github.com/arschles/assert
   version: bb58b908265b5931732079df03f2818bf2167ba0
 - name: github.com/deis/controller-sdk-go
-  version: 578082f82b3460b47d3c7e127313352f7117edfc
+  version: 50747d729f853ee7f2385be43cdd976beb98c564
   subpackages:
   - api
   - apps
@@ -44,8 +44,9 @@ imports:
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: cfae461cedfdcab6e261a26eb77db53695623303
+  version: c2528b2dd8352441850638a8bb678c2ad056fd3e
   subpackages:
+  - context
   - idna
 - name: golang.org/x/sys
   version: d75a52659825e75fff6158388dddc6a5b04f9ba5
