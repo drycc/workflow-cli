@@ -26,38 +26,86 @@ See the appropriate sub-section below for your system to download and install th
 
 #### 64 Bit Linux
 
+Master:
+
 ```console
 curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-linux-amd64 && chmod +x deis
 ```
 
+Latest stable release:
+
+```
+curl -o deis https://storage.googleapis.com/workflow-cli-release/deis-stable-linux-amd64 && chmod +x deis
+```
+
 #### 32 Bit Linux
+
+Master:
 
 ```console
 curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-linux-386 && chmod +x deis
 ```
 
+Latest stable release:
+
+```
+curl -o deis https://storage.googleapis.com/workflow-cli-release/deis-stable-linux-386 && chmod +x deis
+```
+
 #### 64 Bit Mac OS X
+
+Master:
 
 ```console
 curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-darwin-amd64 && chmod +x deis
 ```
 
+Latest stable release:
+
+```
+curl -o deis https://storage.googleapis.com/workflow-cli-release/deis-stable-darwin-amd64 && chmod +x deis
+```
+
 #### 32 Bit Max OS X
+
+Master:
 
 ```console
 curl -o deis https://storage.googleapis.com/workflow-cli-master/deis-latest-darwin-386 && chmod +x deis
 ```
 
+Latest stable release:
+
+```
+curl -o deis https://storage.googleapis.com/workflow-cli-release/deis-stable-darwin-386 && chmod +x deis
+```
+
 #### 64 Bit Windows
+
+Master:
 
 ```console
 powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli-master/deis-latest-windows-amd64.exe', 'deis.exe')"
 ```
 
+Latest stable release:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli-release/deis-stable-windows-amd64.exe', 'deis.exe')"
+```
+
 #### 32 Bit Windows
+
+Master:
 
 ```console
 powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli-master/deis-latest-windows-386.exe', 'deis.exe')"
+```
+
+Latest stable release:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -Command "(new-object net.webclient).DownloadFile('https://storage.googleapis.com/workflow-cli-release/deis-stable-windows-386.exe', 'deis.exe')"
 ```
 
 
