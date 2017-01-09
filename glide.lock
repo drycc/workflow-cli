@@ -1,10 +1,10 @@
-hash: 29de306ee50d8a78aef17159eb5274c4829c37701bcd0928944feae8b19011b4
-updated: 2016-12-16T12:44:01.134826779-08:00
+hash: df0e54f151fe59020aeb6596445430c9185644ffe1650c9c80f020f04bffb60f
+updated: 2017-01-09T11:54:15.635074917-08:00
 imports:
 - name: github.com/arschles/assert
   version: bb58b908265b5931732079df03f2818bf2167ba0
 - name: github.com/deis/controller-sdk-go
-  version: 50747d729f853ee7f2385be43cdd976beb98c564
+  version: 9520b6c460202f376856d042ac4864ee951cdf3a
   subpackages:
   - api
   - apps
