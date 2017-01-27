@@ -84,7 +84,7 @@ node(linux) {
 
 				sh """
 					docker login -e="${quayEmail}" -u="${quayUsername}" -p="\${QUAY_PASSWORD}" quay.io
-					docker build -t ${test_image} .
+					docker build \${DOCKER_BUILD_FLAGS} -t ${test_image} .
 					docker push ${test_image}
 				"""
 

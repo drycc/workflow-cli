@@ -68,7 +68,7 @@ test: build-test-image
 	docker run --rm ${IMAGE} test
 
 build-test-image:
-	docker build -t ${IMAGE} .
+	docker build ${DOCKER_BUILD_FLAGS} -t ${IMAGE} .
 
 push-test-image: build-test-image
 	docker push ${IMAGE}
