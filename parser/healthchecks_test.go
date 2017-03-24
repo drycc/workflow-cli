@@ -70,6 +70,14 @@ func TestHealthchecks(t *testing.T) {
 			args:     []string{"healthchecks"},
 			expected: "healthchecks:list",
 		},
+		{
+			args:     []string{"healthchecks:set", "alien", "httpGet", "80"},
+			expected: "probe type alien is invalid. Must be one of [liveness readiness]",
+		},
+		{
+			args:     []string{"healthchecks:unset", "alien", "httpGet", "80"},
+			expected: "probe type alien is invalid. Must be one of [liveness readiness]",
+		},
 	}
 
 	// For each case, check that calling the route with the arguments

@@ -307,7 +307,7 @@ func TestHealthchecksUnset(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksUnset("foo", "web/cmd", []string{"web/cmd"})
+	err = cmdr.HealthchecksUnset("foo", "web/cmd", []string{"liveness"})
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing healthchecks... done
 

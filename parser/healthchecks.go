@@ -164,8 +164,8 @@ Options:
 	probeType := args["<probe-type>"].(string)
 	probeArgs := args["<args>"].([]string)
 
-	if healthcheckType != "liveness" && healthcheckType != "readiness" {
-		return fmt.Errorf("Invalid healthcheck type. Must be one of: \"liveness\", \"readiness\"")
+	if err := checkProbeType(healthcheckType); err != nil {
+		return err
 	}
 
 	// NOTE(bacongobbler): k8s healthchecks use the term "livenessProbe" and "readinessProbe", so let's
@@ -247,6 +247,9 @@ Options:
 	// NOTE(bacongobbler): k8s healthchecks use the term "livenessProbe" and "readinessProbe", so let's
 	// add that to the end of the healthcheck type so the controller sees the right probe type
 	for healthcheck := range healthchecks {
+		if err := checkProbeType(healthchecks[healthcheck]); err != nil {
+			return err
+		}
 		healthchecks[healthcheck] += "Probe"
 	}
 
@@ -274,4 +277,21 @@ func parseHeader(header string) (*api.KVPair, error) {
 		Name:  strings.TrimSpace(headerParts[0]),
 		Value: strings.TrimSpace(headerParts[1]),
 	}, nil
+}
+
+func checkProbeType(probe string) error {
+	var found bool
+	probeTypes := []string{
+		"liveness",
+		"readiness",
+	}
+	for _, ptype := range probeTypes {
+		if probe == ptype {
+			found = true
+		}
+	}
+	if !found {
+		return fmt.Errorf("probe type %s is invalid. Must be one of %s", probe, probeTypes)
+	}
+	return nil
 }
