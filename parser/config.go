@@ -54,6 +54,8 @@ Usage: deis config:list [options]
 Options:
   --oneline
     print output on one line.
+  --diff
+    print output on multiple lines for comparison against .env files.
   -a --app=<app>
     the uniquely identifiable name of the application.
 `
@@ -65,8 +67,16 @@ Options:
 	}
 	app := safeGetValue(args, "--app")
 	oneline := args["--oneline"].(bool)
+	diff := args["--diff"].(bool)
 
-	return cmdr.ConfigList(app, oneline)
+	format := ""
+	if oneline {
+		format = "oneline"
+	} else if diff {
+		format = "diff"
+	}
+
+	return cmdr.ConfigList(app, format)
 }
 
 func configSet(argv []string, cmdr cmd.Commander) error {

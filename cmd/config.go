@@ -17,7 +17,7 @@ import (
 )
 
 // ConfigList lists an app's config.
-func (d *DeisCmd) ConfigList(appID string, oneLine bool) error {
+func (d *DeisCmd) ConfigList(appID string, format string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -31,16 +31,23 @@ func (d *DeisCmd) ConfigList(appID string, oneLine bool) error {
 
 	keys := sortKeys(config.Values)
 
-	if oneLine {
+	var configOutput *bytes.Buffer = new(bytes.Buffer)
+
+	switch format {
+	case "oneline":
 		for i, key := range keys {
 			sep := " "
 			if i == len(keys)-1 {
 				sep = "\n"
 			}
-			d.Printf("%s=%s%s", key, config.Values[key], sep)
+			fmt.Fprintf(configOutput, "%s=%s%s", key, config.Values[key], sep)
 		}
-	} else {
-		d.Printf("=== %s Config\n", appID)
+	case "diff":
+		for _, key := range keys {
+			fmt.Fprintf(configOutput, "%s=%s\n", key, config.Values[key])
+		}
+	default:
+		fmt.Fprintf(configOutput, "=== %s Config\n", appID)
 
 		configMap := make(map[string]string)
 
@@ -49,9 +56,10 @@ func (d *DeisCmd) ConfigList(appID string, oneLine bool) error {
 			configMap[key] = fmt.Sprintf("%v", config.Values[key])
 		}
 
-		d.Print(prettyprint.PrettyTabs(configMap, 6))
+		fmt.Fprint(configOutput, prettyprint.PrettyTabs(configMap, 6))
 	}
 
+	d.Print(configOutput)
 	return nil
 }
 
@@ -119,7 +127,7 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 		d.Print("done\n\n")
 	}
 
-	return d.ConfigList(appID, false)
+	return d.ConfigList(appID, "")
 }
 
 // ConfigUnset removes a config variable from an app.
@@ -153,7 +161,7 @@ func (d *DeisCmd) ConfigUnset(appID string, configVars []string) error {
 
 	d.Print("done\n\n")
 
-	return d.ConfigList(appID, false)
+	return d.ConfigList(appID, "")
 }
 
 // ConfigPull pulls an app's config to a file.

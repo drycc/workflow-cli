@@ -87,7 +87,7 @@ func TestConfigList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigList("foo", false)
+	err = cmdr.ConfigList("foo", "")
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Config
@@ -98,9 +98,15 @@ TRUE       false
 `, "output")
 	b.Reset()
 
-	err = cmdr.ConfigList("foo", true)
+	err = cmdr.ConfigList("foo", "oneline")
 	assert.NoErr(t, err)
 	assert.Equal(t, b.String(), "FLOAT=12.34 NCC=1701 TEST=testing TRUE=false\n", "output")
+
+	b.Reset()
+
+	err = cmdr.ConfigList("foo", "diff")
+	assert.NoErr(t, err)
+	assert.Equal(t, b.String(), "FLOAT=12.34\nNCC=1701\nTEST=testing\nTRUE=false\n", "output")
 }
 
 func TestConfigSet(t *testing.T) {
