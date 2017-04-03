@@ -36,7 +36,7 @@ type Commander interface {
 	CertInfo(string) error
 	CertAttach(string, string) error
 	CertDetach(string, string) error
-	ConfigList(string, bool) error
+	ConfigList(string, string) error
 	ConfigSet(string, []string) error
 	ConfigUnset(string, []string) error
 	ConfigPull(string, bool, bool) error
