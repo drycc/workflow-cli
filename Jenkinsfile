@@ -33,20 +33,22 @@ def bootstrap = { String node ->
 	}
 }
 
-node(windows) {
-	def gopath = pwd() + "\\gopath"
-	env.GOPATH = gopath
-	def workdir = gopath + "\\src\\github.com\\deis\\workflow-cli"
-
-	dir(workdir) {
-		stage 'Checkout Windows'
-			checkout scm
-		stage 'Install Windows'
-			bootstrap windows
-		stage 'Test Windows'
-			bat pscmd('.\\make test')
-	}
-}
+// Disabling until we have a more sustainable Windows Jenkins Agent plan
+// See https://github.com/deis/jenkins-jobs/issues/351
+// node(windows) {
+// 	def gopath = pwd() + "\\gopath"
+// 	env.GOPATH = gopath
+// 	def workdir = gopath + "\\src\\github.com\\deis\\workflow-cli"
+//
+// 	dir(workdir) {
+// 		stage 'Checkout Windows'
+// 			checkout scm
+// 		stage 'Install Windows'
+// 			bootstrap windows
+// 		stage 'Test Windows'
+// 			bat pscmd('.\\make test')
+// 	}
+// }
 
 stage 'Git Info'
 node(linux) {
