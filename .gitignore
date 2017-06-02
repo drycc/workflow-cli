@@ -27,3 +27,4 @@ deis
 _dist
 workflow-cli
 coverage.txt
+.DS_Store
