@@ -80,6 +80,7 @@ func (d *DeisCmd) ConfigSet(appID string, configVars []string) error {
 
 	if ok {
 		sshKey := value.(string)
+		sshRegex := regexp.MustCompile("^-.+ .SA PRIVATE KEY-*")
 
 		if _, err = os.Stat(value.(string)); err == nil {
 			contents, err := ioutil.ReadFile(value.(string))
@@ -89,9 +90,15 @@ func (d *DeisCmd) ConfigSet(appID string, configVars []string) error {
 			}
 
 			sshKey = string(contents)
-		}
+		} else {
+			// NOTE(felixbuenemann): check if the current value is already a base64 encoded key.
+			// This is the case if it was fetched using "deis config:pull".
+			contents, err := base64.StdEncoding.DecodeString(sshKey)
 
-		sshRegex := regexp.MustCompile("^-.+ .SA PRIVATE KEY-*")
+			if err == nil && sshRegex.MatchString(string(contents)) {
+				sshKey = string(contents)
+			}
+		}
 
 		if !sshRegex.MatchString(sshKey) {
 			return fmt.Errorf("Could not parse SSH private key:\n %s", sshKey)
