@@ -142,13 +142,13 @@ func parseType(target string, appID string) (string, string) {
 
 func parsePsTargets(targets []string) (map[string]int, error) {
 	targetMap := make(map[string]int)
-	regex := regexp.MustCompile(`^([a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*)=([0-9]+)$`)
+	regex := regexp.MustCompile(`^([a-z0-9]+(?:-[a-z0-9]+)*)=([0-9]+)$`)
 	var err error
 
 	for _, target := range targets {
 		if regex.MatchString(target) {
 			captures := regex.FindStringSubmatch(target)
-			targetMap[captures[1]], err = strconv.Atoi(captures[3])
+			targetMap[captures[1]], err = strconv.Atoi(captures[2])
 
 			if err != nil {
 				return nil, err
