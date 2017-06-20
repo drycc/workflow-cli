@@ -3,7 +3,9 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/arschles/assert"
@@ -24,6 +26,36 @@ func TestParseConfig(t *testing.T) {
 	actual, err = parseConfig([]string{"FOO="})
 	assert.NoErr(t, err)
 	assert.Equal(t, actual, map[string]interface{}{"FOO": ""}, "map")
+}
+
+func TestParseSSHKey(t *testing.T) {
+	t.Parallel()
+
+	_, err := parseSSHKey("foobar")
+	assert.ExistsErr(t, err, "bogus key")
+
+	validSSHKey := "-----BEGIN OPENSSH PRIVATE KEY-----"
+
+	actual, err := parseSSHKey(validSSHKey)
+	assert.NoErr(t, err)
+	assert.Equal(t, actual, validSSHKey, "plain key")
+
+	encodedSSHKey := "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0="
+
+	actual, err = parseSSHKey(encodedSSHKey)
+	assert.NoErr(t, err)
+	assert.Equal(t, actual, validSSHKey, "base64 key")
+
+	keyFile, err := ioutil.TempFile("", "deis-cli-unit-test-sshkey")
+	assert.NoErr(t, err)
+	defer os.Remove(keyFile.Name())
+	_, err = keyFile.Write([]byte(validSSHKey))
+	assert.NoErr(t, err)
+	keyFile.Close()
+
+	actual, err = parseSSHKey(keyFile.Name())
+	assert.NoErr(t, err)
+	assert.Equal(t, actual, validSSHKey, "key path")
 }
 
 func TestFormatConfig(t *testing.T) {
