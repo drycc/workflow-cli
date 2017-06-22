@@ -154,7 +154,8 @@ func TestConfigSet(t *testing.T) {
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
 				Values: map[string]interface{}{
-					"TRUE": "false",
+					"TRUE":    "false",
+					"SSH_KEY": "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=",
 				},
 			}, r)
 		}
@@ -166,6 +167,7 @@ func TestConfigSet(t *testing.T) {
 			"TEST":  "testing",
 			"NCC":   "1701",
 			"TRUE":  "false",
+			"SSH_KEY": "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=",
 			"FLOAT": "12.34"
 	},
 	"memory": {},
@@ -181,16 +183,17 @@ func TestConfigSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigSet("foo", []string{"TRUE=false"})
+	err = cmdr.ConfigSet("foo", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
 
 === foo Config
-FLOAT      12.34
-NCC        1701
-TEST       testing
-TRUE       false
+FLOAT        12.34
+NCC          1701
+SSH_KEY      LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=
+TEST         testing
+TRUE         false
 `, "output")
 }
 
