@@ -119,9 +119,10 @@ func TestParsePsTargets(t *testing.T) {
 		{[]string{"test"}, true, nil, "'test' does not match the pattern 'type=num', ex: web=2\n"},
 		{[]string{"test=a"}, true, nil, "'test=a' does not match the pattern 'type=num', ex: web=2\n"},
 		{[]string{"test="}, true, nil, "'test=' does not match the pattern 'type=num', ex: web=2\n"},
+		{[]string{"Test=2"}, true, nil, "'Test=2' does not match the pattern 'type=num', ex: web=2\n"},
 		{[]string{"test=2"}, false, map[string]int{"test": 2}, ""},
 		{[]string{"test-proc=2"}, false, map[string]int{"test-proc": 2}, ""},
-		{[]string{"Test1=2"}, false, map[string]int{"Test1": 2}, ""},
+		{[]string{"test1=2"}, false, map[string]int{"test1": 2}, ""},
 	}
 
 	for _, check := range cases {

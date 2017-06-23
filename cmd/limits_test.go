@@ -36,12 +36,18 @@ Examples: web=2G worker=500M db=1G/2G`
 		{"web=200m/400m", "web", "200m/400m", false, ""},
 		{"web=0.2/0.4", "web", "0.2/0.4", false, ""},
 		{"web=.2/.4", "web", ".2/.4", false, ""},
+		{"web1=2G", "web1", "2G", false, ""},
+		{"web-server=2G", "web-server", "2G", false, ""},
+		{"web-server1=2G", "web-server1", "2G", false, ""},
 		{"=1", "", "", true, "=1" + errorHint},
 		{"web=", "", "", true, "web=" + errorHint},
 		{"1=", "", "", true, "1=" + errorHint},
 		{"web=G", "", "", true, "web=G" + errorHint},
 		{"web=/", "", "", true, "web=/" + errorHint},
 		{"web=/1", "", "", true, "web=/1" + errorHint},
+		{"web-=2G", "", "", true, "web-=2G" + errorHint},
+		{"-web=2G", "", "", true, "-web=2G" + errorHint},
+		{"Web=2G", "", "", true, "Web=2G" + errorHint},
 	}
 
 	for _, check := range cases {
