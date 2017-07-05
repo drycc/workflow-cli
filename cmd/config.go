@@ -76,27 +76,11 @@ func (d *DeisCmd) ConfigSet(appID string, configVars []string) error {
 		return err
 	}
 
-	value, ok := configMap["SSH_KEY"]
-
-	if ok {
-		sshKey := value.(string)
-
-		if _, err = os.Stat(value.(string)); err == nil {
-			contents, err := ioutil.ReadFile(value.(string))
-
-			if err != nil {
-				return err
-			}
-
-			sshKey = string(contents)
+	if value, ok := configMap["SSH_KEY"]; ok {
+		sshKey, err := parseSSHKey(value.(string))
+		if err != nil {
+			return err
 		}
-
-		sshRegex := regexp.MustCompile("^-.+ .SA PRIVATE KEY-*")
-
-		if !sshRegex.MatchString(sshKey) {
-			return fmt.Errorf("Could not parse SSH private key:\n %s", sshKey)
-		}
-
 		configMap["SSH_KEY"] = base64.StdEncoding.EncodeToString([]byte(sshKey))
 	}
 
@@ -289,6 +273,37 @@ func parseConfig(configVars []string) (map[string]interface{}, error) {
 	}
 
 	return configMap, nil
+}
+
+func parseSSHKey(value string) (string, error) {
+	sshRegex := regexp.MustCompile("^-----BEGIN (DSA|RSA|EC|OPENSSH) PRIVATE KEY-----")
+
+	if sshRegex.MatchString(value) {
+		return value, nil
+	}
+
+	// NOTE(felixbuenemann): check if the current value is already a base64 encoded key.
+	// This is the case if it was fetched using "deis config:pull".
+	contents, err := base64.StdEncoding.DecodeString(value)
+
+	if err == nil && sshRegex.MatchString(string(contents)) {
+		return string(contents), nil
+	}
+
+	// NOTE(felixbuenemann): check if the value is a path to a private key.
+	if _, err := os.Stat(value); err == nil {
+		contents, err := ioutil.ReadFile(value)
+
+		if err != nil {
+			return "", err
+		}
+
+		if sshRegex.MatchString(string(contents)) {
+			return string(contents), nil
+		}
+	}
+
+	return "", fmt.Errorf("Could not parse SSH private key:\n %s", value)
 }
 
 func formatConfig(configVars map[string]interface{}) string {
