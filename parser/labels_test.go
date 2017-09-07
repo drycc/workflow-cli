@@ -46,7 +46,7 @@ func TestLabels(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"labels:set", "git_repo=https://github.com/deis/workflow", "team=deis"},
+			args:     []string{"labels:set", "git_repo=https://github.com/deisthree/workflow", "team=deis"},
 			expected: "",
 		},
 		{

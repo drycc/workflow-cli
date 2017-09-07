@@ -22,7 +22,7 @@ Download Links:
 
 `deis` is a command line utility used to interact with the [Deis](http://deis.io) open source PaaS.
 
-Please add any [issues](https://github.com/deis/workflow-cli/issues) you find with this software to the [Deis Workflow CLI Project](https://github.com/deis/workflow-cli).
+Please add any [issues](https://github.com/deisthree/workflow-cli/issues) you find with this software to the [Deis Workflow CLI Project](https://github.com/deisthree/workflow-cli).
 
 ## Installation
 
@@ -154,6 +154,6 @@ To learn more about a command run `deis help <command>`.
 
 ## License
 
-see [LICENSE](https://github.com/deis/workflow-cli/blob/master/LICENSE)
+see [LICENSE](https://github.com/deisthree/workflow-cli/blob/master/LICENSE)
 
-[v2.18]: https://github.com/deis/workflow/releases/tag/v2.18.0
+[v2.18]: https://github.com/deisthree/workflow/releases/tag/v2.18.0

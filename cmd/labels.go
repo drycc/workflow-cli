@@ -125,7 +125,7 @@ func parseLabel(label string) (string, string, error) {
 
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
 		return "", "", fmt.Errorf(`%s is invalid, Must be in format key=value
-Examples: git_repo=https://github.com/deis/workflow team=frontend`, label)
+Examples: git_repo=https://github.com/deisthree/workflow team=frontend`, label)
 	}
 
 	return parts[0], parts[1], nil

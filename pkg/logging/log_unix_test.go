@@ -36,7 +36,7 @@ func TestPrintLogs(t *testing.T) {
 	PrintLog(&b, "INFO [test]: testing")
 	assert.Equal(t, b.String(), "\033[35mINFO [test]: testing\033[0m\n", "log line")
 	b.Reset()
-	// Regression test for https://github.com/deis/deis/issues/4420
+	// Regression test for https://github.com/deisthree/deis/issues/4420
 	PrintLog(&b, "\nDone preparing production files\n\n\u001b[4mRunning \"concat:plugins\" (concat) task\u001b[24m\n")
 	assert.Equal(t, b.String(),
 		"\033[31m\nDone preparing production files\n\n\u001b[4mRunning \"concat:plugins\" (concat) task\u001b[24m\n\033[0m\n", "log line")
