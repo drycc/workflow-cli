@@ -27,7 +27,7 @@ func TestLabelsList(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jim",
 			"app": "rivendell",
-		    "label": {"team" : "deis", "git_repo": "https://github.com/deisthree/controller-sdk-go"},
+		    "label": {"team" : "teamhephy", "git_repo": "https://github.com/teamhephy/controller-sdk-go"},
 			"created": "2014-01-01T00:00:00UTC",
 			"updated": "2014-01-01T00:00:00UTC",
 			"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
@@ -37,8 +37,8 @@ func TestLabelsList(t *testing.T) {
 	err = cmdr.LabelsList("rivendell")
 	assert.NoErr(t, err)
 	assert.Equal(t, strings.TrimSpace(b.String()), `=== rivendell Label
-git_repo:      https://github.com/deisthree/controller-sdk-go
-team:          deis`, "output")
+git_repo:      https://github.com/teamhephy/controller-sdk-go
+team:          teamhephy`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -70,16 +70,16 @@ func TestListsSet(t *testing.T) {
 	server.Mux.HandleFunc("/v2/apps/lothlorien/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		data := map[string]interface{}{
-			"git_repo": "https://github.com/deisthree/controller-sdk-go",
-			"team":     "deis",
+			"git_repo": "https://github.com/teamhephy/controller-sdk-go",
+			"team":     "teamhephy",
 		}
 		testutil.AssertBody(t, api.AppSettings{Label: data}, r)
 		fmt.Fprintf(w, "{}")
 	})
 
 	err = cmdr.LabelsSet("lothlorien", []string{
-		"team=deis",
-		"git_repo=https://github.com/deisthree/controller-sdk-go",
+		"team=teamhephy",
+		"git_repo=https://github.com/teamhephy/controller-sdk-go",
 	})
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Applying labels on lothlorien... done\n", "output")

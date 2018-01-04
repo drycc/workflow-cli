@@ -70,7 +70,7 @@ Usage: deis labels:set [options] <key>=<value>...
 
 Arguments:
   <key> the label key, for example: "git_repo" or "team"
-  <value> the label value, for example: "https://github.com/deisthree/workflow" or "frontend"
+  <value> the label value, for example: "https://github.com/teamhephy/workflow" or "frontend"
 
 Options:
   -a --app=<app>
