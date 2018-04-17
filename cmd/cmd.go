@@ -58,6 +58,9 @@ type Commander interface {
 	LimitsList(string) error
 	LimitsSet(string, []string, string) error
 	LimitsUnset(string, []string, string) error
+	TimeoutsList(string) error
+	TimeoutsSet(string, []string) error
+	TimeoutsUnset(string, []string) error
 	MaintenanceInfo(string) error
 	MaintenanceEnable(string) error
 	MaintenanceDisable(string) error

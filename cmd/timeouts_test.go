@@ -30,7 +30,7 @@ Examples: web=30 worker=300`
     {"=1", "", "", true, "=1" + errorHint},
     {"web=", "", "", true, "web=" + errorHint},
     {"1=", "", "", true, "1=" + errorHint},
-    {"web=ABCD", "", "", true, "web=G" + errorHint},
+    {"web=ABCD", "", "", true, "web=ABCD" + errorHint},
   }
 
   for _, check := range cases {
@@ -57,7 +57,7 @@ func TestTimeoutTags(t *testing.T) {
 
   cases := []parseTimeoutsCase{
     {[]string{"web=10", "worker=20"}, map[string]interface{}{"web": "10", "worker": "20"}, false, ""},
-    {[]string{"foo=", "web=1G"}, nil, true, `foo= doesn't fit format type=#
+    {[]string{"foo=", "web=10"}, nil, true, `foo= doesn't fit format type=#
 Examples: web=30 worker=300`},
   }
 
@@ -105,10 +105,9 @@ func TestTimeoutsList(t *testing.T) {
 
   err = cmdr.TimeoutsList("enterprise")
   assert.NoErr(t, err)
-  assert.Equal(t, b.String(), `=== enterprise Timeouts
-web     10
-worker  20
-
+  assert.Equal(t, b.String(), `=== enterprise Timeouts (sec)
+web        10
+worker     20
 `, "output")
 
   server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -130,9 +129,8 @@ worker  20
 
   err = cmdr.TimeoutsList("franklin")
   assert.NoErr(t, err)
-  assert.Equal(t, b.String(), `=== franklin Timeouts
+  assert.Equal(t, b.String(), `=== franklin Timeouts (sec)
 default (30 sec) or controlled by env KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS
-
 `, "output")
 }
 
@@ -148,7 +146,7 @@ func TestTimeoutsSet(t *testing.T) {
     testutil.SetHeaders(w)
     if r.Method == "POST" {
       testutil.AssertBody(t, api.Config{
-        CPU: map[string]interface{}{
+        Timeout: map[string]interface{}{
           "web": "10",
         },
       }, r)
@@ -161,7 +159,7 @@ func TestTimeoutsSet(t *testing.T) {
       "memory": {},
       "cpu": {},
       "termination_grace_period": {
-        "web": 10
+        "web": "10"
       },
       "tags": {},
       "registry": {},
@@ -179,16 +177,16 @@ func TestTimeoutsSet(t *testing.T) {
 
   assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== foo Timeouts
-
+=== foo Timeouts (sec)
+web     10
 `, "output")
 
   server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
     testutil.SetHeaders(w)
     if r.Method == "POST" {
       testutil.AssertBody(t, api.Config{
-        Memory: map[string]interface{}{
-          "web": 10,
+        Timeout: map[string]interface{}{
+          "web": "10",
         },
       }, r)
     }
@@ -200,8 +198,8 @@ func TestTimeoutsSet(t *testing.T) {
       "memory": {},
       "cpu": {},
       "termination_grace_period": {
-        "web": 10
-      }
+        "web": "10"
+      },
       "tags": {},
       "registry": {},
       "created": "2014-01-01T00:00:00UTC",
@@ -216,9 +214,8 @@ func TestTimeoutsSet(t *testing.T) {
 
   assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== franklin Timeouts
+=== franklin Timeouts (sec)
 web     10
-
 `, "output")
 
   // with requests/timeout parameter
@@ -226,10 +223,10 @@ web     10
     testutil.SetHeaders(w)
     if r.Method == "POST" {
       testutil.AssertBody(t, api.Config{
-        Memory: map[string]interface{}{
-          "web":    10,
-          "worker": 100,
-          "db":     300,
+        Timeout: map[string]interface{}{
+          "web":    "10",
+          "worker": "100",
+          "db":     "300",
         },
       }, r)
     }
@@ -238,12 +235,12 @@ web     10
       "owner": "foo",
       "app": "jim",
       "values": {},
-      "memory": {}
+      "memory": {},
       "cpu": {},
       "termination_grace_period": {
-        "web": 10,
-        "worker": 100,
-        "db": 300
+        "web": "10",
+        "worker": "100",
+        "db": "300"
       },
       "tags": {},
       "registry": {},
@@ -259,11 +256,10 @@ web     10
 
   assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== jim Timeouts
+=== jim Timeouts (sec)
 db         300
 web        10
 worker     100
-
 `, "output")
 
 }
@@ -280,7 +276,7 @@ func TestTimeoutsUnset(t *testing.T) {
     testutil.SetHeaders(w)
     if r.Method == "POST" {
       testutil.AssertBody(t, api.Config{
-        Memory: map[string]interface{}{
+        Timeout: map[string]interface{}{
           "web": nil,
         },
       }, r)
@@ -311,7 +307,7 @@ func TestTimeoutsUnset(t *testing.T) {
 
   assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== foo Timeouts
+=== foo Timeouts (sec)
 web     10
 `, "output")
 
@@ -319,7 +315,7 @@ web     10
     testutil.SetHeaders(w)
     if r.Method == "POST" {
       testutil.AssertBody(t, api.Config{
-        CPU: map[string]interface{}{
+        Timeout: map[string]interface{}{
           "web": nil,
         },
       }, r)
@@ -348,7 +344,7 @@ web     10
 
   assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== franklin Timeouts
+=== franklin Timeouts (sec)
 web     10
 `, "output")
 }

@@ -10,7 +10,7 @@ import (
   "github.com/notmaxx/controller-sdk-go/config"
 )
 
-// LimitsList lists an app's timeouts.
+// TimeoutsList lists an app's timeouts.
 func (d *DeisCmd) TimeoutsList(appID string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
@@ -23,7 +23,7 @@ func (d *DeisCmd) TimeoutsList(appID string) error {
     return err
   }
 
-  d.Printf("=== %s Timeouts (sec)\n\n", appID)
+  d.Printf("=== %s Timeouts (sec)\n", appID)
 
   if len(config.Timeout) == 0 {
     d.Println("default (30 sec) or controlled by env KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS")
@@ -40,7 +40,7 @@ func (d *DeisCmd) TimeoutsList(appID string) error {
   return nil
 }
 
-// LimitsSet sets an app's timeouts.
+// TimeoutsSet sets an app's timeouts.
 func (d *DeisCmd) TimeoutsSet(appID string, timeouts []string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
@@ -72,7 +72,7 @@ func (d *DeisCmd) TimeoutsSet(appID string, timeouts []string) error {
   return d.TimeoutsList(appID)
 }
 
-// LimitsUnset removes an app's timeouts.
+// TimeoutsUnset removes an app's timeouts.
 func (d *DeisCmd) TimeoutsUnset(appID string, timeouts []string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
@@ -123,7 +123,7 @@ func parseTimeouts(timeouts []string) (map[string]interface{}, error) {
 }
 
 func parseTimeout(timeout string) (string, string, error) {
-  regex := regexp.MustCompile("^[0-9]*$")
+  regex := regexp.MustCompile("^([a-z0-9]+(?:-[a-z0-9]+)*)=([0-9]+)$")
 
   if !regex.MatchString(timeout) {
     return "", "", fmt.Errorf(`%s doesn't fit format type=#

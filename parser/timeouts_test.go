@@ -16,11 +16,11 @@ func (d FakeDeisCmd) TimeoutsList(string) error {
   return errors.New("timeouts:list")
 }
 
-func (d FakeDeisCmd) TimeoutsSet(string, []string, string) error {
+func (d FakeDeisCmd) TimeoutsSet(string, []string) error {
   return errors.New("timeouts:set")
 }
 
-func (d FakeDeisCmd) TimeoutsUnset(string, []string, string) error {
+func (d FakeDeisCmd) TimeoutsUnset(string, []string) error {
   return errors.New("timeouts:unset")
 }
 
