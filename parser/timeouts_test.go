@@ -6,7 +6,7 @@ import (
   "testing"
 
   "github.com/arschles/assert"
-  "github.com/notmaxx/workflow-cli/pkg/testutil"
+  "github.com/deis/workflow-cli/pkg/testutil"
 )
 
 // Create fake implementations of each method that return the argument

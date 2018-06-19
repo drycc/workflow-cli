@@ -1,7 +1,7 @@
 package parser
 
 import (
-  "github.com/notmaxx/workflow-cli/cmd"
+  "github.com/deis/workflow-cli/cmd"
   docopt "github.com/docopt/docopt-go"
 )
 

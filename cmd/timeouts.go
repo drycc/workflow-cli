@@ -6,8 +6,8 @@ import (
 
   "github.com/deis/pkg/prettyprint"
 
-  "github.com/notmaxx/controller-sdk-go/api"
-  "github.com/notmaxx/controller-sdk-go/config"
+  "github.com/deis/controller-sdk-go/api"
+  "github.com/deis/controller-sdk-go/config"
 )
 
 // TimeoutsList lists an app's timeouts.

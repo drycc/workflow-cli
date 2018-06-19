@@ -7,8 +7,8 @@ import (
   "testing"
 
   "github.com/arschles/assert"
-  "github.com/notmaxx/controller-sdk-go/api"
-  "github.com/notmaxx/workflow-cli/pkg/testutil"
+  "github.com/deis/controller-sdk-go/api"
+  "github.com/deis/workflow-cli/pkg/testutil"
 )
 
 type parseTimeoutCase struct {
