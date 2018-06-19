@@ -5,7 +5,7 @@ import (
 
   "github.com/deis/pkg/prettyprint"
 
-  "github.com/workato/deis-controller-sdk-go/services"
+  "github.com/deis/controller-sdk-go/services"
 )
 
 // ServicesList lists extra services for the app
