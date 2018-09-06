@@ -35,7 +35,7 @@ EOF
 PLATFORM="$(uname | tr '[:upper:]' '[:lower:]')"
 ARCH="$(uname -m)"
 # https://storage.googleapis.com/hephy-workflow-cli-release/v2.18.0/deis-v2.18.0-darwin-386
-DEIS_BIN_URL_BASE="https://storage.googleapis.com/hephy-workflow-cli-release""
+DEIS_BIN_URL_BASE="https://storage.googleapis.com/hephy-workflow-cli-release"
 
 if [ "${ARCH}" = "x86_64" ]; then
   ARCH="amd64"
@@ -50,7 +50,7 @@ if [ "${VERSION}" != 'stable' ]; then
 fi
 
 echo "Downloading ${DEIS_CLI} From Google Cloud Storage..."
-echo "Downloading binary from here: ${DEIS_BIN_URL_BASE}/${DEIS_CLI_PATH}
+echo "Downloading binary from here: ${DEIS_BIN_URL_BASE}/${DEIS_CLI_PATH}"
 curl -fsSL -o deis "${DEIS_BIN_URL_BASE}/${DEIS_CLI_PATH}"
 
 chmod +x deis
