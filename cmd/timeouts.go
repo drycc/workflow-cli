@@ -4,10 +4,10 @@ import (
   "fmt"
   "regexp"
 
-  "github.com/deis/pkg/prettyprint"
+  "github.com/teamhephy/pkg/prettyprint"
 
-  "github.com/deis/controller-sdk-go/api"
-  "github.com/deis/controller-sdk-go/config"
+  "github.com/teamhephy/controller-sdk-go/api"
+  "github.com/teamhephy/controller-sdk-go/config"
 )
 
 // TimeoutsList lists an app's timeouts.
