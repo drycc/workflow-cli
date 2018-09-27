@@ -1,27 +1,22 @@
-hash: 3278f16b1420d2b304fd37505afc7f8d3819c6fd818242e2b9070cc71fcef7e6
-updated: 2018-09-27T16:45:00.103264871-04:00
+hash: 9644c42725b5eacf54615aeddfdee0cf7fad7398947f7a5088ca58ea7cf73fa1
+updated: 2018-09-27T15:18:20.019279854-07:00
 imports:
 - name: github.com/arschles/assert
   version: bb58b908265b5931732079df03f2818bf2167ba0
-- name: github.com/deis/controller-sdk-go
-  version: 9520b6c460202f376856d042ac4864ee951cdf3a
-  subpackages:
-  - api
-  - pkg/time
 - name: github.com/docopt/docopt-go
   version: ee0de3bc6815ee19d4a46c7eb90f829db0e014b1
 - name: github.com/goware/urlx
-  version: 8bb4a2e4339f55b15164907177e96e9faf885504
+  version: 06d8eeb3ce171b5617a3f8ef24451df26ca971ef
 - name: github.com/mattn/go-runewidth
   version: ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb
 - name: github.com/olekukonko/tablewriter
   version: be2c049b30ccd4d3fd795d6bf7dce74e42eeedaa
 - name: github.com/PuerkitoBio/purell
-  version: 0bcb03f4b4d0a9428594752bd2a3b9aa0a9d4bd4
+  version: 975f53781597ed779763b7b65566e74c4004d8de
 - name: github.com/PuerkitoBio/urlesc
-  version: 5bd2802263f21d8788851d5305584c82a5c75d7e
+  version: de5bf2ad457846296e2031421a34e2568e304e35
 - name: github.com/teamhephy/controller-sdk-go
-  version: 9520b6c460202f376856d042ac4864ee951cdf3a
+  version: 60882b5a9a5694d201aa67f0a052f80a9e713681
   subpackages:
   - api
   - apps
@@ -45,7 +40,7 @@ imports:
   - prettyprint
   - time
 - name: golang.org/x/crypto
-  version: de0752318171da717af4ce24d0a2e8626afaeb11
+  version: 5295e8364332db77d75fce11f1d19c053919a9c9
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
@@ -54,16 +49,16 @@ imports:
   - context
   - idna
 - name: golang.org/x/sys
-  version: 95c6576299259db960f6c5b9b69ea52422860fce
+  version: dad3d9fb7b6e83d0f9ac8f54670f6334c3a287b4
   subpackages:
   - unix
   - windows
 - name: golang.org/x/text
-  version: 47a200a05c8b3fd1b698571caecbb68beb2611ec
+  version: 905a57155faa8230500121607930ebb9dd8e139c
   subpackages:
   - transform
   - unicode/norm
   - width
 - name: gopkg.in/yaml.v2
-  version: 670d4cfef0544295bc27a114dbac37980d83185a
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []
