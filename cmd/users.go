@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/deis/controller-sdk-go/users"
-	"github.com/deis/workflow-cli/settings"
+	"github.com/teamhephy/controller-sdk-go/users"
+	"github.com/teamhephy/workflow-cli/settings"
 )
 
 // UsersList lists users registered with the controller.

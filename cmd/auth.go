@@ -6,9 +6,9 @@ import (
 	"strings"
 	"syscall"
 
-	deis "github.com/deis/controller-sdk-go"
-	"github.com/deis/controller-sdk-go/auth"
-	"github.com/deis/workflow-cli/settings"
+	deis "github.com/teamhephy/controller-sdk-go"
+	"github.com/teamhephy/controller-sdk-go/auth"
+	"github.com/teamhephy/workflow-cli/settings"
 	"golang.org/x/crypto/ssh/terminal"
 )
 

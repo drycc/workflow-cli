@@ -3,7 +3,7 @@ package cmd
 import (
 	"strings"
 
-	"github.com/deis/controller-sdk-go/whitelist"
+	"github.com/teamhephy/controller-sdk-go/whitelist"
 )
 
 // WhitelistList lists the addresses whitelisted for app
