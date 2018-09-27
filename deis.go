@@ -8,9 +8,9 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/deis/workflow-cli/cli"
-	"github.com/deis/workflow-cli/cmd"
-	"github.com/deis/workflow-cli/parser"
+	"github.com/teamhephy/workflow-cli/cli"
+	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/teamhephy/workflow-cli/parser"
 	docopt "github.com/docopt/docopt-go"
 )
 

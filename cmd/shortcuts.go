@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/deis/workflow-cli/cli"
+	"github.com/teamhephy/workflow-cli/cli"
 )
 
 // ShortcutsList displays all relevant shortcuts for the CLI.

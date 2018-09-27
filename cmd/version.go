@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	deis "github.com/deis/controller-sdk-go"
-	"github.com/deis/workflow-cli/settings"
-	"github.com/deis/workflow-cli/version"
+	deis "github.com/teamhephy/controller-sdk-go"
+	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/teamhephy/workflow-cli/version"
 )
 
 // Version prints the various CLI versions.
