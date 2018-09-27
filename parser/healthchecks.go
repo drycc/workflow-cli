@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/deis/workflow-cli/cmd"
+	"github.com/teamhephy/workflow-cli/cmd"
 
-	"github.com/deis/controller-sdk-go/api"
+	"github.com/teamhephy/controller-sdk-go/api"
 	docopt "github.com/docopt/docopt-go"
 )
 

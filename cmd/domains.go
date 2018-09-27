@@ -1,6 +1,6 @@
 package cmd
 
-import "github.com/deis/controller-sdk-go/domains"
+import "github.com/teamhephy/controller-sdk-go/domains"
 
 // DomainsList lists domains registered with an app.
 func (d *DeisCmd) DomainsList(appID string, results int) error {
