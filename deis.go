@@ -69,6 +69,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   users         manage users
   version       display client version
   whitelist     manage whitelisted addresses of an application
+  timeouts      manage pods temrination grace period
 
 Shortcut commands, use 'deis shortcuts' to see all::
 
@@ -133,6 +134,8 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Labels(argv, &cmdr)
 	case "limits":
 		err = parser.Limits(argv, &cmdr)
+  case "timeouts":
+    err = parser.Timeouts(argv, &cmdr)
 	case "perms":
 		err = parser.Perms(argv, &cmdr)
 	case "ps":
