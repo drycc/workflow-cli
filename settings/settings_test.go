@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/deis/workflow-cli/version"
+	"github.com/teamhephy/workflow-cli/version"
 )
 
 const sFile string = `{"username":"t","ssl_verify":false,"controller":"http://foo.bar","token":"a"}`

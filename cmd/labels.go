@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/deis/pkg/prettyprint"
+	"github.com/teamhephy/pkg/prettyprint"
 
-	"github.com/deis/controller-sdk-go/api"
-	"github.com/deis/controller-sdk-go/appsettings"
+	"github.com/teamhephy/controller-sdk-go/api"
+	"github.com/teamhephy/controller-sdk-go/appsettings"
 )
 
 // LabelsList list app's labels

@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/deis/controller-sdk-go/perms"
-	"github.com/deis/workflow-cli/pkg/git"
-	"github.com/deis/workflow-cli/settings"
+	"github.com/teamhephy/controller-sdk-go/perms"
+	"github.com/teamhephy/workflow-cli/pkg/git"
+	"github.com/teamhephy/workflow-cli/settings"
 )
 
 // PermsList prints which users have permissions.

@@ -6,14 +6,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deis/controller-sdk-go/api"
-	"github.com/deis/controller-sdk-go/apps"
-	"github.com/deis/controller-sdk-go/config"
-	"github.com/deis/controller-sdk-go/domains"
-	"github.com/deis/workflow-cli/pkg/git"
-	"github.com/deis/workflow-cli/pkg/logging"
-	"github.com/deis/workflow-cli/pkg/webbrowser"
-	"github.com/deis/workflow-cli/settings"
+	"github.com/teamhephy/controller-sdk-go/api"
+	"github.com/teamhephy/controller-sdk-go/apps"
+	"github.com/teamhephy/controller-sdk-go/config"
+	"github.com/teamhephy/controller-sdk-go/domains"
+	"github.com/teamhephy/workflow-cli/pkg/git"
+	"github.com/teamhephy/workflow-cli/pkg/logging"
+	"github.com/teamhephy/workflow-cli/pkg/webbrowser"
+	"github.com/teamhephy/workflow-cli/settings"
 )
 
 // AppCreate creates an app.

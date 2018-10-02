@@ -8,9 +8,9 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/deis/workflow-cli/cli"
-	"github.com/deis/workflow-cli/cmd"
-	"github.com/deis/workflow-cli/parser"
+	"github.com/teamhephy/workflow-cli/cli"
+	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/teamhephy/workflow-cli/parser"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -70,6 +70,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   version       display client version
   whitelist     manage whitelisted addresses of an application
   services      manage services for your applications
+  timeouts      manage pods temrination grace period
 
 Shortcut commands, use 'deis shortcuts' to see all::
 
@@ -136,6 +137,8 @@ Use 'git push deis master' to deploy to an application.
 		err = parser.Labels(argv, &cmdr)
 	case "limits":
 		err = parser.Limits(argv, &cmdr)
+  case "timeouts":
+    err = parser.Timeouts(argv, &cmdr)
 	case "perms":
 		err = parser.Perms(argv, &cmdr)
 	case "ps":

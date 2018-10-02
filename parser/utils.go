@@ -5,7 +5,7 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/deis/workflow-cli/cmd"
+	"github.com/teamhephy/workflow-cli/cmd"
 )
 
 func safeGetValue(args map[string]interface{}, key string) string {

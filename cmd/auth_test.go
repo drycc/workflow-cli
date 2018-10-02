@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/deis/workflow-cli/pkg/testutil"
+	"github.com/teamhephy/workflow-cli/pkg/testutil"
 )
 
 func TestRegister(t *testing.T) {

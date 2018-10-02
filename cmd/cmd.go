@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/deis/controller-sdk-go/api"
+	"github.com/teamhephy/controller-sdk-go/api"
 )
 
 // Commander is interface definition for running commands
@@ -61,6 +61,9 @@ type Commander interface {
 	LimitsList(string) error
 	LimitsSet(string, []string, string) error
 	LimitsUnset(string, []string, string) error
+	TimeoutsList(string) error
+	TimeoutsSet(string, []string) error
+	TimeoutsUnset(string, []string) error
 	MaintenanceInfo(string) error
 	MaintenanceEnable(string) error
 	MaintenanceDisable(string) error

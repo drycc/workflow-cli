@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/deis/controller-sdk-go/api"
-	"github.com/deis/controller-sdk-go/appsettings"
+	"github.com/teamhephy/controller-sdk-go/api"
+	"github.com/teamhephy/controller-sdk-go/appsettings"
 )
 
 // AutoscaleList tells the informations about app's autoscale status

@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/deis/controller-sdk-go/api"
-	"github.com/deis/controller-sdk-go/pkg/time"
-	"github.com/deis/workflow-cli/pkg/testutil"
+	"github.com/teamhephy/controller-sdk-go/api"
+	"github.com/teamhephy/controller-sdk-go/pkg/time"
+	"github.com/teamhephy/workflow-cli/pkg/testutil"
 )
 
 func TestParseType(t *testing.T) {

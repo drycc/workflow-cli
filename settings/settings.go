@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	deis "github.com/deis/controller-sdk-go"
-	"github.com/deis/workflow-cli/version"
+	deis "github.com/teamhephy/controller-sdk-go"
+	"github.com/teamhephy/workflow-cli/version"
 )
 
 // DefaultResponseLimit is the default number of responses to return on requests that can
