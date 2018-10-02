@@ -70,7 +70,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   version       display client version
   whitelist     manage whitelisted addresses of an application
   services      manage services for your applications
-  timeouts      manage pods temrination grace period
+  timeouts      manage pods termination grace period
 
 Shortcut commands, use 'deis shortcuts' to see all::
 
