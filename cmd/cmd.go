@@ -44,6 +44,9 @@ type Commander interface {
 	DomainsList(string, int) error
 	DomainsAdd(string, string) error
 	DomainsRemove(string, string) error
+	ServicesList(string) error
+	ServicesAdd(string, string, string) error
+	ServicesRemove(string, string) error
 	GitRemote(string, string, bool) error
 	GitRemove(string) error
 	HealthchecksList(string, string) error
