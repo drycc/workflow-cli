@@ -16,7 +16,7 @@ imports:
 - name: github.com/PuerkitoBio/urlesc
   version: de5bf2ad457846296e2031421a34e2568e304e35
 - name: github.com/teamhephy/controller-sdk-go
-  version: 60882b5a9a5694d201aa67f0a052f80a9e713681
+  version: a1ffb4886a5f7f92fdd710b99e68c2555b74a703
   subpackages:
   - api
   - apps

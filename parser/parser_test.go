@@ -34,3 +34,15 @@ func (d FakeDeisCmd) PrintErr(...interface{}) (int, error) {
 func (d FakeDeisCmd) PrintErrf(string, ...interface{}) (int, error) {
 	return 1, nil
 }
+
+func (d FakeDeisCmd) ServicesAdd(string, string, string) (error) {
+	return nil
+}
+
+func (d FakeDeisCmd) ServicesList(string) (error) {
+	return nil
+}
+
+func (d FakeDeisCmd) ServicesRemove(string, string) (error) {
+	return nil
+}
