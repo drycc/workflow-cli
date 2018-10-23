@@ -1,3 +1,7 @@
+language: go
+sudo: required
 
-script:
-    - make test
+services:
+  - docker
+
+script: make test
