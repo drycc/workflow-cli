@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/teamhephy/workflow-cli.svg?branch=master)](https://travis-ci.org/teamhephy/workflow-cli)
 
 |![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Anchor_pictogram_yellow.svg/156px-Anchor_pictogram_yellow.svg.png) | Hephy Workflow is the open source fork of Deis Workflow.<br />Please [go here](https://www.teamhephy.com/) for more detail. |
 |---:|---|
