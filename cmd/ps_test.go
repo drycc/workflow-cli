@@ -15,24 +15,35 @@ import (
 func TestParseType(t *testing.T) {
 	t.Parallel()
 
-	// test RC pod name
-	appID := "earthy-underdog"
-	rcPod := "earthy-underdog-v2-cmd-8yngj"
-	psType, psName := parseType(rcPod, appID)
-	if psType != "cmd" || psName != rcPod {
-		t.Errorf("type was not cmd (got %s) or psName was not %s (got %s)", psType, rcPod, psName)
+	var input = map[string]string{
+		// RC pod name
+		"earthy-underdog": "earthy-underdog-v2-cmd-8yngj",
+		// Deployment pod name - they are longer due to hash
+		"nonfat-yearbook": "nonfat-yearbook-cmd-2180299075-7na91",
+		// newer style of Deployment pod name
+		"foo-bar": "foo-bar-cmd-57f6c4bb68-7na91",
+		// same as above but leaving out the app-name from the pod name
+		"earthy-underdog2": "cmd-8yngj",
+		"nonfat-yearbook2": "cmd-2180299075-7na91",
+		"foo-bar2":         "cmd-57f6c4bb68-7na91",
+		// same as above but with app names without hyphens
+		"earthy":  "earthy-v2-cmd-8yngj",
+		"nonfat":  "nonfat-cmd-2180299075-7na91",
+		"foo":     "foo-cmd-57f6c4bb68-7na91",
+		"earthy2": "cmd-8yngj",
+		"nonfat2": "cmd-2180299075-7na91",
+		"foo2":    "cmd-57f6c4bb68-7na91",
 	}
 
-	// test Deployment pod name - they are longer due to hash
-	appID = "nonfat-yearbook"
-	deployPod := "nonfat-yearbook-cmd-2180299075-7na91"
-	psType, psName = parseType(deployPod, appID)
-	if psType != "cmd" || psName != deployPod {
-		t.Errorf("type was not cmd (got %s) or psName was not %s (got %s)", psType, deployPod, psName)
+	for appID, podName := range input {
+		psType, psName := parseType(podName, appID)
+		if psType != "cmd" || psName != podName {
+			t.Errorf("parseType(%#v, %#v): type was not cmd (got %s) or psName was not %s (got %s)", podName, appID, psType, podName, psName)
+		}
 	}
 
 	// test type by itself
-	psType, psName = parseType("cmd", "fake")
+	psType, psName := parseType("cmd", "fake")
 	if psType != "cmd" || psName != "" {
 		t.Error("type was not cmd")
 	}
