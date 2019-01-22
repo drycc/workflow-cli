@@ -1,11 +1,11 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
-// Maintenance displays all relevant commands for `deis maintenance`.
+// Maintenance displays all relevant commands for `drycc maintenance`.
 func Maintenance(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for maintenance:
@@ -14,7 +14,7 @@ maintenance:info   view maintenance mode of an application
 maintenance:on     turn on maintenance for an app
 maintenance:off    turn off maintenance for an app
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func maintenanceInfo(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Prints info about the current application's maintenance state.
 
-Usage: deis maintenance:info [options]
+Usage: drycc maintenance:info [options]
 
 Options:
   -a --app=<app>
@@ -63,7 +63,7 @@ func maintenanceEnable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Enables maintenance mode for an app.
 
-Usage: deis maintenance:on [options]
+Usage: drycc maintenance:on [options]
 
 Options:
   -a --app=<app>
@@ -83,7 +83,7 @@ func maintenanceDisable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Disables maintenance mode for an app.
 
-Usage: deis maintenance:off [options]
+Usage: drycc maintenance:off [options]
 
 Options:
   -a --app=<app>

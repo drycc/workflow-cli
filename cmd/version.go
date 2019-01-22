@@ -1,20 +1,20 @@
 package cmd
 
 import (
-	deis "github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/workflow-cli/settings"
-	"github.com/teamhephy/workflow-cli/version"
+	drycc "github.com/drycc/controller-sdk-go"
+	"github.com/drycc/workflow-cli/settings"
+	"github.com/drycc/workflow-cli/version"
 )
 
 // Version prints the various CLI versions.
-func (d *DeisCmd) Version(all bool) error {
+func (d *DryccCmd) Version(all bool) error {
 	if !all {
 		d.Println(version.Version)
 		return nil
 	}
 
 	d.Printf("Workflow CLI Version:            %s\n", version.Version)
-	d.Printf("Workflow CLI API Version:        %s\n", deis.APIVersion)
+	d.Printf("Workflow CLI API Version:        %s\n", drycc.APIVersion)
 
 	s, err := settings.Load(d.ConfigFile)
 
@@ -22,10 +22,10 @@ func (d *DeisCmd) Version(all bool) error {
 		return err
 	}
 
-	// retrive version information from deis controller
+	// retrive version information from drycc controller
 	err = s.Client.Healthcheck()
 
-	if err != nil && err != deis.ErrAPIMismatch {
+	if err != nil && err != drycc.ErrAPIMismatch {
 		return err
 	}
 

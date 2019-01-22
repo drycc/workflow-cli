@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/teamhephy/controller-sdk-go/users"
-	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/drycc/controller-sdk-go/users"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 // UsersList lists users registered with the controller.
-func (d *DeisCmd) UsersList(results int) error {
+func (d *DryccCmd) UsersList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {

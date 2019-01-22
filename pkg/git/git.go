@@ -102,7 +102,7 @@ func remoteNamesFromAppID(cmd Cmd, host, appID string) ([]string, error) {
 	return matchedRemotes, nil
 }
 
-// DetectAppName detects if there is deis remote in git.
+// DetectAppName detects if there is drycc remote in git.
 func DetectAppName(cmd Cmd, host string) (string, error) {
 	remote, err := findRemote(cmd, host)
 
@@ -177,7 +177,7 @@ func getRemotes(cmd Cmd) ([]remote, error) {
 
 	for _, line := range strings.Split(out, "\n") {
 		// git remote -v contains both push and fetch remotes.
-		// They're generally identical, and deis only cares about push.
+		// They're generally identical, and drycc only cares about push.
 		if strings.HasSuffix(line, "(push)") {
 			parts := strings.Split(line, "\t")
 			if len(parts) < 2 {

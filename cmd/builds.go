@@ -6,11 +6,11 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/teamhephy/controller-sdk-go/builds"
+	"github.com/drycc/controller-sdk-go/builds"
 )
 
 // BuildsList lists an app's builds.
-func (d *DeisCmd) BuildsList(appID string, results int) error {
+func (d *DryccCmd) BuildsList(appID string, results int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func (d *DeisCmd) BuildsList(appID string, results int) error {
 }
 
 // BuildsCreate creates a build for an app.
-func (d *DeisCmd) BuildsCreate(appID, image, procfile string) error {
+func (d *DryccCmd) BuildsCreate(appID, image, procfile string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

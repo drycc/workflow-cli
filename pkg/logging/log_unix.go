@@ -7,7 +7,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/teamhephy/pkg/prettyprint"
+	"github.com/drycc/pkg/prettyprint"
 )
 
 const colorStringEscape = "\033[3%dm"

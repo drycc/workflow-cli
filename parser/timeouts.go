@@ -1,7 +1,7 @@
 package parser
 
 import (
-  "github.com/teamhephy/workflow-cli/cmd"
+  "github.com/drycc/workflow-cli/cmd"
   docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ timeouts:list        list resource timeouts for an app
 timeouts:set         set resource timeouts for an app
 timeouts:unset       unset resource timeouts for an app
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
   switch argv[0] {
@@ -43,7 +43,7 @@ func timeoutList(argv []string, cmdr cmd.Commander) error {
   usage := `
 Lists resource timeouts for an application.
 
-Usage: deis timeouts:list [options]
+Usage: drycc timeouts:list [options]
 
 Options:
   -a --app=<app>
@@ -63,7 +63,7 @@ func timeoutSet(argv []string, cmdr cmd.Commander) error {
   usage := `
 Sets termination grace period for an application.
 
-Usage: deis timeouts:set [options] <type>=<value>...
+Usage: drycc timeouts:set [options] <type>=<value>...
 
 Arguments:
   <type>
@@ -94,7 +94,7 @@ func timeoutUnset(argv []string, cmdr cmd.Commander) error {
 Unsets timeouts for an application. Default value (30s)
 or KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS is used
 
-Usage: deis timeouts:unset [options] <type>...
+Usage: drycc timeouts:unset [options] <type>...
 
 Arguments:
   <type>

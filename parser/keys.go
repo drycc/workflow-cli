@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ keys:list        list SSH keys for the logged in user
 keys:add         add an SSH key
 keys:remove      remove an SSH key
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func keysList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists SSH keys for the logged in user.
 
-Usage: deis keys:list [options]
+Usage: drycc keys:list [options]
 
 Options:
   -l --limit=<num>
@@ -69,7 +69,7 @@ func keyAdd(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Adds SSH keys for the logged in user.
 
-Usage: deis keys:add [<name>] [<key>]
+Usage: drycc keys:add [<name>] [<key>]
 
 <name> and <key> can be used in either order and are both optional
 
@@ -92,7 +92,7 @@ func keyRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Removes an SSH key for the logged in user.
 
-Usage: deis keys:remove <key>
+Usage: drycc keys:remove <key>
 
 Arguments:
   <key>

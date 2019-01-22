@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 type parseTagCase struct {
@@ -102,7 +102,7 @@ func TestTagsList(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TagsList("enterprise")
 	assert.NoErr(t, err)
@@ -147,7 +147,7 @@ func TestTagsSet(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TagsSet("foo", []string{"true=false"})
 	assert.NoErr(t, err)
@@ -194,7 +194,7 @@ func TestTagsUnset(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TagsUnset("foo", []string{"ncc"})
 	assert.NoErr(t, err)

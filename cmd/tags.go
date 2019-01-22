@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/teamhephy/pkg/prettyprint"
+	"github.com/drycc/pkg/prettyprint"
 
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/config"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/config"
 )
 
 // TagsList lists an app's tags.
-func (d *DeisCmd) TagsList(appID string) error {
+func (d *DryccCmd) TagsList(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (d *DeisCmd) TagsList(appID string) error {
 }
 
 // TagsSet sets an app's tags.
-func (d *DeisCmd) TagsSet(appID string, tags []string) error {
+func (d *DryccCmd) TagsSet(appID string, tags []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -68,7 +68,7 @@ func (d *DeisCmd) TagsSet(appID string, tags []string) error {
 }
 
 // TagsUnset removes an app's tags.
-func (d *DeisCmd) TagsUnset(appID string, tags []string) error {
+func (d *DryccCmd) TagsUnset(appID string, tags []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

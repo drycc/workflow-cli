@@ -3,11 +3,11 @@ package cmd
 import (
 	"sort"
 
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/config"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/config"
 )
 
-func (d *DeisCmd) printHealthCheck(healthcheck api.Healthchecks) {
+func (d *DryccCmd) printHealthCheck(healthcheck api.Healthchecks) {
 	d.Println("--- Liveness")
 	if livenessProbe, found := healthcheck["livenessProbe"]; found {
 		d.Println(livenessProbe)
@@ -24,7 +24,7 @@ func (d *DeisCmd) printHealthCheck(healthcheck api.Healthchecks) {
 }
 
 // HealthchecksList lists an app's healthchecks.
-func (d *DeisCmd) HealthchecksList(appID, procType string) error {
+func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -64,7 +64,7 @@ func (d *DeisCmd) HealthchecksList(appID, procType string) error {
 }
 
 // HealthchecksSet sets an app's healthchecks.
-func (d *DeisCmd) HealthchecksSet(appID, healthcheckType, procType string, probe *api.Healthcheck) error {
+func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, procType string, probe *api.Healthcheck) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -95,7 +95,7 @@ func (d *DeisCmd) HealthchecksSet(appID, healthcheckType, procType string, probe
 }
 
 // HealthchecksUnset removes an app's healthchecks.
-func (d *DeisCmd) HealthchecksUnset(appID, procType string, healthchecks []string) error {
+func (d *DryccCmd) HealthchecksUnset(appID, procType string, healthchecks []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err

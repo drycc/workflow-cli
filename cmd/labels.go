@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/teamhephy/pkg/prettyprint"
+	"github.com/drycc/pkg/prettyprint"
 
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/appsettings"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/appsettings"
 )
 
 // LabelsList list app's labels
-func (d *DeisCmd) LabelsList(appID string) error {
+func (d *DryccCmd) LabelsList(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -44,7 +44,7 @@ func (d *DeisCmd) LabelsList(appID string) error {
 }
 
 // LabelsSet sets labels for app
-func (d *DeisCmd) LabelsSet(appID string, labels []string) error {
+func (d *DryccCmd) LabelsSet(appID string, labels []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -74,7 +74,7 @@ func (d *DeisCmd) LabelsSet(appID string, labels []string) error {
 }
 
 // LabelsUnset removes labels for the app.
-func (d *DeisCmd) LabelsUnset(appID string, labels []string) error {
+func (d *DryccCmd) LabelsUnset(appID string, labels []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -125,7 +125,7 @@ func parseLabel(label string) (string, string, error) {
 
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
 		return "", "", fmt.Errorf(`%s is invalid, Must be in format key=value
-Examples: git_repo=https://github.com/teamhephy/workflow team=frontend`, label)
+Examples: git_repo=https://github.com/drycc/workflow team=frontend`, label)
 	}
 
 	return parts[0], parts[1], nil

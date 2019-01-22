@@ -16,8 +16,8 @@ type confgCases struct {
 func TestSelectSettings(t *testing.T) {
 	t.Parallel()
 	cases := []confgCases{
-		{"test", filepath.Join(FindHome(), ".deis", "test.json")},
-		{"", filepath.Join(FindHome(), ".deis", "client.json")},
+		{"test", filepath.Join(FindHome(), ".drycc", "test.json")},
+		{"", filepath.Join(FindHome(), ".drycc", "client.json")},
 		{"~/test.json", "~/test.json"},
 		{"/opt/test.json", "/opt/test.json"},
 	}
@@ -28,6 +28,6 @@ func TestSelectSettings(t *testing.T) {
 
 	// Check that env variable is used.
 	location := "/test/test.json"
-	os.Setenv("DEIS_PROFILE", location)
+	os.Setenv("DRYCC_PROFILE", location)
 	assert.Equal(t, locateSettingsFile(""), location, "case")
 }

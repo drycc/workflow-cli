@@ -14,10 +14,10 @@ import (
 func TestRepositoryURL(t *testing.T) {
 	t.Parallel()
 
-	actual := RepositoryURL("deis.example.com", "app")
-	assert.Equal(t, actual, "ssh://git@deis-builder.example.com:2222/app.git", "url")
-	actual = RepositoryURL("deis.10.245.1.3.xip.io:31350", "velcro-underdog")
-	assert.Equal(t, actual, "ssh://git@deis-builder.10.245.1.3.xip.io:2222/velcro-underdog.git", "url")
+	actual := RepositoryURL("drycc.example.com", "app")
+	assert.Equal(t, actual, "ssh://git@drycc-builder.example.com:2222/app.git", "url")
+	actual = RepositoryURL("drycc.10.245.1.3.xip.io:31350", "velcro-underdog")
+	assert.Equal(t, actual, "ssh://git@drycc-builder.10.245.1.3.xip.io:2222/velcro-underdog.git", "url")
 }
 
 func TestGetRemotes(t *testing.T) {
@@ -101,13 +101,13 @@ func TestFindRemoteURL(t *testing.T) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
 		return `test	ssh://test.com/test.git (fetch)
 test	ssh://test.com/test.git (push)
-deis	ssh://git@deis-builder.example.com:2222/test.git (fetch)
-deis	ssh://git@deis-builder.example.com:2222/test.git (push)
+drycc	ssh://git@drycc-builder.example.com:2222/test.git (fetch)
+drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
-	}, "deis.example.com")
+	}, "drycc.example.com")
 
 	assert.NoErr(t, err)
-	assert.Equal(t, url, "ssh://git@deis-builder.example.com:2222/test.git", "remote url")
+	assert.Equal(t, url, "ssh://git@drycc-builder.example.com:2222/test.git", "remote url")
 
 	_, err = findRemote(func(cmd []string) (string, error) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
@@ -116,7 +116,7 @@ test	ssh://test.com/test.git (push)
 example	ssh://example.com:2222/example.git (fetch)
 example	ssh://example.com:2222/example.git (push)
 `, nil
-	}, "deis.test.com")
+	}, "drycc.test.com")
 
 	assert.Err(t, err, ErrRemoteNotFound)
 
@@ -125,7 +125,7 @@ example	ssh://example.com:2222/example.git (push)
 	_, err = findRemote(func(cmd []string) (string, error) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
 		return "", testErr
-	}, "deis.test.com")
+	}, "drycc.test.com")
 
 	assert.Err(t, err, testErr)
 }
@@ -135,10 +135,10 @@ func TestDetectAppName(t *testing.T) {
 
 	app, err := DetectAppName(func(cmd []string) (string, error) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
-		return `deis	ssh://git@deis-builder.example.com:2222/test.git (fetch)
-deis	ssh://git@deis-builder.example.com:2222/test.git (push)
+		return `drycc	ssh://git@drycc-builder.example.com:2222/test.git (fetch)
+drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
-	}, "deis.example.com")
+	}, "drycc.example.com")
 
 	assert.NoErr(t, err)
 	assert.Equal(t, app, "test", "app")
@@ -146,7 +146,7 @@ deis	ssh://git@deis-builder.example.com:2222/test.git (push)
 	app, err = DetectAppName(func(cmd []string) (string, error) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
 		return "", errors.New("test error")
-	}, "deis.test.com")
+	}, "drycc.test.com")
 	assert.NoErr(t, err)
 	wd, err := os.Getwd()
 	assert.NoErr(t, err)
@@ -160,26 +160,26 @@ func TestRemoteNamesFromAppID(t *testing.T) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
 		return `test	ssh://test.com/test.git (fetch)
 test	ssh://test.com/test.git (push)
-deis	ssh://git@deis-builder.example.com:2222/test.git (fetch)
-deis	ssh://git@deis-builder.example.com:2222/test.git (push)
-two	ssh://git@deis-builder.example.com:2222/test.git (fetch)
-two	ssh://git@deis-builder.example.com:2222/test.git (push)
+drycc	ssh://git@drycc-builder.example.com:2222/test.git (fetch)
+drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
+two	ssh://git@drycc-builder.example.com:2222/test.git (fetch)
+two	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
-	}, "deis.example.com", "test")
+	}, "drycc.example.com", "test")
 
 	assert.NoErr(t, err)
-	assert.Equal(t, apps, []string{"deis", "two"}, "remote url")
+	assert.Equal(t, apps, []string{"drycc", "two"}, "remote url")
 
 	_, err = remoteNamesFromAppID(func(cmd []string) (string, error) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
 		return `test	ssh://test.com/test.git (fetch)
 test	ssh://test.com/test.git (push)
-deis	ssh://git@deis-builder.example.com:2222/test.git (fetch)
-deis	ssh://git@deis-builder.example.com:2222/test.git (push)
-two	ssh://git@deis-builder.example.com:2222/test.git (fetch)
-two	ssh://git@deis-builder.example.com:2222/test.git (push)
+drycc	ssh://git@drycc-builder.example.com:2222/test.git (fetch)
+drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
+two	ssh://git@drycc-builder.example.com:2222/test.git (fetch)
+two	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
-	}, "deis.test.com", "other")
+	}, "drycc.test.com", "other")
 
 	assert.Err(t, err, ErrRemoteNotFound)
 
@@ -188,7 +188,7 @@ two	ssh://git@deis-builder.example.com:2222/test.git (push)
 	_, err = remoteNamesFromAppID(func(cmd []string) (string, error) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
 		return "", testErr
-	}, "deis.test.com", "test")
+	}, "drycc.test.com", "test")
 
 	assert.Err(t, err, testErr)
 }
@@ -208,15 +208,15 @@ func TestDeleteAppRemotes(t *testing.T) {
 
 	err := DeleteAppRemotes(func(cmd []string) (string, error) {
 		if reflect.DeepEqual(cmd, []string{"remote", "-v"}) {
-			return `deis	ssh://git@deis-builder.example.com:2222/test.git (push)
+			return `drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
-		} else if reflect.DeepEqual(cmd, []string{"remote", "remove", "deis"}) {
+		} else if reflect.DeepEqual(cmd, []string{"remote", "remove", "drycc"}) {
 			return "", nil
 		} else {
 			t.Errorf("unexpected command %v", cmd)
 			return "", nil
 		}
-	}, "deis.example.com", "test")
+	}, "drycc.example.com", "test")
 
 	assert.NoErr(t, err)
 
@@ -224,21 +224,21 @@ func TestDeleteAppRemotes(t *testing.T) {
 
 	err = DeleteAppRemotes(func(cmd []string) (string, error) {
 		return "", testErr
-	}, "deis.example.com", "test")
+	}, "drycc.example.com", "test")
 
 	assert.Err(t, testErr, err)
 
 	err = DeleteAppRemotes(func(cmd []string) (string, error) {
 		if reflect.DeepEqual(cmd, []string{"remote", "-v"}) {
-			return `deis	ssh://git@deis-builder.example.com:2222/test.git (push)
+			return `drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
-		} else if reflect.DeepEqual(cmd, []string{"remote", "remove", "deis"}) {
+		} else if reflect.DeepEqual(cmd, []string{"remote", "remove", "drycc"}) {
 			return "", testErr
 		} else {
 			t.Errorf("unexpected command %v", cmd)
 			return "", nil
 		}
-	}, "deis.example.com", "test")
+	}, "drycc.example.com", "test")
 
 	assert.Err(t, testErr, err)
 }
@@ -257,9 +257,9 @@ func TestCreateRemote(t *testing.T) {
 	t.Parallel()
 
 	err := CreateRemote(func(cmd []string) (string, error) {
-		assert.Equal(t, cmd, []string{"remote", "add", "deis", "ssh://git@deis-builder.example.com:2222/testing.git"}, "args")
+		assert.Equal(t, cmd, []string{"remote", "add", "drycc", "ssh://git@drycc-builder.example.com:2222/testing.git"}, "args")
 		return "", nil
-	}, "deis.example.com", "deis", "testing")
+	}, "drycc.example.com", "drycc", "testing")
 	assert.NoErr(t, err)
 }
 

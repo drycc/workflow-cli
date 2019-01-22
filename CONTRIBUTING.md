@@ -1,4 +1,4 @@
-# Contributing to Deis
+# Contributing to Drycc
 
-This project is part of Deis. You can find the latest contribution
-guidelines [in our documentation](https://docs.teamhephy.com/contributing/overview/).
+This project is part of Drycc. You can find the latest contribution
+guidelines [in our documentation](https://docs.drycc.com/contributing/overview/).

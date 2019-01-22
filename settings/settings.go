@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	deis "github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/workflow-cli/version"
+	drycc "github.com/drycc/controller-sdk-go"
+	"github.com/drycc/workflow-cli/version"
 )
 
 // DefaultResponseLimit is the default number of responses to return on requests that can
@@ -16,7 +16,7 @@ import (
 const DefaultResponseLimit = 100
 
 // UserAgent is the user agent used by the CLI
-var UserAgent = "Deis Client " + version.Version
+var UserAgent = "Drycc Client " + version.Version
 
 type settingsFile struct {
 	Username   string `json:"username"`
@@ -30,7 +30,7 @@ type settingsFile struct {
 type Settings struct {
 	Username string
 	Limit    int
-	Client   *deis.Client
+	Client   *drycc.Client
 }
 
 // Load loads a new client from a settings file.
@@ -40,7 +40,7 @@ func Load(cf string) (*Settings, error) {
 	if _, err := os.Stat(filename); err != nil {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf(`Client configuration file not found at: %s
-Are you logged in? Use 'deis login' or 'deis register' to get started.`, filename)
+Are you logged in? Use 'drycc login' or 'drycc register' to get started.`, filename)
 		}
 
 		return nil, err
@@ -56,7 +56,7 @@ Are you logged in? Use 'deis login' or 'deis register' to get started.`, filenam
 		return nil, err
 	}
 
-	c, err := deis.New(sF.VerifySSL, sF.Controller, sF.Token)
+	c, err := drycc.New(sF.VerifySSL, sF.Controller, sF.Token)
 
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (s *Settings) Save(cf string) (string, error) {
 		return "", err
 	}
 
-	if err = os.MkdirAll(filepath.Join(FindHome(), "/.deis/"), 0700); err != nil {
+	if err = os.MkdirAll(filepath.Join(FindHome(), "/.drycc/"), 0700); err != nil {
 		return "", err
 	}
 

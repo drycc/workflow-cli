@@ -6,41 +6,41 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDeisCmd) AppCreate(string, string, string, bool) error {
+func (d FakeDryccCmd) AppCreate(string, string, string, bool) error {
 	return errors.New("apps:create")
 }
 
-func (d FakeDeisCmd) AppsList(int) error {
+func (d FakeDryccCmd) AppsList(int) error {
 	return errors.New("apps:list")
 }
 
-func (d FakeDeisCmd) AppInfo(string) error {
+func (d FakeDryccCmd) AppInfo(string) error {
 	return errors.New("apps:info")
 }
 
-func (d FakeDeisCmd) AppOpen(string) error {
+func (d FakeDryccCmd) AppOpen(string) error {
 	return errors.New("apps:open")
 }
 
-func (d FakeDeisCmd) AppLogs(string, int) error {
+func (d FakeDryccCmd) AppLogs(string, int) error {
 	return errors.New("apps:logs")
 }
 
-func (d FakeDeisCmd) AppRun(string, string) error {
+func (d FakeDryccCmd) AppRun(string, string) error {
 	return errors.New("apps:run")
 }
 
-func (d FakeDeisCmd) AppDestroy(string, string) error {
+func (d FakeDryccCmd) AppDestroy(string, string) error {
 	return errors.New("apps:destroy")
 }
 
-func (d FakeDeisCmd) AppTransfer(string, string) error {
+func (d FakeDryccCmd) AppTransfer(string, string) error {
 	return errors.New("apps:transfer")
 }
 
@@ -53,7 +53,7 @@ func TestApps(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := FakeDeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := FakeDryccCmd{WOut: &b, ConfigFile: cf}
 
 	// cases defines the arguments and expected return of the call.
 	// if expected is "", it defaults to args[0].

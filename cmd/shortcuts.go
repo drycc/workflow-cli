@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/teamhephy/workflow-cli/cli"
+	"github.com/drycc/workflow-cli/cli"
 )
 
 // ShortcutsList displays all relevant shortcuts for the CLI.
-func (d *DeisCmd) ShortcutsList() error {
+func (d *DryccCmd) ShortcutsList() error {
 	d.Println(sortShortcuts())
 
 	return nil

@@ -8,13 +8,13 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/teamhephy/workflow-cli/cli"
-	"github.com/teamhephy/workflow-cli/cmd"
-	"github.com/teamhephy/workflow-cli/parser"
+	"github.com/drycc/workflow-cli/cli"
+	"github.com/drycc/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/parser"
 	docopt "github.com/docopt/docopt-go"
 )
 
-const extensionPrefix = "deis-"
+const extensionPrefix = "drycc-"
 
 // main exits with the return value of Command(os.Args[1:]), deferring all logic to
 // a func we can test.
@@ -22,12 +22,12 @@ func main() {
 	os.Exit(Command(os.Args[1:], os.Stdout, os.Stderr, os.Stdin))
 }
 
-// Command routes deis commands to their proper parser.
+// Command routes drycc commands to their proper parser.
 func Command(argv []string, wOut io.Writer, wErr io.Writer, wIn io.Reader) int {
 	usage := `
-The Deis command-line client issues API calls to a Deis controller.
+The Drycc command-line client issues API calls to a Drycc controller.
 
-Usage: deis <command> [<args>...]
+Usage: drycc <command> [<args>...]
 
 Options:
   -h --help
@@ -36,16 +36,16 @@ Options:
     display client version
   -c --config=<config>
     path to configuration file. Equivalent to
-    setting $DEIS_PROFILE. Defaults to ~/.deis/config.json.
-    If value is not a filepath, will assume location ~/.deis/client.json
+    setting $DRYCC_PROFILE. Defaults to ~/.drycc/config.json.
+    If value is not a filepath, will assume location ~/.drycc/client.json
 
-Auth commands, use 'deis help auth' to learn more::
+Auth commands, use 'drycc help auth' to learn more::
 
   register      register a new user with a controller
   login         login to a controller
   logout        logout from the current controller
 
-Subcommands, use 'deis help [subcommand]' to learn more::
+Subcommands, use 'drycc help [subcommand]' to learn more::
 
   apps          manage applications used to provide services
   autoscale     manage autoscale for applications
@@ -72,7 +72,7 @@ Subcommands, use 'deis help [subcommand]' to learn more::
   services      manage services for your applications
   timeouts      manage pods termination grace period
 
-Shortcut commands, use 'deis shortcuts' to see all::
+Shortcut commands, use 'drycc shortcuts' to see all::
 
   create        create a new application
   destroy       destroy an application
@@ -83,7 +83,7 @@ Shortcut commands, use 'deis shortcuts' to see all::
   run           run a command in an ephemeral app container
   scale         scale processes by type (web=2, worker=1)
 
-Use 'git push deis master' to deploy to an application.
+Use 'git push drycc master' to deploy to an application.
 `
 	// Reorganize some command line flags and commands.
 	command, argv := parseArgs(argv)
@@ -96,14 +96,14 @@ Use 'git push deis master' to deploy to an application.
 	}
 
 	if len(argv) == 0 {
-		fmt.Fprintln(wErr, "Usage: deis <command> [<args>...]")
+		fmt.Fprintln(wErr, "Usage: drycc <command> [<args>...]")
 		return 1
 	}
 
 	configFlag := getConfigFlag(argv)
 	// Don't pass down config flag to parser because it isn't defined there.
 	argv = removeConfigFlag(argv)
-	cmdr := cmd.DeisCmd{ConfigFile: configFlag, WOut: wOut, WErr: wErr, WIn: wIn}
+	cmdr := cmd.DryccCmd{ConfigFile: configFlag, WOut: wOut, WErr: wErr, WIn: wIn}
 
 	// Dispatch the command, passing the argv through so subcommands can
 	// re-parse it according to their usage strings.
@@ -220,16 +220,16 @@ func getConfigFlag(argv []string) string {
 func parseArgs(argv []string) (string, []string) {
 	if len(argv) == 1 {
 		if argv[0] == "--help" || argv[0] == "-h" {
-			// rearrange "deis --help" as "deis help"
+			// rearrange "drycc --help" as "drycc help"
 			argv[0] = "help"
 		} else if argv[0] == "--version" || argv[0] == "-v" {
-			// rearrange "deis --version" as "deis version"
+			// rearrange "drycc --version" as "drycc version"
 			argv[0] = "version"
 		}
 	}
 
 	if len(argv) > 1 {
-		// Rearrange "deis help <command>" to "deis <command> --help".
+		// Rearrange "drycc help <command>" to "drycc <command> --help".
 		if argv[0] == "help" || argv[0] == "--help" || argv[0] == "-h" {
 			argv = append(argv[1:], "--help")
 		}

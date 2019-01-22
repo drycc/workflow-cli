@@ -6,17 +6,17 @@ import (
 	"strings"
 	"syscall"
 
-	deis "github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/controller-sdk-go/auth"
-	"github.com/teamhephy/workflow-cli/settings"
+	drycc "github.com/drycc/controller-sdk-go"
+	"github.com/drycc/controller-sdk-go/auth"
+	"github.com/drycc/workflow-cli/settings"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-// Register creates a account on a Deis controller.
-func (d *DeisCmd) Register(controller string, username string, password string, email string,
+// Register creates a account on a Drycc controller.
+func (d *DryccCmd) Register(controller string, username string, password string, email string,
 	sslVerify, login bool) error {
 
-	c, err := deis.New(sslVerify, controller, "")
+	c, err := drycc.New(sslVerify, controller, "")
 
 	if err != nil {
 		return err
@@ -83,7 +83,7 @@ func (d *DeisCmd) Register(controller string, username string, password string, 
 	return nil
 }
 
-func (d *DeisCmd) doLogin(s settings.Settings, username, password string) error {
+func (d *DryccCmd) doLogin(s settings.Settings, username, password string) error {
 	token, err := auth.Login(s.Client, username, password)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
@@ -103,9 +103,9 @@ func (d *DeisCmd) doLogin(s settings.Settings, username, password string) error 
 	return nil
 }
 
-// Login to a Deis controller.
-func (d *DeisCmd) Login(controller string, username string, password string, sslVerify bool) error {
-	c, err := deis.New(sslVerify, controller, "")
+// Login to a Drycc controller.
+func (d *DryccCmd) Login(controller string, username string, password string, sslVerify bool) error {
+	c, err := drycc.New(sslVerify, controller, "")
 
 	if err != nil {
 		return err
@@ -137,8 +137,8 @@ func (d *DeisCmd) Login(controller string, username string, password string, ssl
 	return d.doLogin(s, username, password)
 }
 
-// Logout from a Deis controller.
-func (d *DeisCmd) Logout() error {
+// Logout from a Drycc controller.
+func (d *DryccCmd) Logout() error {
 	if err := settings.Delete(d.ConfigFile); err != nil {
 		return err
 	}
@@ -148,7 +148,7 @@ func (d *DeisCmd) Logout() error {
 }
 
 // Passwd changes a user's password.
-func (d *DeisCmd) Passwd(username, password, newPassword string) error {
+func (d *DryccCmd) Passwd(username, password, newPassword string) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -197,7 +197,7 @@ func (d *DeisCmd) Passwd(username, password, newPassword string) error {
 }
 
 // Cancel deletes a user's account.
-func (d *DeisCmd) Cancel(username, password string, yes bool) error {
+func (d *DryccCmd) Cancel(username, password string, yes bool) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -241,7 +241,7 @@ func (d *DeisCmd) Cancel(username, password string, yes bool) error {
 	}
 
 	err = auth.Delete(s.Client, username)
-	if err == deis.ErrConflict {
+	if err == drycc.ErrConflict {
 		return fmt.Errorf("%s still has applications associated with it. Transfer ownership or delete them first", username)
 	} else if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
@@ -260,7 +260,7 @@ func (d *DeisCmd) Cancel(username, password string, yes bool) error {
 
 // Whoami prints the logged in user. If all is true, it fetches info from the controller to know
 // more about the user.
-func (d *DeisCmd) Whoami(all bool) error {
+func (d *DryccCmd) Whoami(all bool) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -280,7 +280,7 @@ func (d *DeisCmd) Whoami(all bool) error {
 }
 
 // Regenerate regenenerates a user's token.
-func (d *DeisCmd) Regenerate(username string, all bool) error {
+func (d *DryccCmd) Regenerate(username string, all bool) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {

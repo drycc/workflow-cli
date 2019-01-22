@@ -7,8 +7,8 @@ import (
   "testing"
 
   "github.com/arschles/assert"
-  "github.com/teamhephy/controller-sdk-go/api"
-  "github.com/teamhephy/workflow-cli/pkg/testutil"
+  "github.com/drycc/controller-sdk-go/api"
+  "github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 type parseTimeoutCase struct {
@@ -101,7 +101,7 @@ func TestTimeoutsList(t *testing.T) {
   })
 
   var b bytes.Buffer
-  cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+  cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
   err = cmdr.TimeoutsList("enterprise")
   assert.NoErr(t, err)
@@ -170,7 +170,7 @@ func TestTimeoutsSet(t *testing.T) {
   })
 
   var b bytes.Buffer
-  cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+  cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
   err = cmdr.TimeoutsSet("foo", []string{"web=10"})
   assert.NoErr(t, err)
@@ -300,7 +300,7 @@ func TestTimeoutsUnset(t *testing.T) {
   })
 
   var b bytes.Buffer
-  cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+  cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
   err = cmdr.TimeoutsUnset("foo", []string{"web"})
   assert.NoErr(t, err)

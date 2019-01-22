@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ tls:info              view info about an application's TLS settings
 tls:enable            enables the router to enforce https-only requests to an application
 tls:disable           disables the router to enforce https-only requests to an application
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func tlsInfo(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Prints info about the current application's TLS settings.
 
-Usage: deis tls:info [options]
+Usage: drycc tls:info [options]
 
 Options:
   -a --app=<app>
@@ -63,7 +63,7 @@ func tlsEnable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Enable the router to enforce https-only requests to the current application.
 
-Usage: deis tls:enable [options]
+Usage: drycc tls:enable [options]
 
 Options:
   -a --app=<app>
@@ -83,7 +83,7 @@ func tlsDisable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Disable the router from enforcing https-only requests to the current application.
 
-Usage: deis tls:disable [options]
+Usage: drycc tls:disable [options]
 
 Options:
   -a --app=<app>

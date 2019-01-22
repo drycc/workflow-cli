@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ limits:list        list resource limits for an app
 limits:set         set resource limits for an app
 limits:unset       unset resource limits for an app
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func limitsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists resource limits for an application.
 
-Usage: deis limits:list [options]
+Usage: drycc limits:list [options]
 
 Options:
   -a --app=<app>
@@ -70,7 +70,7 @@ it'll be default by Kubernetes as both request and limit. These request and limi
 are applied to each individual pod, so setting a memory limit of 1G for an application
 means that each pod gets 1G of memory. Value needs to be within 0 <= request <= limit
 
-Usage: deis limits:set [options] <type>=<value>...
+Usage: drycc limits:set [options] <type>=<value>...
 
 Arguments:
   <type>
@@ -82,13 +82,13 @@ Arguments:
     You can only set one type of limit per call.
 
     With --memory, units are represented in Bytes (B), Kilobytes (K), Megabytes
-    (M), or Gigabytes (G). For example, 'deis limit:set cmd=1G' will restrict all
+    (M), or Gigabytes (G). For example, 'drycc limit:set cmd=1G' will restrict all
     "cmd" processes to a maximum of 1 Gigabyte of memory each.
 
     With --cpu, units are represented in the number of CPUs. For example,
-    'deis limit:set --cpu cmd=1' will restrict all "cmd" processes to a
+    'drycc limit:set --cpu cmd=1' will restrict all "cmd" processes to a
     maximum of 1 CPU. Alternatively, you can also use milli units to specify the
-    number of CPU shares the pod can use. For example, 'deis limits:set --cpu cmd=500m'
+    number of CPU shares the pod can use. For example, 'drycc limits:set --cpu cmd=500m'
     will restrict all "cmd" processes to half of a CPU.
 
 Options:
@@ -121,7 +121,7 @@ func limitUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets resource limits for an application.
 
-Usage: deis limits:unset [options] [--memory | --cpu] <type>...
+Usage: drycc limits:unset [options] [--memory | --cpu] <type>...
 
 Arguments:
   <type>

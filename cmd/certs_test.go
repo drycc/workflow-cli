@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestCertsList(t *testing.T) {
@@ -21,7 +21,7 @@ func TestCertsList(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -47,8 +47,8 @@ func TestCertsList(t *testing.T) {
 					"fingerprint": "12:34:56:78:90"
 				},
 				{
-					"name": "test-deis-com",
-					"common_name": "test.deis.com",
+					"name": "test-drycc-com",
+					"common_name": "test.drycc.com",
 					"created": "2016-06-09T00:00:00UTC",
 					"updated": "2016-06-09T00:00:00UTC",
 					"expires": "2016-08-01T00:00:00UTC",
@@ -56,12 +56,12 @@ func TestCertsList(t *testing.T) {
 				},
 				{
 					"name": "test1",
-					"common_name": "1.test.deis.com",
+					"common_name": "1.test.drycc.com",
 					"expires": "2016-06-11T00:00:00UTC"
 				},
 				{
 					"name": "test2",
-					"common_name": "2.test.deis.com",
+					"common_name": "2.test.drycc.com",
 					"expires": "2018-01-01T00:00:00UTC"
 				}
 			]
@@ -74,9 +74,9 @@ func TestCertsList(t *testing.T) {
 	assert.Equal(t, b.String(), `        Name       |   Common Name    |    SubjectAltName    |         Expires          |   Fingerprint   |       Domains        |  Updated   |  Created    
 +------------------+------------------+----------------------+--------------------------+-----------------+----------------------+------------+------------+
   test-example-com | test.example.com | test.com,example.com | 10 Nov 2014 (expired)    | 12:34[...]78:90 | test.com,example.com | 9 Jun 2016 | 9 Jun 2016  
-  test-deis-com    | test.deis.com    |                      | 1 Aug 2016 (in 2 months) | ab:12[...]12:ab |                      | 9 Jun 2016 | 9 Jun 2016  
-  test1            | 1.test.deis.com  |                      | 11 Jun 2016 (in 2 days)  |                 |                      | unknown    | unknown     
-  test2            | 2.test.deis.com  |                      | 1 Jan 2018 (in 2 years)  |                 |                      | unknown    | unknown     
+  test-drycc-com   | test.drycc.com   |                      | 1 Aug 2016 (in 2 months) | ab:12[...]12:ab |                      | 9 Jun 2016 | 9 Jun 2016  
+  test1            | 1.test.drycc.com |                      | 11 Jun 2016 (in 2 days)  |                 |                      | unknown    | unknown     
+  test2            | 2.test.drycc.com |                      | 1 Jan 2018 (in 2 years)  |                 |                      | unknown    | unknown     
 `, "output")
 
 	cf, server, err = testutil.NewTestServerAndClient()
@@ -112,7 +112,7 @@ func TestCertsListLimit(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -159,7 +159,7 @@ func TestCertsInfo(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -168,7 +168,7 @@ func TestCertsInfo(t *testing.T) {
 			"owner": "admin",
 			"issuer": "testca",
 			"subject": "testing",
-			"common_name": "test.deis.com",
+			"common_name": "test.drycc.com",
 			"created": "2016-06-09T00:00:00UTC",
 			"updated": "2016-06-09T00:00:00UTC",
 			"expires": "2016-06-09T00:00:00UTC",
@@ -188,7 +188,7 @@ func TestCertsInfo(t *testing.T) {
 	err = cmdr.CertInfo("test-example-com")
 	assert.NoErr(t, err)
 	assert.Equal(t, b.String(), `=== test-example-com Certificate
-Common Name(s):     test.deis.com
+Common Name(s):     test.drycc.com
 Expires At:         9 Jun 2016
 Starts At:          9 Jun 2016
 Fingerprint:        ab:12:ab:12:ab
@@ -202,17 +202,17 @@ Created:            9 Jun 2016
 Updated:            9 Jun 2016
 `, "output")
 
-	server.Mux.HandleFunc("/v2/certs/test-deis-com", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/test-drycc-com", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
-			"name": "test-deis-com"
+			"name": "test-drycc-com"
 		}`)
 	})
 	b.Reset()
 
-	err = cmdr.CertInfo("test-deis-com")
+	err = cmdr.CertInfo("test-drycc-com")
 	assert.NoErr(t, err)
-	assert.Equal(t, b.String(), `=== test-deis-com Certificate
+	assert.Equal(t, b.String(), `=== test-drycc-com Certificate
 Common Name(s):     
 Expires At:         unknown
 Starts At:          unknown
@@ -236,7 +236,7 @@ func TestCertsRemove(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -257,18 +257,18 @@ func TestCertsAttach(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/certs/test-example-com/domain/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.CertAttachRequest{Domain: "deis.com"}, r)
+		testutil.AssertBody(t, api.CertAttachRequest{Domain: "drycc.com"}, r)
 		w.WriteHeader(http.StatusCreated)
 	})
 
-	err = cmdr.CertAttach("test-example-com", "deis.com")
+	err = cmdr.CertAttach("test-example-com", "drycc.com")
 	assert.NoErr(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), "Attaching certificate test-example-com to domain deis.com... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Attaching certificate test-example-com to domain drycc.com... done\n", "output")
 }
 
 func TestCertsDetach(t *testing.T) {
@@ -279,17 +279,17 @@ func TestCertsDetach(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com/domain/deis.com", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/test-example-com/domain/drycc.com", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err = cmdr.CertDetach("test-example-com", "deis.com")
+	err = cmdr.CertDetach("test-example-com", "drycc.com")
 	assert.NoErr(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), "Detaching certificate test-example-com from domain deis.com... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Detaching certificate test-example-com from domain drycc.com... done\n", "output")
 }
 
 func TestCertsAdd(t *testing.T) {
@@ -300,7 +300,7 @@ func TestCertsAdd(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -309,13 +309,13 @@ func TestCertsAdd(t *testing.T) {
 		fmt.Fprintf(w, "{}")
 	})
 
-	keyFile, err := ioutil.TempFile("", "deis-cli-unit-test-key")
+	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-key")
 	assert.NoErr(t, err)
 	_, err = keyFile.Write([]byte("key"))
 	assert.NoErr(t, err)
 	keyFile.Close()
 
-	certFile, err := ioutil.TempFile("", "deis-cli-unit-test-cert")
+	certFile, err := ioutil.TempFile("", "drycc-cli-unit-test-cert")
 	assert.NoErr(t, err)
 	_, err = certFile.Write([]byte("cert"))
 	assert.NoErr(t, err)

@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"github.com/teamhephy/controller-sdk-go/perms"
-	"github.com/teamhephy/workflow-cli/pkg/git"
-	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/drycc/controller-sdk-go/perms"
+	"github.com/drycc/workflow-cli/pkg/git"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 // PermsList prints which users have permissions.
-func (d *DeisCmd) PermsList(appID string, admin bool, results int) error {
+func (d *DryccCmd) PermsList(appID string, admin bool, results int) error {
 	s, appID, err := permsLoad(d.ConfigFile, appID, admin)
 
 	if err != nil {
@@ -44,7 +44,7 @@ func (d *DeisCmd) PermsList(appID string, admin bool, results int) error {
 }
 
 // PermCreate adds a user to an app or makes them an administrator.
-func (d *DeisCmd) PermCreate(appID string, username string, admin bool) error {
+func (d *DryccCmd) PermCreate(appID string, username string, admin bool) error {
 
 	s, appID, err := permsLoad(d.ConfigFile, appID, admin)
 
@@ -70,7 +70,7 @@ func (d *DeisCmd) PermCreate(appID string, username string, admin bool) error {
 }
 
 // PermDelete removes a user from an app or revokes admin privileges.
-func (d *DeisCmd) PermDelete(appID, username string, admin bool) error {
+func (d *DryccCmd) PermDelete(appID, username string, admin bool) error {
 
 	s, appID, err := permsLoad(d.ConfigFile, appID, admin)
 

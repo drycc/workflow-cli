@@ -5,4 +5,4 @@ jobs:
     include:
         -   stage: Test and build
             script:
-                REVISION=${TRAVIS_COMMIT::7} make test && docker run -e BUILD_ARCH=amd64 -e REVISION=${TRAVIS_COMMIT::7} -e GIT_TAG=$(git describe --abbrev=0 --tags) -e DIST_DIR=/upload -v $(pwd)/_dist/:/upload --rm quay.io/deisci/workflow-cli-dev:${TRAVIS_COMMIT::7} make build-all
+                REVISION=${TRAVIS_COMMIT::7} make test && docker run -e BUILD_ARCH=amd64 -e REVISION=${TRAVIS_COMMIT::7} -e GIT_TAG=$(git describe --abbrev=0 --tags) -e DIST_DIR=/upload -v $(pwd)/_dist/:/upload --rm quay.io/drycc/workflow-cli-dev:${TRAVIS_COMMIT::7} make build-all

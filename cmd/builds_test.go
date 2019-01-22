@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestParseProcfile(t *testing.T) {
@@ -37,7 +37,7 @@ func TestBuildsList(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/builds/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -88,7 +88,7 @@ func TestBuildsListLimit(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/builds/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -127,7 +127,7 @@ func TestBuildsCreate(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	// Create a new temporary directory and change to it.
 	name, err := ioutil.TempDir("", "client")

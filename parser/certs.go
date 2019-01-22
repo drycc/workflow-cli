@@ -3,7 +3,7 @@ package parser
 import (
 	"time"
 
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -19,7 +19,7 @@ certs:info            get detailed informaton about the certificate
 certs:attach          attach an SSL certificate to a domain
 certs:detach          detach an SSL certificate from a domain
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -54,7 +54,7 @@ func certsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Show certificate information for an SSL application.
 
-Usage: deis certs:list [options]
+Usage: drycc certs:list [options]
 
 Options:
   -l --limit=<num>
@@ -78,7 +78,7 @@ func certAdd(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Binds a certificate/key pair to an application.
 
-Usage: deis certs:add <name> <cert> <key> [options]
+Usage: drycc certs:add <name> <cert> <key> [options]
 
 Arguments:
   <name>
@@ -107,7 +107,7 @@ func certRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
 removes a certificate/key pair from the application.
 
-Usage: deis certs:remove <name> [options]
+Usage: drycc certs:remove <name> [options]
 
 Arguments:
   <name>
@@ -128,7 +128,7 @@ func certInfo(argv []string, cmdr cmd.Commander) error {
 	usage := `
 fetch more detailed information about a certificate
 
-Usage: deis certs:info <name> [options]
+Usage: drycc certs:info <name> [options]
 
 Arguments:
   <name>
@@ -149,7 +149,7 @@ func certAttach(argv []string, cmdr cmd.Commander) error {
 	usage := `
 attach a certificate to a domain.
 
-Usage: deis certs:attach <name> <domain> [options]
+Usage: drycc certs:attach <name> <domain> [options]
 
 Arguments:
   <name>
@@ -174,7 +174,7 @@ func certDetach(argv []string, cmdr cmd.Commander) error {
 	usage := `
 detach a certificate from a domain.
 
-Usage: deis certs:detach <name> <domain> [options]
+Usage: drycc certs:detach <name> <domain> [options]
 
 Arguments:
   <name>

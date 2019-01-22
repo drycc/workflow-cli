@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/teamhephy/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/api"
 )
 
 // Commander is interface definition for running commands
@@ -102,8 +102,8 @@ type Commander interface {
 	Version(bool) error
 }
 
-// DeisCmd is an implementation of Commander.
-type DeisCmd struct {
+// DryccCmd is an implementation of Commander.
+type DryccCmd struct {
 	ConfigFile string
 	Warned     bool
 	WOut       io.Writer
@@ -112,31 +112,31 @@ type DeisCmd struct {
 }
 
 // Println prints a line to an output writer.
-func (d *DeisCmd) Println(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) Println(a ...interface{}) (n int, err error) {
 	return fmt.Fprintln(d.WOut, a...)
 }
 
 // Print prints a line to an output writer.
-func (d *DeisCmd) Print(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) Print(a ...interface{}) (n int, err error) {
 	return fmt.Fprint(d.WOut, a...)
 }
 
 // Printf prints a line to an error writer.
-func (d *DeisCmd) Printf(s string, a ...interface{}) (n int, err error) {
+func (d *DryccCmd) Printf(s string, a ...interface{}) (n int, err error) {
 	return fmt.Fprintf(d.WOut, s, a...)
 }
 
 // PrintErrln prints a line to an error writer.
-func (d *DeisCmd) PrintErrln(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) PrintErrln(a ...interface{}) (n int, err error) {
 	return fmt.Fprintln(d.WErr, a...)
 }
 
 // PrintErr prints a line to an error writer.
-func (d *DeisCmd) PrintErr(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) PrintErr(a ...interface{}) (n int, err error) {
 	return fmt.Fprint(d.WErr, a...)
 }
 
 // PrintErrf prints a line to an error writer.
-func (d *DeisCmd) PrintErrf(s string, a ...interface{}) (n int, err error) {
+func (d *DryccCmd) PrintErrf(s string, a ...interface{}) (n int, err error) {
 	return fmt.Fprintf(d.WErr, s, a...)
 }

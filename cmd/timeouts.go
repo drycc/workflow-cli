@@ -4,14 +4,14 @@ import (
   "fmt"
   "regexp"
 
-  "github.com/teamhephy/pkg/prettyprint"
+  "github.com/drycc/pkg/prettyprint"
 
-  "github.com/teamhephy/controller-sdk-go/api"
-  "github.com/teamhephy/controller-sdk-go/config"
+  "github.com/drycc/controller-sdk-go/api"
+  "github.com/drycc/controller-sdk-go/config"
 )
 
 // TimeoutsList lists an app's timeouts.
-func (d *DeisCmd) TimeoutsList(appID string) error {
+func (d *DryccCmd) TimeoutsList(appID string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
   if err != nil {
@@ -41,7 +41,7 @@ func (d *DeisCmd) TimeoutsList(appID string) error {
 }
 
 // TimeoutsSet sets an app's timeouts.
-func (d *DeisCmd) TimeoutsSet(appID string, timeouts []string) error {
+func (d *DryccCmd) TimeoutsSet(appID string, timeouts []string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
   if err != nil {
@@ -73,7 +73,7 @@ func (d *DeisCmd) TimeoutsSet(appID string, timeouts []string) error {
 }
 
 // TimeoutsUnset removes an app's timeouts.
-func (d *DeisCmd) TimeoutsUnset(appID string, timeouts []string) error {
+func (d *DryccCmd) TimeoutsUnset(appID string, timeouts []string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
   if err != nil {

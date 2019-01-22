@@ -10,14 +10,14 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/teamhephy/pkg/prettyprint"
+	"github.com/drycc/pkg/prettyprint"
 
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/config"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/config"
 )
 
 // ConfigList lists an app's config.
-func (d *DeisCmd) ConfigList(appID string, format string) error {
+func (d *DryccCmd) ConfigList(appID string, format string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -64,7 +64,7 @@ func (d *DeisCmd) ConfigList(appID string, format string) error {
 }
 
 // ConfigSet sets an app's config variables.
-func (d *DeisCmd) ConfigSet(appID string, configVars []string) error {
+func (d *DryccCmd) ConfigSet(appID string, configVars []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -88,9 +88,9 @@ func (d *DeisCmd) ConfigSet(appID string, configVars []string) error {
 	// send them a deprecation notice.
 	for key := range configMap {
 		if strings.Contains(key, "HEALTHCHECK_") {
-			d.Println(`Hey there! We've noticed that you're using 'deis config:set HEALTHCHECK_URL'
+			d.Println(`Hey there! We've noticed that you're using 'drycc config:set HEALTHCHECK_URL'
 to set up healthchecks. This functionality has been deprecated. In the future, please use
-'deis healthchecks' to set up application health checks. Thanks!`)
+'drycc healthchecks' to set up application health checks. Thanks!`)
 		}
 	}
 
@@ -115,7 +115,7 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 }
 
 // ConfigUnset removes a config variable from an app.
-func (d *DeisCmd) ConfigUnset(appID string, configVars []string) error {
+func (d *DryccCmd) ConfigUnset(appID string, configVars []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -149,7 +149,7 @@ func (d *DeisCmd) ConfigUnset(appID string, configVars []string) error {
 }
 
 // ConfigPull pulls an app's config to a file.
-func (d *DeisCmd) ConfigPull(appID string, interactive bool, overwrite bool) error {
+func (d *DryccCmd) ConfigPull(appID string, interactive bool, overwrite bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -219,7 +219,7 @@ func (d *DeisCmd) ConfigPull(appID string, interactive bool, overwrite bool) err
 }
 
 // ConfigPush pushes an app's config from a file.
-func (d *DeisCmd) ConfigPush(appID, fileName string) error {
+func (d *DryccCmd) ConfigPush(appID, fileName string) error {
 	stat, err := os.Stdin.Stat()
 
 	if err != nil {
@@ -283,7 +283,7 @@ func parseSSHKey(value string) (string, error) {
 	}
 
 	// NOTE(felixbuenemann): check if the current value is already a base64 encoded key.
-	// This is the case if it was fetched using "deis config:pull".
+	// This is the case if it was fetched using "drycc config:pull".
 	contents, err := base64.StdEncoding.DecodeString(value)
 
 	if err == nil && sshRegex.MatchString(string(contents)) {

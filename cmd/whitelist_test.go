@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestWhitelistList(t *testing.T) {
@@ -19,7 +19,7 @@ func TestWhitelistList(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/whitelist/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -42,7 +42,7 @@ func TestWhitelistAdd(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/whitelist/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.AssertBody(t, api.Whitelist{Addresses: []string{"1.2.3.4", "0.0.0.0/0"}}, r)
@@ -66,7 +66,7 @@ func TestWhitelistRemove(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/whitelist/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.AssertBody(t, api.Whitelist{Addresses: []string{"1.2.3.4"}}, r)

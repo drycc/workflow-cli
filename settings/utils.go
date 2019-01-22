@@ -10,7 +10,7 @@ var filepathRegex = regexp.MustCompile(`^.*[/\\].+\.json$`)
 
 func locateSettingsFile(cf string) string {
 	if cf == "" {
-		if v, ok := os.LookupEnv("DEIS_PROFILE"); ok {
+		if v, ok := os.LookupEnv("DRYCC_PROFILE"); ok {
 			cf = v
 		} else {
 			cf = "client"
@@ -22,5 +22,5 @@ func locateSettingsFile(cf string) string {
 		return cf
 	}
 
-	return filepath.Join(FindHome(), ".deis", cf+".json")
+	return filepath.Join(FindHome(), ".drycc", cf+".json")
 }

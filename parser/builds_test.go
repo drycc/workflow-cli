@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
-func (d FakeDeisCmd) BuildsList(string, int) error {
+func (d FakeDryccCmd) BuildsList(string, int) error {
 	return errors.New("builds:list")
 }
 
-func (d FakeDeisCmd) BuildsCreate(string, string, string) error {
+func (d FakeDryccCmd) BuildsCreate(string, string, string) error {
 	return errors.New("builds:create")
 }
 
@@ -26,7 +26,7 @@ func TestBuilds(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := FakeDeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := FakeDryccCmd{WOut: &b, ConfigFile: cf}
 
 	// cases defines the arguments and expected return of the call.
 	// if expected is "", it defaults to args[0].
@@ -39,7 +39,7 @@ func TestBuilds(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"builds:create", "deis/example-go:latest"},
+			args:     []string{"builds:create", "drycc/example-go:latest"},
 			expected: "",
 		},
 		{

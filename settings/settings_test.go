@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/version"
+	"github.com/drycc/workflow-cli/version"
 )
 
 const sFile string = `{"username":"t","ssl_verify":false,"controller":"http://foo.bar","token":"a"}`
@@ -68,7 +68,7 @@ func TestLoadSave(t *testing.T) {
 			expected: s.Limit,
 		},
 		{
-			key:      "Deis Client " + version.Version,
+			key:      "Drycc Client " + version.Version,
 			expected: s.Client.UserAgent,
 		},
 	}
@@ -83,7 +83,7 @@ func TestLoadSave(t *testing.T) {
 	s.Username = "c"
 	s.Limit = 10
 
-	u, err := url.Parse("http://deis.test")
+	u, err := url.Parse("http://drycc.test")
 
 	if err != nil {
 		t.Fatal(err)
@@ -92,7 +92,7 @@ func TestLoadSave(t *testing.T) {
 	s.Client.ControllerURL = u
 
 	// Create a tempdir and set as HOME.
-	dir, err := ioutil.TempDir("", "deishome")
+	dir, err := ioutil.TempDir("", "drycchome")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -123,7 +123,7 @@ func TestLoadSave(t *testing.T) {
 			expected: s.Username,
 		},
 		{
-			key:      "http://deis.test",
+			key:      "http://drycc.test",
 			expected: s.Client.ControllerURL.String(),
 		},
 		{
@@ -131,7 +131,7 @@ func TestLoadSave(t *testing.T) {
 			expected: s.Limit,
 		},
 		{
-			key:      "Deis Client " + version.Version,
+			key:      "Drycc Client " + version.Version,
 			expected: s.Client.UserAgent,
 		},
 	}

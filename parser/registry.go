@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ registry:list        list registry info for an app
 registry:set         set registry info for an app
 registry:unset       unset registry info for an app
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func registryList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists registry information for an application.
 
-Usage: deis registry:list [options]
+Usage: drycc registry:list [options]
 
 Options:
   -a --app=<app>
@@ -63,7 +63,7 @@ func registrySet(argv []string, cmdr cmd.Commander) error {
 Sets registry information for an application. These credentials are the same as those used for
 'docker login' to the private registry.
 
-Usage: deis registry:set [options] <key>=<value>...
+Usage: drycc registry:set [options] <key>=<value>...
 
 Arguments:
   <key>
@@ -93,7 +93,7 @@ func registryUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets registry information for an application.
 
-Usage: deis registry:unset [options] <key>...
+Usage: drycc registry:unset [options] <key>...
 
 Arguments:
   <key> the registry key to unset, for example: "username" or "password"

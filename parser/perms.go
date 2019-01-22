@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ perms:list            list permissions granted on an app
 perms:create          create a new permission for a user
 perms:delete          delete a permission for a user
 
-Use 'deis help perms:[command]' to learn more.
+Use 'drycc help perms:[command]' to learn more.
 `
 
 	switch argv[0] {
@@ -44,7 +44,7 @@ func permsList(argv []string, cmdr cmd.Commander) error {
 Lists all users with permission to use an app, or lists all users with system
 administrator privileges.
 
-Usage: deis perms:list [-a --app=<app>|--admin|--admin --limit=<num>]
+Usage: drycc perms:list [-a --app=<app>|--admin|--admin --limit=<num>]
 
 Options:
   -a --app=<app>
@@ -78,7 +78,7 @@ func permCreate(argv []string, cmdr cmd.Commander) error {
 Gives another user permission to use an app, or gives another user
 system administrator privileges.
 
-Usage: deis perms:create <username> [-a --app=<app>|--admin]
+Usage: drycc perms:create <username> [-a --app=<app>|--admin]
 
 Arguments:
   <username>
@@ -110,7 +110,7 @@ func permDelete(argv []string, cmdr cmd.Commander) error {
 Revokes another user's permission to use an app, or revokes another user's system
 administrator privileges.
 
-Usage: deis perms:delete <username> [-a --app=<app>|--admin]
+Usage: drycc perms:delete <username> [-a --app=<app>|--admin]
 
 Arguments:
   <username>

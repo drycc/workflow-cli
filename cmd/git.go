@@ -3,14 +3,14 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/teamhephy/workflow-cli/pkg/git"
+	"github.com/drycc/workflow-cli/pkg/git"
 )
 
 const remoteCreationMsg = "Git remote %s successfully created for app %s.\n"
 const remoteDeletionMsg = "Git remotes for app %s removed.\n"
 
-// GitRemote creates a git remote for a deis app.
-func (d *DeisCmd) GitRemote(appID, remote string, force bool) error {
+// GitRemote creates a git remote for a drycc app.
+func (d *DryccCmd) GitRemote(appID, remote string, force bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func (d *DeisCmd) GitRemote(appID, remote string, force bool) error {
 		return nil
 	}
 
-	msg := "Remote %s already exists, please run 'deis git:remote -f' to overwrite\n"
+	msg := "Remote %s already exists, please run 'drycc git:remote -f' to overwrite\n"
 	msg += "Existing remote URL: %s\n"
 	msg += "When forced, will overwrite with: %s"
 
@@ -61,7 +61,7 @@ func (d *DeisCmd) GitRemote(appID, remote string, force bool) error {
 }
 
 // GitRemove removes a application git remote from a repository
-func (d *DeisCmd) GitRemove(appID string) error {
+func (d *DryccCmd) GitRemove(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

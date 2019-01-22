@@ -10,14 +10,14 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/keys"
-	"github.com/teamhephy/workflow-cli/pkg/ssh"
-	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/keys"
+	"github.com/drycc/workflow-cli/pkg/ssh"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 // KeysList lists a user's keys.
-func (d *DeisCmd) KeysList(results int) error {
+func (d *DryccCmd) KeysList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -45,7 +45,7 @@ func (d *DeisCmd) KeysList(results int) error {
 }
 
 // KeyRemove removes keys.
-func (d *DeisCmd) KeyRemove(keyID string) error {
+func (d *DryccCmd) KeyRemove(keyID string) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -64,7 +64,7 @@ func (d *DeisCmd) KeyRemove(keyID string) error {
 }
 
 // KeyAdd adds keys.
-func (d *DeisCmd) KeyAdd(name string, keyLocation string) error {
+func (d *DryccCmd) KeyAdd(name string, keyLocation string) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -104,7 +104,7 @@ func (d *DeisCmd) KeyAdd(name string, keyLocation string) error {
 		key.ID = name
 	}
 
-	d.Printf("Uploading %s to deis...", filepath.Base(key.Name))
+	d.Printf("Uploading %s to drycc...", filepath.Base(key.Name))
 
 	if _, err = keys.New(s.Client, key.ID, key.Public); d.checkAPICompatibility(s.Client, err) != nil {
 		d.Println()
@@ -127,7 +127,7 @@ func chooseKey(keys []api.KeyCreateRequest, input io.Reader,
 
 	var selected string
 
-	fmt.Fprint(wOut, "Which would you like to use with Deis? ")
+	fmt.Fprint(wOut, "Which would you like to use with Drycc? ")
 	fmt.Fscanln(input, &selected)
 
 	numSelected, err := strconv.Atoi(selected)

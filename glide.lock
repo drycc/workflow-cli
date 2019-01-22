@@ -15,8 +15,8 @@ imports:
   version: 975f53781597ed779763b7b65566e74c4004d8de
 - name: github.com/PuerkitoBio/urlesc
   version: de5bf2ad457846296e2031421a34e2568e304e35
-- name: github.com/teamhephy/controller-sdk-go
-  version: a1ffb4886a5f7f92fdd710b99e68c2555b74a703
+- name: github.com/drycc/controller-sdk-go
+  version: 6c99dbcce25a775067cbaa47ccbc66dd16e4b721
   subpackages:
   - api
   - apps
@@ -35,8 +35,8 @@ imports:
   - tls
   - users
   - whitelist
-- name: github.com/teamhephy/pkg
-  version: 777f37a30108edaf6a2bd4e423cde34ec12870fd
+- name: github.com/drycc/pkg
+  version: 5c1dfa7b5446283ec3bdc7e8c3ef367bb5c1b4d1
   subpackages:
   - prettyprint
   - time

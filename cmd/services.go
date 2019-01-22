@@ -3,13 +3,13 @@ package cmd
 import (
   "fmt"
 
-  "github.com/teamhephy/pkg/prettyprint"
+  "github.com/drycc/pkg/prettyprint"
 
-  "github.com/teamhephy/controller-sdk-go/services"
+  "github.com/drycc/controller-sdk-go/services"
 )
 
 // ServicesList lists extra services for the app
-func (d *DeisCmd) ServicesList(appID string) error {
+func (d *DryccCmd) ServicesList(appID string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
   if err != nil {
@@ -33,7 +33,7 @@ func (d *DeisCmd) ServicesList(appID string) error {
 }
 
 // ServicesAdd adds a service to an app.
-func (d *DeisCmd) ServicesAdd(appID, procfileType string, pathPattern string) error {
+func (d *DryccCmd) ServicesAdd(appID, procfileType string, pathPattern string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
   if err != nil {
@@ -55,7 +55,7 @@ func (d *DeisCmd) ServicesAdd(appID, procfileType string, pathPattern string) er
 }
 
 // ServicesRemove removes a service for procfileType registered with an app.
-func (d *DeisCmd) ServicesRemove(appID, procfileType string) error {
+func (d *DryccCmd) ServicesRemove(appID, procfileType string) error {
   s, appID, err := load(d.ConfigFile, appID)
 
   if err != nil {

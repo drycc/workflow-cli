@@ -6,21 +6,21 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDeisCmd) MaintenanceInfo(string) error {
+func (d FakeDryccCmd) MaintenanceInfo(string) error {
 	return errors.New("maintenance:info")
 }
 
-func (d FakeDeisCmd) MaintenanceEnable(string) error {
+func (d FakeDryccCmd) MaintenanceEnable(string) error {
 	return errors.New("maintenance:on")
 }
 
-func (d FakeDeisCmd) MaintenanceDisable(string) error {
+func (d FakeDryccCmd) MaintenanceDisable(string) error {
 	return errors.New("maintenance:off")
 }
 
@@ -33,7 +33,7 @@ func TestMaintenance(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := FakeDeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := FakeDryccCmd{WOut: &b, ConfigFile: cf}
 
 	// cases defines the arguments and expected return of the call.
 	// if expected is "", it defaults to args[0].

@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestDomainsList(t *testing.T) {
@@ -19,7 +19,7 @@ func TestDomainsList(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/domains/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -63,7 +63,7 @@ func TestDomainsListLimit(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/domains/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -99,7 +99,7 @@ func TestDomainsAdd(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/domains/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.AssertBody(t, api.DomainCreateRequest{Domain: "example.example.com"}, r)
@@ -123,7 +123,7 @@ func TestDomainsDelete(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/domains/example.example.com", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)

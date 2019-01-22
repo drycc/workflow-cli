@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	deis "github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/workflow-cli/pkg/git"
-	"github.com/teamhephy/workflow-cli/settings"
+	drycc "github.com/drycc/controller-sdk-go"
+	"github.com/drycc/workflow-cli/pkg/git"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 var defaultLimit = -1
@@ -57,7 +57,7 @@ func load(cf string, appID string) (*settings.Settings, string, error) {
 }
 
 func drinkOfChoice() string {
-	drink := os.Getenv("DEIS_DRINK_OF_CHOICE")
+	drink := os.Getenv("DRYCC_DRINK_OF_CHOICE")
 
 	if drink == "" {
 		drink = "coffee"
@@ -76,13 +76,13 @@ func limitCount(objs, total int) string {
 
 // checkAPICompatibility handles specific behavior for certain errors,
 // such as printing an warning for the API mismatch error
-func (d *DeisCmd) checkAPICompatibility(c *deis.Client, err error) error {
-	if err == deis.ErrAPIMismatch {
+func (d *DryccCmd) checkAPICompatibility(c *drycc.Client, err error) error {
+	if err == drycc.ErrAPIMismatch {
 		if !d.Warned {
 			d.PrintErrf(`!    WARNING: Client and server API versions do not match. Please consider upgrading.
 !    Client version: %s
 !    Server version: %s
-`, deis.APIVersion, c.ControllerAPIVersion)
+`, drycc.APIVersion, c.ControllerAPIVersion)
 			d.Warned = true
 		}
 

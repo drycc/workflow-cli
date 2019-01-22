@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -13,7 +13,7 @@ Valid commands for builds:
 builds:list        list build history for an application
 builds:create      imports an image and deploys as a new release
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -40,7 +40,7 @@ func buildsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists build history for an application.
 
-Usage: deis builds:list [options]
+Usage: drycc builds:list [options]
 
 Options:
   -a --app=<app>
@@ -66,15 +66,15 @@ Options:
 
 func buildsCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Creates a new build of an application. Imports an <image> and deploys it to Deis
+Creates a new build of an application. Imports an <image> and deploys it to Drycc
 as a new release. If a Procfile is present in the current directory, it will be used
 as the default process types for this application.
 
-Usage: deis builds:create <image> [options]
+Usage: drycc builds:create <image> [options]
 
 Arguments:
   <image>
-    A fully-qualified docker image, either from Docker Hub (e.g. deis/example-go:latest)
+    A fully-qualified docker image, either from Docker Hub (e.g. drycc/example-go:latest)
     or from an in-house registry (e.g. myregistry.example.com:5000/example-go:latest).
     This image must include the tag.
 

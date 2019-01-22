@@ -1,11 +1,11 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
-// Autoscale displays all relevant commands for `deis autoscale`.
+// Autoscale displays all relevant commands for `drycc autoscale`.
 func Autoscale(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for autoscale:
@@ -14,7 +14,7 @@ autoscale:list   list autoscale options of an application
 autoscale:set    turn on autoscale for an app
 autoscale:unset  turn off autoscale for an app
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func autoscaleList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Prints a list of autoscale options for the application.
 
-Usage: deis autoscale:list [options]
+Usage: drycc autoscale:list [options]
 
 Options:
   -a --app=<app>
@@ -63,7 +63,7 @@ func autoscaleSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Set autoscale option per process type for an app.
 
-Usage: deis autoscale:set <process-type> --min=<min> --max=<max> --cpu-percent=<percent> [options]
+Usage: drycc autoscale:set <process-type> --min=<min> --max=<max> --cpu-percent=<percent> [options]
 
 Arguments:
   <process-type>
@@ -99,7 +99,7 @@ func autoscaleUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unset autoscale per process type for an app.
 
-Usage: deis autoscale:unset <process-type> [options]
+Usage: drycc autoscale:unset <process-type> [options]
 
 Arguments:
   <process-type>

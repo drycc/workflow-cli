@@ -1,11 +1,11 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
-// Labels displays all relevant commands for `deis label`.
+// Labels displays all relevant commands for `drycc label`.
 func Labels(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for labels:
@@ -14,7 +14,7 @@ labels:list   list application's labels
 labels:set    add new application's label
 labels:unset  remove application's label
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func labelsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Prints a list of labels of the application.
 
-Usage: deis labels:list [options]
+Usage: drycc labels:list [options]
 
 Options:
   -a --app=<app>
@@ -63,14 +63,14 @@ func labelsSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Sets labels for an application.
 
-A label is a key/value pair used to label an application. This label is a general information for deis user.
+A label is a key/value pair used to label an application. This label is a general information for drycc user.
 Mostly used for administration/maintenance information, note for application. This information isn't send to scheduler.
 
-Usage: deis labels:set [options] <key>=<value>...
+Usage: drycc labels:set [options] <key>=<value>...
 
 Arguments:
   <key> the label key, for example: "git_repo" or "team"
-  <value> the label value, for example: "https://github.com/teamhephy/workflow" or "frontend"
+  <value> the label value, for example: "https://github.com/drycc/workflow" or "frontend"
 
 Options:
   -a --app=<app>
@@ -92,7 +92,7 @@ func labelsUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets labels for an application.
 
-Usage: deis labels:unset [options] <key>...
+Usage: drycc labels:unset [options] <key>...
 
 Arguments:
   <key> the label key to unset, for example: "git_repo" or "team"

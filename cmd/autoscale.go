@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/appsettings"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/appsettings"
 )
 
 // AutoscaleList tells the informations about app's autoscale status
-func (d *DeisCmd) AutoscaleList(appID string) error {
+func (d *DryccCmd) AutoscaleList(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func (d *DeisCmd) AutoscaleList(appID string) error {
 }
 
 // AutoscaleSet sets autoscale options for the app.
-func (d *DeisCmd) AutoscaleSet(appID string, processType string, min int, max int, CPUPercent int) error {
+func (d *DryccCmd) AutoscaleSet(appID string, processType string, min int, max int, CPUPercent int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -64,7 +64,7 @@ func (d *DeisCmd) AutoscaleSet(appID string, processType string, min int, max in
 }
 
 // AutoscaleUnset removes autoscale for the app.
-func (d *DeisCmd) AutoscaleUnset(appID string, processType string) error {
+func (d *DryccCmd) AutoscaleUnset(appID string, processType string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

@@ -68,7 +68,7 @@ func TestTopLevelCommandArgsPreparing(t *testing.T) {
 
 	command := "ssh"
 	argv := []string{"ssh"}
-	expected := []string{"deis-ssh"}
+	expected := []string{"drycc-ssh"}
 	actual := prepareCmdArgs(command, argv)
 
 	if !reflect.DeepEqual(expected, actual) {
@@ -81,7 +81,7 @@ func TestCommandWithParameterArgsPreparing(t *testing.T) {
 
 	command := "ssh --help"
 	argv := []string{"ssh --help"}
-	expected := []string{"deis-ssh --help"}
+	expected := []string{"drycc-ssh --help"}
 	actual := prepareCmdArgs(command, argv)
 
 	if !reflect.DeepEqual(expected, actual) {

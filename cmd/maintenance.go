@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/appsettings"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/appsettings"
 )
 
 // MaintenanceInfo tells the informations about app's maintenance status
-func (d *DeisCmd) MaintenanceInfo(appID string) error {
+func (d *DryccCmd) MaintenanceInfo(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func (d *DeisCmd) MaintenanceInfo(appID string) error {
 }
 
 // MaintenanceEnable turns on the maintenance for the app.
-func (d *DeisCmd) MaintenanceEnable(appID string) error {
+func (d *DryccCmd) MaintenanceEnable(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -52,7 +52,7 @@ func (d *DeisCmd) MaintenanceEnable(appID string) error {
 }
 
 // MaintenanceDisable turns off the maintenance for the app.
-func (d *DeisCmd) MaintenanceDisable(appID string) error {
+func (d *DryccCmd) MaintenanceDisable(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

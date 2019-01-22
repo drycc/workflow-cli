@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -10,7 +10,7 @@ func Version(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Displays the client version.
 
-Usage: deis version [options]
+Usage: drycc version [options]
 
 Options:
   -a --all

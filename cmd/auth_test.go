@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestRegister(t *testing.T) {
@@ -17,7 +17,7 @@ func TestRegister(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -65,7 +65,7 @@ func TestLogin(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -92,7 +92,7 @@ func TestLogout(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.Logout()
 	assert.NoErr(t, err)
@@ -108,7 +108,7 @@ func TestPasswd(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/auth/passwd/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -134,7 +134,7 @@ func TestCancel(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -167,7 +167,7 @@ func TestWhoami(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/auth/whoami/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -201,7 +201,7 @@ func TestWhoamiAll(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/auth/whoami/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -245,7 +245,7 @@ func TestRegenerate(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/auth/tokens/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)

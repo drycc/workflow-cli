@@ -6,18 +6,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/apps"
-	"github.com/teamhephy/controller-sdk-go/config"
-	"github.com/teamhephy/controller-sdk-go/domains"
-	"github.com/teamhephy/workflow-cli/pkg/git"
-	"github.com/teamhephy/workflow-cli/pkg/logging"
-	"github.com/teamhephy/workflow-cli/pkg/webbrowser"
-	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/apps"
+	"github.com/drycc/controller-sdk-go/config"
+	"github.com/drycc/controller-sdk-go/domains"
+	"github.com/drycc/workflow-cli/pkg/git"
+	"github.com/drycc/workflow-cli/pkg/logging"
+	"github.com/drycc/workflow-cli/pkg/webbrowser"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 // AppCreate creates an app.
-func (d *DeisCmd) AppCreate(id, buildpack, remote string, noRemote bool) error {
+func (d *DryccCmd) AppCreate(id, buildpack, remote string, noRemote bool) error {
 	s, err := settings.Load(d.ConfigFile)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (d *DeisCmd) AppCreate(id, buildpack, remote string, noRemote bool) error {
 		if err = git.CreateRemote(git.DefaultCmd, s.Client.ControllerURL.Host, remote, app.ID); err != nil {
 			if strings.Contains(err.Error(), fmt.Sprintf("fatal: remote %s already exists.", remote)) {
 				msg := "A git remote with the name %s already exists. To overwrite this remote run:\n"
-				msg += "deis git:remote --force --remote %s --app %s"
+				msg += "drycc git:remote --force --remote %s --app %s"
 				return fmt.Errorf(msg, remote, remote, app.ID)
 			}
 			return err
@@ -61,14 +61,14 @@ func (d *DeisCmd) AppCreate(id, buildpack, remote string, noRemote bool) error {
 	}
 
 	if noRemote {
-		d.Printf("If you want to add a git remote for this app later, use `deis git:remote -a %s`\n", app.ID)
+		d.Printf("If you want to add a git remote for this app later, use `drycc git:remote -a %s`\n", app.ID)
 	}
 
 	return nil
 }
 
-// AppsList lists apps on the Deis controller.
-func (d *DeisCmd) AppsList(results int) error {
+// AppsList lists apps on the Drycc controller.
+func (d *DryccCmd) AppsList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -93,7 +93,7 @@ func (d *DeisCmd) AppsList(results int) error {
 }
 
 // AppInfo prints info about app.
-func (d *DeisCmd) AppInfo(appID string) error {
+func (d *DryccCmd) AppInfo(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -146,7 +146,7 @@ func (d *DeisCmd) AppInfo(appID string) error {
 }
 
 // AppOpen opens an app in the default webbrowser.
-func (d *DeisCmd) AppOpen(appID string) error {
+func (d *DryccCmd) AppOpen(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -170,7 +170,7 @@ func (d *DeisCmd) AppOpen(appID string) error {
 }
 
 // AppLogs returns the logs from an app.
-func (d *DeisCmd) AppLogs(appID string, lines int) error {
+func (d *DryccCmd) AppLogs(appID string, lines int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -190,7 +190,7 @@ func (d *DeisCmd) AppLogs(appID string, lines int) error {
 }
 
 // AppRun runs a one time command in the app.
-func (d *DeisCmd) AppRun(appID, command string) error {
+func (d *DryccCmd) AppRun(appID, command string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -215,7 +215,7 @@ func (d *DeisCmd) AppRun(appID, command string) error {
 }
 
 // AppDestroy destroys an app.
-func (d *DeisCmd) AppDestroy(appID, confirm string) error {
+func (d *DryccCmd) AppDestroy(appID, confirm string) error {
 	gitSession := false
 
 	s, err := settings.Load(d.ConfigFile)
@@ -265,7 +265,7 @@ func (d *DeisCmd) AppDestroy(appID, confirm string) error {
 }
 
 // AppTransfer transfers app ownership to another user.
-func (d *DeisCmd) AppTransfer(appID, username string) error {
+func (d *DryccCmd) AppTransfer(appID, username string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -287,7 +287,7 @@ func (d *DeisCmd) AppTransfer(appID, username string) error {
 const noDomainAssignedMsg = "No domain assigned to %s"
 
 // appURL grabs the first domain an app has and returns this.
-func (d *DeisCmd) appURL(s *settings.Settings, appID string) (string, error) {
+func (d *DryccCmd) appURL(s *settings.Settings, appID string) (string, error) {
 	domains, _, err := domains.List(s.Client, appID, 1)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return "", err

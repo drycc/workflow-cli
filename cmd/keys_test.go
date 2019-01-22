@@ -12,15 +12,15 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
-	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 func TestGetKey(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "deis-key")
+	file, err := ioutil.TempFile("", "drycc-key")
 	assert.NoErr(t, err)
 
 	toWrite := []byte("ssh-rsa abc test@example.com")
@@ -46,7 +46,7 @@ func TestGetKey(t *testing.T) {
 func TestGetKeyNoComment(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "deis-key")
+	file, err := ioutil.TempFile("", "drycc-key")
 	assert.NoErr(t, err)
 
 	toWrite := []byte("ssh-rsa abc")
@@ -69,7 +69,7 @@ func TestGetKeyNoComment(t *testing.T) {
 func TestGetInvalidKey(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "deis-key")
+	file, err := ioutil.TempFile("", "drycc-key")
 	assert.NoErr(t, err)
 
 	toWrite := []byte("not a key")
@@ -83,7 +83,7 @@ func TestGetInvalidKey(t *testing.T) {
 }
 
 func TestListKeys(t *testing.T) {
-	name, err := ioutil.TempDir("", "deis-key")
+	name, err := ioutil.TempDir("", "drycc-key")
 	assert.NoErr(t, err)
 	settings.SetHome(name)
 
@@ -139,7 +139,7 @@ type chooseKeyCases struct {
 func TestChooseKey(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "deis-key")
+	file, err := ioutil.TempFile("", "drycc-key")
 	assert.NoErr(t, err)
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	_, err = file.Write(toWrite)
@@ -181,7 +181,7 @@ func TestChooseKey(t *testing.T) {
 1) id_rsa.pub test@example.com
 2) id_rsa.pub example@example.com
 0) Enter path to pubfile (or use keys:add <key_path>)
-Which would you like to use with Deis? `
+Which would you like to use with Drycc? `
 
 		if check.LoadKey {
 			expectedOut += "Enter the path to the pubkey file: "
@@ -204,7 +204,7 @@ func TestKeysList(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -249,7 +249,7 @@ func TestKeysListLimit(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -285,7 +285,7 @@ func TestKeyRemove(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/keys/cpike@starfleet.ufp", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -299,7 +299,7 @@ func TestKeyRemove(t *testing.T) {
 
 func TestKeyAdd(t *testing.T) {
 	// Set temp home dir so no unknown files are listed.
-	name, err := ioutil.TempDir("", "deis-key")
+	name, err := ioutil.TempDir("", "drycc-key")
 	assert.NoErr(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
@@ -312,9 +312,9 @@ func TestKeyAdd(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	keyFile, err := ioutil.TempFile("", "deis-cli-unit-test-ssh-key")
+	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-ssh-key")
 	assert.NoErr(t, err)
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	_, err = keyFile.Write(toWrite)
@@ -328,7 +328,7 @@ func TestKeyAdd(t *testing.T) {
 		fmt.Fprintf(w, "{}")
 	})
 
-	out := fmt.Sprintf("Uploading %s to deis... done\n", filepath.Base(keyFile.Name()))
+	out := fmt.Sprintf("Uploading %s to drycc... done\n", filepath.Base(keyFile.Name()))
 
 	err = cmdr.KeyAdd("", keyFile.Name())
 	assert.NoErr(t, err)
@@ -340,12 +340,12 @@ func TestKeyAdd(t *testing.T) {
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Found the following SSH public keys:
 0) Enter path to pubfile (or use keys:add <key_path>)
-Which would you like to use with Deis? Enter the path to the pubkey file: `+out, "output")
+Which would you like to use with Drycc? Enter the path to the pubkey file: `+out, "output")
 }
 
 func TestKeyAddName(t *testing.T) {
 	// Set temp home dir so no unknown files are listed.
-	name, err := ioutil.TempDir("", "deis-key")
+	name, err := ioutil.TempDir("", "drycc-key")
 	assert.NoErr(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
@@ -358,9 +358,9 @@ func TestKeyAddName(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	keyFile, err := ioutil.TempFile("", "deis-cli-unit-test-ssh-key")
+	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-ssh-key")
 	assert.NoErr(t, err)
 	// generate with one name but used another in the add
 	toWrite := []byte("ssh-rsa abc test@example.com")
@@ -370,14 +370,14 @@ func TestKeyAddName(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.KeyCreateRequest{ID: "deis-test-key", Public: string(toWrite)}, r)
+		testutil.AssertBody(t, api.KeyCreateRequest{ID: "drycc-test-key", Public: string(toWrite)}, r)
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, "{}")
 	})
 
-	out := fmt.Sprintf("Uploading %s to deis... done\n", filepath.Base(keyFile.Name()))
+	out := fmt.Sprintf("Uploading %s to drycc... done\n", filepath.Base(keyFile.Name()))
 
-	err = cmdr.KeyAdd("deis-test-key", keyFile.Name())
+	err = cmdr.KeyAdd("drycc-test-key", keyFile.Name())
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), out, "output")
 }

@@ -7,33 +7,33 @@ import (
 	"time"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDeisCmd) CertsList(int, time.Time) error {
+func (d FakeDryccCmd) CertsList(int, time.Time) error {
 	return errors.New("certs:list")
 }
 
-func (d FakeDeisCmd) CertAdd(string, string, string) error {
+func (d FakeDryccCmd) CertAdd(string, string, string) error {
 	return errors.New("certs:add")
 }
 
-func (d FakeDeisCmd) CertRemove(string) error {
+func (d FakeDryccCmd) CertRemove(string) error {
 	return errors.New("certs:remove")
 }
 
-func (d FakeDeisCmd) CertInfo(string) error {
+func (d FakeDryccCmd) CertInfo(string) error {
 	return errors.New("certs:info")
 }
 
-func (d FakeDeisCmd) CertAttach(string, string) error {
+func (d FakeDryccCmd) CertAttach(string, string) error {
 	return errors.New("certs:attach")
 }
 
-func (d FakeDeisCmd) CertDetach(string, string) error {
+func (d FakeDryccCmd) CertDetach(string, string) error {
 	return errors.New("certs:detach")
 }
 
@@ -46,7 +46,7 @@ func TestCerts(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := FakeDeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := FakeDryccCmd{WOut: &b, ConfigFile: cf}
 
 	// cases defines the arguments and expected return of the call.
 	// if expected is "", it defaults to args[0].

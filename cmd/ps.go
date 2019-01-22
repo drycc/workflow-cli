@@ -8,13 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/ps"
+	"github.com/drycc/controller-sdk-go"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/ps"
 )
 
 // PsList lists an app's processes.
-func (d *DeisCmd) PsList(appID string, results int) error {
+func (d *DryccCmd) PsList(appID string, results int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func (d *DeisCmd) PsList(appID string, results int) error {
 }
 
 // PsScale scales an app's processes.
-func (d *DeisCmd) PsScale(appID string, targets []string) error {
+func (d *DryccCmd) PsScale(appID string, targets []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -69,7 +69,7 @@ func (d *DeisCmd) PsScale(appID string, targets []string) error {
 }
 
 // PsRestart restarts an app's processes.
-func (d *DeisCmd) PsRestart(appID, target string) error {
+func (d *DryccCmd) PsRestart(appID, target string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func (d *DeisCmd) PsRestart(appID, target string) error {
 	processes, err := ps.Restart(s.Client, appID, psType, psName)
 	quit <- true
 	<-quit
-	if err == deis.ErrPodNotFound {
+	if err == drycc.ErrPodNotFound {
 		return fmt.Errorf("Could not find process type %s in app %s", psType, appID)
 	} else if d.checkAPICompatibility(s.Client, err) != nil {
 		return err

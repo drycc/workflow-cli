@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/teamhephy/pkg/prettyprint"
+	"github.com/drycc/pkg/prettyprint"
 
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/config"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/config"
 )
 
 // LimitsList lists an app's limits.
-func (d *DeisCmd) LimitsList(appID string) error {
+func (d *DryccCmd) LimitsList(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -55,7 +55,7 @@ func (d *DeisCmd) LimitsList(appID string) error {
 }
 
 // LimitsSet sets an app's limits.
-func (d *DeisCmd) LimitsSet(appID string, limits []string, limitType string) error {
+func (d *DryccCmd) LimitsSet(appID string, limits []string, limitType string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -91,7 +91,7 @@ func (d *DeisCmd) LimitsSet(appID string, limits []string, limitType string) err
 }
 
 // LimitsUnset removes an app's limits.
-func (d *DeisCmd) LimitsUnset(appID string, limits []string, limitType string) error {
+func (d *DryccCmd) LimitsUnset(appID string, limits []string, limitType string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

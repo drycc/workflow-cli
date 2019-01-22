@@ -1,11 +1,11 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
-// Routing displays all relevant commands for `deis routing`.
+// Routing displays all relevant commands for `drycc routing`.
 func Routing(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for routing:
@@ -14,7 +14,7 @@ routing:info       view routability of an application
 routing:enable     enable routing for an app
 routing:disable    disable routing for an app
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func routingInfo(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Prints info about the current application's routability.
 
-Usage: deis routing:info [options]
+Usage: drycc routing:info [options]
 
 Options:
   -a --app=<app>
@@ -62,7 +62,7 @@ func routingEnable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Enables routability for an app.
 
-Usage: deis routing:enable [options]
+Usage: drycc routing:enable [options]
 
 Options:
   -a --app=<app>
@@ -81,7 +81,7 @@ func routingDisable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Disables routability for an app.
 
-Usage: deis routing:disable [options]
+Usage: drycc routing:disable [options]
 
 Options:
   -a --app=<app>

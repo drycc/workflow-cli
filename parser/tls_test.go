@@ -6,21 +6,21 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDeisCmd) TLSInfo(string) error {
+func (d FakeDryccCmd) TLSInfo(string) error {
 	return errors.New("tls:info")
 }
 
-func (d FakeDeisCmd) TLSEnable(string) error {
+func (d FakeDryccCmd) TLSEnable(string) error {
 	return errors.New("tls:enable")
 }
 
-func (d FakeDeisCmd) TLSDisable(string) error {
+func (d FakeDryccCmd) TLSDisable(string) error {
 	return errors.New("tls:disable")
 }
 
@@ -33,7 +33,7 @@ func TestTLS(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := FakeDeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := FakeDryccCmd{WOut: &b, ConfigFile: cf}
 
 	// cases defines the arguments and expected return of the call.
 	// if expected is "", it defaults to args[0].

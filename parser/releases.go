@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -17,7 +17,7 @@ releases:list        list an application's release history
 releases:info        print information about a specific release
 releases:rollback    return to a previous release
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -46,7 +46,7 @@ func releasesList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists release history for an application.
 
-Usage: deis releases:list [options]
+Usage: drycc releases:list [options]
 
 Options:
   -a --app=<app>
@@ -74,7 +74,7 @@ func releasesInfo(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Prints info about a particular release.
 
-Usage: deis releases:info <version> [options]
+Usage: drycc releases:info <version> [options]
 
 Arguments:
   <version>
@@ -105,7 +105,7 @@ func releasesRollback(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Rolls back to a previous application release.
 
-Usage: deis releases:rollback [<version>] [options]
+Usage: drycc releases:rollback [<version>] [options]
 
 Arguments:
   <version>

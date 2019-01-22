@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 
-	"github.com/teamhephy/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/api"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -26,7 +26,7 @@ healthchecks:list        list healthchecks for an app
 healthchecks:set         set healthchecks for an app
 healthchecks:unset       unset healthchecks for an app
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -55,7 +55,7 @@ func healthchecksList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists healthchecks for an application.
 
-Usage: deis healthchecks:list [options]
+Usage: drycc healthchecks:list [options]
 
 Options:
   -a --app=<app>
@@ -106,7 +106,7 @@ probes accept a string of arguments to be run inside the Container.
 considered healthy if the check can establish a connection. 'tcpSocket' probes accept a
 port number to perform the socket connection on the Container.
 
-Usage: deis healthchecks:set <health-type> <probe-type> [options] [--] <args>...
+Usage: drycc healthchecks:set <health-type> <probe-type> [options] [--] <args>...
 
 Arguments:
   <health-type>
@@ -218,7 +218,7 @@ func healthchecksUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets healthchecks for an application.
 
-Usage: deis healthchecks:unset [options] <health-type>...
+Usage: drycc healthchecks:unset [options] <health-type>...
 
 Arguments:
   <health-type>

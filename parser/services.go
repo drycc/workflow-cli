@@ -1,7 +1,7 @@
 package parser
 
 import (
-  "github.com/teamhephy/workflow-cli/cmd"
+  "github.com/drycc/workflow-cli/cmd"
   docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ services:add           create service for an application
 services:list          list application services
 services:remove        remove service from an application
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
   switch argv[0] {
@@ -43,7 +43,7 @@ func servicesAdd(argv []string, cmdr cmd.Commander) error {
   usage := `
 Creates extra service for an application and binds it to specific route of the main app domain
 
-Usage: deis services:add --type <procfile_type> --route <path_pattern> [options]
+Usage: drycc services:add --type <procfile_type> --route <path_pattern> [options]
 
 Arguments:
   <procfile_type>
@@ -77,7 +77,7 @@ func servicesList(argv []string, cmdr cmd.Commander) error {
   usage := `
 Lists extra services for an application
 
-Usage: deis services:list [options]
+Usage: drycc services:list [options]
 
 Options:
   -a --app=<app>
@@ -99,7 +99,7 @@ func servicesRemove(argv []string, cmdr cmd.Commander) error {
   usage := `
 Deletes specific extra service for application
 
-Usage: deis services:remove <procfile_type> [options]
+Usage: drycc services:remove <procfile_type> [options]
 
 Arguments:
   <procfile_type>

@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/controller-sdk-go/appsettings"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/appsettings"
 )
 
 // RoutingInfo provides information about the status of app routing.
-func (d *DeisCmd) RoutingInfo(appID string) error {
+func (d *DryccCmd) RoutingInfo(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func (d *DeisCmd) RoutingInfo(appID string) error {
 }
 
 // RoutingEnable enables an app from being exposed by the router.
-func (d *DeisCmd) RoutingEnable(appID string) error {
+func (d *DryccCmd) RoutingEnable(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -52,7 +52,7 @@ func (d *DeisCmd) RoutingEnable(appID string) error {
 }
 
 // RoutingDisable disables an app from being exposed by the router.
-func (d *DeisCmd) RoutingDisable(appID string) error {
+func (d *DryccCmd) RoutingDisable(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

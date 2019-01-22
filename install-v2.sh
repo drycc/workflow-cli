@@ -3,13 +3,13 @@
 # Invoking this script:
 #
 # To install the latest stable version:
-# curl https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh | sh
+# curl https://raw.githubusercontent.com/drycc/workflow-cli/master/install-v2.sh | sh
 #
 # To install a specific released version ($VERSION):
-# curl https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh | sh -s $VERSION
+# curl https://raw.githubusercontent.com/drycc/workflow-cli/master/install-v2.sh | sh -s $VERSION
 #
-# - download deis cli binary
-# - making sure deis cli binary is executable
+# - download drycc cli binary
+# - making sure drycc cli binary is executable
 # - explain what was done
 #
 
@@ -24,9 +24,9 @@ check_platform_arch() {
   if ! echo "${supported}" | tr ' ' '\n' | grep -q "${PLATFORM}-${ARCH}"; then
     cat <<EOF
 
-The Hephy Workflow CLI (deis) is not currently supported on ${PLATFORM}-${ARCH}.
+The Drycc Workflow CLI (drycc) is not currently supported on ${PLATFORM}-${ARCH}.
 
-See https://github.com/teamhephy/workflow-cli for more information.
+See https://github.com/drycc/workflow-cli for more information.
 
 EOF
   fi
@@ -34,8 +34,8 @@ EOF
 
 PLATFORM="$(uname | tr '[:upper:]' '[:lower:]')"
 ARCH="$(uname -m)"
-# https://storage.googleapis.com/hephy-workflow-cli-release/v2.18.0/deis-v2.18.0-darwin-386
-DEIS_BIN_URL_BASE="https://storage.googleapis.com/hephy-workflow-cli-release"
+# https://storage.googleapis.com/drycc-workflow-cli-release/v2.18.0/drycc-v2.18.0-darwin-386
+DRYCC_BIN_URL_BASE="https://storage.googleapis.com/drycc-workflow-cli-release"
 
 if [ "${ARCH}" = "x86_64" ]; then
   ARCH="amd64"
@@ -43,24 +43,24 @@ fi
 
 check_platform_arch
 
-DEIS_CLI="deis-${VERSION}-${PLATFORM}-${ARCH}"
-DEIS_CLI_PATH="${DEIS_CLI}"
+DRYCC_CLI="drycc-${VERSION}-${PLATFORM}-${ARCH}"
+DRYCC_CLI_PATH="${DRYCC_CLI}"
 if [ "${VERSION}" != 'stable' ]; then
-  DEIS_CLI_PATH="${VERSION}/${DEIS_CLI_PATH}"
+  DRYCC_CLI_PATH="${VERSION}/${DRYCC_CLI_PATH}"
 fi
 
-echo "Downloading ${DEIS_CLI} From Google Cloud Storage..."
-echo "Downloading binary from here: ${DEIS_BIN_URL_BASE}/${DEIS_CLI_PATH}"
-curl -fsSL -o deis "${DEIS_BIN_URL_BASE}/${DEIS_CLI_PATH}"
+echo "Downloading ${DRYCC_CLI} From Google Cloud Storage..."
+echo "Downloading binary from here: ${DRYCC_BIN_URL_BASE}/${DRYCC_CLI_PATH}"
+curl -fsSL -o drycc "${DRYCC_BIN_URL_BASE}/${DRYCC_CLI_PATH}"
 
-chmod +x deis
+chmod +x drycc
 
 cat <<EOF
 
-The Hephy Workflow CLI (deis) is now available in your current directory.
+The Drycc Workflow CLI (drycc) is now available in your current directory.
 
-To learn more about Hephy Workflow, execute:
+To learn more about Drycc Workflow, execute:
 
-    $ ./deis --help
+    $ ./drycc --help
 
 EOF

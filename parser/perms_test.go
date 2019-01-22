@@ -6,21 +6,21 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDeisCmd) PermsList(string, bool, int) error {
+func (d FakeDryccCmd) PermsList(string, bool, int) error {
 	return errors.New("perms:list")
 }
 
-func (d FakeDeisCmd) PermCreate(string, string, bool) error {
+func (d FakeDryccCmd) PermCreate(string, string, bool) error {
 	return errors.New("perms:create")
 }
 
-func (d FakeDeisCmd) PermDelete(string, string, bool) error {
+func (d FakeDryccCmd) PermDelete(string, string, bool) error {
 	return errors.New("perms:delete")
 }
 
@@ -33,7 +33,7 @@ func TestPerms(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := FakeDeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := FakeDryccCmd{WOut: &b, ConfigFile: cf}
 
 	// cases defines the arguments and expected return of the call.
 	// if expected is "", it defaults to args[0].

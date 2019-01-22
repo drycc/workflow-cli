@@ -2,8 +2,8 @@ package parser
 
 import "io"
 
-// DeisCmd is an implementation of Commander.
-type FakeDeisCmd struct {
+// DryccCmd is an implementation of Commander.
+type FakeDryccCmd struct {
 	ConfigFile string
 	Warned     bool
 	WOut       io.Writer
@@ -11,38 +11,38 @@ type FakeDeisCmd struct {
 	WIn        io.Reader
 }
 
-func (d FakeDeisCmd) Println(...interface{}) (int, error) {
+func (d FakeDryccCmd) Println(...interface{}) (int, error) {
 	return 1, nil
 }
 
-func (d FakeDeisCmd) Print(...interface{}) (int, error) {
+func (d FakeDryccCmd) Print(...interface{}) (int, error) {
 	return 1, nil
 }
 
-func (d FakeDeisCmd) Printf(string, ...interface{}) (int, error) {
+func (d FakeDryccCmd) Printf(string, ...interface{}) (int, error) {
 	return 1, nil
 }
 
-func (d FakeDeisCmd) PrintErrln(...interface{}) (int, error) {
+func (d FakeDryccCmd) PrintErrln(...interface{}) (int, error) {
 	return 1, nil
 }
 
-func (d FakeDeisCmd) PrintErr(...interface{}) (int, error) {
+func (d FakeDryccCmd) PrintErr(...interface{}) (int, error) {
 	return 1, nil
 }
 
-func (d FakeDeisCmd) PrintErrf(string, ...interface{}) (int, error) {
+func (d FakeDryccCmd) PrintErrf(string, ...interface{}) (int, error) {
 	return 1, nil
 }
 
-func (d FakeDeisCmd) ServicesAdd(string, string, string) (error) {
+func (d FakeDryccCmd) ServicesAdd(string, string, string) (error) {
 	return nil
 }
 
-func (d FakeDeisCmd) ServicesList(string) (error) {
+func (d FakeDryccCmd) ServicesList(string) (error) {
 	return nil
 }
 
-func (d FakeDeisCmd) ServicesRemove(string, string) (error) {
+func (d FakeDryccCmd) ServicesRemove(string, string) (error) {
 	return nil
 }

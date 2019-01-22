@@ -8,16 +8,16 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/controller-sdk-go/certs"
-	dtime "github.com/teamhephy/controller-sdk-go/pkg/time"
-	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/drycc/controller-sdk-go"
+	"github.com/drycc/controller-sdk-go/certs"
+	dtime "github.com/drycc/controller-sdk-go/pkg/time"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 const dateFormat = "2 Jan 2006"
 
 // CertsList lists certs registered with the controller.
-func (d *DeisCmd) CertsList(results int, now time.Time) error {
+func (d *DryccCmd) CertsList(results int, now time.Time) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -98,7 +98,7 @@ func (d *DeisCmd) CertsList(results int, now time.Time) error {
 }
 
 // CertAdd adds a cert to the controller.
-func (d *DeisCmd) CertAdd(cert string, key string, name string) error {
+func (d *DryccCmd) CertAdd(cert string, key string, name string) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -119,7 +119,7 @@ func (d *DeisCmd) CertAdd(cert string, key string, name string) error {
 	return nil
 }
 
-func (d *DeisCmd) doCertAdd(c *deis.Client, cert string, key string, name string) error {
+func (d *DryccCmd) doCertAdd(c *drycc.Client, cert string, key string, name string) error {
 	certFile, err := ioutil.ReadFile(cert)
 	if err != nil {
 		return err
@@ -135,7 +135,7 @@ func (d *DeisCmd) doCertAdd(c *deis.Client, cert string, key string, name string
 }
 
 // CertRemove deletes a cert from the controller.
-func (d *DeisCmd) CertRemove(name string) error {
+func (d *DryccCmd) CertRemove(name string) error {
 	s, err := settings.Load(d.ConfigFile)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
@@ -156,7 +156,7 @@ func (d *DeisCmd) CertRemove(name string) error {
 }
 
 // CertInfo gets info about certficiate
-func (d *DeisCmd) CertInfo(name string) error {
+func (d *DryccCmd) CertInfo(name string) error {
 	s, err := settings.Load(d.ConfigFile)
 	if err != nil {
 		return err
@@ -200,7 +200,7 @@ func (d *DeisCmd) CertInfo(name string) error {
 }
 
 // CertAttach attaches a certificate to a domain
-func (d *DeisCmd) CertAttach(name, domain string) error {
+func (d *DryccCmd) CertAttach(name, domain string) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -221,7 +221,7 @@ func (d *DeisCmd) CertAttach(name, domain string) error {
 }
 
 // CertDetach detaches a certificate from a domain
-func (d *DeisCmd) CertDetach(name, domain string) error {
+func (d *DryccCmd) CertDetach(name, domain string) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {

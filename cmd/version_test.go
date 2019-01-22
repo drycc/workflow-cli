@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
-	"github.com/teamhephy/workflow-cli/version"
+	"github.com/drycc/controller-sdk-go"
+	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/version"
 )
 
 func TestVersion(t *testing.T) {
@@ -20,10 +20,10 @@ func TestVersion(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("DEIS_API_VERSION", "1234")
+		w.Header().Add("DRYCC_API_VERSION", "1234")
 		w.WriteHeader(200)
 	})
 
@@ -33,7 +33,7 @@ func TestVersion(t *testing.T) {
 	assert.Equal(t, b.String(), fmt.Sprintf(`Workflow CLI Version:            %s
 Workflow CLI API Version:        %s
 Workflow Controller API Version: 1234
-`, version.Version, deis.APIVersion), "output")
+`, version.Version, drycc.APIVersion), "output")
 
 	b.Reset()
 	err = cmdr.Version(false)

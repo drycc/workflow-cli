@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -12,7 +12,7 @@ Valid commands for shortcuts:
 
 shortcuts:list       list all relevant shortcuts for the CLI
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -37,7 +37,7 @@ func shortcutsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists all relevant shortcuts for the CLI
 
-Usage: deis shortcuts:list
+Usage: drycc shortcuts:list
 `
 
 	_, err := docopt.Parse(usage, argv, true, "", false, true)

@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestParseConfig(t *testing.T) {
@@ -46,7 +46,7 @@ func TestParseSSHKey(t *testing.T) {
 	assert.NoErr(t, err)
 	assert.Equal(t, actual, validSSHKey, "base64 key")
 
-	keyFile, err := ioutil.TempFile("", "deis-cli-unit-test-sshkey")
+	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-sshkey")
 	assert.NoErr(t, err)
 	defer os.Remove(keyFile.Name())
 	_, err = keyFile.Write([]byte(validSSHKey))
@@ -117,7 +117,7 @@ func TestConfigList(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ConfigList("foo", "")
 	assert.NoErr(t, err)
@@ -181,7 +181,7 @@ func TestConfigSet(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ConfigSet("foo", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"})
 	assert.NoErr(t, err)
@@ -235,7 +235,7 @@ func TestConfigUnset(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ConfigUnset("foo", []string{"FOO"})
 	assert.NoErr(t, err)

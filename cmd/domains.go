@@ -1,9 +1,9 @@
 package cmd
 
-import "github.com/teamhephy/controller-sdk-go/domains"
+import "github.com/drycc/controller-sdk-go/domains"
 
 // DomainsList lists domains registered with an app.
-func (d *DeisCmd) DomainsList(appID string, results int) error {
+func (d *DryccCmd) DomainsList(appID string, results int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (d *DeisCmd) DomainsList(appID string, results int) error {
 }
 
 // DomainsAdd adds a domain to an app.
-func (d *DeisCmd) DomainsAdd(appID, domain string) error {
+func (d *DryccCmd) DomainsAdd(appID, domain string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -50,7 +50,7 @@ func (d *DeisCmd) DomainsAdd(appID, domain string) error {
 }
 
 // DomainsRemove removes a domain registered with an app.
-func (d *DeisCmd) DomainsRemove(appID, domain string) error {
+func (d *DryccCmd) DomainsRemove(appID, domain string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

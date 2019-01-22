@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 type parseInfoCase struct {
@@ -101,7 +101,7 @@ func TestRegistryList(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.RegistryList("enterprise")
 	assert.NoErr(t, err)
@@ -148,7 +148,7 @@ func TestRegistrySet(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.RegistrySet("foo", []string{"username=jkirk", "password=ncc1701"})
 	assert.NoErr(t, err)
@@ -195,7 +195,7 @@ func TestRegistryUnset(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.RegistryUnset("foo", []string{"username", "password"})
 	assert.NoErr(t, err)

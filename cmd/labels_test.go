@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/controller-sdk-go/api"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 	"strings"
 )
 
@@ -20,14 +20,14 @@ func TestLabelsList(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/rivendell/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "jim",
 			"app": "rivendell",
-		    "label": {"team" : "teamhephy", "git_repo": "https://github.com/teamhephy/controller-sdk-go"},
+		    "label": {"team" : "drycc", "git_repo": "https://github.com/drycc/controller-sdk-go"},
 			"created": "2014-01-01T00:00:00UTC",
 			"updated": "2014-01-01T00:00:00UTC",
 			"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
@@ -37,8 +37,8 @@ func TestLabelsList(t *testing.T) {
 	err = cmdr.LabelsList("rivendell")
 	assert.NoErr(t, err)
 	assert.Equal(t, strings.TrimSpace(b.String()), `=== rivendell Label
-git_repo:      https://github.com/teamhephy/controller-sdk-go
-team:          teamhephy`, "output")
+git_repo:      https://github.com/drycc/controller-sdk-go
+team:          drycc`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -65,21 +65,21 @@ func TestListsSet(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/lothlorien/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		data := map[string]interface{}{
-			"git_repo": "https://github.com/teamhephy/controller-sdk-go",
-			"team":     "teamhephy",
+			"git_repo": "https://github.com/drycc/controller-sdk-go",
+			"team":     "drycc",
 		}
 		testutil.AssertBody(t, api.AppSettings{Label: data}, r)
 		fmt.Fprintf(w, "{}")
 	})
 
 	err = cmdr.LabelsSet("lothlorien", []string{
-		"team=teamhephy",
-		"git_repo=https://github.com/teamhephy/controller-sdk-go",
+		"team=drycc",
+		"git_repo=https://github.com/drycc/controller-sdk-go",
 	})
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Applying labels on lothlorien... done\n", "output")
@@ -93,7 +93,7 @@ func TestListsUnset(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/bree/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)

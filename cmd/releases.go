@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	"github.com/teamhephy/controller-sdk-go/releases"
+	"github.com/drycc/controller-sdk-go/releases"
 )
 
 // ReleasesList lists an app's releases.
-func (d *DeisCmd) ReleasesList(appID string, results int) error {
+func (d *DryccCmd) ReleasesList(appID string, results int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (d *DeisCmd) ReleasesList(appID string, results int) error {
 }
 
 // ReleasesInfo prints info about a specific release.
-func (d *DeisCmd) ReleasesInfo(appID string, version int) error {
+func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -64,7 +64,7 @@ func (d *DeisCmd) ReleasesInfo(appID string, version int) error {
 }
 
 // ReleasesRollback rolls an app back to a previous release.
-func (d *DeisCmd) ReleasesRollback(appID string, version int) error {
+func (d *DryccCmd) ReleasesRollback(appID string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/arschles/assert"
-	"github.com/teamhephy/workflow-cli/pkg/testutil"
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestPermsListUsers(t *testing.T) {
@@ -30,7 +30,7 @@ func TestPermsListUsers(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", false, -1)
 	assert.NoErr(t, err)
@@ -60,7 +60,7 @@ func TestPermsListUsersLimit(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", false, 1)
 	assert.NoErr(t, err)
@@ -99,7 +99,7 @@ func TestPermsListAdmins(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", true, -1)
 	assert.NoErr(t, err)
@@ -135,7 +135,7 @@ func TestPermsListAdminsLimit(t *testing.T) {
 	})
 
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", true, 1)
 	assert.NoErr(t, err)
@@ -153,7 +153,7 @@ func TestPermsCreateUser(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -187,7 +187,7 @@ func TestPermsCreateAdmin(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -207,7 +207,7 @@ func TestPermsDeleteUser(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -241,7 +241,7 @@ func TestPermsDeleteAdmin(t *testing.T) {
 	}
 	defer server.Close()
 	var b bytes.Buffer
-	cmdr := DeisCmd{WOut: &b, ConfigFile: cf}
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)

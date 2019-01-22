@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/teamhephy/controller-sdk-go"
-	"github.com/teamhephy/workflow-cli/settings"
+	"github.com/drycc/controller-sdk-go"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 // TestServer represents a test HTTP server along with a path to a config file
@@ -48,7 +48,7 @@ func NewTestServerAndClient() (string, *TestServer, error) {
 
 	filename := filepath.Join(name, "test.json")
 
-	client, err := deis.New(false, server.Server.URL, "")
+	client, err := drycc.New(false, server.Server.URL, "")
 	if err != nil {
 		server.Close()
 		return "", nil, err
@@ -99,5 +99,5 @@ func StripProgress(input string) string {
 
 // SetHeaders sets standard headers for requests
 func SetHeaders(w http.ResponseWriter) {
-	w.Header().Add("DEIS_API_VERSION", deis.APIVersion)
+	w.Header().Add("DRYCC_API_VERSION", drycc.APIVersion)
 }

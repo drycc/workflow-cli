@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/teamhephy/workflow-cli/cmd"
+	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -14,7 +14,7 @@ ps:list        list application processes
 ps:restart     restart an application or its process types
 ps:scale       scale processes (e.g. web=4 worker=2)
 
-Use 'deis help [command]' to learn more.
+Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
@@ -43,7 +43,7 @@ func psList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists processes servicing an application.
 
-Usage: deis ps:list [options]
+Usage: drycc ps:list [options]
 
 Options:
   -a --app=<app>
@@ -63,7 +63,7 @@ func psRestart(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Restart an application, a process type or a specific process.
 
-Usage: deis ps:restart [<type>] [options]
+Usage: drycc ps:restart [<type>] [options]
 
 Arguments:
   <type>
@@ -90,7 +90,7 @@ func psScale(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Scales an application's processes by type.
 
-Usage: deis ps:scale <type>=<num>... [options]
+Usage: drycc ps:scale <type>=<num>... [options]
 
 Arguments:
   <type>

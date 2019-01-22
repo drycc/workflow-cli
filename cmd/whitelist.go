@@ -3,11 +3,11 @@ package cmd
 import (
 	"strings"
 
-	"github.com/teamhephy/controller-sdk-go/whitelist"
+	"github.com/drycc/controller-sdk-go/whitelist"
 )
 
 // WhitelistList lists the addresses whitelisted for app
-func (d *DeisCmd) WhitelistList(appID string) error {
+func (d *DryccCmd) WhitelistList(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (d *DeisCmd) WhitelistList(appID string) error {
 }
 
 // WhitelistAdd adds the addresses to the app's Whitelist.
-func (d *DeisCmd) WhitelistAdd(appID, IPs string) error {
+func (d *DryccCmd) WhitelistAdd(appID, IPs string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -50,7 +50,7 @@ func (d *DeisCmd) WhitelistAdd(appID, IPs string) error {
 }
 
 // WhitelistRemove deletes the addresses from the app's Whitelist.
-func (d *DeisCmd) WhitelistRemove(appID, IPs string) error {
+func (d *DryccCmd) WhitelistRemove(appID, IPs string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
