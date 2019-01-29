@@ -34,8 +34,7 @@ bootstrap:
 
 # This is supposed to be run within a docker container
 build-revision:
-	${DEV_ENV_CMD} gox -verbose ${GO_LDFLAGS} -os="${BUILD_OS}" -arch="${BUILD_ARCH}" -output="${DIST_DIR}/${REVISION}/drycc-${REVISION}-{{.OS}}-{{.Arch}}" .
-
+	${DEV_ENV_CMD} gox -verbose ${GO_LDFLAGS} -os="${BUILD_OS}" -arch="${BUILD_ARCH}" -output="${DIST_DIR}/${REVISION}/drycc-${REVISION}-{{.OS}}-{{.Arch}}" .  
 # This is supposed to be run within a docker container
 build-tag:
 	${DEV_ENV_CMD} gox -verbose ${GO_LDFLAGS} -os="${BUILD_OS}" -arch="${BUILD_ARCH}" -output="${DIST_DIR}/${GIT_TAG}/drycc-${GIT_TAG}-{{.OS}}-{{.Arch}}" .
@@ -43,8 +42,11 @@ build-tag:
 
 build: build-tag build-revision
 
-test-style: build-test-image
+test-style:
 	${DEV_ENV_CMD} lint
 
-test:
-	${DEV_ENV_CMD} test
+test-cover:
+	${DEV_ENV_CMD} test-cover.sh
+
+test: build-revision test-style test-cover
+	${DEV_ENV_CMD} go test ./...

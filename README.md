@@ -1,10 +1,8 @@
-[![Build Status](https://travis-ci.org/drycc/workflow-cli.svg?branch=master)](https://travis-ci.org/drycc/workflow-cli)
-
 # Drycc Client
 
-[![Build Status](https://ci.drycc.cc/buildStatus/icon?job=Drycc/workflow-cli/master)](https://ci.drycc.cc/job/Drycc/job/workflow-cli/job/master/)
+[![Build Status](https://travis-ci.org/drycc/workflow-cli.svg?branch=master)](https://travis-ci.org/drycc/workflow-cli)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drycc/workflow-cli)](https://goreportcard.com/report/github.com/drycc/workflow-cli)
-[![codebeat badge](https://codebeat.co/badges/05d314a8-ca61-4211-b69e-e7a3033662c8)](https://codebeat.co/projects/github-com-drycc-workflow-cli)
+[![codebeat badge](https://codebeat.co/badges/826a57a3-c9a8-4263-ae57-f249d5a3bb79)](https://codebeat.co/projects/github-com-drycc-workflow-cli-master)
 [![codecov](https://codecov.io/gh/drycc/workflow-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/drycc/workflow-cli)
 
 Download Links: https://github.com/drycc/workflow-cli/releases
