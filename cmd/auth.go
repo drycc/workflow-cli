@@ -56,7 +56,7 @@ func (d *DryccCmd) Register(controller string, username string, password string,
 		}
 
 		if password != passwordConfirm {
-			return errors.New("Password mismatch, aborting registration.")
+			return errors.New("password mismatch, aborting registration")
 		}
 	}
 
@@ -182,7 +182,7 @@ func (d *DryccCmd) Passwd(username, password, newPassword string) error {
 		}
 
 		if newPassword != passwordConfirm {
-			return errors.New("Password mismatch, not changing.")
+			return errors.New("password mismatch, not changing")
 		}
 	}
 

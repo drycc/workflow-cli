@@ -8,10 +8,10 @@ import (
 	"strings"
 	"syscall"
 
+	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cli"
 	"github.com/drycc/workflow-cli/cmd"
 	"github.com/drycc/workflow-cli/parser"
-	docopt "github.com/docopt/docopt-go"
 )
 
 const extensionPrefix = "drycc-"
@@ -122,8 +122,8 @@ Use 'git push drycc master' to deploy to an application.
 		err = parser.Config(argv, &cmdr)
 	case "domains":
 		err = parser.Domains(argv, &cmdr)
-  case "services":
-    err = parser.Services(argv, &cmdr)
+	case "services":
+		err = parser.Services(argv, &cmdr)
 	case "git":
 		err = parser.Git(argv, &cmdr)
 	case "healthchecks":
@@ -137,8 +137,8 @@ Use 'git push drycc master' to deploy to an application.
 		err = parser.Labels(argv, &cmdr)
 	case "limits":
 		err = parser.Limits(argv, &cmdr)
-  case "timeouts":
-    err = parser.Timeouts(argv, &cmdr)
+	case "timeouts":
+		err = parser.Timeouts(argv, &cmdr)
 	case "perms":
 		err = parser.Perms(argv, &cmdr)
 	case "ps":

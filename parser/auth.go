@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 
-	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
+	"github.com/drycc/workflow-cli/cmd"
 )
 
 // Auth routes auth commands to the specific function.

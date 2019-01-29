@@ -240,7 +240,7 @@ func TestAppDestroy(t *testing.T) {
 }`)
 	})
 	err = cmdr.AppDestroy("lorem-ipsum", "bad-confirm-string")
-	assert.Equal(t, err.Error(), `App lorem-ipsum does not match confirm bad-confirm-string, aborting.`, "output")
+	assert.Equal(t, err.Error(), `app lorem-ipsum does not match confirm bad-confirm-string, aborting`, "output")
 
 	err = cmdr.AppDestroy("lorem-ipsum", "lorem-ipsum")
 	assert.NoErr(t, err)

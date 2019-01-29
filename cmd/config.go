@@ -268,7 +268,7 @@ func parseConfig(configVars []string) (map[string]interface{}, error) {
 			captures := regex.FindStringSubmatch(config)
 			configMap[captures[1]] = captures[2]
 		} else {
-			return nil, fmt.Errorf("'%s' does not match the pattern 'key=var', ex: MODE=test\n", config)
+			return nil, fmt.Errorf("'%s' does not match the pattern 'key=var', ex: MODE=test", config)
 		}
 	}
 

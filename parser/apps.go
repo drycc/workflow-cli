@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
+	"github.com/drycc/workflow-cli/cmd"
 )
 
 // Apps routes app commands to their specific function.

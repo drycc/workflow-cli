@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
+	"github.com/drycc/workflow-cli/cmd"
 )
 
 // Domains routes domain commands to their specific function.

@@ -184,7 +184,7 @@ func TestNotLoggedIn(t *testing.T) {
 
 	_, err = Load(filepath.Join(name, "test.json"))
 	assert.ExistsErr(t, err, "load error")
-	if !strings.Contains(err.Error(), "Client configuration file not found") {
-		t.Error("Expected configuration error, Got:", err.Error())
+	if !strings.Contains(err.Error(), "client configuration file not found") {
+		t.Error("expected configuration error, Got:", err.Error())
 	}
 }

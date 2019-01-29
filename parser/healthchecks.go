@@ -7,8 +7,8 @@ import (
 
 	"github.com/drycc/workflow-cli/cmd"
 
-	"github.com/drycc/controller-sdk-go/api"
 	docopt "github.com/docopt/docopt-go"
+	"github.com/drycc/controller-sdk-go/api"
 )
 
 // TODO: This is for supporting backward compatibility and should be removed

@@ -35,14 +35,14 @@ func (d FakeDryccCmd) PrintErrf(string, ...interface{}) (int, error) {
 	return 1, nil
 }
 
-func (d FakeDryccCmd) ServicesAdd(string, string, string) (error) {
+func (d FakeDryccCmd) ServicesAdd(string, string, string) error {
 	return nil
 }
 
-func (d FakeDryccCmd) ServicesList(string) (error) {
+func (d FakeDryccCmd) ServicesList(string) error {
 	return nil
 }
 
-func (d FakeDryccCmd) ServicesRemove(string, string) (error) {
+func (d FakeDryccCmd) ServicesRemove(string, string) error {
 	return nil
 }

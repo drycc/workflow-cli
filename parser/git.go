@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 
-	"github.com/drycc/workflow-cli/cmd"
 	docopt "github.com/docopt/docopt-go"
+	"github.com/drycc/workflow-cli/cmd"
 )
 
 // Git routes git commands to their specific function.

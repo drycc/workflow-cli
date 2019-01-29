@@ -39,8 +39,8 @@ func Load(cf string) (*Settings, error) {
 
 	if _, err := os.Stat(filename); err != nil {
 		if os.IsNotExist(err) {
-			return nil, fmt.Errorf(`Client configuration file not found at: %s
-Are you logged in? Use 'drycc login' or 'drycc register' to get started.`, filename)
+			return nil, fmt.Errorf(`client configuration file not found at: %s
+Are you logged in? Use 'drycc login' or 'drycc register' to get started`, filename)
 		}
 
 		return nil, err

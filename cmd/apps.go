@@ -245,7 +245,7 @@ func (d *DryccCmd) AppDestroy(appID, confirm string) error {
 	}
 
 	if confirm != appID {
-		return fmt.Errorf("App %s does not match confirm %s, aborting.", appID, confirm)
+		return fmt.Errorf("app %s does not match confirm %s, aborting", appID, confirm)
 	}
 
 	startTime := time.Now()
