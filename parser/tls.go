@@ -24,6 +24,10 @@ Use 'drycc help [command]' to learn more.
 		return tlsEnable(argv, cmdr)
 	case "tls:disable":
 		return tlsDisable(argv, cmdr)
+	case "tls:auto:enable":
+		return tlsAutoEnable(argv, cmdr)
+	case "tls:auto:disable":
+		return tlsAutoDisable(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -97,4 +101,44 @@ Options:
 	}
 
 	return cmdr.TLSDisable(safeGetValue(args, "--app"))
+}
+
+func tlsAutoEnable(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Enable certs-auto requests to current application.
+
+Usage: drycc tls:auto:enable [options]
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.Parse(usage, argv, true, "", false, true)
+
+	if err != nil {
+		return err
+	}
+
+	return cmdr.TLSAutoEnable(safeGetValue(args, "--app"))
+}
+
+func tlsAutoDisable(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Disable certs-auto requests to current application.
+
+Usage: drycc tls:auto:disable [options]
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.Parse(usage, argv, true, "", false, true)
+
+	if err != nil {
+		return err
+	}
+
+	return cmdr.TLSAutoDisable(safeGetValue(args, "--app"))
 }

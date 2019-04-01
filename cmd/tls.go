@@ -32,7 +32,7 @@ func (d *DryccCmd) TLSEnable(appID string) error {
 	d.Printf("Enabling https-only requests for %s... ", appID)
 
 	quit := progress(d.WOut)
-	_, err = tls.Enable(s.Client, appID)
+	_, err = tls.EnableHTTPSEnforced(s.Client, appID)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -54,7 +54,51 @@ func (d *DryccCmd) TLSDisable(appID string) error {
 	d.Printf("Disabling https-only requests for %s... ", appID)
 
 	quit := progress(d.WOut)
-	_, err = tls.Disable(s.Client, appID)
+	_, err = tls.DisableHTTPSEnforced(s.Client, appID)
+	quit <- true
+	<-quit
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}
+
+// TLSAutoEnable enables certs-auto requests to the application.
+func (d *DryccCmd) TLSAutoEnable(appID string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Enabling certs-auto requests for %s... ", appID)
+
+	quit := progress(d.WOut)
+	_, err = tls.EnableCertsAutoEnabled(s.Client, appID)
+	quit <- true
+	<-quit
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}
+
+// TLSAutoDisable disables certs-auto requests to the application.
+func (d *DryccCmd) TLSAutoDisable(appID string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Disabling certs-auto requests for %s... ", appID)
+
+	quit := progress(d.WOut)
+	_, err = tls.DisableCertsAutoEnabled(s.Client, appID)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

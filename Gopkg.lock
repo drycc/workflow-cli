@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
+  digest = "1:a2682518d905d662d984ef9959984ef87cecb777d379bfa9d9fe40e78069b3e4"
   name = "github.com/PuerkitoBio/purell"
   packages = ["."]
   pruneopts = "UT"
-  revision = "0bcb03f4b4d0a9428594752bd2a3b9aa0a9d4bd4"
-  version = "v1.1.0"
+  revision = "44968752391892e1b0d0b821ee79e9a85fa13049"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
@@ -35,7 +35,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ed4edcbab1f03b2cb665cbe160bc94331caaa1eeda6a7e0b8fe63c5d64379e05"
+  digest = "1:40c2ae1bf3c75bcd9f2c97ca6d985e2fc2fb27eeb5aa141a102e3cc4e4c5946e"
   name = "github.com/drycc/controller-sdk-go"
   packages = [
     ".",
@@ -58,23 +58,23 @@
     "whitelist",
   ]
   pruneopts = "UT"
-  revision = "6c99dbcce25a775067cbaa47ccbc66dd16e4b721"
+  revision = "ac3f16645a44b15cee32ba2f3f9d6f209da39ddb"
 
 [[projects]]
   branch = "master"
-  digest = "1:f012c85d19017295d502f009cca751593e9d11d929d18290d333585bc89e14c7"
+  digest = "1:6fc2dd6c362ecdfe265efe8db1e53297099b1825fc335756225623d4947410d0"
   name = "github.com/drycc/pkg"
   packages = ["prettyprint"]
   pruneopts = "UT"
-  revision = "5c1dfa7b5446283ec3bdc7e8c3ef367bb5c1b4d1"
+  revision = "bcdffff0fcb382671962f8920ad034b5027a48e6"
 
 [[projects]]
   branch = "master"
-  digest = "1:a93656d87cf49c0f28464b9339549437950ca8ccd86bfd7a555aacfdf3035fff"
+  digest = "1:d3d93087df8a02215b306cd04357d3321833ce7a48452ebafce1165f2ddcde69"
   name = "github.com/goware/urlx"
   packages = ["."]
   pruneopts = "UT"
-  revision = "06d8eeb3ce171b5617a3f8ef24451df26ca971ef"
+  revision = "4fc201f7f862af2abfaca0c2904be15ea0037a34"
 
 [[projects]]
   digest = "1:0356f3312c9bd1cbeda81505b7fd437501d8e778ab66998ef69f00d7f9b3a0d7"
@@ -93,12 +93,12 @@
   version = "v0.0.1"
 
 [[projects]]
-  branch = "release-branch.go1.11"
-  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
+  branch = "master"
+  digest = "1:bbe51412d9915d64ffaa96b51d409e070665efc5194fcf145c4a27d4133107a4"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   pruneopts = "UT"
-  revision = "56440b844dfe139a8ac053f4ecac0b20b79058f4"
+  revision = "a5d413f7728c81fb97d96a2b722368945f651e78"
 
 [[projects]]
   branch = "master"
@@ -106,18 +106,18 @@
   name = "golang.org/x/net"
   packages = ["idna"]
   pruneopts = "UT"
-  revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
+  revision = "74de082e2cca95839e88aa0aeee5aadf6ce7710f"
 
 [[projects]]
-  branch = "release-branch.go1.11"
-  digest = "1:a60cae5be8993938498243605b120290533a5208fd5cac81c932afbad3642fb0"
+  branch = "master"
+  digest = "1:f6321364014431568a59b49b449d6ae60c017f3afa3f4ab787a5636853b16b1e"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "98c5dad5d1a0e8a73845ecc8897d0bd56586511d"
+  revision = "9eb1bfa1ce65ae8a6ff3114b0aaf9a41a6cf3560"
 
 [[projects]]
   digest = "1:0c56024909189aee3364b7f21a95a27459f718aa7c199a5c111c36cfffd9eaef"
