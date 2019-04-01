@@ -11,8 +11,10 @@ func TLS(argv []string, cmdr cmd.Commander) error {
 Valid commands for tls:
 
 tls:info              view info about an application's TLS settings
-tls:enable            enables the router to enforce https-only requests to an application
-tls:disable           disables the router to enforce https-only requests to an application
+tls:force:enable      enables the router to enforce https-only requests to an application
+tls:force:disable     disables the router to enforce https-only requests to an application
+tls:auto:enable       enables the router to automatic generation of certificates to an application
+tls:auto:disable      disables the router to automatic generation of certificates to an application
 
 Use 'drycc help [command]' to learn more.
 `
@@ -20,9 +22,9 @@ Use 'drycc help [command]' to learn more.
 	switch argv[0] {
 	case "tls:info":
 		return tlsInfo(argv, cmdr)
-	case "tls:enable":
+	case "tls:force:enable":
 		return tlsEnable(argv, cmdr)
-	case "tls:disable":
+	case "tls:force:disable":
 		return tlsDisable(argv, cmdr)
 	case "tls:auto:enable":
 		return tlsAutoEnable(argv, cmdr)
