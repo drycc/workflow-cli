@@ -29,7 +29,8 @@ func TestTLSInfo(t *testing.T) {
 	"owner": "nazgul",
 	"created": "2016-08-22T17:40:16Z",
 	"updated": "2016-08-22T17:40:16Z",
-	"https_enforced": true
+	"https_enforced": true,
+	"certs_auto_enabled": false
 }`)
 	})
 
@@ -37,10 +38,11 @@ func TestTLSInfo(t *testing.T) {
 	assert.NoErr(t, err)
 	assert.Equal(t, b.String(), `=== numenor TLS
 HTTPS Enforced: true
+Certs Auto: false
 `, "output")
 }
 
-func TestTLSEnable(t *testing.T) {
+func TestTLSForceEnable(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -55,7 +57,6 @@ func TestTLSEnable(t *testing.T) {
 		b := true
 		a := api.NewTLS()
 		a.HTTPSEnforced = &b
-		testutil.AssertBody(t, a, r)
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, `{
 	"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -67,12 +68,12 @@ func TestTLSEnable(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.TLSEnable("numenor")
+	err = cmdr.TLSForceEnable("numenor")
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Enabling https-only requests for numenor... done\n", "output")
 }
 
-func TestTLSDisable(t *testing.T) {
+func TestTLSForceDisable(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -84,7 +85,9 @@ func TestTLSDisable(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.NewTLS(), r)
+		b := false
+		a := api.NewTLS()
+		a.HTTPSEnforced = &b
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, `{
 	"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -96,7 +99,7 @@ func TestTLSDisable(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.TLSDisable("numenor")
+	err = cmdr.TLSForceDisable("numenor")
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Disabling https-only requests for numenor... done\n", "output")
 }

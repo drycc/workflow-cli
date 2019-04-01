@@ -1,15 +1,9 @@
 package parser
 
-import "io"
+import "github.com/drycc/workflow-cli/cmd"
 
 // DryccCmd is an implementation of Commander.
-type FakeDryccCmd struct {
-	ConfigFile string
-	Warned     bool
-	WOut       io.Writer
-	WErr       io.Writer
-	WIn        io.Reader
-}
+type FakeDryccCmd cmd.DryccCmd
 
 func (d FakeDryccCmd) Println(...interface{}) (int, error) {
 	return 1, nil

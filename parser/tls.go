@@ -11,8 +11,10 @@ func TLS(argv []string, cmdr cmd.Commander) error {
 Valid commands for tls:
 
 tls:info              view info about an application's TLS settings
-tls:enable            enables the router to enforce https-only requests to an application
-tls:disable           disables the router to enforce https-only requests to an application
+tls:force:enable      enables the router to enforce https-only requests to an application
+tls:force:disable     disables the router to enforce https-only requests to an application
+tls:auto:enable       enables the router to automatic generation of certificates to an application
+tls:auto:disable      disables the router to automatic generation of certificates to an application
 
 Use 'drycc help [command]' to learn more.
 `
@@ -20,10 +22,10 @@ Use 'drycc help [command]' to learn more.
 	switch argv[0] {
 	case "tls:info":
 		return tlsInfo(argv, cmdr)
-	case "tls:enable":
-		return tlsEnable(argv, cmdr)
-	case "tls:disable":
-		return tlsDisable(argv, cmdr)
+	case "tls:force:enable":
+		return tlsForceEnable(argv, cmdr)
+	case "tls:force:disable":
+		return tlsForceDisable(argv, cmdr)
 	case "tls:auto:enable":
 		return tlsAutoEnable(argv, cmdr)
 	case "tls:auto:disable":
@@ -63,11 +65,11 @@ Options:
 	return cmdr.TLSInfo(safeGetValue(args, "--app"))
 }
 
-func tlsEnable(argv []string, cmdr cmd.Commander) error {
+func tlsForceEnable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Enable the router to enforce https-only requests to the current application.
 
-Usage: drycc tls:enable [options]
+Usage: drycc tls:force:enable [options]
 
 Options:
   -a --app=<app>
@@ -80,14 +82,14 @@ Options:
 		return err
 	}
 
-	return cmdr.TLSEnable(safeGetValue(args, "--app"))
+	return cmdr.TLSForceEnable(safeGetValue(args, "--app"))
 }
 
-func tlsDisable(argv []string, cmdr cmd.Commander) error {
+func tlsForceDisable(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Disable the router from enforcing https-only requests to the current application.
 
-Usage: drycc tls:disable [options]
+Usage: drycc tls:force:disable [options]
 
 Options:
   -a --app=<app>
@@ -100,7 +102,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TLSDisable(safeGetValue(args, "--app"))
+	return cmdr.TLSForceDisable(safeGetValue(args, "--app"))
 }
 
 func tlsAutoEnable(argv []string, cmdr cmd.Commander) error {

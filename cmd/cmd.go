@@ -87,10 +87,10 @@ type Commander interface {
 	TagsSet(string, []string) error
 	TagsUnset(string, []string) error
 	TLSInfo(string) error
-	TLSEnable(string) error
-	TLSDisable(string) error
-        TLSAutoEnable(string) error
-        TLSAutoDisable(string) error
+	TLSForceEnable(string) error
+	TLSForceDisable(string) error
+	TLSAutoEnable(string) error
+	TLSAutoDisable(string) error
 	UsersList(results int) error
 	WhitelistAdd(string, string) error
 	WhitelistList(string) error

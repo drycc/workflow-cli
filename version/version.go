@@ -2,4 +2,4 @@ package version
 
 // Version identifies the Drycc product revision.
 // Note: This value is overwritten by the linker during build
-var Version = "unknown version (override me)"
+var Version = "v1.0.2"

@@ -21,8 +21,8 @@ func (d *DryccCmd) TLSInfo(appID string) error {
 	return nil
 }
 
-// TLSEnable enables the router to enforce https-only requests to the application.
-func (d *DryccCmd) TLSEnable(appID string) error {
+// TLSForceEnable enables the router to enforce https-only requests to the application.
+func (d *DryccCmd) TLSForceEnable(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -43,8 +43,8 @@ func (d *DryccCmd) TLSEnable(appID string) error {
 	return nil
 }
 
-// TLSDisable disables the router to enforce https-only requests to the application.
-func (d *DryccCmd) TLSDisable(appID string) error {
+// TLSForceDisable disables the router to enforce https-only requests to the application.
+func (d *DryccCmd) TLSForceDisable(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {

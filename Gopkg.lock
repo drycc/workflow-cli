@@ -35,7 +35,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:40c2ae1bf3c75bcd9f2c97ca6d985e2fc2fb27eeb5aa141a102e3cc4e4c5946e"
+  digest = "1:01487af0fdd1025f3e454d2db5051774fbb4b85abc31b275378fe4f581020163"
   name = "github.com/drycc/controller-sdk-go"
   packages = [
     ".",
@@ -58,7 +58,7 @@
     "whitelist",
   ]
   pruneopts = "UT"
-  revision = "ac3f16645a44b15cee32ba2f3f9d6f209da39ddb"
+  revision = "60d01c3603f4765883a3891d08176cd9a9868b78"
 
 [[projects]]
   branch = "master"

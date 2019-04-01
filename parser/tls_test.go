@@ -16,12 +16,20 @@ func (d FakeDryccCmd) TLSInfo(string) error {
 	return errors.New("tls:info")
 }
 
-func (d FakeDryccCmd) TLSEnable(string) error {
-	return errors.New("tls:enable")
+func (d FakeDryccCmd) TLSForceEnable(string) error {
+	return errors.New("tls:force:enable")
 }
 
-func (d FakeDryccCmd) TLSDisable(string) error {
-	return errors.New("tls:disable")
+func (d FakeDryccCmd) TLSForceDisable(string) error {
+	return errors.New("tls:force:disable")
+}
+
+func (d FakeDryccCmd) TLSAutoEnable(string) error {
+	return errors.New("tls:auto:disable")
+}
+
+func (d FakeDryccCmd) TLSAutoDisable(string) error {
+	return errors.New("tls:auto:disable")
 }
 
 func TestTLS(t *testing.T) {
@@ -46,11 +54,11 @@ func TestTLS(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"tls:enable"},
+			args:     []string{"tls:force:enable"},
 			expected: "",
 		},
 		{
-			args:     []string{"tls:disable"},
+			args:     []string{"tls:force:disable"},
 			expected: "",
 		},
 		{
