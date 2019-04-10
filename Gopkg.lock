@@ -35,7 +35,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:01487af0fdd1025f3e454d2db5051774fbb4b85abc31b275378fe4f581020163"
+  digest = "1:87979362b184508c8937aa14e6274cc6b99957b1d949c199c12aa9d4cd1ee19e"
   name = "github.com/drycc/controller-sdk-go"
   packages = [
     ".",
@@ -58,7 +58,7 @@
     "whitelist",
   ]
   pruneopts = "UT"
-  revision = "60d01c3603f4765883a3891d08176cd9a9868b78"
+  revision = "0d790cf13cf4237e833ff525f29d7fc1f8899131"
 
 [[projects]]
   branch = "master"
@@ -98,7 +98,7 @@
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   pruneopts = "UT"
-  revision = "a5d413f7728c81fb97d96a2b722368945f651e78"
+  revision = "38d8ce5564a5b71b2e3a00553993f1b9a7ae852f"
 
 [[projects]]
   branch = "master"
@@ -106,18 +106,18 @@
   name = "golang.org/x/net"
   packages = ["idna"]
   pruneopts = "UT"
-  revision = "74de082e2cca95839e88aa0aeee5aadf6ce7710f"
+  revision = "eb5bcb51f2a31c7d5141d810b70815c05d9c9146"
 
 [[projects]]
   branch = "master"
-  digest = "1:f6321364014431568a59b49b449d6ae60c017f3afa3f4ab787a5636853b16b1e"
+  digest = "1:503f66aac79cb9135d73679c7fa3e95a6fad82a3da399c505ea282b50ff03723"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "9eb1bfa1ce65ae8a6ff3114b0aaf9a41a6cf3560"
+  revision = "4b34438f7a67ee5f45cc6132e2bad873a20324e9"
 
 [[projects]]
   digest = "1:0c56024909189aee3364b7f21a95a27459f718aa7c199a5c111c36cfffd9eaef"
