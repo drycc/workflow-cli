@@ -81,6 +81,8 @@ Arguments:
 Options:
   -a --app=<app>
     The uniquely identifiable name for the application.
+  -s --stack=<stack>
+    The stack name for the application, defaults to container.
   -p --procfile=<procfile>
     A YAML string used to supply a Procfile to the application.
 `
@@ -93,7 +95,11 @@ Options:
 
 	app := safeGetValue(args, "--app")
 	image := safeGetValue(args, "<image>")
+	stack := safeGetValue(args, "--stack")
+	if stack == "" {
+		stack = "container"
+	}
 	procfile := safeGetValue(args, "--procfile")
 
-	return cmdr.BuildsCreate(app, image, procfile)
+	return cmdr.BuildsCreate(app, image, stack, procfile)
 }

@@ -35,7 +35,7 @@ func (d *DryccCmd) BuildsList(appID string, results int) error {
 }
 
 // BuildsCreate creates a build for an app.
-func (d *DryccCmd) BuildsCreate(appID, image, procfile string) error {
+func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -61,7 +61,7 @@ func (d *DryccCmd) BuildsCreate(appID, image, procfile string) error {
 
 	d.Print("Creating build... ")
 	quit := progress(d.WOut)
-	_, err = builds.New(s.Client, appID, image, procfileMap)
+	_, err = builds.New(s.Client, appID, image, stack, procfileMap)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

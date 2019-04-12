@@ -139,12 +139,13 @@ func TestBuildsCreate(t *testing.T) {
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CreateBuildRequest{
 			Image: "ncc/1701:A",
+			Stack: "container",
 		}, r)
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, "{}")
 	})
 
-	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "")
+	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "container", "")
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
@@ -152,6 +153,7 @@ func TestBuildsCreate(t *testing.T) {
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CreateBuildRequest{
 			Image: "nx/72307:latest",
+			Stack: "container",
 			Procfile: map[string]string{
 				"web":  "./drive",
 				"warp": "./warp 8",
@@ -163,7 +165,7 @@ func TestBuildsCreate(t *testing.T) {
 	})
 	b.Reset()
 
-	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", `web: ./drive
+	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", "container", `web: ./drive
 warp: ./warp 8
 `)
 	assert.NoErr(t, err)
@@ -173,6 +175,7 @@ warp: ./warp 8
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CreateBuildRequest{
 			Image: "nx/326:latest",
+			Stack: "container",
 			Procfile: map[string]string{
 				"web":  "./drive",
 				"warp": "./warp 8",
@@ -189,7 +192,7 @@ warp: ./warp 8
 `), os.ModePerm)
 	assert.NoErr(t, err)
 
-	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "")
+	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "")
 	assert.NoErr(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
