@@ -1,14 +1,7 @@
 # the filepath to this repository, relative to $GOPATH/src
 REPO_PATH := github.com/drycc/workflow-cli
-DEV_ENV_IMAGE := quay.io/drycc/go-dev:v0.22.0
+DEV_ENV_IMAGE := golang:1.14
 DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}
-
-HOST_OS := $(shell uname)
-ifeq ($(HOST_OS),Darwin)
-	GOOS=darwin
-else
-	GOOS=linux
-endif
 
 # The latest git tag on branch
 GIT_TAG ?= $(shell git describe --abbrev=0 --tags)
@@ -17,9 +10,6 @@ REVISION ?= $(shell git rev-parse --short HEAD)
 REGISTRY ?= quay.io/
 IMAGE_PREFIX ?= drycc
 IMAGE := ${REGISTRY}${IMAGE_PREFIX}/workflow-cli-dev:${REVISION}
-
-BUILD_OS ?=linux darwin windows
-BUILD_ARCH ?=amd64 386
 
 DIST_DIR ?= _dist
 
@@ -30,14 +20,15 @@ define build-install-script
 endef
 
 bootstrap:
-	${DEV_ENV_CMD} dep ensure
+	${DEV_ENV_CMD} go mod vendor
 
 # This is supposed to be run within a docker container
 build-revision:
-	${DEV_ENV_CMD} gox -verbose ${GO_LDFLAGS} -os="${BUILD_OS}" -arch="${BUILD_ARCH}" -output="${DIST_DIR}/${REVISION}/drycc-${REVISION}-{{.OS}}-{{.Arch}}" .  
+	${DEV_ENV_CMD} bash build.sh build-revision ${REVISION}
+
 # This is supposed to be run within a docker container
 build-tag:
-	${DEV_ENV_CMD} gox -verbose ${GO_LDFLAGS} -os="${BUILD_OS}" -arch="${BUILD_ARCH}" -output="${DIST_DIR}/${GIT_TAG}/drycc-${GIT_TAG}-{{.OS}}-{{.Arch}}" .
+	${DEV_ENV_CMD} bash build.sh build-revision ${GIT_TAG}
 	@$(call build-install-script,${GIT_TAG})
 
 build: build-tag build-revision
