@@ -1,6 +1,6 @@
 # the filepath to this repository, relative to $GOPATH/src
 REPO_PATH := github.com/drycc/workflow-cli
-DEV_ENV_IMAGE := golang:1.14
+DEV_ENV_IMAGE := drycc/go-dev
 DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}
 
 # The latest git tag on branch

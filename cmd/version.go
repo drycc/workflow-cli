@@ -22,7 +22,7 @@ func (d *DryccCmd) Version(all bool) error {
 		return err
 	}
 
-	// retrive version information from drycc controller
+	// retrieve version information from drycc controller
 	err = s.Client.Healthcheck()
 
 	if err != nil && err != drycc.ErrAPIMismatch {
