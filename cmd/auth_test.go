@@ -208,8 +208,8 @@ func TestWhoamiAll(t *testing.T) {
 		fmt.Fprintf(w, `{
   "email": "test@example.com",
   "username": "test",
-  "first_name": "",
-  "last_name": "",
+  "first_name": "test",
+  "last_name": "test",
   "is_superuser": true,
   "is_staff": true,
   "groups": [],
@@ -222,17 +222,17 @@ func TestWhoamiAll(t *testing.T) {
 
 	err = cmdr.Whoami(true)
 	assert.NoErr(t, err)
-	expected := fmt.Sprintf(`ID: 0
+	expected := `ID: 0
 Username: test
 Email: test@example.com
-First Name: 
-Last Name: 
+First Name: test
+Last Name: test
 Last Login: 2016-09-12T22:15:26Z
 Is Superuser: true
 Is Staff: true
 Is Active: true
 Date Joined: 2015-09-12T22:15:26Z
-`)
+`
 	assert.Equal(t, b.String(), expected, "output")
 }
 
