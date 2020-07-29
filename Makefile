@@ -7,7 +7,7 @@ DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}
 GIT_TAG ?= $(shell git describe --abbrev=0 --tags)
 REVISION ?= $(shell git rev-parse --short HEAD)
 
-REGISTRY ?= quay.io/
+REGISTRY ?=
 IMAGE_PREFIX ?= drycc
 IMAGE := ${REGISTRY}${IMAGE_PREFIX}/workflow-cli-dev:${REVISION}
 
