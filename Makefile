@@ -24,11 +24,11 @@ bootstrap:
 
 # This is supposed to be run within a docker container
 build-revision:
-	${DEV_ENV_CMD} bash build.sh build-revision ${REVISION}
+	${DEV_ENV_CMD} scripts/build build-revision ${REVISION}
 
 # This is supposed to be run within a docker container
 build-tag:
-	${DEV_ENV_CMD} bash build.sh build-revision ${GIT_TAG}
+	${DEV_ENV_CMD} scripts/build build-revision ${GIT_TAG}
 	@$(call build-install-script,${GIT_TAG})
 
 build: build-tag build-revision
