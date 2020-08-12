@@ -72,7 +72,7 @@ func TestCertsList(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `        Name       |   Common Name    |    SubjectAltName    |         Expires          |   Fingerprint   |       Domains        |  Updated   |  Created    
-+------------------+------------------+----------------------+--------------------------+-----------------+----------------------+------------+------------+
+-------------------+------------------+----------------------+--------------------------+-----------------+----------------------+------------+-------------
   test-example-com | test.example.com | test.com,example.com | 10 Nov 2014 (expired)    | 12:34[...]78:90 | test.com,example.com | 9 Jun 2016 | 9 Jun 2016  
   test-drycc-com   | test.drycc.com   |                      | 1 Aug 2016 (in 2 months) | ab:12[...]12:ab |                      | 9 Jun 2016 | 9 Jun 2016  
   test1            | 1.test.drycc.com |                      | 11 Jun 2016 (in 2 days)  |                 |                      | unknown    | unknown     
@@ -145,7 +145,7 @@ func TestCertsListLimit(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `        Name       |   Common Name    |    SubjectAltName    |        Expires        |   Fingerprint   |       Domains        |  Updated   |  Created    
-+------------------+------------------+----------------------+-----------------------+-----------------+----------------------+------------+------------+
+-------------------+------------------+----------------------+-----------------------+-----------------+----------------------+------------+-------------
   test-example-com | test.example.com | test.com,example.com | 10 Nov 2014 (expired) | 12:34[...]78:90 | test.com,example.com | 9 Jun 2016 | 9 Jun 2016  
 `, "output")
 

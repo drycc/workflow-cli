@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 
 	"github.com/drycc/controller-sdk-go/builds"
 )
