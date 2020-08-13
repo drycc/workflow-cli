@@ -26,7 +26,6 @@ func TestRoutingInfo(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "elrond",
 			"app": "rivendell",
-			"maintenance": true,
 			"routable": true,
 			"created": "2014-01-01T00:00:00UTC",
 			"updated": "2014-01-01T00:00:00UTC",
@@ -43,7 +42,6 @@ func TestRoutingInfo(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "sauron",
 			"app": "mordor",
-			"maintenance": true,
 			"routable": false,
 			"created": "2014-01-01T00:00:00UTC",
 			"updated": "2014-01-01T00:00:00UTC",
@@ -62,7 +60,6 @@ func TestRoutingInfo(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "aragorn",
 			"app": "gondor",
-			"maintenance": true,
 			"created": "2014-01-01T00:00:00UTC",
 			"updated": "2014-01-01T00:00:00UTC",
 			"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"

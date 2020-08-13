@@ -64,9 +64,6 @@ type Commander interface {
 	TimeoutsList(string) error
 	TimeoutsSet(string, []string) error
 	TimeoutsUnset(string, []string) error
-	MaintenanceInfo(string) error
-	MaintenanceEnable(string) error
-	MaintenanceDisable(string) error
 	PermsList(string, bool, int) error
 	PermCreate(string, string, bool) error
 	PermDelete(string, string, bool) error

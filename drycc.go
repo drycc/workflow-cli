@@ -63,7 +63,6 @@ Subcommands, use 'drycc help [subcommand]' to learn more::
   registry      manage private registry information for your application
   releases      manage releases of an application
   routing       manage routability of an application
-  maintenance   manage maintenance mode of an application
   tags          manage tags for application containers
   tls           manage TLS settings for applications
   users         manage users
@@ -149,8 +148,6 @@ Use 'git push drycc master' to deploy to an application.
 		err = parser.Releases(argv, &cmdr)
 	case "routing":
 		err = parser.Routing(argv, &cmdr)
-	case "maintenance":
-		err = parser.Maintenance(argv, &cmdr)
 	case "shortcuts":
 		err = parser.Shortcuts(argv, &cmdr)
 	case "tags":
