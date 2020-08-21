@@ -97,7 +97,7 @@ Options:
   --cpu
     value apply to CPU.
   -m --memory
-    value apply to memory. [default: true]
+    value apply to memory.
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
