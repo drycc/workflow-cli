@@ -28,3 +28,4 @@ _dist
 workflow-cli
 coverage.txt
 .DS_Store
+.idea/*

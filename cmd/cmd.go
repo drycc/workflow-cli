@@ -99,6 +99,11 @@ type Commander interface {
 	PrintErr(...interface{}) (int, error)
 	PrintErrf(string, ...interface{}) (int, error)
 	Version(bool) error
+	VolumesCreate(string, string, string) error
+	VolumesDelete(string, string) error
+	VolumesList(string, int) error
+	VolumesMount(string, string, []string) error
+	VolumesUnmount(string, string, []string) error
 }
 
 // DryccCmd is an implementation of Commander.
