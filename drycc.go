@@ -70,6 +70,7 @@ Subcommands, use 'drycc help [subcommand]' to learn more::
   whitelist     manage whitelisted addresses of an application
   services      manage services for your applications
   timeouts      manage pods termination grace period
+  volumes       manage volumes for your applications
 
 Shortcut commands, use 'drycc shortcuts' to see all::
 

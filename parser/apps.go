@@ -205,9 +205,13 @@ func appRun(argv []string, cmdr cmd.Commander) error {
 Runs a command inside an ephemeral app container. Default environment is
 /bin/bash.
 
-Usage: drycc apps:run [options] [--] <command>...
+Usage: drycc apps:run [--mount=<volume>:<path>...] [options] [--] <command>...
 
 Arguments:
+  <volume>
+    the volume name
+  <path>
+    the filesystem path.
   <command>
     the shell command to run inside the container.
 
@@ -224,8 +228,8 @@ Options:
 
 	app := safeGetValue(args, "--app")
 	command := strings.Join(args["<command>"].([]string), " ")
-
-	return cmdr.AppRun(app, command)
+	mounts := args["--mount"].([]string)
+	return cmdr.AppRun(app, command, mounts)
 }
 
 func appDestroy(argv []string, cmdr cmd.Commander) error {

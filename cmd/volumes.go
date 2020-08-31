@@ -20,7 +20,7 @@ func (d *DryccCmd) VolumesList(appID string, results int) error {
 	if results == defaultLimit {
 		results = s.Limit
 	}
-	fmt.Println("-----app-----", appID)
+	//fmt.Println("-----app-----", appID)  # debug
 	volumes, count, err := volumes.List(s.Client, appID, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
@@ -38,10 +38,10 @@ func (d *DryccCmd) VolumesList(appID string, results int) error {
 func printVolumes(d *DryccCmd, appID string, volumes api.Volumes, wOut io.Writer) {
 	//volumes := ps.ByType(input)
 
-	fmt.Fprintf(wOut, "=== %s Volumes\n", appID)
+	fmt.Fprintf(wOut, "=== %s volumes\n", appID)
 
 	for _, volume := range volumes {
-		fmt.Fprintf(wOut, "--- %s %s\n", volume.Name, volume.Size)
+		fmt.Fprintf(wOut, "--- %s   %s\n", volume.Name, volume.Size)
 		for k, v := range volume.Path {
 			fmt.Println(k, v)
 		}
@@ -120,7 +120,7 @@ func (d *DryccCmd) VolumesMount(appID string, name string, volumeVars []string) 
 		return err
 	}
 
-	d.Print("done\n\n")
+	d.Print("done\n")
 
 	return nil
 }
@@ -153,7 +153,7 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 		return err
 	}
 
-	d.Print("done\n\n")
+	d.Print("done\n")
 
 	return nil
 }

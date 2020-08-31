@@ -45,8 +45,8 @@ func TestVolumesList(t *testing.T) {
 	err = cmdr.VolumesList("example-go", -1)
 	assert.NoErr(t, err)
 
-	assert.Equal(t, b.String(), `=== example-go Volumes
---- myvolume 500M
+	assert.Equal(t, b.String(), `=== example-go volumes
+--- myvolume   500M
 `, "output")
 }
 
@@ -131,11 +131,10 @@ func TestVolumesMount(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Mounting volume... done
-
 `, "output")
 	//
 	//=== example-go Volumes
-	//--- myvolume 500M
+	//--- myvolume   500M
 	//cmd /data/cmd1
 }
 
@@ -175,9 +174,8 @@ func TestVolumesUnmount(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Unmounting volume... done
-
 `, "output")
 
 	//=== example-go Volumes
-	//--- myvolume 500M
+	//--- myvolume   500M
 }

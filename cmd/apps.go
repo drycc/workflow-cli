@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -190,7 +191,7 @@ func (d *DryccCmd) AppLogs(appID string, lines int) error {
 }
 
 // AppRun runs a one time command in the app.
-func (d *DryccCmd) AppRun(appID, command string) error {
+func (d *DryccCmd) AppRun(appID, command string, volumeVars []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -198,8 +199,12 @@ func (d *DryccCmd) AppRun(appID, command string) error {
 	}
 
 	d.Printf("Running '%s'...\n", command)
+	volumeMap, err := parseMount(volumeVars)
+	//volumeObj := map[string]interface{}{
+	//	"volumes": volumeMap,
+	//}
 
-	out, err := apps.Run(s.Client, appID, command)
+	out, err := apps.Run(s.Client, appID, command, volumeMap)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -212,6 +217,21 @@ func (d *DryccCmd) AppRun(appID, command string) error {
 
 	os.Exit(out.ReturnCode)
 	return nil
+}
+
+func parseMount(volumeVars []string) (map[string]interface{}, error) {
+	volumeMap := make(map[string]interface{})
+
+	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*):([\s\S]*)$`)
+	for _, volume := range volumeVars {
+		if regex.MatchString(volume) {
+			captures := regex.FindStringSubmatch(volume)
+			volumeMap[captures[1]] = captures[2]
+		} else {
+			return nil, fmt.Errorf("'%s' does not match the pattern 'key:var', ex: MODE:test", volume)
+		}
+	}
+	return volumeMap, nil
 }
 
 // AppDestroy destroys an app.
