@@ -36,14 +36,13 @@ func (d *DryccCmd) VolumesList(appID string, results int) error {
 
 // printVolumes format volume data
 func printVolumes(d *DryccCmd, appID string, volumes api.Volumes, wOut io.Writer) {
-	//volumes := ps.ByType(input)
 
 	fmt.Fprintf(wOut, "=== %s volumes\n", appID)
 
 	for _, volume := range volumes {
-		fmt.Fprintf(wOut, "--- %s   %s\n", volume.Name, volume.Size)
+		fmt.Fprintf(wOut, "--- %s\t%s\n", volume.Name, volume.Size)
 		for k, v := range volume.Path {
-			fmt.Println(k, v)
+			fmt.Fprintf(wOut, "%s\t\t%s\n", k, v)
 		}
 	}
 }
