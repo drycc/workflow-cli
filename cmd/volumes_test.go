@@ -46,7 +46,7 @@ func TestVolumesList(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `=== example-go volumes
---- myvolume   500M
+--- myvolume	500M
 `, "output")
 }
 

@@ -200,9 +200,9 @@ func (d *DryccCmd) AppRun(appID, command string, volumeVars []string) error {
 
 	d.Printf("Running '%s'...\n", command)
 	volumeMap, err := parseMount(volumeVars)
-	//volumeObj := map[string]interface{}{
-	//	"volumes": volumeMap,
-	//}
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
 
 	out, err := apps.Run(s.Client, appID, command, volumeMap)
 	if d.checkAPICompatibility(s.Client, err) != nil {
