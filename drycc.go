@@ -71,6 +71,7 @@ Subcommands, use 'drycc help [subcommand]' to learn more::
   services      manage services for your applications
   timeouts      manage pods termination grace period
   volumes       manage volumes for your applications
+  resources     manage resources for your applications
 
 Shortcut commands, use 'drycc shortcuts' to see all::
 

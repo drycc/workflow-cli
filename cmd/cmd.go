@@ -104,6 +104,13 @@ type Commander interface {
 	VolumesList(string, int) error
 	VolumesMount(string, string, []string) error
 	VolumesUnmount(string, string, []string) error
+	ResourcesCreate(string, string, string, []string) error
+	ResourcesList(string, int) error
+	ResourceDelete(string, string) error
+	ResourceGet(string, string) error
+	ResourcePut(string, string, string, []string) error
+	ResourceBind(string, string) error
+	ResourceUnbind(string, string) error
 }
 
 // DryccCmd is an implementation of Commander.
