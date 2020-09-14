@@ -55,7 +55,7 @@ func resourcesCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Create a resource for the application.
 
-Usage: drycc resources:create <plan> <name> <param>=<value>... [options]
+Usage: drycc resources:create <plan> <name> [<param>=<value>...] [options]
 
 Arguments:
   <plan>
@@ -148,7 +148,7 @@ func resourcePut(argv []string, cmdr cmd.Commander) error {
 	usage := `
 update a resource from the application
 
-Usage: drycc resources:update <plan> <name> <param>=<value>... [options]
+Usage: drycc resources:update <plan> <name> [<param>=<value>...] [options]
 
 Arguments:
   <plan>

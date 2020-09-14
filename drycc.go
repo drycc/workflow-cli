@@ -164,6 +164,8 @@ Use 'git push drycc master' to deploy to an application.
 		err = parser.Whitelist(argv, &cmdr)
 	case "volumes":
 		err = parser.Volumes(argv, &cmdr)
+	case "resources":
+		err = parser.Resources(argv, &cmdr)
 	default:
 		env := os.Environ()
 

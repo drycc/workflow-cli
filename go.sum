@@ -36,6 +36,8 @@ github.com/drycc/controller-sdk-go v0.0.0-20200813035713-e73ce53533e7 h1:8tlFlmR
 github.com/drycc/controller-sdk-go v0.0.0-20200813035713-e73ce53533e7/go.mod h1:mF8/kZ/E4oDHCtfUVS790Frm8oVzZkoCGCKYT2eWQro=
 github.com/drycc/controller-sdk-go v0.0.0-20200901021526-471d3aa9862b h1:scZpGVSBX32HcCQcqwGmH1TKuy1xEczyF0fDH0XP1xA=
 github.com/drycc/controller-sdk-go v0.0.0-20200901021526-471d3aa9862b/go.mod h1:mF8/kZ/E4oDHCtfUVS790Frm8oVzZkoCGCKYT2eWQro=
+github.com/drycc/controller-sdk-go v0.0.0-20200910051502-0b84631ba397 h1:MbpNwDOmS0+YxR0S8AsmygAj2qsOy9PjmLUzI76OhZs=
+github.com/drycc/controller-sdk-go v0.0.0-20200910051502-0b84631ba397/go.mod h1:mF8/kZ/E4oDHCtfUVS790Frm8oVzZkoCGCKYT2eWQro=
 github.com/drycc/pkg v0.0.0-20190129033019-bcdffff0fcb3 h1:QRAbL97/hJecXQzaSONMCiwt1JjBKAAMKK0qJW5sgIM=
 github.com/drycc/pkg v0.0.0-20190129033019-bcdffff0fcb3/go.mod h1:zNgTT6kuGZOKMIdSrjskIw5fctdbbszqiTPEt3ffxHw=
 github.com/drycc/pkg v0.0.0-20200811173146-1f2b2781a852 h1:OsWH7jrv2i32rkvHFuj3yVpGMR+A6heRge9tm01XR/U=

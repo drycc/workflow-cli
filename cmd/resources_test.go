@@ -29,7 +29,7 @@ func TestResourcesCreate(t *testing.T) {
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.ResourcesCreate("example-go", "mysql", "mysql:5.6", nil)
+	err = cmdr.ResourcesCreate("example-go", "mysql:5.6", "mysql", nil)
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating mysql to example-go... done\n", "output")
@@ -73,7 +73,7 @@ func TestResourcesList(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `=== example-go resources
---- mysql	mysql:5.6
+mysql	mysql:5.6
 `, "output")
 }
 
@@ -159,7 +159,7 @@ func TestResourcePut(t *testing.T) {
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.ResourcePut("example-go", "mysql", "mysql:5.7", nil)
+	err = cmdr.ResourcePut("example-go", "mysql:5.7", "mysql", nil)
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Updating mysql to example-go... done\n", "output")

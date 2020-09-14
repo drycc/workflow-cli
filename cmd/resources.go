@@ -11,7 +11,7 @@ import (
 )
 
 // ResourcesCreate create a resource for the application
-func (d *DryccCmd) ResourcesCreate(appID, name string, plan string, params []string) error {
+func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -109,7 +109,7 @@ func (d *DryccCmd) ResourceDelete(appID, name string) error {
 }
 
 // ResourcePut update a resource for the application
-func (d *DryccCmd) ResourcePut(appID, name string, plan string, params []string) error {
+func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -193,7 +193,7 @@ func printResources(d *DryccCmd, appID string, resources api.Resources, wOut io.
 	fmt.Fprintf(wOut, "=== %s resources\n", appID)
 
 	for _, resource := range resources {
-		fmt.Fprintf(wOut, "--- %s\t%s\n", resource.Name, resource.Plan)
+		fmt.Fprintf(wOut, "%s\t%s\n", resource.Name, resource.Plan)
 	}
 }
 
