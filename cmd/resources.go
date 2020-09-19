@@ -191,9 +191,16 @@ func (d *DryccCmd) ResourceUnbind(appID string, name string) error {
 func printResources(d *DryccCmd, appID string, resources api.Resources, wOut io.Writer) {
 
 	fmt.Fprintf(wOut, "=== %s resources\n", appID)
+	resourceNames := make([]string, len(resources))
 
 	for _, resource := range resources {
-		fmt.Fprintf(wOut, "%s\t%s\n", resource.Name, resource.Plan)
+		resourceNames = append(resourceNames, resource.Name)
+	}
+	lenResourceNames := sliceMaxLen(resourceNames) + 5
+
+	for _, resource := range resources {
+		spaces := strings.Repeat(" ", lenResourceNames-len(resource.Name))
+		fmt.Fprintf(wOut, "%s%s%s\n", resource.Name, spaces, resource.Plan)
 	}
 }
 
@@ -208,8 +215,8 @@ func printResourceDetail(d *DryccCmd, appID string, resource api.Resource, wOut 
 	for key, value := range resource.Options {
 		optionsMap[key+":"] = fmt.Sprintf("%v", value)
 	}
-	lenDataMap := maxLen(dataMap)
-	lenOptionsMap := maxLen(optionsMap)
+	lenDataMap := mapMaxLen(dataMap)
+	lenOptionsMap := mapMaxLen(optionsMap)
 	tempArray := []int{lenDataMap, lenOptionsMap, len("binding:")}
 	max := maxNum(tempArray...) + 5
 	d.Print(fmt.Sprintf("plan:%s%s\n", strings.Repeat(" ", max-len("plan:")), resource.Plan))
@@ -226,12 +233,23 @@ func printResourceDetail(d *DryccCmd, appID string, resource api.Resource, wOut 
 	}
 }
 
-func maxLen(msg map[string]string) int {
+func mapMaxLen(msg map[string]string) int {
 	// find the longest key so we know how much padding to use
 	max := 0
 	for key := range msg {
 		if len(key) > max {
 			max = len(key)
+		}
+	}
+	return max
+}
+
+func sliceMaxLen(msgs []string) int {
+	// find the longest member so we know how much padding to use
+	max := 0
+	for _, msg := range msgs {
+		if len(msg) > max {
+			max = len(msg)
 		}
 	}
 	return max
