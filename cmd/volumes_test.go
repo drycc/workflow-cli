@@ -34,7 +34,7 @@ func TestVolumesList(t *testing.T) {
 			"app": "example-go",
 			"name": "myvolume",
 			"size": "500M",
-			"path": {},
+			"path": {"cmd": "/data/cmd1", "cmd123": "/data/cmd123"},
 			"created": "2020-08-26T00:00:00UTC",
 			"updated": "2020-08-26T00:00:00UTC"
 		}
@@ -46,7 +46,9 @@ func TestVolumesList(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `=== example-go volumes
---- myvolume	500M
+--- myvolume     500M
+cmd              /data/cmd1
+cmd123           /data/cmd123
 `, "output")
 }
 
@@ -132,10 +134,6 @@ func TestVolumesMount(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Mounting volume... done
 `, "output")
-	//
-	//=== example-go Volumes
-	//--- myvolume   500M
-	//cmd /data/cmd1
 }
 
 func TestVolumesUnmount(t *testing.T) {
@@ -175,7 +173,4 @@ func TestVolumesUnmount(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Unmounting volume... done
 `, "output")
-
-	//=== example-go Volumes
-	//--- myvolume   500M
 }

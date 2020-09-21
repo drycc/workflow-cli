@@ -73,7 +73,7 @@ func TestResourcesList(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `=== example-go resources
-mysql	mysql:5.6
+mysql     mysql:5.6
 `, "output")
 }
 

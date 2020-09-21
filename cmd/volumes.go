@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/drycc/pkg/prettyprint"
 	"io"
 	"regexp"
+	"strings"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
@@ -39,11 +41,29 @@ func printVolumes(d *DryccCmd, appID string, volumes api.Volumes, wOut io.Writer
 
 	fmt.Fprintf(wOut, "=== %s volumes\n", appID)
 
+	var max int
 	for _, volume := range volumes {
-		fmt.Fprintf(wOut, "--- %s\t%s\n", volume.Name, volume.Size)
-		for k, v := range volume.Path {
-			fmt.Fprintf(wOut, "%s\t\t%s\n", k, v)
+		if max < (len(volume.Name) + 4){
+			max = len(volume.Name) + 4
 		}
+		for key, _ := range volume.Path {
+			if max < len(key){
+				max = len(key)
+			}
+		}
+	}
+	max = max + 5
+
+	for _, volume := range volumes {
+		nameSpaces := strings.Repeat(" ", max-len(volume.Name)-4)
+		fmt.Fprintf(wOut, "--- %s%s%s\n", volume.Name, nameSpaces, volume.Size)
+
+		pathMap := make(map[string]string)
+		for key, value := range volume.Path {
+			pathMap[key] = fmt.Sprintf("%v", value)
+		}
+		lenDataMap := mapMaxLen(pathMap)
+		d.Print(prettyprint.PrettyTabs(pathMap, max-lenDataMap))
 	}
 }
 
