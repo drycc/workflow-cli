@@ -152,10 +152,10 @@ worker     1
 	assert.Equal(t, b.String(), `=== franklin Limits
 
 --- Memory
-Unlimited
+Default
 
 --- CPU
-Unlimited
+Default
 `, "output")
 }
 
@@ -204,7 +204,7 @@ func TestLimitsSet(t *testing.T) {
 === foo Limits
 
 --- Memory
-Unlimited
+Default
 
 --- CPU
 web     100m
@@ -248,7 +248,7 @@ web     100m
 web     1G
 
 --- CPU
-Unlimited
+Default
 `, "output")
 
 	// with requests/limit parameter
@@ -296,7 +296,7 @@ web        2000M
 worker     3G
 
 --- CPU
-Unlimited
+Default
 `, "output")
 
 	// with requests/limit parameter
@@ -339,7 +339,7 @@ Unlimited
 === phew Limits
 
 --- Memory
-Unlimited
+Default
 
 --- CPU
 db         5.6
@@ -393,7 +393,7 @@ func TestLimitsUnset(t *testing.T) {
 === foo Limits
 
 --- Memory
-Unlimited
+Default
 
 --- CPU
 web     100m
@@ -437,6 +437,6 @@ web     100m
 web     1G
 
 --- CPU
-Unlimited
+Default
 `, "output")
 }
