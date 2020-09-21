@@ -22,8 +22,8 @@ type parseLimitCase struct {
 func TestParseLimit(t *testing.T) {
 	t.Parallel()
 
-	var errorHint = ` doesn't fit format type=#unit or type=# or type=#/#
-Examples: web=2G worker=500M db=1G/2G`
+	var errorHint = ` doesn't fit format type=#unit or type=#
+Examples: web=2G worker=500M db=1G`
 
 	cases := []parseLimitCase{
 		{"web=2G", "web", "2G", false, ""},
@@ -31,11 +31,6 @@ Examples: web=2G worker=500M db=1G/2G`
 		{"web=100m", "web", "100m", false, ""},
 		{"web=0.1", "web", "0.1", false, ""},
 		{"web=.123", "web", ".123", false, ""},
-		{"web=2G/4G", "web", "2G/4G", false, ""},
-		{"web=2/4", "web", "2/4", false, ""},
-		{"web=200m/400m", "web", "200m/400m", false, ""},
-		{"web=0.2/0.4", "web", "0.2/0.4", false, ""},
-		{"web=.2/.4", "web", ".2/.4", false, ""},
 		{"web1=2G", "web1", "2G", false, ""},
 		{"web-server=2G", "web-server", "2G", false, ""},
 		{"web-server1=2G", "web-server1", "2G", false, ""},
@@ -43,8 +38,6 @@ Examples: web=2G worker=500M db=1G/2G`
 		{"web=", "", "", true, "web=" + errorHint},
 		{"1=", "", "", true, "1=" + errorHint},
 		{"web=G", "", "", true, "web=G" + errorHint},
-		{"web=/", "", "", true, "web=/" + errorHint},
-		{"web=/1", "", "", true, "web=/1" + errorHint},
 		{"web-=2G", "", "", true, "web-=2G" + errorHint},
 		{"-web=2G", "", "", true, "-web=2G" + errorHint},
 		{"Web=2G", "", "", true, "Web=2G" + errorHint},
@@ -74,8 +67,8 @@ func TestLimitTags(t *testing.T) {
 
 	cases := []parseLimitsCase{
 		{[]string{"web=1G", "worker=2"}, map[string]interface{}{"web": "1G", "worker": "2"}, false, ""},
-		{[]string{"foo=", "web=1G"}, nil, true, `foo= doesn't fit format type=#unit or type=# or type=#/#
-Examples: web=2G worker=500M db=1G/2G`},
+		{[]string{"foo=", "web=1G"}, nil, true, `foo= doesn't fit format type=#unit or type=#
+Examples: web=2G worker=500M db=1G`},
 	}
 
 	for _, check := range cases {
@@ -105,12 +98,12 @@ func TestLimitsList(t *testing.T) {
 			"values": {},
 			"memory": {
 				"web": "2G",
-				"db": "1000M/1500M"
+				"db": "1000M"
 			},
 			"cpu": {
 				"web": "2",
 				"worker": "1",
-				"db": "500m/2000m"
+				"db": "500m"
 			},
 			"tags": {},
 			"registry": {},
@@ -128,11 +121,11 @@ func TestLimitsList(t *testing.T) {
 	assert.Equal(t, b.String(), `=== enterprise Limits
 
 --- Memory
-db      1000M/1500M
+db      1000M
 web     2G
 
 --- CPU
-db         500m/2000m
+db         500m
 web        2
 worker     1
 `, "output")
@@ -265,8 +258,8 @@ Unlimited
 			testutil.AssertBody(t, api.Config{
 				Memory: map[string]interface{}{
 					"web":    "2000M",
-					"worker": "0/3G",
-					"db":     "4G/5G",
+					"worker": "3G",
+					"db":     "5G",
 				},
 			}, r)
 		}
@@ -277,8 +270,8 @@ Unlimited
 			"values": {},
 			"memory": {
 				"web": "2000M",
-				"worker": "0/3G",
-				"db": "4G/5G"
+				"worker": "3G",
+				"db": "5G"
 			},
 			"cpu": {},
 			"tags": {},
@@ -290,7 +283,7 @@ Unlimited
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("jim", []string{"web=2000M", "worker=0/3G", "db=4G/5G"}, "memory")
+	err = cmdr.LimitsSet("jim", []string{"web=2000M", "worker=3G", "db=5G"}, "memory")
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -298,9 +291,9 @@ Unlimited
 === jim Limits
 
 --- Memory
-db         4G/5G
+db         5G
 web        2000M
-worker     0/3G
+worker     3G
 
 --- CPU
 Unlimited
@@ -313,8 +306,8 @@ Unlimited
 			testutil.AssertBody(t, api.Config{
 				CPU: map[string]interface{}{
 					"web":    "2",
-					"worker": "0/300m",
-					"db":     "4/5.6",
+					"worker": "300m",
+					"db":     "5.6",
 				},
 			}, r)
 		}
@@ -325,8 +318,8 @@ Unlimited
 			"values": {},
 			"cpu": {
 				"web": "2",
-				"worker": "0/300m",
-				"db": "4/5.6"
+				"worker": "300m",
+				"db": "5.6"
 			},
 			"cpu": {},
 			"tags": {},
@@ -338,7 +331,7 @@ Unlimited
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=0/300m", "db=4/5.6"}, "cpu")
+	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=300m", "db=5.6"}, "cpu")
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -349,9 +342,9 @@ Unlimited
 Unlimited
 
 --- CPU
-db         4/5.6
+db         5.6
 web        2
-worker     0/300m
+worker     300m
 `, "output")
 }
 

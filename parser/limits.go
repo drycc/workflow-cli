@@ -61,14 +61,11 @@ Options:
 
 func limitSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Sets resource requests and limits for an application.
+Sets resource limits for an application.
 
 A resource limit is a finite resource within a pod which we can apply
-restrictions through Kubernetes. A resource request is used by Kubernetes scheduler
-to select a node that can guarantee requested resource. If provided only one value,
-it'll be default by Kubernetes as both request and limit. These request and limit
-are applied to each individual pod, so setting a memory limit of 1G for an application
-means that each pod gets 1G of memory. Value needs to be within 0 <= request <= limit
+restrictions through Kubernetes.The limit is applied to each individual pod,
+so setting a memory limit of 1G for an application means that each pod gets 1G of memory.
 
 Usage: drycc limits:set [options] <type>=<value>...
 
@@ -78,7 +75,7 @@ Arguments:
     Note that Dockerfile apps have a default 'cmd' process type.
   <value>
     The value to apply to the process type. By default, this is set to --memory.
-    Can be in <limit> or <request>/<limit> format eg. web=2G db=1G/2G
+    Can be in <limit> format eg. web=2G db=1G
     You can only set one type of limit per call.
 
     With --memory, units are represented in Bytes (B), Kilobytes (K), Megabytes
