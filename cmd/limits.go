@@ -27,7 +27,7 @@ func (d *DryccCmd) LimitsList(appID string) error {
 
 	d.Println("--- Memory")
 	if len(config.Memory) == 0 {
-		d.Println("Unlimited")
+		d.Println("Default")
 	} else {
 		memoryMap := make(map[string]string)
 
@@ -40,7 +40,7 @@ func (d *DryccCmd) LimitsList(appID string) error {
 
 	d.Println("\n--- CPU")
 	if len(config.CPU) == 0 {
-		d.Println("Unlimited")
+		d.Println("Default")
 	} else {
 		cpuMap := make(map[string]string)
 
