@@ -29,11 +29,11 @@ Examples: web=2G worker=500M db=1G`
 		{"web=2G", "web", "2G", false, ""},
 		{"web=2", "web", "2", false, ""},
 		{"web=100m", "web", "100m", false, ""},
-		{"web=0.1", "web", "0.1", false, ""},
-		{"web=.123", "web", ".123", false, ""},
 		{"web1=2G", "web1", "2G", false, ""},
 		{"web-server=2G", "web-server", "2G", false, ""},
 		{"web-server1=2G", "web-server1", "2G", false, ""},
+		{"web=0.1", "", "", true, "web=0.1" + errorHint},
+		{"web=.123", "", "", true, "web=.123" + errorHint},
 		{"=1", "", "", true, "=1" + errorHint},
 		{"web=", "", "", true, "web=" + errorHint},
 		{"1=", "", "", true, "1=" + errorHint},
@@ -307,7 +307,7 @@ Default
 				CPU: map[string]interface{}{
 					"web":    "2",
 					"worker": "300m",
-					"db":     "5.6",
+					"db":     "5",
 				},
 			}, r)
 		}
@@ -319,7 +319,7 @@ Default
 			"cpu": {
 				"web": "2",
 				"worker": "300m",
-				"db": "5.6"
+				"db": "5"
 			},
 			"cpu": {},
 			"tags": {},
@@ -331,7 +331,7 @@ Default
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=300m", "db=5.6"}, "cpu")
+	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=300m", "db=5"}, "cpu")
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -342,7 +342,7 @@ Default
 Default
 
 --- CPU
-db         5.6
+db         5
 web        2
 worker     300m
 `, "output")

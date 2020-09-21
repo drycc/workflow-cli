@@ -74,6 +74,11 @@ func (d *DryccCmd) VolumesCreate(appID, name string, size string) error {
 	if err != nil {
 		return err
 	}
+	regex := regexp.MustCompile("^([1-9][0-9]*[mgMG])$")
+	if !regex.MatchString(size) {
+		return fmt.Errorf(`%s doesn't fit format #unit
+Examples: 2G 2g 500M 500m`, size)
+	}
 
 	d.Printf("Creating %s to %s... ", name, appID)
 
@@ -152,7 +157,6 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 		return err
 	}
 
-	// volumeMap, err := parseVolume(volumeVars)
 	valuesMap := make(map[string]interface{})
 	for _, volumeVar := range volumeVars {
 		valuesMap[volumeVar] = nil

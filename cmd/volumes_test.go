@@ -72,6 +72,10 @@ func TestVolumesCreate(t *testing.T) {
 
 	err = cmdr.VolumesCreate("example-go", "myvolume", "500M")
 	assert.NoErr(t, err)
+	err = cmdr.VolumesCreate("example-go", "myvolume", "500K")
+	expected := `500K doesn't fit format #unit
+Examples: 2G 2g 500M 500m`
+	assert.Equal(t, err.Error(), expected, "output")
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating myvolume to example-go... done\n", "output")
 }

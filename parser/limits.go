@@ -78,8 +78,8 @@ Arguments:
     Can be in <limit> format eg. web=2G db=1G
     You can only set one type of limit per call.
 
-    With --memory, units are represented in Bytes (B), Kilobytes (K), Megabytes
-    (M), or Gigabytes (G). For example, 'drycc limit:set cmd=1G' will restrict all
+    With --memory, units are represented in Megabytes(M), or Gigabytes (G).
+	For example, 'drycc limit:set cmd=1G' will restrict all
     "cmd" processes to a maximum of 1 Gigabyte of memory each.
 
     With --cpu, units are represented in the number of CPUs. For example,
