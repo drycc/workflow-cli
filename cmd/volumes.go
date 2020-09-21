@@ -43,11 +43,11 @@ func printVolumes(d *DryccCmd, appID string, volumes api.Volumes, wOut io.Writer
 
 	var max int
 	for _, volume := range volumes {
-		if max < (len(volume.Name) + 4){
+		if max < (len(volume.Name) + 4) {
 			max = len(volume.Name) + 4
 		}
-		for key, _ := range volume.Path {
-			if max < len(key){
+		for key := range volume.Path {
+			if max < len(key) {
 				max = len(key)
 			}
 		}
