@@ -7,9 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/apps"
-	"github.com/drycc/controller-sdk-go/config"
 	"github.com/drycc/controller-sdk-go/domains"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/pkg/logging"
@@ -18,7 +16,7 @@ import (
 )
 
 // AppCreate creates an app.
-func (d *DryccCmd) AppCreate(id, buildpack, remote string, noRemote bool) error {
+func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
 	s, err := settings.Load(d.ConfigFile)
 	if err != nil {
 		return err
@@ -36,17 +34,6 @@ func (d *DryccCmd) AppCreate(id, buildpack, remote string, noRemote bool) error 
 	}
 
 	d.Printf("done, created %s\n", app.ID)
-
-	if buildpack != "" {
-		configValues := api.Config{
-			Values: map[string]interface{}{
-				"BUILDPACK_URL": buildpack,
-			},
-		}
-		if _, err = config.Set(s.Client, app.ID, configValues); d.checkAPICompatibility(s.Client, err) != nil {
-			return err
-		}
-	}
 
 	if !noRemote {
 		if err = git.CreateRemote(git.DefaultCmd, s.Client.ControllerURL.Host, remote, app.ID); err != nil {

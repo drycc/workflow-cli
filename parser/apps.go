@@ -73,8 +73,6 @@ Arguments:
 Options:
   --no-remote
     do not create a 'drycc' git remote.
-  -b --buildpack BUILDPACK
-    a buildpack url to use for this app
   -r --remote REMOTE
     name of remote to create. [default: drycc]
 `
@@ -86,11 +84,10 @@ Options:
 	}
 
 	id := safeGetValue(args, "<id>")
-	buildpack := safeGetValue(args, "--buildpack")
 	remote := safeGetValue(args, "--remote")
 	noRemote := args["--no-remote"].(bool)
 
-	return cmdr.AppCreate(id, buildpack, remote, noRemote)
+	return cmdr.AppCreate(id, remote, noRemote)
 }
 
 func appsList(argv []string, cmdr cmd.Commander) error {

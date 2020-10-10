@@ -10,7 +10,7 @@ import (
 
 // Commander is interface definition for running commands
 type Commander interface {
-	AppCreate(string, string, string, bool) error
+	AppCreate(string, string, bool) error
 	AppsList(int) error
 	AppInfo(string) error
 	AppOpen(string) error

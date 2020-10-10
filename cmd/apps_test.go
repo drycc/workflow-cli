@@ -332,7 +332,7 @@ func TestRemoteExists(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.AppCreate("foo", "", "drycc", false)
+	err = cmdr.AppCreate("foo", "drycc", false)
 
 	assert.Equal(t, err.Error(), `A git remote with the name drycc already exists. To overwrite this remote run:
 drycc git:remote --force --remote drycc --app foo`,
