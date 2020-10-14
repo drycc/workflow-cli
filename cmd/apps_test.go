@@ -141,7 +141,8 @@ func TestAppsInfo(t *testing.T) {
         "started": "2016-08-22T17:42:16Z",
         "name": "lorem-ipsum-cmd-1911796442-48b58",
         "release": "v2",
-        "type": "cmd"
+        "type": "cmd",
+        "type_rs_num": 1
       }
     ]
 }`)
@@ -204,7 +205,7 @@ owner:    dolar-sit-amet
 id:       lorem-ipsum
 
 === lorem-ipsum Processes
---- cmd:
+--- cmd (started): 1
 lorem-ipsum-cmd-1911796442-48b58 up (v2)
 
 === lorem-ipsum Domains

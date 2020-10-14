@@ -68,6 +68,65 @@ func (d *DryccCmd) PsScale(appID string, targets []string) error {
 	return nil
 }
 
+// PsStop stop an app's processes.
+func (d *DryccCmd) PsStop(appID string, targets []string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Stopping processes... but first, %s!\n", drinkOfChoice())
+	startTime := time.Now()
+	quit := progress(d.WOut)
+	tps := map[string][]string{"types": targets}
+	err = ps.Stop(s.Client, appID, tps)
+	quit <- true
+	<-quit
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
+
+	processes, _, err := ps.List(s.Client, appID, s.Limit)
+	if err != nil {
+		return err
+	}
+
+	printProcesses(appID, processes, d.WOut)
+	return nil
+}
+
+// PsStart start an app's processes.
+func (d *DryccCmd) PsStart(appID string, targets []string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Starting processes... but first, %s!\n", drinkOfChoice())
+	startTime := time.Now()
+	quit := progress(d.WOut)
+
+	tps := map[string][]string{"types": targets}
+	err = ps.Start(s.Client, appID, tps)
+	quit <- true
+	<-quit
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
+
+	processes, _, err := ps.List(s.Client, appID, s.Limit)
+	if err != nil {
+		return err
+	}
+
+	printProcesses(appID, processes, d.WOut)
+	return nil
+}
+
 // PsRestart restarts an app's processes.
 func (d *DryccCmd) PsRestart(appID, target string) error {
 	s, appID, err := load(d.ConfigFile, appID)
@@ -109,7 +168,7 @@ func printProcesses(appID string, input []api.Pods, wOut io.Writer) {
 	fmt.Fprintf(wOut, "=== %s Processes\n", appID)
 
 	for _, process := range processes {
-		fmt.Fprintf(wOut, "--- %s:\n", process.Type)
+		fmt.Fprintf(wOut, "--- %s (%s): %d\n", process.Type, process.Status, process.TypeRSNum)
 
 		for _, pod := range process.PodsList {
 			fmt.Fprintf(wOut, "%s %s (%s)\n", pod.Name, pod.State, pod.Release)

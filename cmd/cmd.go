@@ -70,6 +70,8 @@ type Commander interface {
 	PsList(string, int) error
 	PsScale(string, []string) error
 	PsRestart(string, string) error
+	PsStop(string, []string) error
+	PsStart(string, []string) error
 	RegistryList(string) error
 	RegistrySet(string, []string) error
 	RegistryUnset(string, []string) error
