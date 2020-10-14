@@ -16,6 +16,14 @@ func (d FakeDryccCmd) UsersList(results int) error {
 	return errors.New("users:list")
 }
 
+func (d FakeDryccCmd) UsersEnable(string) error {
+	return errors.New("users:enable")
+}
+
+func (d FakeDryccCmd) UsersDisable(string) error {
+	return errors.New("users:disable")
+}
+
 func TestUsers(t *testing.T) {
 	t.Parallel()
 
@@ -40,6 +48,14 @@ func TestUsers(t *testing.T) {
 		{
 			args:     []string{"users"},
 			expected: "users:list",
+		},
+		{
+			args:     []string{"users:enable", "test"},
+			expected: "",
+		},
+		{
+			args:     []string{"users:disable", "test"},
+			expected: "",
 		},
 	}
 

@@ -18,6 +18,10 @@ Use 'drycc help [command]' to learn more.
 	switch argv[0] {
 	case "users:list":
 		return usersList(argv, cmdr)
+	case "users:enable":
+		return usersEnable(argv, cmdr)
+	case "users:disable":
+		return usersDisable(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -57,4 +61,54 @@ Options:
 	}
 
 	return cmdr.UsersList(results)
+}
+
+func usersEnable(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Enable a user when his status is disabled.
+Requires admin privileges.
+
+Usage: drycc users:enable <username>
+
+Arguments:
+  <username>
+  the username you want to enable.
+`
+
+	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	if err != nil {
+		return err
+	}
+	username := safeGetValue(args, "<username>")
+
+	if err != nil {
+		return err
+	}
+
+	return cmdr.UsersEnable(username)
+}
+
+func usersDisable(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Disable a user when his status is enabled.
+Requires admin privileges.
+
+Usage: drycc users:disable <username>
+
+Arguments:
+  <username>
+  the username you want to disable.
+`
+
+	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	if err != nil {
+		return err
+	}
+	username := safeGetValue(args, "<username>")
+
+	if err != nil {
+		return err
+	}
+
+	return cmdr.UsersDisable(username)
 }

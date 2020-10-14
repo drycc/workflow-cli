@@ -89,6 +89,8 @@ type Commander interface {
 	TLSAutoEnable(string) error
 	TLSAutoDisable(string) error
 	UsersList(results int) error
+	UsersEnable(string) error
+	UsersDisable(string) error
 	WhitelistAdd(string, string) error
 	WhitelistList(string) error
 	WhitelistRemove(string, string) error

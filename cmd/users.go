@@ -32,3 +32,38 @@ func (d *DryccCmd) UsersList(results int) error {
 	}
 	return nil
 }
+
+// UsersEnable enable user with the controller.
+func (d *DryccCmd) UsersEnable(username string) error {
+	s, err := settings.Load(d.ConfigFile)
+
+	if err != nil {
+		return err
+	}
+	d.Printf("Enabling user %s... ", username)
+	err = users.Enable(s.Client, username)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}
+
+// UsersDisable disable user with the controller.
+func (d *DryccCmd) UsersDisable(username string) error {
+	s, err := settings.Load(d.ConfigFile)
+
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Disabling user %s... ", username)
+	err = users.Disable(s.Client, username)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}

@@ -110,3 +110,46 @@ func TestUsersListLimit(t *testing.T) {
 test
 `, "output")
 }
+
+func TestUsersEnable(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/users/test/enable/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, ``)
+	})
+
+	err = cmdr.UsersEnable("test")
+	assert.NoErr(t, err)
+
+	assert.Equal(t, b.String(), `Enabling user test... done
+`, "output")
+}
+
+func TestUsersDisable(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/users/test/disable/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, ``)
+	})
+
+	err = cmdr.UsersDisable("test")
+	assert.NoErr(t, err)
+	assert.Equal(t, b.String(), `Disabling user test... done
+`, "output")
+}
