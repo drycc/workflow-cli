@@ -24,6 +24,14 @@ func (d FakeDryccCmd) PsRestart(string, string) error {
 	return errors.New("ps:restart")
 }
 
+func (d FakeDryccCmd) PsStop(string, []string) error {
+	return errors.New("ps:stop")
+}
+
+func (d FakeDryccCmd) PsStart(string, []string) error {
+	return errors.New("ps:start")
+}
+
 func TestPs(t *testing.T) {
 	t.Parallel()
 
@@ -60,6 +68,14 @@ func TestPs(t *testing.T) {
 		{
 			args:     []string{"ps"},
 			expected: "ps:list",
+		},
+		{
+			args:     []string{"ps:stop", "web"},
+			expected: "",
+		},
+		{
+			args:     []string{"ps:start", "web"},
+			expected: "",
 		},
 	}
 
