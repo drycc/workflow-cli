@@ -11,6 +11,8 @@ func Users(argv []string, cmdr cmd.Commander) error {
 Valid commands for users:
 
 users:list        list all registered users
+users:enable      enable a user
+users:disable     disable a user
 
 Use 'drycc help [command]' to learn more.
 `
