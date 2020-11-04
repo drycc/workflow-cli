@@ -5,33 +5,33 @@ import (
 	"github.com/drycc/workflow-cli/cmd"
 )
 
-// Whitelist displays all relevant commands for `drycc whitelist`.
-func Whitelist(argv []string, cmdr cmd.Commander) error {
+// Allowlist displays all relevant commands for `drycc allowlist`.
+func Allowlist(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Valid commands for whitelist:
+Valid commands for allowlist:
 
-whitelist:add           adds addresses to the application's whitelist
-whitelist:list          list addresses in the application's whitelist
-whitelist:remove        remove addresses from the application's whitelist
+allowlist:add           adds addresses to the application's allowlist
+allowlist:list          list addresses in the application's allowlist
+allowlist:remove        remove addresses from the application's allowlist
 
 Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
-	case "whitelist:add":
-		return whitelistAdd(argv, cmdr)
-	case "whitelist:list":
-		return whitelistList(argv, cmdr)
-	case "whitelist:remove":
-		return whitelistRemove(argv, cmdr)
+	case "allowlist:add":
+		return allowlistAdd(argv, cmdr)
+	case "allowlist:list":
+		return allowlistList(argv, cmdr)
+	case "allowlist:remove":
+		return allowlistRemove(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
 		}
 
-		if argv[0] == "whitelist" {
-			argv[0] = "whitelist:list"
-			return whitelistList(argv, cmdr)
+		if argv[0] == "allowlist" {
+			argv[0] = "allowlist:list"
+			return allowlistList(argv, cmdr)
 		}
 
 		PrintUsage(cmdr)
@@ -39,15 +39,15 @@ Use 'drycc help [command]' to learn more.
 	}
 }
 
-func whitelistAdd(argv []string, cmdr cmd.Commander) error {
+func allowlistAdd(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Adds addresses to an application whitelist.
+Adds addresses to an application allowlist.
 
-Usage: drycc whitelist:add <addresses> [options]
+Usage: drycc allowlist:add <addresses> [options]
 
 Arguments:
   <addresses>
-    comma-delimited list of addresses(using IP or CIDR notation) to be whitelisted for the application, such as '1.2.3.4' or '1.2.3.4,0.0.0.0/0'.
+    comma-delimited list of addresses(using IP or CIDR notation) to be allowlisted for the application, such as '1.2.3.4' or '1.2.3.4,0.0.0.0/0'.
 
 Options:
   -a --app=<app>
@@ -63,14 +63,14 @@ Options:
 	app := safeGetValue(args, "--app")
 	addresses := safeGetValue(args, "<addresses>")
 
-	return cmdr.WhitelistAdd(app, addresses)
+	return cmdr.AllowlistAdd(app, addresses)
 }
 
-func whitelistList(argv []string, cmdr cmd.Commander) error {
+func allowlistList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists whitelisted addresses for an application.
+Lists allowlisted addresses for an application.
 
-Usage: drycc whitelist:list [options]
+Usage: drycc allowlist:list [options]
 
 Options:
   -a --app=<app>
@@ -85,18 +85,18 @@ Options:
 
 	app := safeGetValue(args, "--app")
 
-	return cmdr.WhitelistList(app)
+	return cmdr.AllowlistList(app)
 }
 
-func whitelistRemove(argv []string, cmdr cmd.Commander) error {
+func allowlistRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Removes addresses from an application whitelist.
+Removes addresses from an application allowlist.
 
-Usage: drycc whitelist:remove <addresses> [options]
+Usage: drycc allowlist:remove <addresses> [options]
 
 Arguments:
   <addresses>
-    comma-delimited list of addresses(using IP or CIDR notation) to be whitelisted for the application, such as '1.2.3.4' or "1.2.3.4,0.0.0.0/0".
+    comma-delimited list of addresses(using IP or CIDR notation) to be allowlisted for the application, such as '1.2.3.4' or "1.2.3.4,0.0.0.0/0".
 
 Options:
   -a --app=<app>
@@ -112,5 +112,5 @@ Options:
 	app := safeGetValue(args, "--app")
 	addresses := safeGetValue(args, "<addresses>")
 
-	return cmdr.WhitelistRemove(app, addresses)
+	return cmdr.AllowlistRemove(app, addresses)
 }

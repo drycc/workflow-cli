@@ -12,19 +12,19 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) WhitelistAdd(string, string) error {
-	return errors.New("whitelist:add")
+func (d FakeDryccCmd) AllowlistAdd(string, string) error {
+	return errors.New("allowlist:add")
 }
 
-func (d FakeDryccCmd) WhitelistList(string) error {
-	return errors.New("whitelist:list")
+func (d FakeDryccCmd) AllowlistList(string) error {
+	return errors.New("allowlist:list")
 }
 
-func (d FakeDryccCmd) WhitelistRemove(string, string) error {
-	return errors.New("whitelist:remove")
+func (d FakeDryccCmd) AllowlistRemove(string, string) error {
+	return errors.New("allowlist:remove")
 }
 
-func TestWhitelist(t *testing.T) {
+func TestAllowlist(t *testing.T) {
 	t.Parallel()
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -42,20 +42,20 @@ func TestWhitelist(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"whitelist:add", "1.2.3.4"},
+			args:     []string{"allowlist:add", "1.2.3.4"},
 			expected: "",
 		},
 		{
-			args:     []string{"whitelist:list"},
+			args:     []string{"allowlist:list"},
 			expected: "",
 		},
 		{
-			args:     []string{"whitelist:remove", "1.2.3.4"},
+			args:     []string{"allowlist:remove", "1.2.3.4"},
 			expected: "",
 		},
 		{
-			args:     []string{"whitelist"},
-			expected: "whitelist:list",
+			args:     []string{"allowlist"},
+			expected: "allowlist:list",
 		},
 	}
 
@@ -68,7 +68,7 @@ func TestWhitelist(t *testing.T) {
 		} else {
 			expected = c.expected
 		}
-		err = Whitelist(c.args, cmdr)
+		err = Allowlist(c.args, cmdr)
 		assert.Err(t, errors.New(expected), err)
 	}
 }
