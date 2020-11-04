@@ -3,42 +3,42 @@ package cmd
 import (
 	"strings"
 
-	"github.com/drycc/controller-sdk-go/whitelist"
+	"github.com/drycc/controller-sdk-go/allowlist"
 )
 
-// WhitelistList lists the addresses whitelisted for app
-func (d *DryccCmd) WhitelistList(appID string) error {
+// Allowlistlist lists the addresses allowlisted for app
+func (d *DryccCmd) AllowlistList(appID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	whitelist, err := whitelist.List(s.Client, appID)
+	allowlist, err := allowlist.List(s.Client, appID)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	d.Printf("=== %s Whitelisted Addresses\n", appID)
+	d.Printf("=== %s Allowlisted Addresses\n", appID)
 
-	for _, ip := range whitelist.Addresses {
+	for _, ip := range allowlist.Addresses {
 		d.Println(ip)
 	}
 	return nil
 }
 
-// WhitelistAdd adds the addresses to the app's Whitelist.
-func (d *DryccCmd) WhitelistAdd(appID, IPs string) error {
+// AllowlistAdd adds the addresses to the app's allowlist.
+func (d *DryccCmd) AllowlistAdd(appID, IPs string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Adding %s to %s whitelist...\n", IPs, appID)
+	d.Printf("Adding %s to %s allowlist...\n", IPs, appID)
 
 	quit := progress(d.WOut)
-	_, err = whitelist.Add(s.Client, appID, strings.Split(IPs, ","))
+	_, err = allowlist.Add(s.Client, appID, strings.Split(IPs, ","))
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -49,18 +49,18 @@ func (d *DryccCmd) WhitelistAdd(appID, IPs string) error {
 	return nil
 }
 
-// WhitelistRemove deletes the addresses from the app's Whitelist.
-func (d *DryccCmd) WhitelistRemove(appID, IPs string) error {
+// AllowlistRemove deletes the addresses from the app's Allowlist.
+func (d *DryccCmd) AllowlistRemove(appID, IPs string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Removing %s from %s whitelist...\n", IPs, appID)
+	d.Printf("Removing %s from %s allowlist...\n", IPs, appID)
 
 	quit := progress(d.WOut)
-	err = whitelist.Delete(s.Client, appID, strings.Split(IPs, ","))
+	err = allowlist.Delete(s.Client, appID, strings.Split(IPs, ","))
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

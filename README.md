@@ -1,9 +1,9 @@
 # Drycc Client
 
-[![Build Status](https://travis-ci.org/drycc/workflow-cli.svg?branch=master)](https://travis-ci.org/drycc/workflow-cli)
+[![Build Status](https://travis-ci.org/drycc/workflow-cli.svg?branch=main)](https://travis-ci.org/drycc/workflow-cli)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drycc/workflow-cli)](https://goreportcard.com/report/github.com/drycc/workflow-cli)
-[![codebeat badge](https://codebeat.co/badges/826a57a3-c9a8-4263-ae57-f249d5a3bb79)](https://codebeat.co/projects/github-com-drycc-workflow-cli-master)
-[![codecov](https://codecov.io/gh/drycc/workflow-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/drycc/workflow-cli)
+[![codebeat badge](https://codebeat.co/badges/b609cb7f-7b42-4214-8787-09298f553176)](https://codebeat.co/projects/github-com-drycc-workflow-cli-main)
+[![codecov](https://codecov.io/gh/drycc/workflow-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/drycc/workflow-cli)
 
 Download Links: https://github.com/drycc/workflow-cli/releases
 
@@ -58,7 +58,7 @@ To learn more about a command run `drycc help <command>`.
 
 ## License
 
-see [LICENSE](https://github.com/drycc/workflow-cli/blob/master/LICENSE)
+see [LICENSE](https://github.com/drycc/workflow-cli/blob/main/LICENSE)
 
 [k8s-home]: http://kubernetes.io
 [install-k8s]: http://kubernetes.io/gettingstarted/

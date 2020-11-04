@@ -46,6 +46,7 @@ github.com/drycc/controller-sdk-go v0.0.0-20201015015256-370f01036885 h1:lA6ERNP
 github.com/drycc/controller-sdk-go v0.0.0-20201015015256-370f01036885/go.mod h1:mF8/kZ/E4oDHCtfUVS790Frm8oVzZkoCGCKYT2eWQro=
 github.com/drycc/controller-sdk-go v0.0.0-20201015065118-cb8f4f5e9745 h1:C3Byx1KvZtzuilCp5aikRa5hbXCUhiy8u4Iv6ATyDcI=
 github.com/drycc/controller-sdk-go v0.0.0-20201015065118-cb8f4f5e9745/go.mod h1:mF8/kZ/E4oDHCtfUVS790Frm8oVzZkoCGCKYT2eWQro=
+github.com/drycc/controller-sdk-go v0.0.0-20201105013635-42fda9fec714/go.mod h1:mF8/kZ/E4oDHCtfUVS790Frm8oVzZkoCGCKYT2eWQro=
 github.com/drycc/pkg v0.0.0-20190129033019-bcdffff0fcb3 h1:QRAbL97/hJecXQzaSONMCiwt1JjBKAAMKK0qJW5sgIM=
 github.com/drycc/pkg v0.0.0-20190129033019-bcdffff0fcb3/go.mod h1:zNgTT6kuGZOKMIdSrjskIw5fctdbbszqiTPEt3ffxHw=
 github.com/drycc/pkg v0.0.0-20200811173146-1f2b2781a852 h1:OsWH7jrv2i32rkvHFuj3yVpGMR+A6heRge9tm01XR/U=
