@@ -93,9 +93,9 @@ type Commander interface {
 	UsersList(results int) error
 	UsersEnable(string) error
 	UsersDisable(string) error
-	WhitelistAdd(string, string) error
-	WhitelistList(string) error
-	WhitelistRemove(string, string) error
+	AllowlistAdd(string, string) error
+	AllowlistList(string) error
+	AllowlistRemove(string, string) error
 	Println(...interface{}) (int, error)
 	Print(...interface{}) (int, error)
 	Printf(string, ...interface{}) (int, error)

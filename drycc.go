@@ -67,7 +67,7 @@ Subcommands, use 'drycc help [subcommand]' to learn more::
   tls           manage TLS settings for applications
   users         manage users
   version       display client version
-  whitelist     manage whitelisted addresses of an application
+  Allowlist     manage allowlisted addresses of an application
   services      manage services for your applications
   timeouts      manage pods termination grace period
   volumes       manage volumes for your applications
@@ -160,8 +160,8 @@ Use 'git push drycc master' to deploy to an application.
 		err = parser.Users(argv, &cmdr)
 	case "version":
 		err = parser.Version(argv, &cmdr)
-	case "whitelist":
-		err = parser.Whitelist(argv, &cmdr)
+	case "allowlist":
+		err = parser.Allowlist(argv, &cmdr)
 	case "volumes":
 		err = parser.Volumes(argv, &cmdr)
 	case "resources":
