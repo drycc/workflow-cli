@@ -142,7 +142,7 @@ func TestAppsInfo(t *testing.T) {
         "name": "lorem-ipsum-cmd-1911796442-48b58",
         "release": "v2",
         "type": "cmd",
-        "replicas": 1
+        "replicas": "1"
       }
     ]
 }`)
