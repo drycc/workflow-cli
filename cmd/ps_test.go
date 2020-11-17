@@ -59,7 +59,7 @@ func TestPrintProcesses(t *testing.T) {
 			Type:     "web",
 			State:    "up",
 			Started:  time.Time{},
-			Replicas: 1,
+			Replicas: "1",
 		},
 		{
 			Release:  "v3",
@@ -67,7 +67,7 @@ func TestPrintProcesses(t *testing.T) {
 			Type:     "worker",
 			State:    "up",
 			Started:  time.Time{},
-			Replicas: 1,
+			Replicas: "1",
 		},
 	}
 
@@ -104,7 +104,7 @@ func TestPsList(t *testing.T) {
 					"name": "foo-web-4084101150-c871y",
 					"state": "up",
 					"started": "2016-02-13T00:47:52",
-					"replicas": 1
+					"replicas": "1"
 				}
 			]
 		}`)
@@ -175,7 +175,7 @@ func TestPsScale(t *testing.T) {
 					"name": "foo-web-4084101150-c871y",
 					"state": "up",
 					"started": "2016-02-13T00:47:52",
-					"replicas": 1
+					"replicas": "1"
 				}
 			]
 		}`)
@@ -217,7 +217,7 @@ func TestPsRestart(t *testing.T) {
 				"name": "foo-web-4084101150-c871y",
 				"state": "up",
 				"started": "2016-02-13T00:47:52",
-				"replicas": 1
+				"replicas": "1"
 		}
 ]`)
 	})
@@ -254,7 +254,7 @@ Could not find any processes to restart
 				"name": "testapp-web-4084101150-c871y",
 				"state": "up",
 				"started": "2016-02-13T00:47:52",
-				"replicas": 1
+				"replicas": "1"
 			}
 		]`)
 	})
@@ -279,7 +279,7 @@ testapp-web-4084101150-c871y up (v2)
 				"name": "newapp-web-4084101150-c871y",
 				"state": "up",
 				"started": "2016-02-13T00:47:52",
-				"replicas": 1
+				"replicas": "1"
 			}
 		]`)
 	})

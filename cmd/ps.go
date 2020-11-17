@@ -168,7 +168,7 @@ func printProcesses(appID string, input []api.Pods, wOut io.Writer) {
 	fmt.Fprintf(wOut, "=== %s Processes\n", appID)
 
 	for _, process := range processes {
-		fmt.Fprintf(wOut, "--- %s (%s): %d\n", process.Type, process.Status, process.Replicas)
+		fmt.Fprintf(wOut, "--- %s (%s): %s\n", process.Type, process.Status, process.Replicas)
 
 		for _, pod := range process.PodsList {
 			fmt.Fprintf(wOut, "%s %s (%s)\n", pod.Name, pod.State, pod.Release)
