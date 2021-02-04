@@ -9,8 +9,11 @@ steps:
   privileged: true
   commands:
   - nohup dockerd &
-  - apk add make bash curl git
-  - make test
+  - apk add make bash curl
+  - VERSION=${DRONE_TAG:-latest} make test 
+  environment:
+    DEV_REGISTRY:
+      from_secret: dev_registry
   when:
     event:
     - push
@@ -23,9 +26,11 @@ steps:
   privileged: true
   commands:
   - nohup dockerd &
-  - apk add make bash curl git
-  - make build-tag
-  - mv _dist/$DRONE_TAG dist
+  - apk add make bash curl
+  - VERSION=${DRONE_TAG:-latest} make build
+  environment:
+    DEV_REGISTRY:
+      from_secret: dev_registry
   when:
     event:
     - tag
@@ -35,7 +40,7 @@ steps:
   settings:
     api_key:
       from_secret: github_token
-    files: dist/*
+    files: _dist/*
   when:
     event: tag
 

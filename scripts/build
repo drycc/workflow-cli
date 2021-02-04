@@ -5,7 +5,7 @@ go-build(){
     GOOS=$GOOS \
     GOARCH=$GOARCH \
     go build \
-    -o _dist/$1/drycc-$1-$GOOS-$GOARCH \
+    -o _dist/drycc-$1-$GOOS-$GOARCH \
     drycc.go
 }
 
