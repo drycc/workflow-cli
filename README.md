@@ -1,6 +1,6 @@
 # Drycc Client
 
-[![Build Status](https://travis-ci.org/drycc/workflow-cli.svg?branch=main)](https://travis-ci.org/drycc/workflow-cli)
+[![Build Status](https://drone.drycc.cc/api/badges/drycc/workflow-cli/status.svg)](https://drone.drycc.cc/drycc/workflow-cli)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drycc/workflow-cli)](https://goreportcard.com/report/github.com/drycc/workflow-cli)
 [![codebeat badge](https://codebeat.co/badges/b609cb7f-7b42-4214-8787-09298f553176)](https://codebeat.co/projects/github-com-drycc-workflow-cli-main)
 [![codecov](https://codecov.io/gh/drycc/workflow-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/drycc/workflow-cli)

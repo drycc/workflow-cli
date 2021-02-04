@@ -11,7 +11,7 @@ go-build(){
 
 GOOS_LIST=("linux" "windows" "darwin")
 GOARCH_LIST=("386" "amd64" "arm" "arm64")
-EXCLUDE_TARGET=("darwin/arm" "darwin/arm64" "windows/arm64")
+EXCLUDE_TARGET=("darwin/386", "darwin/arm" "darwin/arm64" "windows/arm64")
 
 for GOOS in ${GOOS_LIST[@]}; do
   for GOARCH in ${GOARCH_LIST[@]}; do

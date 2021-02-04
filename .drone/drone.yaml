@@ -1,0 +1,46 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: test
+  image: docker.io/library/docker:dind
+  pull: if-not-exists
+  privileged: true
+  commands:
+  - nohup dockerd &
+  - apk add make bash curl git
+  - make test
+  when:
+    event:
+    - push
+    - tag
+    - pull_request
+
+- name: build
+  image: docker.io/library/docker:dind
+  pull: if-not-exists
+  privileged: true
+  commands:
+  - nohup dockerd &
+  - apk add make bash curl git
+  - make build-tag
+  - mv _dist/$DRONE_TAG dist
+  when:
+    event:
+    - tag
+
+- name: release
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_token
+    files: dist/*
+  when:
+    event: tag
+
+trigger:
+  event:
+  - push
+  - tag
+  - pull_request
