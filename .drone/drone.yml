@@ -4,12 +4,10 @@ name: default
 
 steps:
 - name: test
-  image: docker.io/library/docker:dind
+  image: docker.io/drycc/go-dev
   pull: if-not-exists
   privileged: true
   commands:
-  - nohup dockerd &
-  - apk add make bash curl
   - VERSION=${DRONE_TAG:-latest} make test 
   environment:
     DEV_REGISTRY:
@@ -19,14 +17,15 @@ steps:
     - push
     - tag
     - pull_request
+  volumes:
+  - name: image_registries
+    path: /etc/containers/registries.conf
 
 - name: build
-  image: docker.io/library/docker:dind
+  image: docker.io/drycc/go-dev
   pull: if-not-exists
   privileged: true
   commands:
-  - nohup dockerd &
-  - apk add make bash curl
   - VERSION=${DRONE_TAG:-latest} make build
   environment:
     DEV_REGISTRY:
@@ -34,6 +33,9 @@ steps:
   when:
     event:
     - tag
+  volumes:
+  - name: image_registries
+    path: /etc/containers/registries.conf
 
 - name: release
   image: plugins/github-release
@@ -49,3 +51,8 @@ trigger:
   - push
   - tag
   - pull_request
+
+volumes:
+- name: image_registries
+  host:
+    path: /etc/containers/registries.conf
