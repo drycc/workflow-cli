@@ -111,9 +111,5 @@ func Delete(cf string) error {
 		return err
 	}
 
-	if err := os.Remove(filename); err != nil {
-		return err
-	}
-
-	return nil
+	return os.Remove(filename)
 }

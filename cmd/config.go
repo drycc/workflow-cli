@@ -31,7 +31,7 @@ func (d *DryccCmd) ConfigList(appID string, format string) error {
 
 	keys := sortKeys(config.Values)
 
-	var configOutput *bytes.Buffer = new(bytes.Buffer)
+	configOutput := new(bytes.Buffer)
 
 	switch format {
 	case "oneline":
