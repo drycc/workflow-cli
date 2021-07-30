@@ -21,13 +21,9 @@ type Commander interface {
 	AutoscaleList(string) error
 	AutoscaleSet(string, string, int, int, int) error
 	AutoscaleUnset(string, string) error
-	Register(string, string, string, string, bool, bool) error
-	Login(string, string, string, bool) error
+	Login(string, bool) error
 	Logout() error
-	Passwd(string, string, string) error
-	Cancel(string, string, bool) error
 	Whoami(bool) error
-	Regenerate(string, bool) error
 	BuildsList(string, int) error
 	BuildsCreate(string, string, string, string) error
 	CertsList(int, time.Time) error

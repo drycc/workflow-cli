@@ -14,9 +14,7 @@ login -> auth:login
 logout -> auth:logout
 logs -> apps:logs
 open -> apps:open
-passwd -> auth:passwd
 pull -> builds:create
-register -> auth:register
 rollback -> releases:rollback
 run -> apps:run
 scale -> ps:scale

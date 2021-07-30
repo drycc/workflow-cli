@@ -12,11 +12,7 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) Register(string, string, string, string, bool, bool) error {
-	return errors.New("auth:register")
-}
-
-func (d FakeDryccCmd) Login(string, string, string, bool) error {
+func (d FakeDryccCmd) Login(string, bool) error {
 	return errors.New("auth:login")
 }
 
@@ -24,20 +20,8 @@ func (d FakeDryccCmd) Logout() error {
 	return errors.New("auth:logout")
 }
 
-func (d FakeDryccCmd) Passwd(string, string, string) error {
-	return errors.New("auth:passwd")
-}
-
-func (d FakeDryccCmd) Cancel(string, string, bool) error {
-	return errors.New("auth:cancel")
-}
-
 func (d FakeDryccCmd) Whoami(bool) error {
 	return errors.New("auth:whoami")
-}
-
-func (d FakeDryccCmd) Regenerate(string, bool) error {
-	return errors.New("auth:regenerate")
 }
 
 func TestAuth(t *testing.T) {
@@ -58,23 +42,7 @@ func TestAuth(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"auth:register", server.Server.URL},
-			expected: "",
-		},
-		{
-			args:     []string{"auth:register", server.Server.URL, "--ssl-verify=true"},
-			expected: "",
-		},
-		{
-			args:     []string{"auth:register", server.Server.URL, "--login=false"},
-			expected: "",
-		},
-		{
 			args:     []string{"auth:login", server.Server.URL},
-			expected: "",
-		},
-		{
-			args:     []string{"auth:login", server.Server.URL, "--ssl-verify=true"},
 			expected: "",
 		},
 		{
@@ -82,19 +50,7 @@ func TestAuth(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"auth:passwd"},
-			expected: "",
-		},
-		{
 			args:     []string{"auth:whoami"},
-			expected: "",
-		},
-		{
-			args:     []string{"auth:cancel"},
-			expected: "",
-		},
-		{
-			args:     []string{"auth:regenerate"},
 			expected: "",
 		},
 	}
