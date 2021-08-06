@@ -8,7 +8,7 @@ DIST_DIR ?= _dist
 DEV_ENV_CMD := docker run --rm -v ${CURDIR}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR} ${DEV_ENV_IMAGE}
 
 define build-install-script
-  sed "s|{{DRYCC-CLIENT-VERSION}}|${GIT_TAG}|g" "install.tmpl" > "${DIST_DIR}/install-drycc.sh"
+  sed "s|{{DRYCC-CLIENT-VERSION}}|${VERSION}|g" "install.tmpl" > "${DIST_DIR}/install-drycc.sh"
 endef
 
 bootstrap:
