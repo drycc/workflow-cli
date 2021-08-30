@@ -269,7 +269,7 @@ func maxNum(tempArray ...int) int {
 // parseParams transfer params to map
 func parseParams(params []string) (map[string]interface{}, error) {
 	paramsMap := make(map[string]interface{})
-	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*)((\.){1}([A-z0-9_]+))*=([\s\S]*)$`)
+	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*[\.{1}[A-z0-9_]+]*)=([\s\S]*)$`)
 	for _, param := range params {
 		if regex.MatchString(param) {
 			captures := regex.FindStringSubmatch(param)
