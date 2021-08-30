@@ -152,14 +152,16 @@ func TestResourcePut(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/example-go/resources/mysql/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.Resource{Plan: "mysql:5.7"}, r)
+		paras := make(map[string]interface{}, 1)
+		paras["para1.para2"] = "v1"
+		testutil.AssertBody(t, api.Resource{Plan: "mysql:5.7", Options: paras}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.ResourcePut("example-go", "mysql:5.7", "mysql", nil)
+	err = cmdr.ResourcePut("example-go", "mysql:5.7", "mysql", []string{"para1.para2=v1"})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Updating mysql to example-go... done\n", "output")
