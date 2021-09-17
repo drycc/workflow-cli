@@ -67,7 +67,7 @@ Subcommands, use 'drycc help [subcommand]' to learn more::
   tls           manage TLS settings for applications
   users         manage users
   version       display client version
-  Allowlist     manage allowlisted addresses of an application
+  allowlist     manage allowlisted addresses of an application
   services      manage services for your applications
   timeouts      manage pods termination grace period
   volumes       manage volumes for your applications

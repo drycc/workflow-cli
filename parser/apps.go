@@ -199,8 +199,7 @@ Options:
 
 func appRun(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Runs a command inside an ephemeral app container. Default environment is
-/bin/bash.
+Runs a command inside an ephemeral app container.
 
 Usage: drycc apps:run [--mount=<volume>:<path>...] [options] [--] <command>...
 
