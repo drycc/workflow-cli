@@ -51,6 +51,8 @@ github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
 github.com/drycc/controller-sdk-go v0.0.0-20210826011521-d57f3c75935a h1:TKz7m1cwN3ktK9bGWorLVSSmkLrDO4qALhdGUxTRToo=
 github.com/drycc/controller-sdk-go v0.0.0-20210826011521-d57f3c75935a/go.mod h1:DmVcssrb6yJMWI8sGT+8Xy3caVR5kSlsctD3a7Zn6FA=
+github.com/drycc/controller-sdk-go v0.0.0-20211124095117-dbf56da8c5a8 h1:cddNthWLhOdgvpF5S78Fc7j8I5ESDRUtTZhHIFTLcC0=
+github.com/drycc/controller-sdk-go v0.0.0-20211124095117-dbf56da8c5a8/go.mod h1:aGxL2AkmmG7d5afWiUGy93/+UPDnIxgsWSwxuznjteE=
 github.com/drycc/pkg v0.0.0-20210826011456-c60b87108840 h1:0OhP9AQ0mh3q0TMxK4PJTPSFwD/wj0xugiaZ3lnLcNA=
 github.com/drycc/pkg v0.0.0-20210826011456-c60b87108840/go.mod h1:KX1FLm7Fq6FLCsjjRsgfI/bMQuHZXqYf1ZXU9fzJhDw=
 github.com/elazarl/goproxy v0.0.0-20180725130230-947c36da3153/go.mod h1:/Zj4wYkgs4iZTTu3o/KG3Itv/qCCa8VVMlb3i9OVuzc=

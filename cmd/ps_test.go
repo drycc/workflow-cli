@@ -54,29 +54,27 @@ func TestPrintProcesses(t *testing.T) {
 
 	pods := []api.Pods{
 		{
-			Release:  "v3",
-			Name:     "benign-quilting-web-4084101150-c871y",
-			Type:     "web",
-			State:    "up",
-			Started:  time.Time{},
-			Replicas: "1",
+			Release: "v3",
+			Name:    "benign-quilting-web-4084101150-c871y",
+			Type:    "web",
+			State:   "up",
+			Started: time.Time{},
 		},
 		{
-			Release:  "v3",
-			Name:     "benign-quilting-worker-4084101150-c871y",
-			Type:     "worker",
-			State:    "up",
-			Started:  time.Time{},
-			Replicas: "1",
+			Release: "v3",
+			Name:    "benign-quilting-worker-4084101150-c871y",
+			Type:    "worker",
+			State:   "up",
+			Started: time.Time{},
 		},
 	}
 
 	printProcesses("appname", pods, &b)
 
 	assert.Equal(t, b.String(), `=== appname Processes
---- web (started): 1
+--- web:
 benign-quilting-web-4084101150-c871y up (v3)
---- worker (started): 1
+--- worker:
 benign-quilting-worker-4084101150-c871y up (v3)
 `, "output")
 }
@@ -103,8 +101,7 @@ func TestPsList(t *testing.T) {
 					"type": "web",
 					"name": "foo-web-4084101150-c871y",
 					"state": "up",
-					"started": "2016-02-13T00:47:52",
-					"replicas": "1"
+					"started": "2016-02-13T00:47:52"
 				}
 			]
 		}`)
@@ -114,7 +111,7 @@ func TestPsList(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Processes
---- web (started): 1
+--- web:
 foo-web-4084101150-c871y up (v2)
 `, "output")
 }
@@ -174,8 +171,7 @@ func TestPsScale(t *testing.T) {
 					"type": "web",
 					"name": "foo-web-4084101150-c871y",
 					"state": "up",
-					"started": "2016-02-13T00:47:52",
-					"replicas": "1"
+					"started": "2016-02-13T00:47:52"
 				}
 			]
 		}`)
@@ -193,7 +189,7 @@ func TestPsScale(t *testing.T) {
 	assert.Equal(t, testutil.StripProgress(b.String()), `Scaling processes... but first, coffee!
 done in 0s
 === foo Processes
---- web (started): 1
+--- web:
 foo-web-4084101150-c871y up (v2)
 `, "output")
 }
@@ -216,8 +212,7 @@ func TestPsRestart(t *testing.T) {
 				"type": "web",
 				"name": "foo-web-4084101150-c871y",
 				"state": "up",
-				"started": "2016-02-13T00:47:52",
-				"replicas": "1"
+				"started": "2016-02-13T00:47:52"
 		}
 ]`)
 	})
@@ -228,7 +223,7 @@ func TestPsRestart(t *testing.T) {
 	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
 done in 0s
 === foo Processes
---- web (started): 1
+--- web:
 foo-web-4084101150-c871y up (v2)
 `, "output")
 
@@ -253,8 +248,7 @@ Could not find any processes to restart
 				"type": "web",
 				"name": "testapp-web-4084101150-c871y",
 				"state": "up",
-				"started": "2016-02-13T00:47:52",
-				"replicas": "1"
+				"started": "2016-02-13T00:47:52"
 			}
 		]`)
 	})
@@ -266,7 +260,7 @@ Could not find any processes to restart
 	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
 done in 0s
 === testapp Processes
---- web (started): 1
+--- web:
 testapp-web-4084101150-c871y up (v2)
 `, "output")
 
@@ -278,8 +272,7 @@ testapp-web-4084101150-c871y up (v2)
 				"type": "web",
 				"name": "newapp-web-4084101150-c871y",
 				"state": "up",
-				"started": "2016-02-13T00:47:52",
-				"replicas": "1"
+				"started": "2016-02-13T00:47:52"
 			}
 		]`)
 	})
@@ -291,7 +284,7 @@ testapp-web-4084101150-c871y up (v2)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
 done in 0s
 === newapp Processes
---- web (started): 1
+--- web:
 newapp-web-4084101150-c871y up (v2)
 `, "output")
 

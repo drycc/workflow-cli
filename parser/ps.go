@@ -26,10 +26,6 @@ Use 'drycc help [command]' to learn more.
 		return psRestart(argv, cmdr)
 	case "ps:scale":
 		return psScale(argv, cmdr)
-	case "ps:stop":
-		return psStop(argv, cmdr)
-	case "ps:start":
-		return psStart(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -118,56 +114,4 @@ Options:
 
 	apps := safeGetValue(args, "--app")
 	return cmdr.PsScale(apps, args["<type>=<num>"].([]string))
-}
-
-func psStop(argv []string, cmdr cmd.Commander) error {
-	usage := `
-Stop an application's processes by type.
-
-Usage: drycc ps:stop <type>... [options]
-
-Arguments:
-  <type>
-    the process name as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
-
-Options:
-  -a --app=<app>
-    the uniquely identifiable name for the application.
-`
-
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
-
-	if err != nil {
-		return err
-	}
-
-	apps := safeGetValue(args, "--app")
-	return cmdr.PsStop(apps, args["<type>"].([]string))
-}
-
-func psStart(argv []string, cmdr cmd.Commander) error {
-	usage := `
-Start an application's processes by type.
-
-Usage: drycc ps:start <type>... [options]
-
-Arguments:
-  <type>
-    the process name as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
-
-Options:
-  -a --app=<app>
-    the uniquely identifiable name for the application.
-`
-
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
-
-	if err != nil {
-		return err
-	}
-
-	apps := safeGetValue(args, "--app")
-	return cmdr.PsStart(apps, args["<type>"].([]string))
 }
