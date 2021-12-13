@@ -10,6 +10,8 @@ func Resources(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for resources:
 
+resources:services         list all available resource services
+resources:plans            list all available plans for an resource services
 resources:create           create a resource for the application
 resources:list             list resources in the application
 resources:describe         get a resource detail info in the application
@@ -22,6 +24,10 @@ Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
+	case "resources:services":
+		return resourcesServices(argv, cmdr)
+	case "resources:plans":
+		return resourcesPlans(argv, cmdr)
 	case "resources:create":
 		return resourcesCreate(argv, cmdr)
 	case "resources:list":
@@ -49,6 +55,64 @@ Use 'drycc help [command]' to learn more.
 		PrintUsage(cmdr)
 		return nil
 	}
+}
+
+func resourcesServices(argv []string, cmdr cmd.Commander) error {
+	usage := `
+List all available resource services.
+
+Usage: drycc resources:services [options]
+
+Options:
+  -l --limit=<num>
+    the maximum number of results to display, defaults to config setting
+`
+
+	args, err := docopt.Parse(usage, argv, true, "", false, true)
+
+	if err != nil {
+		return err
+	}
+
+	results, err := responseLimit(safeGetValue(args, "--limit"))
+
+	if err != nil {
+		return err
+	}
+
+	return cmdr.ResourcesServices(results)
+}
+
+func resourcesPlans(argv []string, cmdr cmd.Commander) error {
+	usage := `
+List all available plans for an resource services.
+
+Usage: drycc resources:plans <service> [options]
+
+Arguments:
+  <service>
+    the service name for plans.
+
+Options:
+  -l --limit=<num>
+    the maximum number of results to display, defaults to config setting
+`
+
+	args, err := docopt.Parse(usage, argv, true, "", false, true)
+
+	if err != nil {
+		return err
+	}
+
+	service := safeGetValue(args, "<service>")
+
+	results, err := responseLimit(safeGetValue(args, "--limit"))
+
+	if err != nil {
+		return err
+	}
+
+	return cmdr.ResourcesPlans(service, results)
 }
 
 func resourcesCreate(argv []string, cmdr cmd.Commander) error {

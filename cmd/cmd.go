@@ -102,6 +102,8 @@ type Commander interface {
 	VolumesList(string, int) error
 	VolumesMount(string, string, []string) error
 	VolumesUnmount(string, string, []string) error
+	ResourcesServices(int) error
+	ResourcesPlans(string, int) error
 	ResourcesCreate(string, string, string, []string) error
 	ResourcesList(string, int) error
 	ResourceDelete(string, string) error

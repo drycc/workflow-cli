@@ -2,13 +2,76 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"regexp"
+	"strconv"
+	"strings"
+
+	"github.com/olekukonko/tablewriter"
+
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/resources"
 	"github.com/drycc/pkg/prettyprint"
-	"io"
-	"regexp"
-	"strings"
+	"github.com/drycc/workflow-cli/settings"
 )
+
+// ResourceServices list resource service
+func (d *DryccCmd) ResourcesServices(results int) error {
+	s, err := settings.Load(d.ConfigFile)
+
+	if err != nil {
+		return err
+	}
+
+	if results == defaultLimit {
+		results = s.Limit
+	}
+	services, count, err := resources.Services(s.Client, results)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	if count == 0 {
+		d.Println("Could not find any services")
+	} else {
+		table := tablewriter.NewWriter(d.WOut)
+		table.SetHeader([]string{"Name", "Updateable"})
+		for _, service := range services {
+			table.Append([]string{service.Name, strconv.FormatBool(service.Updateable)})
+		}
+		table.Render()
+	}
+	return nil
+}
+
+// ResourcePlans list resource plans
+func (d *DryccCmd) ResourcesPlans(serviceName string, results int) error {
+	s, err := settings.Load(d.ConfigFile)
+
+	if err != nil {
+		return err
+	}
+
+	if results == defaultLimit {
+		results = s.Limit
+	}
+	plans, count, err := resources.Plans(s.Client, serviceName, results)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	if count == 0 {
+		d.Println("Could not find any services")
+	} else {
+		table := tablewriter.NewWriter(d.WOut)
+		table.SetHeader([]string{"Name", "Description"})
+		for _, plan := range plans {
+			table.Append([]string{plan.Name, plan.Description})
+		}
+		table.Render()
+	}
+	return nil
+}
 
 // ResourcesCreate create a resource for the application
 func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []string) error {
@@ -150,7 +213,7 @@ func (d *DryccCmd) ResourceBind(appID string, name string) error {
 	d.Print("Binding resource... ")
 
 	quit := progress(d.WOut)
-	bindAction := api.Binding{BindAction: "bind"}
+	bindAction := api.ResourceBinding{BindAction: "bind"}
 	_, err = resources.Binding(s.Client, appID, name, bindAction)
 	quit <- true
 	<-quit
@@ -174,7 +237,7 @@ func (d *DryccCmd) ResourceUnbind(appID string, name string) error {
 	d.Print("Unbinding resource... ")
 
 	quit := progress(d.WOut)
-	bindAction := api.Binding{BindAction: "unbind"}
+	bindAction := api.ResourceBinding{BindAction: "unbind"}
 	_, err = resources.Binding(s.Client, appID, name, bindAction)
 	quit <- true
 	<-quit

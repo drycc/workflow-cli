@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/arschles/assert v1.0.1-0.20191213221312-71f210f9375a
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20211124095117-dbf56da8c5a8
+	github.com/drycc/controller-sdk-go v0.0.0-20211213072304-8a9f2f28d524
 	github.com/drycc/pkg v0.0.0-20210826011456-c60b87108840
 	github.com/olekukonko/tablewriter v0.0.5
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect

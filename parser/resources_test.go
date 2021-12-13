@@ -12,6 +12,14 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
+func (d FakeDryccCmd) ResourcesServices(int) error {
+	return errors.New("resources:services")
+}
+
+func (d FakeDryccCmd) ResourcesPlans(string, int) error {
+	return errors.New("resources:plans")
+}
+
 func (d FakeDryccCmd) ResourcesCreate(string, string, string, []string) error {
 	return errors.New("resources:create")
 }
@@ -57,6 +65,14 @@ func TestResources(t *testing.T) {
 		args     []string
 		expected string
 	}{
+		{
+			args:     []string{"resources:services"},
+			expected: "",
+		},
+		{
+			args:     []string{"resources:plans", "mysql"},
+			expected: "",
+		},
 		{
 			args:     []string{"resources:create", "mysql:5.6", "mysql", "key1=value1"},
 			expected: "",

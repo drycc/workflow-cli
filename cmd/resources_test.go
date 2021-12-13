@@ -3,13 +3,83 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"github.com/drycc/controller-sdk-go/api"
 	"net/http"
 	"testing"
+
+	"github.com/drycc/controller-sdk-go/api"
 
 	"github.com/arschles/assert"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 )
+
+func TestResourcesServices(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/resources/services/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+	"results": [
+		{
+			"id": "332588e0-6c2c-4f56-a6af-a56fd01ec4b4",
+			"name": "mysql",
+			"updateable": true
+		}
+	],
+	"count": 1
+}`)
+	})
+
+	err = cmdr.ResourcesServices(100)
+	assert.NoErr(t, err)
+
+	assert.Equal(t, b.String(), `+-------+------------+
+| NAME  | UPDATEABLE |
++-------+------------+
+| mysql | true       |
++-------+------------+
+`, "output")
+}
+
+func TestResourcesPlans(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/resources/services/mysql/plans/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+	"results": [{
+		"id": "4d1dbd33-201b-45bc-9abb-757584ef7ab8",
+		"name": "standard-1600",
+		"description": "mysql standard-1600 plan which limit persistence size 1600Gi."
+	}],
+	"count": 1
+}`)
+	})
+
+	err = cmdr.ResourcesPlans("mysql", 100)
+	assert.NoErr(t, err)
+
+	assert.Equal(t, b.String(), `+---------------+--------------------------------+
+|     NAME      |          DESCRIPTION           |
++---------------+--------------------------------+
+| standard-1600 | mysql standard-1600 plan which |
+|               | limit persistence size 1600Gi. |
++---------------+--------------------------------+
+`, "output")
+}
 
 func TestResourcesCreate(t *testing.T) {
 	t.Parallel()
@@ -178,7 +248,7 @@ func TestResourceBind(t *testing.T) {
 	server.Mux.HandleFunc("/v2/apps/example-go/resources/mysql/binding/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "PATCH" {
-			testutil.AssertBody(t, api.Binding{
+			testutil.AssertBody(t, api.ResourceBinding{
 				BindAction: "bind",
 			}, r)
 		}
@@ -218,7 +288,7 @@ func TestResourceUnbind(t *testing.T) {
 	server.Mux.HandleFunc("/v2/apps/example-go/resources/mysql/binding/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "PATCH" {
-			testutil.AssertBody(t, api.Binding{
+			testutil.AssertBody(t, api.ResourceBinding{
 				BindAction: "unbind",
 			}, r)
 		}
