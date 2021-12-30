@@ -98,6 +98,7 @@ func TestLimitsList(t *testing.T) {
 			"values": {},
 			"memory": {
 				"web": "2G",
+				"worker": "1G",
 				"db": "1000M"
 			},
 			"cpu": {
@@ -121,8 +122,9 @@ func TestLimitsList(t *testing.T) {
 	assert.Equal(t, b.String(), `=== enterprise Limits
 
 --- Memory
-db      1000M
-web     2G
+db         1000M
+web        2G
+worker     1G
 
 --- CPU
 db         500m
@@ -152,10 +154,8 @@ worker     1
 	assert.Equal(t, b.String(), `=== franklin Limits
 
 --- Memory
-Default
 
 --- CPU
-Default
 `, "output")
 }
 
@@ -181,7 +181,7 @@ func TestLimitsSet(t *testing.T) {
 			"owner": "jkirk",
 			"app": "foo",
 			"values": {},
-			"memory": {},
+			"memory": {"web": "128M"},
 			"cpu": {
 				"web": "100m"
 			},
@@ -196,7 +196,7 @@ func TestLimitsSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.LimitsSet("foo", []string{"web=100m"}, "cpu")
+	err = cmdr.LimitsSet("foo", []string{"web=100m"}, []string{})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -204,7 +204,7 @@ func TestLimitsSet(t *testing.T) {
 === foo Limits
 
 --- Memory
-Default
+web     128M
 
 --- CPU
 web     100m
@@ -227,7 +227,9 @@ web     100m
 			"memory": {
 				"web": "1G"
 			},
-			"cpu": {},
+			"cpu": {
+				"web": "1"
+			},
 			"tags": {},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -237,7 +239,7 @@ web     100m
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("franklin", []string{"web=1G"}, "memory")
+	err = cmdr.LimitsSet("franklin", []string{}, []string{"web=1G"})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -248,7 +250,7 @@ web     100m
 web     1G
 
 --- CPU
-Default
+web     1
 `, "output")
 
 	// with requests/limit parameter
@@ -273,7 +275,11 @@ Default
 				"worker": "3G",
 				"db": "5G"
 			},
-			"cpu": {},
+			"cpu": {
+				"web": "1",
+				"worker": "1",
+				"db": "5"
+			},
 			"tags": {},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -283,7 +289,7 @@ Default
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("jim", []string{"web=2000M", "worker=3G", "db=5G"}, "memory")
+	err = cmdr.LimitsSet("jim", []string{}, []string{"web=2000M", "worker=3G", "db=5G"})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -296,7 +302,9 @@ web        2000M
 worker     3G
 
 --- CPU
-Default
+db         5
+web        1
+worker     1
 `, "output")
 
 	// with requests/limit parameter
@@ -321,7 +329,11 @@ Default
 				"worker": "300m",
 				"db": "5"
 			},
-			"cpu": {},
+			"memory": {
+				"web": "1G",
+				"worker": "1G",
+				"db": "1G"
+			},
 			"tags": {},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -331,7 +343,7 @@ Default
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=300m", "db=5"}, "cpu")
+	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=300m", "db=5"}, []string{})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -339,7 +351,9 @@ Default
 === phew Limits
 
 --- Memory
-Default
+db         1G
+web        1G
+worker     1G
 
 --- CPU
 db         5
@@ -370,9 +384,11 @@ func TestLimitsUnset(t *testing.T) {
 			"owner": "jkirk",
 			"app": "foo",
 			"values": {},
-			"memory": {},
+			"memory": {
+				"web": "128M"
+			},
 			"cpu": {
-				"web": "100m"
+				"web": "125m"
 			},
 			"tags": {},
 			"registry": {},
@@ -385,7 +401,7 @@ func TestLimitsUnset(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.LimitsUnset("foo", []string{"web"}, "memory")
+	err = cmdr.LimitsUnset("foo", []string{}, []string{"web"})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -393,10 +409,10 @@ func TestLimitsUnset(t *testing.T) {
 === foo Limits
 
 --- Memory
-Default
+web     128M
 
 --- CPU
-web     100m
+web     125m
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -406,6 +422,9 @@ web     100m
 				CPU: map[string]interface{}{
 					"web": nil,
 				},
+				Memory: map[string]interface{}{
+					"web": nil,
+				},
 			}, r)
 		}
 
@@ -413,9 +432,7 @@ web     100m
 			"owner": "bedison",
 			"app": "franklin",
 			"values": {},
-			"memory": {
-				"web": "1G"
-			},
+			"memory": {},
 			"cpu": {},
 			"tags": {},
 			"registry": {},
@@ -426,7 +443,7 @@ web     100m
 	})
 	b.Reset()
 
-	err = cmdr.LimitsUnset("franklin", []string{"web"}, "cpu")
+	err = cmdr.LimitsUnset("franklin", []string{"web"}, []string{"web"})
 	assert.NoErr(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
@@ -434,9 +451,7 @@ web     100m
 === franklin Limits
 
 --- Memory
-web     1G
 
 --- CPU
-Default
 `, "output")
 }

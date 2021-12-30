@@ -16,11 +16,11 @@ func (d FakeDryccCmd) LimitsList(string) error {
 	return errors.New("limits:list")
 }
 
-func (d FakeDryccCmd) LimitsSet(string, []string, string) error {
+func (d FakeDryccCmd) LimitsSet(string, []string, []string) error {
 	return errors.New("limits:set")
 }
 
-func (d FakeDryccCmd) LimitsUnset(string, []string, string) error {
+func (d FakeDryccCmd) LimitsUnset(string, []string, []string) error {
 	return errors.New("limits:unset")
 }
 

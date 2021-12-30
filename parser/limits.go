@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"regexp"
+
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cmd"
 )
@@ -95,6 +97,8 @@ Options:
     value apply to CPU.
   -m --memory
     value apply to memory.
+
+Use 'drycc help [command]' to learn more.
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -104,14 +108,22 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-	limits := args["<type>=<value>"].([]string)
-	limitType := "memory"
-
-	if args["--cpu"].(bool) {
-		limitType = "cpu"
+	cpuLimits := []string{}
+	memoryLimits := []string{}
+	for _, value := range args["<type>=<value>"].([]string) {
+		if args["--cpu"].(bool) {
+			isCPU, _ := regexp.MatchString("^\\d+m?$", value)
+			if isCPU {
+				cpuLimits = append(cpuLimits, value)
+			}
+		}
+		isMemory, _ := regexp.MatchString("^\\d+[M|G]$", value)
+		if isMemory {
+			memoryLimits = append(memoryLimits, value)
+		}
 	}
 
-	return cmdr.LimitsSet(app, limits, limitType)
+	return cmdr.LimitsSet(app, cpuLimits, memoryLimits)
 }
 
 func limitUnset(argv []string, cmdr cmd.Commander) error {
@@ -141,12 +153,16 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-	limits := args["<type>"].([]string)
-	limitType := "memory"
+	cpuLimits := []string{}
+	memoryLimits := []string{}
 
 	if args["--cpu"].(bool) {
-		limitType = "cpu"
+		cpuLimits = args["<type>"].([]string)
 	}
 
-	return cmdr.LimitsUnset(app, limits, limitType)
+	if args["--memory"].(bool) {
+		memoryLimits = args["<type>"].([]string)
+	}
+
+	return cmdr.LimitsUnset(app, cpuLimits, memoryLimits)
 }

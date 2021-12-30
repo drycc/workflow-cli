@@ -55,8 +55,8 @@ type Commander interface {
 	LabelsSet(string, []string) error
 	LabelsUnset(string, []string) error
 	LimitsList(string) error
-	LimitsSet(string, []string, string) error
-	LimitsUnset(string, []string, string) error
+	LimitsSet(string, []string, []string) error
+	LimitsUnset(string, []string, []string) error
 	TimeoutsList(string) error
 	TimeoutsSet(string, []string) error
 	TimeoutsUnset(string, []string) error

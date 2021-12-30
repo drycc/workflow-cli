@@ -26,9 +26,7 @@ func (d *DryccCmd) LimitsList(appID string) error {
 	d.Printf("=== %s Limits\n\n", appID)
 
 	d.Println("--- Memory")
-	if len(config.Memory) == 0 {
-		d.Println("Default")
-	} else {
+	if len(config.Memory) != 0 {
 		memoryMap := make(map[string]string)
 
 		for key, value := range config.Memory {
@@ -39,9 +37,7 @@ func (d *DryccCmd) LimitsList(appID string) error {
 	}
 
 	d.Println("\n--- CPU")
-	if len(config.CPU) == 0 {
-		d.Println("Default")
-	} else {
+	if len(config.CPU) != 0 {
 		cpuMap := make(map[string]string)
 
 		for key, value := range config.CPU {
@@ -55,28 +51,32 @@ func (d *DryccCmd) LimitsList(appID string) error {
 }
 
 // LimitsSet sets an app's limits.
-func (d *DryccCmd) LimitsSet(appID string, limits []string, limitType string) error {
+func (d *DryccCmd) LimitsSet(appID string, cpuLimits []string, memoryLimits []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	limitsMap, err := parseLimits(limits)
-	if err != nil {
-		return err
+	configObj := api.Config{}
+	if len(cpuLimits) > 0 {
+		cpuLimitsMap, err := parseLimits(cpuLimits)
+		if err != nil {
+			return err
+		}
+		configObj.CPU = cpuLimitsMap
+	}
+	if len(memoryLimits) > 0 {
+		memoryLimitsMap, err := parseLimits(memoryLimits)
+		if err != nil {
+			return err
+		}
+		configObj.Memory = memoryLimitsMap
 	}
 
 	d.Print("Applying limits... ")
 
 	quit := progress(d.WOut)
-	configObj := api.Config{}
-
-	if limitType == "cpu" {
-		configObj.CPU = limitsMap
-	} else {
-		configObj.Memory = limitsMap
-	}
 
 	_, err = config.Set(s.Client, appID, configObj)
 	quit <- true
@@ -91,7 +91,7 @@ func (d *DryccCmd) LimitsSet(appID string, limits []string, limitType string) er
 }
 
 // LimitsUnset removes an app's limits.
-func (d *DryccCmd) LimitsUnset(appID string, limits []string, limitType string) error {
+func (d *DryccCmd) LimitsUnset(appID string, cpuLimits []string, memoryLimits []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -103,17 +103,19 @@ func (d *DryccCmd) LimitsUnset(appID string, limits []string, limitType string) 
 	quit := progress(d.WOut)
 
 	configObj := api.Config{}
-
-	valuesMap := make(map[string]interface{})
-
-	for _, limit := range limits {
-		valuesMap[limit] = nil
+	if len(cpuLimits) > 0 {
+		cpuMap := make(map[string]interface{})
+		for _, limit := range cpuLimits {
+			cpuMap[limit] = nil
+		}
+		configObj.CPU = cpuMap
 	}
-
-	if limitType == "cpu" {
-		configObj.CPU = valuesMap
-	} else {
-		configObj.Memory = valuesMap
+	if len(memoryLimits) > 0 {
+		memoryMap := make(map[string]interface{})
+		for _, limit := range memoryLimits {
+			memoryMap[limit] = nil
+		}
+		configObj.Memory = memoryMap
 	}
 
 	_, err = config.Set(s.Client, appID, configObj)
