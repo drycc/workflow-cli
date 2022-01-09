@@ -1,12 +1,9 @@
 kind: pipeline
-type: docker
+type: exec
 name: default
 
 steps:
 - name: test
-  image: docker.io/drycc/go-dev
-  pull: always
-  privileged: true
   commands:
   - VERSION=${DRONE_TAG:-latest} make test 
   environment:
@@ -17,14 +14,8 @@ steps:
     - push
     - tag
     - pull_request
-  volumes:
-  - name: image_registries
-    path: /etc/containers/registries.conf
 
 - name: build
-  image: docker.io/drycc/go-dev
-  pull: always
-  privileged: true
   commands:
   - VERSION=${DRONE_TAG:-latest} make build
   environment:
@@ -33,26 +24,22 @@ steps:
   when:
     event:
     - tag
-  volumes:
-  - name: image_registries
-    path: /etc/containers/registries.conf
 
 - name: release
-  image: plugins/github-release
-  settings:
-    api_key:
+  commands:
+  - docker run --rm
+      -e DRONE_BUILD_EVENT=tag
+      -e DRONE_REPO_OWNER="$DRONE_REPO_OWNER"
+      -e DRONE_REPO_NAME="$DRONE_REPO_NAME"
+      -e PLUGIN_API_KEY="$API_KEY"
+      -e DRONE_COMMIT_REF="refs/tags/$DRONE_TAG"
+      -e PLUGIN_OVERWRITE="true"
+      -e PLUGIN_FILES="_dist/*"
+      -v $(pwd):$(pwd)
+      -w $(pwd)
+      plugins/github-release
+  environment:
+    API_KEY:
       from_secret: github_token
-    files: _dist/*
   when:
     event: tag
-
-trigger:
-  event:
-  - push
-  - tag
-  - pull_request
-
-volumes:
-- name: image_registries
-  host:
-    path: /etc/containers/registries.conf
