@@ -2,7 +2,7 @@
 VERSION ?= canary
 REPO_PATH := github.com/drycc/workflow-cli
 DEV_ENV_IMAGE := ${DEV_REGISTRY}/drycc/go-dev
-DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}
+DEV_ENV_WORK_DIR := /opt/drycc/go/src/${REPO_PATH}
 
 DIST_DIR ?= _dist
 
