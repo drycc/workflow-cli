@@ -112,12 +112,12 @@ Use 'drycc help [command]' to learn more.
 	memoryLimits := []string{}
 	for _, value := range args["<type>=<value>"].([]string) {
 		if args["--cpu"].(bool) {
-			isCPU, _ := regexp.MatchString("^\\d+m?$", value)
+			isCPU, _ := regexp.MatchString("\\d+m?$", value)
 			if isCPU {
 				cpuLimits = append(cpuLimits, value)
 			}
 		}
-		isMemory, _ := regexp.MatchString("^\\d+[M|G]$", value)
+		isMemory, _ := regexp.MatchString("\\d+[M|G]$", value)
 		if isMemory {
 			memoryLimits = append(memoryLimits, value)
 		}
