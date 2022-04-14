@@ -5,10 +5,15 @@ name: default
 steps:
 - name: test
   commands:
+  - mkdir -p $HOMEPATH/.docker; echo $IMAGE_PULL_SECRETS > $HOMEPATH/.docker/config.json
   - VERSION=${DRONE_TAG:-latest} make test 
   environment:
     DEV_REGISTRY:
       from_secret: dev_registry
+    DRYCC_REGISTRY:
+      from_secret: drycc_registry
+    IMAGE_PULL_SECRETS:
+      from_secret: container_pull_secrets
   when:
     event:
     - push
@@ -17,10 +22,15 @@ steps:
 
 - name: build
   commands:
+  - mkdir -p $HOMEPATH/.docker; echo $IMAGE_PULL_SECRETS > $HOMEPATH/.docker/config.json
   - VERSION=${DRONE_TAG:-latest} make build
   environment:
     DEV_REGISTRY:
       from_secret: dev_registry
+    DRYCC_REGISTRY:
+      from_secret: drycc_registry
+    IMAGE_PULL_SECRETS:
+      from_secret: container_pull_secrets
   when:
     event:
     - tag
@@ -37,7 +47,7 @@ steps:
       -e PLUGIN_FILES="_dist/*"
       -v $(pwd):$(pwd)
       -w $(pwd)
-      plugins/github-release
+      docker.io/plugins/github-release
   environment:
     API_KEY:
       from_secret: github_token
