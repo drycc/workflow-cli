@@ -11,6 +11,7 @@ func Volumes(argv []string, cmdr cmd.Commander) error {
 Valid commands for volumes:
 
 volumes:create           create a volume for the application
+volumes:expand           expand a volume for the application
 volumes:list             list volumes in the application
 volumes:delete           delete a volume from the application
 volumes:mount            mount a volume to process of the application
@@ -22,6 +23,8 @@ Use 'drycc help [command]' to learn more.
 	switch argv[0] {
 	case "volumes:create":
 		return volumesCreate(argv, cmdr)
+	case "volumes:expand":
+		return volumesExpand(argv, cmdr)
 	case "volumes:list":
 		return volumesList(argv, cmdr)
 	case "volumes:delete":
@@ -55,7 +58,7 @@ Arguments:
   <name>
     the volume name.
   <size>
-    the volume size, such as '500M'.
+    the volume size, such as '500G'.
 
 Options:
   -a --app=<app>
@@ -73,6 +76,36 @@ Options:
 	size := safeGetValue(args, "<size>")
 
 	return cmdr.VolumesCreate(app, name, size)
+}
+
+func volumesExpand(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Create a volume for the application.
+
+Usage: drycc volumes:expand <name> <size> [options]
+
+Arguments:
+  <name>
+    the volume name.
+  <size>
+    the volume size, such as '500G'.
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.Parse(usage, argv, true, "", false, true)
+
+	if err != nil {
+		return err
+	}
+
+	app := safeGetValue(args, "--app")
+	name := safeGetValue(args, "<name>")
+	size := safeGetValue(args, "<size>")
+
+	return cmdr.VolumesExpand(app, name, size)
 }
 
 func volumesList(argv []string, cmdr cmd.Commander) error {

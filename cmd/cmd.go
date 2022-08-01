@@ -98,6 +98,7 @@ type Commander interface {
 	PrintErrf(string, ...interface{}) (int, error)
 	Version(bool) error
 	VolumesCreate(string, string, string) error
+	VolumesExpand(string, string, string) error
 	VolumesDelete(string, string) error
 	VolumesList(string, int) error
 	VolumesMount(string, string, []string) error

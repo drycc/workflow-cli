@@ -20,6 +20,10 @@ func (d FakeDryccCmd) VolumesCreate(string, string, string) error {
 	return errors.New("volumes:create")
 }
 
+func (d FakeDryccCmd) VolumesExpand(string, string, string) error {
+	return errors.New("volumes:expand")
+}
+
 func (d FakeDryccCmd) VolumesDelete(string, string) error {
 	return errors.New("volumes:delete")
 }
@@ -50,7 +54,11 @@ func TestVolumes(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"volumes:create", "myvolume", "500M"},
+			args:     []string{"volumes:create", "myvolume", "500G"},
+			expected: "",
+		},
+		{
+			args:     []string{"volumes:expand", "myvolume", "500G"},
 			expected: "",
 		},
 		{

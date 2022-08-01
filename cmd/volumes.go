@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/drycc/pkg/prettyprint"
 	"io"
 	"regexp"
 	"strings"
+
+	"github.com/drycc/pkg/prettyprint"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
@@ -68,16 +69,16 @@ func printVolumes(d *DryccCmd, appID string, volumes api.Volumes, wOut io.Writer
 }
 
 // VolumesCreate create a volume for the application
-func (d *DryccCmd) VolumesCreate(appID, name string, size string) error {
+func (d *DryccCmd) VolumesCreate(appID, name, size string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
-	regex := regexp.MustCompile("^([1-9][0-9]*[mgMG])$")
+	regex := regexp.MustCompile("^([1-9][0-9]*[gG])$")
 	if !regex.MatchString(size) {
 		return fmt.Errorf(`%s doesn't fit format #unit
-Examples: 2G 2g 500M 500m`, size)
+Examples: 2G 2g`, size)
 	}
 
 	d.Printf("Creating %s to %s... ", name, appID)
@@ -88,6 +89,37 @@ Examples: 2G 2g 500M 500m`, size)
 		Size: size,
 	}
 	_, err = volumes.Create(s.Client, appID, volume)
+	quit <- true
+	<-quit
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}
+
+// VolumesExpand create a volume for the application
+func (d *DryccCmd) VolumesExpand(appID, name, size string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+
+	if err != nil {
+		return err
+	}
+	regex := regexp.MustCompile("^([1-9][0-9]*[gG])$")
+	if !regex.MatchString(size) {
+		return fmt.Errorf(`%s doesn't fit format #unit
+Examples: 2G 2g`, size)
+	}
+
+	d.Printf("Expand %s to %s... ", name, appID)
+
+	quit := progress(d.WOut)
+	volume := api.Volume{
+		Name: name,
+		Size: size,
+	}
+	_, err = volumes.Expand(s.Client, appID, volume)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

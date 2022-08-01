@@ -33,7 +33,7 @@ func TestVolumesList(t *testing.T) {
 			"owner": "test",
 			"app": "example-go",
 			"name": "myvolume",
-			"size": "500M",
+			"size": "500G",
 			"path": {"cmd": "/data/cmd1", "cmd123": "/data/cmd123"},
 			"created": "2020-08-26T00:00:00UTC",
 			"updated": "2020-08-26T00:00:00UTC"
@@ -46,7 +46,7 @@ func TestVolumesList(t *testing.T) {
 	assert.NoErr(t, err)
 
 	assert.Equal(t, b.String(), `=== example-go volumes
---- myvolume     500M
+--- myvolume     500G
 cmd              /data/cmd1
 cmd123           /data/cmd123
 `, "output")
@@ -63,21 +63,49 @@ func TestVolumesCreate(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/example-go/volumes/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.Volume{Name: "myvolume", Size: "500M"}, r)
+		testutil.AssertBody(t, api.Volume{Name: "myvolume", Size: "500G"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.VolumesCreate("example-go", "myvolume", "500M")
+	err = cmdr.VolumesCreate("example-go", "myvolume", "500G")
 	assert.NoErr(t, err)
 	err = cmdr.VolumesCreate("example-go", "myvolume", "500K")
 	expected := `500K doesn't fit format #unit
-Examples: 2G 2g 500M 500m`
+Examples: 2G 2g`
 	assert.Equal(t, err.Error(), expected, "output")
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating myvolume to example-go... done\n", "output")
+}
+
+func TestVolumesExpand(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.AssertBody(t, api.Volume{Name: "myvolume", Size: "500G"}, r)
+		testutil.SetHeaders(w)
+		w.WriteHeader(http.StatusCreated)
+		// Body isn't used by CLI, so it isn't set.
+		w.Write([]byte("{}"))
+	})
+
+	err = cmdr.VolumesExpand("example-go", "myvolume", "500G")
+	assert.NoErr(t, err)
+	err = cmdr.VolumesExpand("example-go", "myvolume", "500K")
+	expected := `500K doesn't fit format #unit
+Examples: 2G 2g`
+	assert.Equal(t, err.Error(), expected, "output")
+
+	assert.Equal(t, testutil.StripProgress(b.String()), "Expand myvolume to example-go... done\n", "output")
 }
 
 func TestVolumesDelete(t *testing.T) {
@@ -123,7 +151,7 @@ func TestVolumesMount(t *testing.T) {
 			"owner": "test",
 			"app": "example-go",
 			"name": "myvolume",
-			"size": "500M",
+			"size": "500G",
 			"path": {"cmd": "/data/cmd1"},
 			"created": "2020-08-26T00:00:00UTC",
 			"updated": "2020-08-26T00:00:00UTC"
@@ -162,7 +190,7 @@ func TestVolumesUnmount(t *testing.T) {
 			"owner": "test",
 			"app": "example-go",
 			"name": "myvolume",
-			"size": "500M",
+			"size": "500G",
 			"path": {},
 			"created": "2020-08-26T00:00:00UTC",
 			"updated": "2020-08-26T00:00:00UTC"
