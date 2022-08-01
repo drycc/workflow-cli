@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/pkg/time"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseType(t *testing.T) {
@@ -108,7 +108,7 @@ func TestPsList(t *testing.T) {
 	})
 
 	err = cmdr.PsList("foo", -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Processes
 --- web:
@@ -141,7 +141,7 @@ func TestParsePsTargets(t *testing.T) {
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, actual, check.ExpectedMap, "error")
 		}
 	}
@@ -185,7 +185,7 @@ func TestPsScale(t *testing.T) {
 
 	b.Reset()
 	err = cmdr.PsScale("foo", []string{"web=1"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Scaling processes... but first, coffee!
 done in 0s
 === foo Processes
@@ -219,7 +219,7 @@ func TestPsRestart(t *testing.T) {
 
 	b.Reset()
 	err = cmdr.PsRestart("foo", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
 done in 0s
 === foo Processes
@@ -235,7 +235,7 @@ foo-web-4084101150-c871y up (v2)
 	b.Reset()
 
 	err = cmdr.PsRestart("coolapp", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
 Could not find any processes to restart
 `, "output")
@@ -256,7 +256,7 @@ Could not find any processes to restart
 	b.Reset()
 
 	err = cmdr.PsRestart("testapp", "web")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
 done in 0s
 === testapp Processes
@@ -280,7 +280,7 @@ testapp-web-4084101150-c871y up (v2)
 	b.Reset()
 
 	err = cmdr.PsRestart("newapp", "newapp-web-4084101150-c871y")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
 done in 0s
 === newapp Processes

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUsersList(t *testing.T) {
@@ -60,7 +60,7 @@ func TestUsersList(t *testing.T) {
 	})
 
 	err = cmdr.UsersList(-1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== Users (*=admin)
 test
@@ -104,7 +104,7 @@ func TestUsersListLimit(t *testing.T) {
 	})
 
 	err = cmdr.UsersList(1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== Users (*=admin) (1 of 2)
 test
@@ -127,7 +127,7 @@ func TestUsersEnable(t *testing.T) {
 	})
 
 	err = cmdr.UsersEnable("test")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `Enabling user test... done
 `, "output")
@@ -149,7 +149,7 @@ func TestUsersDisable(t *testing.T) {
 	})
 
 	err = cmdr.UsersDisable("test")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `Disabling user test... done
 `, "output")
 }

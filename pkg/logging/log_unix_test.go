@@ -7,7 +7,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/arschles/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 type colorsTestCase struct {

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestVolumesList(t *testing.T) {
@@ -43,7 +43,7 @@ func TestVolumesList(t *testing.T) {
 	})
 
 	err = cmdr.VolumesList("example-go", -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== example-go volumes
 --- myvolume     500G
@@ -71,7 +71,7 @@ func TestVolumesCreate(t *testing.T) {
 	})
 
 	err = cmdr.VolumesCreate("example-go", "myvolume", "500G")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	err = cmdr.VolumesCreate("example-go", "myvolume", "500K")
 	expected := `500K doesn't fit format #unit
 Examples: 2G 2g`
@@ -99,7 +99,7 @@ func TestVolumesExpand(t *testing.T) {
 	})
 
 	err = cmdr.VolumesExpand("example-go", "myvolume", "500G")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	err = cmdr.VolumesExpand("example-go", "myvolume", "500K")
 	expected := `500K doesn't fit format #unit
 Examples: 2G 2g`
@@ -124,7 +124,7 @@ func TestVolumesDelete(t *testing.T) {
 	})
 
 	err = cmdr.VolumesDelete("example-go", "myvolume")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Deleting myvolume from example-go... done\n", "output")
 }
@@ -162,7 +162,7 @@ func TestVolumesMount(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.VolumesMount("example-go", "myvolume", []string{"cmd=/data/cmd1"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Mounting volume... done
 `, "output")
@@ -201,7 +201,7 @@ func TestVolumesUnmount(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.VolumesUnmount("example-go", "myvolume", []string{"cmd"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Unmounting volume... done
 `, "output")

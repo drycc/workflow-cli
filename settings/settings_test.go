@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/workflow-cli/version"
+	"github.com/stretchr/testify/assert"
 )
 
 const sFile string = `{"username":"t","ssl_verify":false,"controller":"http://foo.bar","token":"a"}`
@@ -183,7 +183,7 @@ func TestNotLoggedIn(t *testing.T) {
 	}
 
 	_, err = Load(filepath.Join(name, "test.json"))
-	assert.ExistsErr(t, err, "load error")
+	assert.NotEqual(t, err, nil, "error load")
 	if !strings.Contains(err.Error(), "client configuration file not found") {
 		t.Error("expected configuration error, Got:", err.Error())
 	}

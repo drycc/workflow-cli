@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCertsList(t *testing.T) {
@@ -69,7 +69,7 @@ func TestCertsList(t *testing.T) {
 	})
 
 	err = cmdr.CertsList(-1, time.Date(2016, time.June, 9, 0, 0, 0, 0, time.UTC))
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `        Name       |   Common Name    |    SubjectAltName    |         Expires          |   Fingerprint   |       Domains        |  Updated   |  Created    
 -------------------+------------------+----------------------+--------------------------+-----------------+----------------------+------------+-------------
@@ -99,7 +99,7 @@ func TestCertsList(t *testing.T) {
 	})
 
 	err = cmdr.CertsList(-1, time.Now())
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), "No certs\n", "output")
 }
@@ -142,7 +142,7 @@ func TestCertsListLimit(t *testing.T) {
 	})
 
 	err = cmdr.CertsList(1, time.Date(2016, time.June, 9, 0, 0, 0, 0, time.UTC))
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `        Name       |   Common Name    |    SubjectAltName    |        Expires        |   Fingerprint   |       Domains        |  Updated   |  Created    
 -------------------+------------------+----------------------+-----------------------+-----------------+----------------------+------------+-------------
@@ -186,7 +186,7 @@ func TestCertsInfo(t *testing.T) {
 	})
 
 	err = cmdr.CertInfo("test-example-com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== test-example-com Certificate
 Common Name(s):     test.drycc.com
 Expires At:         9 Jun 2016
@@ -211,7 +211,7 @@ Updated:            9 Jun 2016
 	b.Reset()
 
 	err = cmdr.CertInfo("test-drycc-com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== test-drycc-com Certificate
 Common Name(s):     
 Expires At:         unknown
@@ -244,7 +244,7 @@ func TestCertsRemove(t *testing.T) {
 	})
 
 	err = cmdr.CertRemove("test-example-com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Removing test-example-com... done\n", "output")
 }
@@ -266,7 +266,7 @@ func TestCertsAttach(t *testing.T) {
 	})
 
 	err = cmdr.CertAttach("test-example-com", "drycc.com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Attaching certificate test-example-com to domain drycc.com... done\n", "output")
 }
@@ -287,7 +287,7 @@ func TestCertsDetach(t *testing.T) {
 	})
 
 	err = cmdr.CertDetach("test-example-com", "drycc.com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Detaching certificate test-example-com from domain drycc.com... done\n", "output")
 }
@@ -310,19 +310,19 @@ func TestCertsAdd(t *testing.T) {
 	})
 
 	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	_, err = keyFile.Write([]byte("key"))
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	keyFile.Close()
 
 	certFile, err := ioutil.TempFile("", "drycc-cli-unit-test-cert")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	_, err = certFile.Write([]byte("cert"))
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	certFile.Close()
 
 	err = cmdr.CertAdd(certFile.Name(), keyFile.Name(), "testcert")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Adding SSL endpoint... done\n", "output")
 }

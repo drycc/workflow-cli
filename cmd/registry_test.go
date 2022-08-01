@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 type parseInfoCase struct {
@@ -39,7 +39,7 @@ Examples: username=bob password=s3cur3pw1`},
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, key, check.Key, "key")
 			assert.Equal(t, value, check.Value, "value")
 		}
@@ -67,7 +67,7 @@ Examples: username=bob password=s3cur3pw1`},
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, actual, check.ExpectedMap, "map")
 		}
 	}
@@ -104,7 +104,7 @@ func TestRegistryList(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.RegistryList("enterprise")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== enterprise Registry
 password     ncc1701
 username     jkirk
@@ -151,7 +151,7 @@ func TestRegistrySet(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.RegistrySet("foo", []string{"username=jkirk", "password=ncc1701"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying registry information... done
 
@@ -198,7 +198,7 @@ func TestRegistryUnset(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.RegistryUnset("foo", []string{"username", "password"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying registry information... done
 

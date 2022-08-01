@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPermsListUsers(t *testing.T) {
@@ -33,7 +33,7 @@ func TestPermsListUsers(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", false, -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `=== foo's Users
 baz
@@ -63,7 +63,7 @@ func TestPermsListUsersLimit(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", false, 1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `=== foo's Users
 baz
@@ -102,7 +102,7 @@ func TestPermsListAdmins(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", true, -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `=== Administrators
 fred
@@ -138,7 +138,7 @@ func TestPermsListAdminsLimit(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.PermsList("foo", true, 1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `=== Administrators (1 of 2)
 fred
@@ -174,7 +174,7 @@ func TestPermsCreateUser(t *testing.T) {
 	})
 
 	err = cmdr.PermCreate("lorem-ipsum", "test-user", false)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Adding test-user to lorem-ipsum collaborators... done
 `, "output")
 }
@@ -194,7 +194,7 @@ func TestPermsCreateAdmin(t *testing.T) {
 	})
 
 	err = cmdr.PermCreate("lorem-ipsum", "test-admin", true)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Adding test-admin to system administrators... done
 `, "output")
 }
@@ -228,7 +228,7 @@ func TestPermsDeleteUser(t *testing.T) {
 	})
 
 	err = cmdr.PermDelete("lorem-ipsum", "test-user", false)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing test-user from lorem-ipsum collaborators... done
 `, "output")
 }
@@ -248,7 +248,7 @@ func TestPermsDeleteAdmin(t *testing.T) {
 	})
 
 	err = cmdr.PermDelete("lorem-ipsum", "test-admin", true)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing test-admin from system administrators... done
 `, "output")
 }

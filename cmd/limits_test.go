@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 type parseLimitCase struct {
@@ -48,7 +48,7 @@ Examples: web=2G worker=500M db=1G`
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, key, check.Key, "key")
 			assert.Equal(t, value, check.Value, "value")
 		}
@@ -76,7 +76,7 @@ Examples: web=2G worker=500M db=1G`},
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, actual, check.ExpectedMap, "map")
 		}
 	}
@@ -118,7 +118,7 @@ func TestLimitsList(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.LimitsList("enterprise")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== enterprise Limits
 
 --- Memory
@@ -150,7 +150,7 @@ worker     1
 	b.Reset()
 
 	err = cmdr.LimitsList("franklin")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== franklin Limits
 
 --- Memory
@@ -197,7 +197,7 @@ func TestLimitsSet(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.LimitsSet("foo", []string{"web=100m"}, []string{})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
@@ -240,7 +240,7 @@ web     100m
 	b.Reset()
 
 	err = cmdr.LimitsSet("franklin", []string{}, []string{"web=1G"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
@@ -290,7 +290,7 @@ web     1
 	b.Reset()
 
 	err = cmdr.LimitsSet("jim", []string{}, []string{"web=2000M", "worker=3G", "db=5G"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
@@ -344,7 +344,7 @@ worker     1
 	b.Reset()
 
 	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=300m", "db=5"}, []string{})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
@@ -402,7 +402,7 @@ func TestLimitsUnset(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.LimitsUnset("foo", []string{}, []string{"web"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
@@ -444,7 +444,7 @@ web     125m
 	b.Reset()
 
 	err = cmdr.LimitsUnset("franklin", []string{"web"}, []string{"web"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 

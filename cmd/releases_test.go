@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestReleasesList(t *testing.T) {
@@ -56,7 +56,7 @@ func TestReleasesList(t *testing.T) {
 	})
 
 	err = cmdr.ReleasesList("numenor", -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== numenor Releases
 v2	2016-08-22T17:40:16Z	khamul added ANGMAR
 v1	2014-01-01T00:00:00UTC	nazgul created initial release
@@ -96,7 +96,7 @@ func TestReleasesListLimit(t *testing.T) {
 	})
 
 	err = cmdr.ReleasesList("numenor", 1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== numenor Releases (1 of 2)
 v2	2016-08-22T17:40:16Z	khamul added ANGMAR
 `, "output")
@@ -128,7 +128,7 @@ func TestReleasesInfo(t *testing.T) {
 	})
 
 	err = cmdr.ReleasesInfo("numenor", 2)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== numenor Release v2
 config:   3bb816b1-4fde-4b06-8afe-acd12f58a266
 owner:    nazgul
@@ -162,7 +162,7 @@ func TestReleasesRollback(t *testing.T) {
 	})
 
 	err = cmdr.ReleasesRollback("numenor", -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Rolling back one release... done, v5\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/angmar/releases/rollback/", func(w http.ResponseWriter, r *http.Request) {
@@ -175,6 +175,6 @@ func TestReleasesRollback(t *testing.T) {
 	b.Reset()
 
 	err = cmdr.ReleasesRollback("angmar", 3)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Rolling back to v3... done, v3\n", "output")
 }

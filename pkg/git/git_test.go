@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/arschles/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRepositoryURL(t *testing.T) {
@@ -37,7 +37,7 @@ example	ssh://example.com:2222/example.git (push)
 `, nil
 	})
 
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, actual, expected, "remotes")
 
 	_, err = getRemotes(func(cmd []string) (string, error) {
@@ -46,7 +46,7 @@ example	ssh://example.com:2222/example.git (push)
 `, nil
 	})
 
-	assert.Err(t, err, ErrInvalidRepositoryList)
+	assert.Error(t, err, ErrInvalidRepositoryList)
 
 	testErr := errors.New("test error")
 
@@ -55,7 +55,7 @@ example	ssh://example.com:2222/example.git (push)
 		return "", testErr
 	})
 
-	assert.Err(t, err, testErr)
+	assert.Error(t, err, testErr)
 }
 
 func TestRemoteURL(t *testing.T) {
@@ -70,7 +70,7 @@ example	ssh://example.com:2222/example.git (push)
 `, nil
 	}, "test")
 
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, url, "ssh://test.com/test.git", "remote url")
 
 	_, err = RemoteURL(func(cmd []string) (string, error) {
@@ -82,7 +82,7 @@ example	ssh://example.com:2222/example.git (push)
 `, nil
 	}, "foo")
 
-	assert.Err(t, err, ErrRemoteNotFound)
+	assert.Error(t, err, ErrRemoteNotFound)
 
 	testErr := errors.New("test error")
 
@@ -91,7 +91,7 @@ example	ssh://example.com:2222/example.git (push)
 		return "", testErr
 	}, "test")
 
-	assert.Err(t, err, testErr)
+	assert.Error(t, err, testErr)
 }
 
 func TestFindRemoteURL(t *testing.T) {
@@ -106,7 +106,7 @@ drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
 	}, "drycc.example.com")
 
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, url, "ssh://git@drycc-builder.example.com:2222/test.git", "remote url")
 
 	_, err = findRemote(func(cmd []string) (string, error) {
@@ -118,7 +118,7 @@ example	ssh://example.com:2222/example.git (push)
 `, nil
 	}, "drycc.test.com")
 
-	assert.Err(t, err, ErrRemoteNotFound)
+	assert.Error(t, err, ErrRemoteNotFound)
 
 	testErr := errors.New("test error")
 
@@ -127,7 +127,7 @@ example	ssh://example.com:2222/example.git (push)
 		return "", testErr
 	}, "drycc.test.com")
 
-	assert.Err(t, err, testErr)
+	assert.Error(t, err, testErr)
 }
 
 func TestDetectAppName(t *testing.T) {
@@ -140,16 +140,16 @@ drycc	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
 	}, "drycc.example.com")
 
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, app, "test", "app")
 
 	app, err = DetectAppName(func(cmd []string) (string, error) {
 		assert.Equal(t, cmd, []string{"remote", "-v"}, "args")
 		return "", errors.New("test error")
 	}, "drycc.test.com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	wd, err := os.Getwd()
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, app, filepath.Base(wd), "app")
 }
 
@@ -167,7 +167,7 @@ two	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
 	}, "drycc.example.com", "test")
 
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, apps, []string{"drycc", "two"}, "remote url")
 
 	_, err = remoteNamesFromAppID(func(cmd []string) (string, error) {
@@ -181,7 +181,7 @@ two	ssh://git@drycc-builder.example.com:2222/test.git (push)
 `, nil
 	}, "drycc.test.com", "other")
 
-	assert.Err(t, err, ErrRemoteNotFound)
+	assert.Error(t, err, ErrRemoteNotFound)
 
 	testErr := errors.New("test error")
 
@@ -190,7 +190,7 @@ two	ssh://git@drycc-builder.example.com:2222/test.git (push)
 		return "", testErr
 	}, "drycc.test.com", "test")
 
-	assert.Err(t, err, testErr)
+	assert.Error(t, err, testErr)
 }
 
 func TestDeleteRemote(t *testing.T) {
@@ -200,7 +200,7 @@ func TestDeleteRemote(t *testing.T) {
 		assert.Equal(t, cmd, []string{"remote", "remove", "test"}, "args")
 		return "", nil
 	}, "test")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 }
 
 func TestDeleteAppRemotes(t *testing.T) {
@@ -218,7 +218,7 @@ func TestDeleteAppRemotes(t *testing.T) {
 		}
 	}, "drycc.example.com", "test")
 
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	testErr := errors.New("test error")
 
@@ -226,7 +226,7 @@ func TestDeleteAppRemotes(t *testing.T) {
 		return "", testErr
 	}, "drycc.example.com", "test")
 
-	assert.Err(t, testErr, err)
+	assert.Error(t, testErr, err)
 
 	err = DeleteAppRemotes(func(cmd []string) (string, error) {
 		if reflect.DeepEqual(cmd, []string{"remote", "-v"}) {
@@ -240,7 +240,7 @@ func TestDeleteAppRemotes(t *testing.T) {
 		}
 	}, "drycc.example.com", "test")
 
-	assert.Err(t, testErr, err)
+	assert.Error(t, testErr, err)
 }
 
 func TestInit(t *testing.T) {
@@ -250,7 +250,7 @@ func TestInit(t *testing.T) {
 		assert.Equal(t, cmd, []string{"init"}, "args")
 		return "", nil
 	})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 }
 
 func TestCreateRemote(t *testing.T) {
@@ -260,7 +260,7 @@ func TestCreateRemote(t *testing.T) {
 		assert.Equal(t, cmd, []string{"remote", "add", "drycc", "ssh://git@drycc-builder.example.com:2222/testing.git"}, "args")
 		return "", nil
 	}, "drycc.example.com", "drycc", "testing")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 }
 
 func TestGitError(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/arschles/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 type confgCases struct {

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAutoscaleList(t *testing.T) {
@@ -34,7 +34,7 @@ func TestAutoscaleList(t *testing.T) {
 	})
 
 	err = cmdr.AutoscaleList("rivendell")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "=== rivendell Autoscale\n\n--- cmd:\nMin Replicas: 3\nMax Replicas: 8\nCPU: 40%\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,7 @@ func TestAutoscaleList(t *testing.T) {
 	b.Reset()
 
 	err = cmdr.AutoscaleList("mordor")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "=== mordor Autoscale\n\nNo autoscale rules found.\n", "output")
 }
 
@@ -78,7 +78,7 @@ func TestAutoscaleSet(t *testing.T) {
 	})
 
 	err = cmdr.AutoscaleSet("lothlorien", "cmd", 3, 8, 40)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Applying autoscale settings for process type cmd on lothlorien... done\n", "output")
 }
 
@@ -99,6 +99,6 @@ func TestAutoscaleUnset(t *testing.T) {
 	})
 
 	err = cmdr.AutoscaleUnset("bree", "cmd")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Removing autoscale for process type cmd on bree... done\n", "output")
 }

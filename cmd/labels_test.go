@@ -6,10 +6,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
+	"strings"
+
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
-	"strings"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLabelsList(t *testing.T) {
@@ -35,7 +36,7 @@ func TestLabelsList(t *testing.T) {
 	})
 
 	err = cmdr.LabelsList("rivendell")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, strings.TrimSpace(b.String()), `=== rivendell Label
 git_repo:      https://github.com/drycc/controller-sdk-go
 team:          drycc`, "output")
@@ -53,7 +54,7 @@ team:          drycc`, "output")
 	b.Reset()
 
 	err = cmdr.LabelsList("mordor")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "=== mordor Label\nNo labels found.\n", "output")
 }
 
@@ -81,7 +82,7 @@ func TestListsSet(t *testing.T) {
 		"team=drycc",
 		"git_repo=https://github.com/drycc/controller-sdk-go",
 	})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Applying labels on lothlorien... done\n", "output")
 }
 
@@ -108,6 +109,6 @@ func TestListsUnset(t *testing.T) {
 		"team",
 		"git_repo",
 	})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Removing labels on bree... done\n", "output")
 }

@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseProcfile(t *testing.T) {
@@ -19,14 +19,13 @@ func TestParseProcfile(t *testing.T) {
 	procMap, err := parseProcfile([]byte(`web: ./test
 foo: test --test
 `))
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, procMap, map[string]string{"web": "./test", "foo": "test --test"}, "map")
 
 	_, err = parseProcfile([]byte(`web: ./test
 foo
 `))
-
-	assert.ExistsErr(t, err, "yaml")
+	assert.NotEqual(t, err, nil, "yaml")
 }
 
 func TestBuildsList(t *testing.T) {
@@ -73,7 +72,7 @@ func TestBuildsList(t *testing.T) {
 	})
 
 	err = cmdr.BuildsList("foo", -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== foo Builds
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75 2014-01-01T00:00:00UTC
 c4aed81c-d1ca-4ff1-ab89-d2151264e1a3 2014-01-05T00:00:00UTC
@@ -113,7 +112,7 @@ func TestBuildsListLimit(t *testing.T) {
 	})
 
 	err = cmdr.BuildsList("foo", 1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== foo Builds (1 of 2)
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75 2014-01-01T00:00:00UTC
 `, "output")
@@ -131,9 +130,9 @@ func TestBuildsCreate(t *testing.T) {
 
 	// Create a new temporary directory and change to it.
 	name, err := ioutil.TempDir("", "client")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	err = os.Chdir(name)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	server.Mux.HandleFunc("/v2/apps/enterprise/builds/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -146,7 +145,7 @@ func TestBuildsCreate(t *testing.T) {
 	})
 
 	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "container", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/bradbury/builds/", func(w http.ResponseWriter, r *http.Request) {
@@ -168,7 +167,7 @@ func TestBuildsCreate(t *testing.T) {
 	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", "container", `web: ./drive
 warp: ./warp 8
 `)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/builds/", func(w http.ResponseWriter, r *http.Request) {
@@ -190,10 +189,10 @@ warp: ./warp 8
 	err = ioutil.WriteFile("Procfile", []byte(`web: ./drive
 warp: ./warp 8
 `), os.ModePerm)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
 }

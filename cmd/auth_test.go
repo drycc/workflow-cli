@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLogin(t *testing.T) {
@@ -42,7 +42,7 @@ func TestLogin(t *testing.T) {
 	err = cmdr.Login(server.Server.URL, false)
 	fmt.Println(err)
 	fmt.Println(t)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 }
 
 func TestLogout(t *testing.T) {
@@ -55,7 +55,7 @@ func TestLogout(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.Logout()
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "Logged out\n", "output")
 }
 
@@ -88,7 +88,7 @@ func TestWhoami(t *testing.T) {
 	})
 
 	err = cmdr.Whoami(false)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	expected := fmt.Sprintf("You are test at %s\n", server.Server.URL)
 	assert.Equal(t, b.String(), expected, "output")
 }
@@ -122,7 +122,7 @@ func TestWhoamiAll(t *testing.T) {
 	})
 
 	err = cmdr.Whoami(true)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	expected := `ID: 0
 Username: test
 Email: test@example.com

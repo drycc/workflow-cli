@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/arschles/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHelpReformatting(t *testing.T) {

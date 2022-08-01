@@ -11,17 +11,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/drycc/workflow-cli/settings"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetKey(t *testing.T) {
 	t.Parallel()
 
 	file, err := ioutil.TempFile("", "drycc-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc test@example.com")
 
@@ -32,22 +32,22 @@ func TestGetKey(t *testing.T) {
 	}
 
 	_, err = file.Write(toWrite)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	file.Close()
 
 	key, err := getKey(file.Name())
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, key, expected, "key")
 
 	_, err = getKey("notarealkey")
-	assert.ExistsErr(t, err, "file error")
+	assert.NotEqual(t, err, nil, "file error")
 }
 
 func TestGetKeyNoComment(t *testing.T) {
 	t.Parallel()
 
 	file, err := ioutil.TempFile("", "drycc-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc")
 
@@ -58,10 +58,10 @@ func TestGetKeyNoComment(t *testing.T) {
 	}
 
 	_, err = file.Write(toWrite)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	key, err := getKey(file.Name())
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, key, expected, "key")
 }
@@ -70,11 +70,11 @@ func TestGetInvalidKey(t *testing.T) {
 	t.Parallel()
 
 	file, err := ioutil.TempFile("", "drycc-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	toWrite := []byte("not a key")
 	_, err = file.Write(toWrite)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	expected := fmt.Sprintf("%s is not a valid ssh key", file.Name())
 
@@ -84,13 +84,13 @@ func TestGetInvalidKey(t *testing.T) {
 
 func TestListKeys(t *testing.T) {
 	name, err := ioutil.TempDir("", "drycc-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	settings.SetHome(name)
 
 	folder := filepath.Join(name, ".ssh")
 
 	err = os.Mkdir(folder, 0755)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	fileNames := []string{"test1.pub", "test2.pub"}
@@ -110,11 +110,11 @@ func TestListKeys(t *testing.T) {
 
 	for _, file := range fileNames {
 		ioutil.WriteFile(filepath.Join(folder, file), toWrite, 0775)
-		assert.NoErr(t, err)
+		assert.NoError(t, err)
 	}
 
 	keys, err := listKeys(ioutil.Discard)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, keys, expected, "key")
 
@@ -124,7 +124,7 @@ func TestListKeys(t *testing.T) {
 	ioutil.WriteFile(filename, []byte("ssh-rsa"), 0775)
 	_, err = listKeys(&b)
 	assert.Equal(t, b.String(), filename+" is not a valid ssh key\n", "output")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 }
 
@@ -140,10 +140,10 @@ func TestChooseKey(t *testing.T) {
 	t.Parallel()
 
 	file, err := ioutil.TempFile("", "drycc-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	_, err = file.Write(toWrite)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	file.Close()
 
 	testKeys := []api.KeyCreateRequest{
@@ -234,7 +234,7 @@ func TestKeysList(t *testing.T) {
 	})
 
 	err = cmdr.KeysList(-1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== test Keys
 cpike@starfleet.ufp          ssh-rsa abc cpik...rfleet.ufp
 cpike@1701.ncc.starfleet.ufp ssh-rsa 123 cpik...rfleet.ufp
@@ -271,7 +271,7 @@ func TestKeysListLimit(t *testing.T) {
 	})
 
 	err = cmdr.KeysList(1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== test Keys (1 of 2)
 cpike@starfleet.ufp ssh-rsa abc cpik...rfleet.ufp
 `, "output")
@@ -293,18 +293,18 @@ func TestKeyRemove(t *testing.T) {
 	})
 
 	err = cmdr.KeyRemove("cpike@starfleet.ufp")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Removing cpike@starfleet.ufp SSH Key... done\n", "output")
 }
 
 func TestKeyAdd(t *testing.T) {
 	// Set temp home dir so no unknown files are listed.
 	name, err := ioutil.TempDir("", "drycc-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
 	err = os.Mkdir(folder, 0755)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -315,10 +315,10 @@ func TestKeyAdd(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-ssh-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	_, err = keyFile.Write(toWrite)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	keyFile.Close()
 
 	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, r *http.Request) {
@@ -331,13 +331,13 @@ func TestKeyAdd(t *testing.T) {
 	out := fmt.Sprintf("Uploading %s to drycc... done\n", filepath.Base(keyFile.Name()))
 
 	err = cmdr.KeyAdd("", keyFile.Name())
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), out, "output")
 
 	b.Reset()
 	cmdr.WIn = strings.NewReader("0\n" + keyFile.Name())
 	err = cmdr.KeyAdd("", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Found the following SSH public keys:
 0) Enter path to pubfile (or use keys:add <key_path>)
 Which would you like to use with Drycc? Enter the path to the pubkey file: `+out, "output")
@@ -346,11 +346,11 @@ Which would you like to use with Drycc? Enter the path to the pubkey file: `+out
 func TestKeyAddName(t *testing.T) {
 	// Set temp home dir so no unknown files are listed.
 	name, err := ioutil.TempDir("", "drycc-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
 	err = os.Mkdir(folder, 0755)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -361,11 +361,11 @@ func TestKeyAddName(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-ssh-key")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	// generate with one name but used another in the add
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	_, err = keyFile.Write(toWrite)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	keyFile.Close()
 
 	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, r *http.Request) {
@@ -378,6 +378,6 @@ func TestKeyAddName(t *testing.T) {
 	out := fmt.Sprintf("Uploading %s to drycc... done\n", filepath.Base(keyFile.Name()))
 
 	err = cmdr.KeyAdd("drycc-test-key", keyFile.Name())
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), out, "output")
 }

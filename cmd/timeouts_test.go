@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 type parseTimeoutCase struct {
@@ -38,7 +38,7 @@ Examples: web=30 worker=300`
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, key, check.Key, "key")
 			assert.Equal(t, value, check.Value, "value")
 		}
@@ -66,7 +66,7 @@ Examples: web=30 worker=300`},
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, actual, check.ExpectedMap, "map")
 		}
 	}
@@ -104,7 +104,7 @@ func TestTimeoutsList(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TimeoutsList("enterprise")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== enterprise Timeouts (sec)
 web        10
 worker     20
@@ -128,7 +128,7 @@ worker     20
 	b.Reset()
 
 	err = cmdr.TimeoutsList("franklin")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== franklin Timeouts (sec)
 default (30 sec) or controlled by env KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS
 `, "output")
@@ -173,7 +173,7 @@ func TestTimeoutsSet(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TimeoutsSet("foo", []string{"web=10"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
@@ -210,7 +210,7 @@ web     10
 	b.Reset()
 
 	err = cmdr.TimeoutsSet("franklin", []string{"web=10"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
@@ -252,7 +252,7 @@ web     10
 	b.Reset()
 
 	err = cmdr.TimeoutsSet("jim", []string{"web=10", "worker=100", "db=300"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
@@ -303,7 +303,7 @@ func TestTimeoutsUnset(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TimeoutsUnset("foo", []string{"web"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
@@ -340,7 +340,7 @@ web     10
 	b.Reset()
 
 	err = cmdr.TimeoutsUnset("franklin", []string{"web"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 

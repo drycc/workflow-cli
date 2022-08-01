@@ -7,21 +7,21 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/arschles/assert"
-	"github.com/drycc/controller-sdk-go"
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/settings"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLoad(t *testing.T) {
 	name, err := ioutil.TempDir("", "drycc-cli-unit-test-load")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	defer os.RemoveAll(name)
 
 	filename := filepath.Join(name, "test.json")
 	host := "drycc.example.com"
 	client, err := drycc.New(false, host, "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	config := settings.Settings{
 		Username: "test",
@@ -29,23 +29,23 @@ func TestLoad(t *testing.T) {
 	}
 
 	filename, err = config.Save(filename)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	_, appID, err := load(filename, "test")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, appID, "test", "app")
 
-	assert.NoErr(t, os.Chdir(name))
+	assert.NoError(t, os.Chdir(name))
 
 	_, appID, err = load(filename, "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, appID, filepath.Base(name), "app")
 
-	assert.NoErr(t, git.Init(git.DefaultCmd))
-	assert.NoErr(t, git.CreateRemote(git.DefaultCmd, host, "drycc", "testing"))
+	assert.NoError(t, git.Init(git.DefaultCmd))
+	assert.NoError(t, git.CreateRemote(git.DefaultCmd, host, "drycc", "testing"))
 
 	_, appID, err = load(filename, "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, appID, "testing", "app")
 }
 
@@ -69,7 +69,7 @@ func TestAPICompatibility(t *testing.T) {
 	client := drycc.Client{ControllerAPIVersion: "v1.0"}
 
 	err := cmdr.checkAPICompatibility(&client, drycc.ErrAPIMismatch)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `!    WARNING: Client and server API versions do not match. Please consider upgrading.
 !    Client version: 2.3
 !    Server version: v1.0
@@ -78,11 +78,11 @@ func TestAPICompatibility(t *testing.T) {
 	// After being warned once, the warning should not be printed again.
 	b.Reset()
 	err = cmdr.checkAPICompatibility(&client, drycc.ErrAPIMismatch)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "", "output")
 
 	b.Reset()
 	err = cmdr.checkAPICompatibility(&client, drycc.ErrConflict)
-	assert.Err(t, drycc.ErrConflict, err)
+	assert.Error(t, drycc.ErrConflict, err)
 	assert.Equal(t, b.String(), "", "output")
 }

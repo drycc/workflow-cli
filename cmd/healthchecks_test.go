@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPrintHealthCheck(t *testing.T) {
@@ -73,7 +73,7 @@ func TestHealthchecksList(t *testing.T) {
 	})
 
 	err = cmdr.HealthchecksList("foo", "web/cmd")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Healthchecks
 
@@ -121,7 +121,7 @@ func TestHealthchecksListNoHealthCheck(t *testing.T) {
 	})
 
 	err = cmdr.HealthchecksList("foo", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Healthchecks
 No health checks configured.
@@ -183,7 +183,7 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
 	})
 
 	err = cmdr.HealthchecksList("foo", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Healthchecks
 
@@ -259,7 +259,7 @@ func TestHealthchecksSet(t *testing.T) {
 	})
 
 	err = cmdr.HealthchecksSet("foo", "liveness", "web/cmd", &api.Healthcheck{})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying liveness healthcheck... done
 
 === foo Healthchecks
@@ -308,7 +308,7 @@ func TestHealthchecksUnset(t *testing.T) {
 	})
 
 	err = cmdr.HealthchecksUnset("foo", "web/cmd", []string{"liveness"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing healthchecks... done
 
 === foo Healthchecks

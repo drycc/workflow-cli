@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 type nopCloser struct {

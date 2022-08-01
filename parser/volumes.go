@@ -80,7 +80,7 @@ Options:
 
 func volumesExpand(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Create a volume for the application.
+Expand a volume for the application.
 
 Usage: drycc volumes:expand <name> <size> [options]
 

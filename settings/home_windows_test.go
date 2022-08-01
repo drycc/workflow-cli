@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/arschles/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestFindHome ensures the correct home directory is returned by FindHome().

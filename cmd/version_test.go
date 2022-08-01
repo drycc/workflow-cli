@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
-	"github.com/drycc/controller-sdk-go"
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/drycc/workflow-cli/version"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestVersion(t *testing.T) {
@@ -28,7 +28,7 @@ func TestVersion(t *testing.T) {
 	})
 
 	err = cmdr.Version(true)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), fmt.Sprintf(`Workflow CLI Version:            %s
 Workflow CLI API Version:        %s
@@ -37,6 +37,6 @@ Workflow Controller API Version: 1234
 
 	b.Reset()
 	err = cmdr.Version(false)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), version.Version+"\n", "output")
 }

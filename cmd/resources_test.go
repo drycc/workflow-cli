@@ -8,8 +8,8 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestResourcesServices(t *testing.T) {
@@ -37,7 +37,7 @@ func TestResourcesServices(t *testing.T) {
 	})
 
 	err = cmdr.ResourcesServices(100)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `+-------+------------+
 | NAME  | UPDATEABLE |
@@ -70,7 +70,7 @@ func TestResourcesPlans(t *testing.T) {
 	})
 
 	err = cmdr.ResourcesPlans("mysql", 100)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `+---------------+--------------------------------+
 |     NAME      |          DESCRIPTION           |
@@ -100,7 +100,7 @@ func TestResourcesCreate(t *testing.T) {
 	})
 
 	err = cmdr.ResourcesCreate("example-go", "mysql:5.6", "mysql", nil)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating mysql to example-go... done\n", "output")
 }
@@ -140,7 +140,7 @@ func TestResourcesList(t *testing.T) {
 	})
 
 	err = cmdr.ResourcesList("example-go", -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== example-go resources
 mysql     mysql:5.6
@@ -175,7 +175,7 @@ func TestResourceGet(t *testing.T) {
 	})
 
 	err = cmdr.ResourceGet("example-go", "mysql")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	// todo format data json to yaml
 	assert.Equal(t, b.String(), `=== example-go resource mysql
 plan:          mysql:5.6
@@ -206,7 +206,7 @@ func TestResourceDelete(t *testing.T) {
 	})
 
 	err = cmdr.ResourceDelete("example-go", "mysql")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Deleting mysql from example-go... done\n", "output")
 }
@@ -232,7 +232,7 @@ func TestResourcePut(t *testing.T) {
 	})
 
 	err = cmdr.ResourcePut("example-go", "mysql:5.7", "mysql", []string{"para1.para2=v1"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Updating mysql to example-go... done\n", "output")
 }
@@ -271,7 +271,7 @@ func TestResourceBind(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ResourceBind("example-go", "mysql")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Binding resource... done
 `, "output")
@@ -311,7 +311,7 @@ func TestResourceUnbind(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ResourceUnbind("example-go", "mysql")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Unbinding resource... done
 `, "output")

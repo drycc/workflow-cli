@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 // Create fake implementations of each method that return the argument
@@ -113,6 +113,6 @@ func TestApps(t *testing.T) {
 			expected = c.expected
 		}
 		err = Apps(c.args, cmdr)
-		assert.Err(t, errors.New(expected), err)
+		assert.Error(t, errors.New(expected), err)
 	}
 }

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTLSInfo(t *testing.T) {
@@ -35,7 +35,7 @@ func TestTLSInfo(t *testing.T) {
 	})
 
 	err = cmdr.TLSInfo("numenor")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== numenor TLS
 HTTPS Enforced: true
 Certs Auto: false
@@ -69,7 +69,7 @@ func TestTLSForceEnable(t *testing.T) {
 	})
 
 	err = cmdr.TLSForceEnable("numenor")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Enabling https-only requests for numenor... done\n", "output")
 }
 
@@ -100,6 +100,6 @@ func TestTLSForceDisable(t *testing.T) {
 	})
 
 	err = cmdr.TLSForceDisable("numenor")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Disabling https-only requests for numenor... done\n", "output")
 }

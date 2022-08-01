@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/arschles/assert"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/pkg/testutil"
@@ -62,7 +62,7 @@ func TestAppsList(t *testing.T) {
 	})
 
 	err = cmdr.AppsList(-1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== Apps
 lorem-ipsum
 consectetur
@@ -101,7 +101,7 @@ func TestAppsListLimit(t *testing.T) {
 	})
 
 	err = cmdr.AppsList(1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== Apps (1 of 2)
 lorem-ipsum
 `, "output")
@@ -194,7 +194,7 @@ func TestAppsInfo(t *testing.T) {
 	}
 
 	err = cmdr.AppInfo("lorem-ipsum")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== lorem-ipsum Application
 updated:  2016-08-22T17:40:16Z
 uuid:     c4aed81c-d1ca-4ff1-ab89-d2151264e1a3
@@ -243,7 +243,7 @@ func TestAppDestroy(t *testing.T) {
 	assert.Equal(t, err.Error(), `app lorem-ipsum does not match confirm bad-confirm-string, aborting`, "output")
 
 	err = cmdr.AppDestroy("lorem-ipsum", "lorem-ipsum")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Destroying lorem-ipsum...
 done in 0s
 `, "output")
@@ -274,7 +274,7 @@ func TestAppTransfer(t *testing.T) {
 	})
 
 	err = cmdr.AppTransfer("lorem-ipsum", "test-user")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Transferring lorem-ipsum to test-user... done
 `, "output")
 }
@@ -320,14 +320,14 @@ func TestRemoteExists(t *testing.T) {
 
 	// create a remote first before running apps:create
 	dir, err := ioutil.TempDir("", "apps")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	defer os.RemoveAll(dir)
 
-	assert.NoErr(t, os.Chdir(dir))
+	assert.NoError(t, os.Chdir(dir))
 
-	assert.NoErr(t, git.Init(git.DefaultCmd))
-	assert.NoErr(t, git.CreateRemote(git.DefaultCmd, "localhost", "drycc", "appname"))
+	assert.NoError(t, git.Init(git.DefaultCmd))
+	assert.NoError(t, git.CreateRemote(git.DefaultCmd, "localhost", "drycc", "appname"))
 
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}

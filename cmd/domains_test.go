@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDomainsList(t *testing.T) {
@@ -47,7 +47,7 @@ func TestDomainsList(t *testing.T) {
 	})
 
 	err = cmdr.DomainsList("foo", -1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Domains
 example.example.com
@@ -84,7 +84,7 @@ func TestDomainsListLimit(t *testing.T) {
 	})
 
 	err = cmdr.DomainsList("foo", 1)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Domains (1 of 2)
 example.example.com
@@ -110,7 +110,7 @@ func TestDomainsAdd(t *testing.T) {
 	})
 
 	err = cmdr.DomainsAdd("foo", "example.example.com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Adding example.example.com to foo... done\n", "output")
 }
@@ -131,7 +131,7 @@ func TestDomainsDelete(t *testing.T) {
 	})
 
 	err = cmdr.DomainsRemove("foo", "example.example.com")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Removing example.example.com from foo... done\n", "output")
 }

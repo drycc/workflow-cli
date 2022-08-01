@@ -8,23 +8,23 @@ import (
 	"os"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseConfig(t *testing.T) {
 	t.Parallel()
 
 	_, err := parseConfig([]string{"FOO=bar", "CAR star"})
-	assert.ExistsErr(t, err, "config")
+	assert.NotEqual(t, err, nil, "config")
 
 	actual, err := parseConfig([]string{"FOO=bar"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, actual, map[string]interface{}{"FOO": "bar"}, "map")
 
 	actual, err = parseConfig([]string{"FOO="})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, actual, map[string]interface{}{"FOO": ""}, "map")
 }
 
@@ -32,29 +32,29 @@ func TestParseSSHKey(t *testing.T) {
 	t.Parallel()
 
 	_, err := parseSSHKey("foobar")
-	assert.ExistsErr(t, err, "bogus key")
+	assert.NotEqual(t, err, "bogus key")
 
 	validSSHKey := "-----BEGIN OPENSSH PRIVATE KEY-----"
 
 	actual, err := parseSSHKey(validSSHKey)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, actual, validSSHKey, "plain key")
 
 	encodedSSHKey := "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0="
 
 	actual, err = parseSSHKey(encodedSSHKey)
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, actual, validSSHKey, "base64 key")
 
 	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-sshkey")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	defer os.Remove(keyFile.Name())
 	_, err = keyFile.Write([]byte(validSSHKey))
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	keyFile.Close()
 
 	actual, err = parseSSHKey(keyFile.Name())
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, actual, validSSHKey, "key path")
 }
 
@@ -120,7 +120,7 @@ func TestConfigList(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ConfigList("foo", "")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Config
 FLOAT      12.34
@@ -131,13 +131,13 @@ TRUE       false
 	b.Reset()
 
 	err = cmdr.ConfigList("foo", "oneline")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "FLOAT=12.34 NCC=1701 TEST=testing TRUE=false\n", "output")
 
 	b.Reset()
 
 	err = cmdr.ConfigList("foo", "diff")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "FLOAT=12.34\nNCC=1701\nTEST=testing\nTRUE=false\n", "output")
 }
 
@@ -184,7 +184,7 @@ func TestConfigSet(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ConfigSet("foo", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
 
@@ -238,7 +238,7 @@ func TestConfigUnset(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.ConfigUnset("foo", []string{"FOO"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 

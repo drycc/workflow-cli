@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAllowlistList(t *testing.T) {
@@ -29,7 +29,7 @@ func TestAllowlistList(t *testing.T) {
 	})
 
 	err = cmdr.AllowlistList("foo")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), "=== foo Allowlisted Addresses\n1.2.3.4\n0.0.0.0/0\n", "output")
 }
@@ -53,7 +53,7 @@ func TestAllowlistAdd(t *testing.T) {
 	})
 
 	err = cmdr.AllowlistAdd("foo", "1.2.3.4,0.0.0.0/0")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Adding 1.2.3.4,0.0.0.0/0 to foo allowlist...\ndone\n", "output")
 }
@@ -77,7 +77,7 @@ func TestAllowlistRemove(t *testing.T) {
 	})
 
 	err = cmdr.AllowlistRemove("foo", "1.2.3.4")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Removing 1.2.3.4 from foo allowlist...\ndone\n", "output")
 }

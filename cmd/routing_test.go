@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRoutingInfo(t *testing.T) {
@@ -34,7 +34,7 @@ func TestRoutingInfo(t *testing.T) {
 	})
 
 	err = cmdr.RoutingInfo("rivendell")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "Routing is enabled.\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +51,7 @@ func TestRoutingInfo(t *testing.T) {
 	b.Reset()
 
 	err = cmdr.RoutingInfo("mordor")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "Routing is disabled.\n", "output")
 
 	// test that no routable field doesn't trigger a panic
@@ -68,7 +68,7 @@ func TestRoutingInfo(t *testing.T) {
 	b.Reset()
 
 	err = cmdr.RoutingInfo("gondor")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "Routing is enabled.\n", "output")
 }
 
@@ -89,7 +89,7 @@ func TestRoutingEnable(t *testing.T) {
 	})
 
 	err = cmdr.RoutingEnable("lothlorien")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Enabling routing for lothlorien... done\n", "output")
 }
 
@@ -111,6 +111,6 @@ func TestRoutingDisable(t *testing.T) {
 	})
 
 	err = cmdr.RoutingDisable("bree")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Disabling routing for bree... done\n", "output")
 }

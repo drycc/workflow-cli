@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/arschles/assert"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 type parseTagCase struct {
@@ -40,7 +40,7 @@ Examples: rack=1 evironment=production`},
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, key, check.Key, "key")
 			assert.Equal(t, value, check.Value, "value")
 		}
@@ -68,7 +68,7 @@ Examples: rack=1 evironment=production`},
 		if check.ExpectedError {
 			assert.Equal(t, err.Error(), check.ExpectedMsg, "error")
 		} else {
-			assert.NoErr(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, actual, check.ExpectedMap, "map")
 		}
 	}
@@ -105,7 +105,7 @@ func TestTagsList(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TagsList("enterprise")
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `=== enterprise Tags
 ncc      1701
 warp     8
@@ -150,7 +150,7 @@ func TestTagsSet(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TagsSet("foo", []string{"true=false"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
@@ -197,7 +197,7 @@ func TestTagsUnset(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	err = cmdr.TagsUnset("foo", []string{"ncc"})
-	assert.NoErr(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
