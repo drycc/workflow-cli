@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20220801120356-de65d8cb5598
+	github.com/drycc/controller-sdk-go v0.0.0-20220803053709-7f92d1444dc0
 	github.com/drycc/pkg v0.0.0-20210826011456-c60b87108840
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/stretchr/testify v1.8.0
