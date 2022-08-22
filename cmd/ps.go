@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -11,6 +13,8 @@ import (
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/ps"
+	"github.com/gorilla/websocket"
+	"golang.org/x/term"
 )
 
 // PsList lists an app's processes.
@@ -31,6 +35,25 @@ func (d *DryccCmd) PsList(appID string, results int) error {
 
 	printProcesses(appID, processes, d.WOut)
 
+	return nil
+}
+
+// PsList lists an app's processes.
+func (d *DryccCmd) PsExec(appID, podID string, tty, stdin bool, command []string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+	conn, err := ps.Exec(s.Client, appID, podID, tty, stdin, command)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	if stdin {
+		streamExec(conn)
+	} else {
+		printExec(d, conn)
+	}
 	return nil
 }
 
@@ -115,6 +138,57 @@ func printProcesses(appID string, input []api.Pods, wOut io.Writer) {
 			fmt.Fprintf(wOut, "%s %s (%s)\n", pod.Name, pod.State, pod.Release)
 		}
 	}
+}
+
+func printExec(d *DryccCmd, conn *websocket.Conn) error {
+	messageType, message, err := conn.ReadMessage()
+	if err != nil {
+		return err
+	}
+	if messageType == websocket.TextMessage {
+		d.Printf("%s", string(message))
+	} else {
+		d.Printf(base64.StdEncoding.EncodeToString(message))
+	}
+	return nil
+}
+
+func streamExec(conn *websocket.Conn) error {
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		panic(err)
+	}
+	defer term.Restore(int(os.Stdin.Fd()), oldState)
+
+	t := term.NewTerminal(os.Stdin, "")
+
+	go func() {
+		for {
+			messageType, message, err := conn.ReadMessage()
+			if err != nil {
+				break
+			} else if messageType == websocket.CloseMessage {
+				break
+			} else {
+				t.Write(message)
+			}
+		}
+	}()
+
+	for {
+		line, err := t.ReadLine()
+		if err != nil {
+			return err
+		}
+		if line == "exit" {
+			conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+			break
+		}
+		if err := conn.WriteMessage(websocket.TextMessage, []byte(line+"\n")); err != nil {
+			break
+		}
+	}
+	return nil
 }
 
 func parseType(target string, appID string) (string, string) {

@@ -64,6 +64,7 @@ type Commander interface {
 	PermCreate(string, string, bool) error
 	PermDelete(string, string, bool) error
 	PsList(string, int) error
+	PsExec(string, string, bool, bool, []string) error
 	PsScale(string, []string) error
 	PsRestart(string, string) error
 	RegistryList(string) error

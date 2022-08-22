@@ -3,12 +3,14 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/http"
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/pkg/time"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -114,6 +116,45 @@ func TestPsList(t *testing.T) {
 --- web:
 foo-web-4084101150-c871y up (v2)
 `, "output")
+}
+
+var upgrader = websocket.Upgrader{} // use default options
+
+func TestPsExec(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/pods/foo-web-111/exec/", func(w http.ResponseWriter, r *http.Request) {
+		c, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			log.Print("upgrade:", err)
+			return
+		}
+		defer c.Close()
+		for {
+			messageType, message, err := c.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				break
+			}
+
+			log.Printf("recv: %s", message)
+			err = c.WriteMessage(messageType, []byte("# "+"\n"))
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
+		}
+	})
+
+	err = cmdr.PsExec("foo", "foo-web-111", true, false, []string{"/bin/sh"})
+	assert.NoError(t, err)
 }
 
 type psTargetCases struct {
