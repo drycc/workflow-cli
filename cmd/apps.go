@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"regexp"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/drycc/workflow-cli/pkg/logging"
 	"github.com/drycc/workflow-cli/pkg/webbrowser"
 	"github.com/drycc/workflow-cli/settings"
+	"github.com/gorilla/websocket"
 )
 
 // AppCreate creates an app.
@@ -158,22 +160,28 @@ func (d *DryccCmd) AppOpen(appID string) error {
 }
 
 // AppLogs returns the logs from an app.
-func (d *DryccCmd) AppLogs(appID string, lines int) error {
+func (d *DryccCmd) AppLogs(appID string, lines int, follow bool, timeout int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	logs, err := apps.Logs(s.Client, appID, lines)
-	if d.checkAPICompatibility(s.Client, err) != nil {
+	conn, err := apps.Logs(s.Client, appID, lines, follow, timeout)
+	if err != nil {
 		return err
 	}
-
-	for _, log := range strings.Split(strings.TrimRight(logs, `\n`), `\n`) {
-		logging.PrintLog(os.Stdout, log)
+	defer conn.Close()
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
+				log.Printf("error: %v", err)
+			}
+			break
+		}
+		logging.PrintLog(os.Stdout, strings.TrimRight(string(message), "\n"))
 	}
-
 	return nil
 }
 

@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20220822080925-801edf7edf7b
+	github.com/drycc/controller-sdk-go v0.0.0-20220826021230-a1b71eb5e437
 	github.com/drycc/pkg v0.0.0-20210826011456-c60b87108840
 	github.com/gorilla/websocket v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5

@@ -28,7 +28,7 @@ func (d FakeDryccCmd) AppOpen(string) error {
 	return errors.New("apps:open")
 }
 
-func (d FakeDryccCmd) AppLogs(string, int) error {
+func (d FakeDryccCmd) AppLogs(string, int, bool, int) error {
 	return errors.New("apps:logs")
 }
 

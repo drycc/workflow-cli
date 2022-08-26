@@ -49,8 +49,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
-github.com/drycc/controller-sdk-go v0.0.0-20220822080925-801edf7edf7b h1:lMOLLsl/qBqiDbZ+vl2MU4H1AR9k3RW9I4DkaTVVdGg=
-github.com/drycc/controller-sdk-go v0.0.0-20220822080925-801edf7edf7b/go.mod h1:AWyrmGt7lPQ5Dd2HwO4zyOM/sfuBXVPlpw1Mr5kUZNg=
+github.com/drycc/controller-sdk-go v0.0.0-20220826021230-a1b71eb5e437 h1:pOEQvj0mZbWTwSYj/07FTrZ8NYaOLW2uH9IQP4hb378=
+github.com/drycc/controller-sdk-go v0.0.0-20220826021230-a1b71eb5e437/go.mod h1:AWyrmGt7lPQ5Dd2HwO4zyOM/sfuBXVPlpw1Mr5kUZNg=
 github.com/drycc/pkg v0.0.0-20210826011456-c60b87108840 h1:0OhP9AQ0mh3q0TMxK4PJTPSFwD/wj0xugiaZ3lnLcNA=
 github.com/drycc/pkg v0.0.0-20210826011456-c60b87108840/go.mod h1:KX1FLm7Fq6FLCsjjRsgfI/bMQuHZXqYf1ZXU9fzJhDw=
 github.com/elazarl/goproxy v0.0.0-20180725130230-947c36da3153/go.mod h1:/Zj4wYkgs4iZTTu3o/KG3Itv/qCCa8VVMlb3i9OVuzc=

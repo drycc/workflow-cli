@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"regexp"
 	"strconv"
@@ -143,7 +144,10 @@ func printProcesses(appID string, input []api.Pods, wOut io.Writer) {
 func printExec(d *DryccCmd, conn *websocket.Conn) error {
 	messageType, message, err := conn.ReadMessage()
 	if err != nil {
-		return err
+		if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
+			log.Printf("error: %v", err)
+		}
+		return nil
 	}
 	if messageType == websocket.TextMessage {
 		d.Printf("%s", string(message))
@@ -166,6 +170,9 @@ func streamExec(conn *websocket.Conn) error {
 		for {
 			messageType, message, err := conn.ReadMessage()
 			if err != nil {
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
+					log.Printf("error: %v", err)
+				}
 				break
 			} else if messageType == websocket.CloseMessage {
 				break

@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"strconv"
 	"strings"
 
 	docopt "github.com/docopt/docopt-go"
@@ -170,7 +169,11 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -n --lines=<lines>
-    the number of lines to display
+    the number of lines to display.
+  -f --follow
+    specify if the logs should be streamed.
+  -t --timeout=<timeout>
+    the max seconds of follow the log stream.
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -180,21 +183,17 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-
-	linesStr := safeGetValue(args, "--lines")
-	var lines int
-
-	if linesStr == "" {
-		lines = -1
-	} else {
-		lines, err = strconv.Atoi(linesStr)
-
-		if err != nil {
-			return err
-		}
+	lines := safeGetInt(args, "--lines")
+	if lines <= 0 {
+		lines = 300
+	}
+	follow := args["--follow"].(bool)
+	timeout := safeGetInt(args, "--timeout")
+	if timeout <= 0 {
+		timeout = 300
 	}
 
-	return cmdr.AppLogs(app, lines)
+	return cmdr.AppLogs(app, lines, follow, timeout)
 }
 
 func appRun(argv []string, cmdr cmd.Commander) error {
