@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -166,15 +167,29 @@ func streamExec(conn *websocket.Conn) error {
 
 	t := term.NewTerminal(os.Stdin, "")
 
+	ctx, cancel := context.WithCancel(context.Background())
+
+	stdin := make(chan string)
+	defer close(stdin)
+	go func() {
+		for {
+			line, err := t.ReadLine()
+			if err != nil {
+				cancel()
+				break
+			}
+			stdin <- line
+		}
+	}()
+
 	go func() {
 		for {
 			messageType, message, err := conn.ReadMessage()
-			if err != nil {
+			if err != nil || messageType == websocket.CloseMessage {
 				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
 					log.Printf("error: %v", err)
 				}
-				break
-			} else if messageType == websocket.CloseMessage {
+				cancel()
 				break
 			} else {
 				t.Write(message)
@@ -183,19 +198,15 @@ func streamExec(conn *websocket.Conn) error {
 	}()
 
 	for {
-		line, err := t.ReadLine()
-		if err != nil {
-			return err
-		}
-		if line == "exit" {
-			conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			break
-		}
-		if err := conn.WriteMessage(websocket.TextMessage, []byte(line+"\n")); err != nil {
-			break
+		select {
+		case <-ctx.Done():
+			return nil
+		case line := <-stdin:
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(line+"\n")); err != nil {
+				return nil
+			}
 		}
 	}
-	return nil
 }
 
 func parseType(target string, appID string) (string, string) {
