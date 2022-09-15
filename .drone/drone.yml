@@ -23,7 +23,8 @@ steps:
 - name: build
   commands:
   - mkdir -p $HOMEPATH/.docker; echo $IMAGE_PULL_SECRETS > $HOMEPATH/.docker/config.json
-  - VERSION=${DRONE_TAG:-latest} make build
+  - sed -i "s#canary#${DRONE_TAG}#g" version/version.go
+  - VERSION=${DRONE_TAG} make build
   environment:
     DEV_REGISTRY:
       from_secret: dev_registry
