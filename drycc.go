@@ -39,13 +39,13 @@ Options:
     setting $DRYCC_PROFILE. Defaults to ~/.drycc/config.json.
     If value is not a filepath, will assume location ~/.drycc/client.json
 
-Auth commands, use 'drycc help auth' to learn more::
+Auth commands, use 'drycc help auth' to learn more:
 
   register      register a new user with a controller
   login         login to a controller
   logout        logout from the current controller
 
-Subcommands, use 'drycc help [subcommand]' to learn more::
+Subcommands, use 'drycc help [subcommand]' to learn more:
 
   apps          manage applications used to provide services
   autoscale     manage autoscale for applications
@@ -73,7 +73,7 @@ Subcommands, use 'drycc help [subcommand]' to learn more::
   volumes       manage volumes for your applications
   resources     manage resources for your applications
 
-Shortcut commands, use 'drycc shortcuts' to see all::
+Shortcut commands, use 'drycc shortcuts' to see all:
 
   create        create a new application
   destroy       destroy an application
@@ -84,7 +84,7 @@ Shortcut commands, use 'drycc shortcuts' to see all::
   run           run a command in an ephemeral app container
   scale         scale processes by type (web=2, worker=1)
 
-Use 'git push drycc master' to deploy to an application.
+Use 'git push drycc main' to deploy to an application.
 `
 	// Reorganize some command line flags and commands.
 	command, argv := parseArgs(argv)
