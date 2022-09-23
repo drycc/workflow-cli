@@ -6,17 +6,16 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/containerd/console"
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/ps"
 	"github.com/gorilla/websocket"
-	"golang.org/x/term"
 )
 
 // PsList lists an app's processes.
@@ -52,7 +51,7 @@ func (d *DryccCmd) PsExec(appID, podID string, tty, stdin bool, command []string
 	}
 	defer conn.Close()
 	if stdin {
-		streamExec(conn)
+		streamExec(conn, tty)
 	} else {
 		printExec(d, conn)
 	}
@@ -158,41 +157,43 @@ func printExec(d *DryccCmd, conn *websocket.Conn) error {
 	return nil
 }
 
-func streamExec(conn *websocket.Conn) error {
-	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
-	if err != nil {
-		panic(err)
-	}
-	defer term.Restore(int(os.Stdin.Fd()), oldState)
-
-	t := term.NewTerminal(os.Stdin, "")
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	stdin := make(chan string)
-	defer close(stdin)
-	go func() {
-		for {
-			line, err := t.ReadLine()
-			if err != nil {
-				cancel()
-				break
-			}
-			stdin <- line
+func streamExec(conn *websocket.Conn, tty bool) error {
+	c := console.Current()
+	defer c.Reset()
+	if tty {
+		if err := c.SetRaw(); err != nil {
+			return err
 		}
-	}()
+	}
 
+	recvQueue := make(chan []byte)
+	defer close(recvQueue)
+	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
 		for {
 			messageType, message, err := conn.ReadMessage()
 			if err != nil || messageType == websocket.CloseMessage {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
-					log.Printf("error: %v", err)
-				}
 				cancel()
 				break
 			} else {
-				t.Write(message)
+				recvQueue <- message
+			}
+		}
+	}()
+
+	sendQueue := make(chan []byte)
+	defer close(sendQueue)
+	go func() {
+		buf := make([]byte, 1024)
+		for {
+			size, err := c.Read(buf)
+			if err == io.EOF {
+				cancel()
+				break
+			} else if err != nil {
+				continue
+			} else {
+				sendQueue <- buf[:size]
 			}
 		}
 	}()
@@ -201,10 +202,12 @@ func streamExec(conn *websocket.Conn) error {
 		select {
 		case <-ctx.Done():
 			return nil
-		case line := <-stdin:
-			if err := conn.WriteMessage(websocket.TextMessage, []byte(line+"\n")); err != nil {
-				return nil
+		case message := <-sendQueue:
+			if err := conn.WriteMessage(websocket.TextMessage, message); err != nil {
+				return err
 			}
+		case message := <-recvQueue:
+			c.Write(message)
 		}
 	}
 }

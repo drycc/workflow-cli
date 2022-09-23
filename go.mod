@@ -3,6 +3,7 @@ module github.com/drycc/workflow-cli
 go 1.19
 
 require (
+	github.com/containerd/console v1.0.3
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/drycc/controller-sdk-go v0.0.0-20220830032209-a334918d2242
 	github.com/drycc/pkg v0.0.0-20220830031116-26c11ff8667c
@@ -10,7 +11,6 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91
-	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
 	gopkg.in/yaml.v3 v3.0.1
 )
 
