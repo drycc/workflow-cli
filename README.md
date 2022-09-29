@@ -4,6 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/drycc/workflow-cli)](https://goreportcard.com/report/github.com/drycc/workflow-cli)
 [![codebeat badge](https://codebeat.co/badges/b609cb7f-7b42-4214-8787-09298f553176)](https://codebeat.co/projects/github-com-drycc-workflow-cli-main)
 [![codecov](https://codecov.io/gh/drycc/workflow-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/drycc/workflow-cli)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdrycc%2Fworkflow-cli.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdrycc%2Fworkflow-cli?ref=badge_shield)
 
 Download Links: https://github.com/drycc/workflow-cli/releases
 
@@ -68,3 +69,6 @@ see [LICENSE](https://github.com/drycc/workflow-cli/blob/main/LICENSE)
 [Drycc website]: http://drycc.com/
 [blog]: https://blog.drycc.info/blog/
 [slack community]: https://slack.drycc.com/
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdrycc%2Fworkflow-cli.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdrycc%2Fworkflow-cli?ref=badge_large)
