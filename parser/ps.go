@@ -17,8 +17,6 @@ ps:list        list application processes
 ps:exec        execute a command in a container
 ps:restart     restart an application or its process types
 ps:scale       scale processes (e.g. web=4 worker=2)
-ps:stop        stop processes (e.g. web worker)
-ps:start       start processes (e.g. web worker)
 
 Use 'drycc help [command]' to learn more.
 `
