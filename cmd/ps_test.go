@@ -14,43 +14,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParseType(t *testing.T) {
-	t.Parallel()
-
-	var input = map[string]string{
-		// RC pod name
-		"earthy-underdog": "earthy-underdog-v2-cmd-8yngj",
-		// Deployment pod name - they are longer due to hash
-		"nonfat-yearbook": "nonfat-yearbook-cmd-2180299075-7na91",
-		// newer style of Deployment pod name
-		"foo-bar": "foo-bar-cmd-57f6c4bb68-7na91",
-		// same as above but leaving out the app-name from the pod name
-		"earthy-underdog2": "cmd-8yngj",
-		"nonfat-yearbook2": "cmd-2180299075-7na91",
-		"foo-bar2":         "cmd-57f6c4bb68-7na91",
-		// same as above but with app names without hyphens
-		"earthy":  "earthy-v2-cmd-8yngj",
-		"nonfat":  "nonfat-cmd-2180299075-7na91",
-		"foo":     "foo-cmd-57f6c4bb68-7na91",
-		"earthy2": "cmd-8yngj",
-		"nonfat2": "cmd-2180299075-7na91",
-		"foo2":    "cmd-57f6c4bb68-7na91",
-	}
-
-	for appID, podName := range input {
-		psType, psName := parseType(podName, appID)
-		if psType != "cmd" || psName != podName {
-			t.Errorf("parseType(%#v, %#v): type was not cmd (got %s) or psName was not %s (got %s)", podName, appID, psType, podName, psName)
-		}
-	}
-
-	// test type by itself
-	psType, psName := parseType("cmd", "fake")
-	if psType != "cmd" || psName != "" {
-		t.Error("type was not cmd")
-	}
-}
-
 func TestPrintProcesses(t *testing.T) {
 	var b bytes.Buffer
 
@@ -247,98 +210,30 @@ func TestPsRestart(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/foo/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `[
-		{
-				"release": "v2",
-				"type": "web",
-				"name": "foo-web-4084101150-c871y",
-				"state": "up",
-				"started": "2016-02-13T00:47:52"
-		}
-]`)
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	b.Reset()
 	err = cmdr.PsRestart("foo", "")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
-done in 0s
-=== foo Processes
---- web:
-foo-web-4084101150-c871y up (v2)
-`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/coolapp/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `[]`)
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	b.Reset()
 
 	err = cmdr.PsRestart("coolapp", "")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
-Could not find any processes to restart
-`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/testapp/pods/web/restart/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `[
-			{
-				"release": "v2",
-				"type": "web",
-				"name": "testapp-web-4084101150-c871y",
-				"state": "up",
-				"started": "2016-02-13T00:47:52"
-			}
-		]`)
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	b.Reset()
 
 	err = cmdr.PsRestart("testapp", "web")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
-done in 0s
-=== testapp Processes
---- web:
-testapp-web-4084101150-c871y up (v2)
-`, "output")
-
-	server.Mux.HandleFunc("/v2/apps/newapp/pods/web/newapp-web-4084101150-c871y/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `[
-			{
-				"release": "v2",
-				"type": "web",
-				"name": "newapp-web-4084101150-c871y",
-				"state": "up",
-				"started": "2016-02-13T00:47:52"
-			}
-		]`)
-	})
-
-	b.Reset()
-
-	err = cmdr.PsRestart("newapp", "newapp-web-4084101150-c871y")
-	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Restarting processes... but first, coffee!
-done in 0s
-=== newapp Processes
---- web:
-newapp-web-4084101150-c871y up (v2)
-`, "output")
-
-	server.Mux.HandleFunc("/v2/apps/newapp/pods/ghost/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, `{
-			"detail": "Container type ghost does not exist in application"
-		}`)
-	})
-
-	b.Reset()
-
-	err = cmdr.PsRestart("newapp", "ghost")
-	assert.Equal(t, err.Error(), "Could not find process type ghost in app newapp", "error")
 }

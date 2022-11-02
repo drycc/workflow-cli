@@ -8,11 +8,9 @@ import (
 	"log"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/containerd/console"
-	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/ps"
 	"github.com/gorilla/websocket"
@@ -99,31 +97,18 @@ func (d *DryccCmd) PsRestart(appID, target string) error {
 		return err
 	}
 
-	psType, psName := "", ""
-	if target != "" {
-		psType, psName = parseType(target, appID)
-	}
-
 	d.Printf("Restarting processes... but first, %s!\n", drinkOfChoice())
 	startTime := time.Now()
 	quit := progress(d.WOut)
 
-	processes, err := ps.Restart(s.Client, appID, psType, psName)
+	err = ps.Restart(s.Client, appID, target)
 	quit <- true
 	<-quit
-	if err == drycc.ErrPodNotFound {
-		return fmt.Errorf("Could not find process type %s in app %s", psType, appID)
-	} else if d.checkAPICompatibility(s.Client, err) != nil {
+	if err != nil {
 		return err
 	}
 
-	if len(processes) == 0 {
-		d.Println("Could not find any processes to restart")
-	} else {
-		d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
-		printProcesses(appID, processes, d.WOut)
-	}
-
+	d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
 	return nil
 }
 
@@ -210,29 +195,6 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 			c.Write(message)
 		}
 	}
-}
-
-func parseType(target string, appID string) (string, string) {
-	var psType, psName string
-
-	if strings.Contains(target, "-") {
-		replaced := strings.Replace(target, appID+"-", "", 1)
-		parts := strings.Split(replaced, "-")
-		// the API requires the type, for now
-		// regex matches against how Deployment pod name is constructed
-		regex := regexp.MustCompile("[a-z0-9]{8,10}-[a-z0-9]{5}$")
-		if regex.MatchString(replaced) || len(parts) == 2 {
-			psType = parts[0]
-		} else {
-			psType = parts[1]
-		}
-		// process name is the full pod
-		psName = target
-	} else {
-		psType = target
-	}
-
-	return psType, psName
 }
 
 func parsePsTargets(targets []string) (map[string]int, error) {

@@ -15,7 +15,7 @@ Valid commands for processes:
 
 ps:list        list application processes
 ps:exec        execute a command in a container
-ps:restart     restart an application or its process types
+ps:restart     restart an application or process type
 ps:scale       scale processes (e.g. web=4 worker=2)
 
 Use 'drycc help [command]' to learn more.
@@ -95,14 +95,13 @@ Options:
 
 func psRestart(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Restart an application, a process type or a specific process.
+Restart an application or process type.
 
 Usage: drycc ps:restart [<type>] [options]
 
 Arguments:
   <type>
     the process name as defined in your Procfile, such as 'web' or 'worker'.
-    To restart a particular process, use 'web-asdfg' or 'app-v2-web-asdfg'.
 
 Options:
   -a --app=<app>

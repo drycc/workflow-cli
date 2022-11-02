@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/containerd/console v1.0.3
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20220830032209-a334918d2242
+	github.com/drycc/controller-sdk-go v0.0.0-20221102055456-444409b1af71
 	github.com/drycc/pkg v0.0.0-20220830031116-26c11ff8667c
 	github.com/gorilla/websocket v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5
