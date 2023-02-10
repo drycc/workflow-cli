@@ -1,6 +1,6 @@
 # Drycc Client
 
-[![Build Status](https://drone.drycc.cc/api/badges/drycc/workflow-cli/status.svg)](https://drone.drycc.cc/drycc/workflow-cli)
+[![Build Status](https://woodpecker.drycc.cc/api/badges/drycc/workflow-cli/status.svg)](https://woodpecker.drycc.cc/drycc/workflow-cli)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drycc/workflow-cli)](https://goreportcard.com/report/github.com/drycc/workflow-cli)
 [![codebeat badge](https://codebeat.co/badges/b609cb7f-7b42-4214-8787-09298f553176)](https://codebeat.co/projects/github-com-drycc-workflow-cli-main)
 [![codecov](https://codecov.io/gh/drycc/workflow-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/drycc/workflow-cli)
@@ -69,6 +69,5 @@ see [LICENSE](https://github.com/drycc/workflow-cli/blob/main/LICENSE)
 [Drycc website]: http://drycc.com/
 [blog]: https://blog.drycc.info/blog/
 [slack community]: https://slack.drycc.com/
-
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdrycc%2Fworkflow-cli.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdrycc%2Fworkflow-cli?ref=badge_large)

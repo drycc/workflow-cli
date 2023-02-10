@@ -1,0 +1,21 @@
+matrix:
+  platform:
+  - linux/amd64
+  - linux/arm64
+
+platform: ${platform}
+
+labels:
+  type: exec
+
+pipeline:
+- name: test-linux
+  image: bash
+  commands:
+  - make test
+  secrets:
+  - dev_registry
+  when:
+    event:
+    - push
+    - tag
