@@ -131,6 +131,24 @@ func TestGetConfigFlag(t *testing.T) {
 	}
 	actual = getConfigFlag(argv)
 	assert.Equal(t, actual, expected, "config-flag")
+
+	expected = ""
+	argv = []string{
+		"--",
+		"ipsum",
+		"--config=config",
+	}
+	actual = getConfigFlag(argv)
+	assert.Equal(t, actual, expected, "config-flag")
+
+	argv = []string{
+		"--",
+		"ipsum",
+		"-c",
+		"config",
+	}
+	actual = getConfigFlag(argv)
+	assert.Equal(t, actual, expected, "config-flag")
 }
 
 func TestRemoveConfigFlag(t *testing.T) {
@@ -153,6 +171,34 @@ func TestRemoveConfigFlag(t *testing.T) {
 		"ipsum",
 		"-c",
 		"the-config-flag",
+	}
+	actual = removeConfigFlag(argv)
+	assert.Equal(t, actual, expected, "args")
+
+	expected = []string{
+		"--",
+		"sh",
+		"-c",
+		"the-config-flag",
+	}
+	argv = []string{
+		"--",
+		"sh",
+		"-c",
+		"the-config-flag",
+	}
+	actual = removeConfigFlag(argv)
+	assert.Equal(t, actual, expected, "args")
+
+	expected = []string{
+		"--",
+		"sh",
+		"--config=the-config-flag",
+	}
+	argv = []string{
+		"--",
+		"sh",
+		"--config=the-config-flag",
 	}
 	actual = removeConfigFlag(argv)
 	assert.Equal(t, actual, expected, "args")
