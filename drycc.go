@@ -193,6 +193,12 @@ Use 'git push drycc main' to deploy to an application.
 func removeConfigFlag(argv []string) []string {
 	var kept []string
 	for i, arg := range argv {
+		// -- /bin/sh -c --config  condition
+		if arg == "--" {
+			kept = append(kept, argv[i:]...)
+			break
+		}
+
 		if arg == "-c" || strings.HasPrefix(arg, "--config=") {
 			continue
 			// If the previous option is -c, remove the argument as well
@@ -208,6 +214,10 @@ func removeConfigFlag(argv []string) []string {
 
 func getConfigFlag(argv []string) string {
 	for i, arg := range argv {
+		// -- /bin/sh -c/ --config=  condition
+		if arg == "--" {
+			return ""
+		}
 		if strings.HasPrefix(arg, "--config=") {
 			return strings.TrimPrefix(arg, "--config=")
 		} else if i != 0 && argv[i-1] == "-c" {
