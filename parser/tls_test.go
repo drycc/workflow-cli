@@ -32,6 +32,10 @@ func (d FakeDryccCmd) TLSAutoDisable(string) error {
 	return errors.New("tls:auto:disable")
 }
 
+func (d FakeDryccCmd) TLSAutoIssuer(string, string, string, string, string) error {
+	return errors.New("tls:auto:issuer")
+}
+
 func TestTLS(t *testing.T) {
 	t.Parallel()
 
@@ -59,6 +63,10 @@ func TestTLS(t *testing.T) {
 		},
 		{
 			args:     []string{"tls:force:disable"},
+			expected: "",
+		},
+		{
+			args:     []string{"tls:auto:issuer", "--email=drycc@drycc.cc", "--server=https://acme.zerossl.com/v2/DV90", "--key-id=keyID", "--key-secret=keySecret"},
 			expected: "",
 		},
 		{

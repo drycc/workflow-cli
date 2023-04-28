@@ -1,6 +1,6 @@
 module github.com/drycc/workflow-cli
 
-go 1.19
+go 1.20
 
 require (
 	github.com/containerd/console v1.0.3
@@ -25,3 +25,5 @@ require (
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 )
+
+replace github.com/drycc/controller-sdk-go => github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230509075640-ffe8cfa2734e

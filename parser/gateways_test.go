@@ -12,19 +12,19 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) AllowlistAdd(string, string) error {
-	return errors.New("allowlist:add")
+func (d FakeDryccCmd) GatewaysList(string, int) error {
+	return errors.New("gateways:list")
 }
 
-func (d FakeDryccCmd) AllowlistList(string) error {
-	return errors.New("allowlist:list")
+func (d FakeDryccCmd) GatewaysAdd(string, string, int, string) error {
+	return errors.New("gateways:add")
 }
 
-func (d FakeDryccCmd) AllowlistRemove(string, string) error {
-	return errors.New("allowlist:remove")
+func (d FakeDryccCmd) GatewaysRemove(string, string, int, string) error {
+	return errors.New("gateways:remove")
 }
 
-func TestAllowlist(t *testing.T) {
+func TestGateways(t *testing.T) {
 	t.Parallel()
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -42,20 +42,20 @@ func TestAllowlist(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"allowlist:add", "1.2.3.4"},
+			args:     []string{"gateways:add", "example", "--port=80", "--protocol=http"},
 			expected: "",
 		},
 		{
-			args:     []string{"allowlist:list"},
+			args:     []string{"gateways:list"},
 			expected: "",
 		},
 		{
-			args:     []string{"allowlist:remove", "1.2.3.4"},
+			args:     []string{"gateways:remove", "example", "--port=80", "--protocol=http"},
 			expected: "",
 		},
 		{
-			args:     []string{"allowlist"},
-			expected: "allowlist:list",
+			args:     []string{"gateways"},
+			expected: "gateways:list",
 		},
 	}
 
@@ -68,7 +68,7 @@ func TestAllowlist(t *testing.T) {
 		} else {
 			expected = c.expected
 		}
-		err = Allowlist(c.args, cmdr)
+		err = Gateways(c.args, cmdr)
 		assert.Error(t, errors.New(expected), err)
 	}
 }

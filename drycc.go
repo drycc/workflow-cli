@@ -67,8 +67,9 @@ Subcommands, use 'drycc help [subcommand]' to learn more:
   tls           manage TLS settings for applications
   users         manage users
   version       display client version
-  allowlist     manage allowlisted addresses of an application
   services      manage services for your applications
+  routes        manage routes for your applications
+  gateways      manage gateways for your applications
   timeouts      manage pods termination grace period
   volumes       manage volumes for your applications
   resources     manage resources for your applications
@@ -125,6 +126,10 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.Domains(argv, &cmdr)
 	case "services":
 		err = parser.Services(argv, &cmdr)
+	case "gateways":
+		err = parser.Gateways(argv, &cmdr)
+	case "routes":
+		err = parser.Routes(argv, &cmdr)
 	case "git":
 		err = parser.Git(argv, &cmdr)
 	case "healthchecks":
@@ -160,8 +165,6 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.Users(argv, &cmdr)
 	case "version":
 		err = parser.Version(argv, &cmdr)
-	case "allowlist":
-		err = parser.Allowlist(argv, &cmdr)
 	case "volumes":
 		err = parser.Volumes(argv, &cmdr)
 	case "resources":

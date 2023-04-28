@@ -9,14 +9,14 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
-github.com/drycc/controller-sdk-go v0.0.0-20221102055456-444409b1af71 h1:VI6mc75e4FdUjoLPNdDxNZNtmKH7EvXovTnmsQGCVZU=
-github.com/drycc/controller-sdk-go v0.0.0-20221102055456-444409b1af71/go.mod h1:mTPPOfS1LzvsGpLuNpgz4wt9CGloCF12MtTYjQa5i8o=
 github.com/drycc/pkg v0.0.0-20220830031116-26c11ff8667c h1:M4veAIz8VfKEMpyegbNMvAv7McrXqW4QwAoC813lG0w=
 github.com/drycc/pkg v0.0.0-20220830031116-26c11ff8667c/go.mod h1:W2lIi2Micx/4vPIlfzIsQ7RDZXxNmKGpGcfiWkw8Qls=
 github.com/gorilla/websocket v1.5.0 h1:PPwGk2jz7EePpoHN/+ClbZu8SPxiqlu12wZP/3sWmnc=
 github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/goware/urlx v0.3.2 h1:gdoo4kBHlkqZNaf6XlQ12LGtQOmpKJrR04Rc3RnpJEo=
 github.com/goware/urlx v0.3.2/go.mod h1:h8uwbJy68o+tQXCGZNa9D73WN8n0r9OBae5bUnLcgjw=
+github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230509075640-ffe8cfa2734e h1:YnI0PMoEuM0sEtVRMgFqkj2PfnQVpO2+Hm1OZfoNa/o=
+github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230509075640-ffe8cfa2734e/go.mod h1:q6gbIO0f+xUM8mejPgbbUT8pdAYTIb5vugUsoTcbLw0=
 github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
 github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=

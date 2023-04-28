@@ -43,17 +43,18 @@ func servicesAdd(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Creates extra service for an application and binds it to specific route of the main app domain
 
-Usage: drycc services:add --type <procfile_type> --route <path_pattern> [options]
+Usage: drycc services:add --type=<type> --protocol=<protocol> --port=<port>:<target_port> [options]
 
 Arguments:
-  <procfile_type>
+  <type>
     Procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
     Only single extra service per Porcfile type could be created
-
-  <path_pattern>
-    Nginx locations where route requests, one or many via comma,
-    e.g. /webhooks/notify
-    OR "/webhooks/notify,~ ^/users/[0-9]+/.*/webhooks/notify,/webhooks/rest"
+  <protocol>
+    The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
+  <port>
+    The port that will be exposed by this service.
+  <targetPort>
+    Number or name of the port to access on the pods targeted by the service.
 
 Options:
   -a --app=<app>
@@ -67,10 +68,10 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-	procfileType := safeGetValue(args, "<procfile_type>")
-	pathPattern := safeGetValue(args, "<path_pattern>")
-
-	return cmdr.ServicesAdd(app, procfileType, pathPattern)
+	procfileType := safeGetValue(args, "--type")
+	protocol := safeGetValue(args, "--protocol")
+	ports := safeGetValue(args, "--port")
+	return cmdr.ServicesAdd(app, procfileType, ports, protocol)
 }
 
 func servicesList(argv []string, cmdr cmd.Commander) error {
@@ -99,11 +100,16 @@ func servicesRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Deletes specific extra service for application
 
-Usage: drycc services:remove <procfile_type> [options]
+Usage: drycc services:remove --type=<type> --protocol=<protocol> --port=<port> [options]
 
 Arguments:
-  <procfile_type>
-    extra service for procfile type that should be removed
+  <type>
+    Procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
+    Only single extra service per Porcfile type could be created
+  <protocol>
+    The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
+  <port>
+    The port that will be exposed by this service.
 
 Options:
   -a --app=<app>
@@ -117,7 +123,9 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
-	procfileType := safeGetValue(args, "<procfile_type>")
+	procfileType := safeGetValue(args, "--type")
+	protocol := safeGetValue(args, "--protocol")
+	port := safeGetInt(args, "--port")
 
-	return cmdr.ServicesRemove(app, procfileType)
+	return cmdr.ServicesRemove(app, procfileType, protocol, port)
 }
