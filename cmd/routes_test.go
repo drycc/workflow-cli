@@ -83,6 +83,70 @@ func TestRoutesList(t *testing.T) {
 `, "output")
 }
 
+func TestRouteGet(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `[
+  {
+    "backendRefs": [
+      {
+        "kind": "Service",
+        "name": "py3django3",
+        "port": 80
+      }
+    ]
+  }
+]`)
+	})
+
+	err = cmdr.RoutesGet("foo", "example-go")
+	assert.NoError(t, err)
+
+	assert.Equal(t, b.String(), `[
+  {
+    "backendRefs": [
+      {
+        "kind": "Service",
+        "name": "py3django3",
+        "port": 80
+      }
+    ]
+  }
+]
+`, "output")
+}
+
+func TestRouteSet(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		w.WriteHeader(http.StatusNoContent)
+	})
+	rules := `"[{\"backendRefs\": [{\"kind\": \"Service\",\"name\": \"py3django3\",\"port\": 80}]}]"`
+
+	err = cmdr.RoutesSet("foo", "example-go", rules)
+	assert.NoError(t, err)
+
+	assert.Equal(t, testutil.StripProgress(b.String()), "Applying rules... done\n", "output")
+}
+
 func TestRoutesAttach(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -172,7 +236,7 @@ func TestRoutesSet(t *testing.T) {
 	err = cmdr.RoutesSet("foo", "example-go", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), "Applying rules ... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Applying rules... done\n", "output")
 }
 
 func TestRoutesRemove(t *testing.T) {

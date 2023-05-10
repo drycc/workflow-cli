@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -139,19 +138,22 @@ func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
 	}
 
 	var rules interface{}
-	var contents string
+	var contents []byte
 	if _, err := os.Stat(ruleFile); err == nil {
-		contents, err := ioutil.ReadFile(ruleFile)
+		contents, err = ioutil.ReadFile(ruleFile)
 		if err != nil {
 			return err
 		}
-		if err := json.Unmarshal([]byte(contents), &rules); err != nil {
-			fmt.Println(err)
+		if err := json.Unmarshal(contents, &rules); err != nil {
+			return err
 		}
 	}
 
-	d.Print("Applying rules ... ")
-	err = routes.ApplyRule(s.Client, appID, name, contents)
+	d.Print("Applying rules... ")
+	quit := progress(d.WOut)
+	err = routes.SetRule(s.Client, appID, name, string(contents))
+	quit <- true
+	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
