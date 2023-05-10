@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/drycc/controller-sdk-go/gateways"
@@ -28,11 +27,10 @@ func (d *DryccCmd) GatewaysList(appID string, results int) error {
 		d.Println("Could not find any gateway")
 	} else {
 		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Name", "Lisenter", "Port", "Protocol", "allowedRoutes"})
+		table.SetHeader([]string{"Name", "Lisenter", "Port", "Protocol"})
 		for _, gateway := range gateways {
 			for _, listener := range gateway.Listeners {
-				allowedRoutes, _ := json.Marshal(listener.AllowedRoutes)
-				table.Append([]string{gateway.Name, listener.Name, fmt.Sprint(listener.Port), listener.Protocol, string(allowedRoutes)})
+				table.Append([]string{gateway.Name, listener.Name, fmt.Sprint(listener.Port), listener.Protocol})
 			}
 		}
 		table.SetAutoMergeCellsByColumnIndex([]int{0})

@@ -32,7 +32,7 @@ func (d *DryccCmd) ServicesList(appID string) error {
 				table.Append([]string{service.ProcfileType, port.Name, fmt.Sprint(port.Port), port.Protocol, fmt.Sprint(port.TargetPort)})
 			}
 		}
-		table.SetAutoMergeCellsByColumnIndex([]int{0, 1})
+		table.SetAutoMergeCellsByColumnIndex([]int{0})
 		table.SetRowLine(true)
 		table.Render()
 	}

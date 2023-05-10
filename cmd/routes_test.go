@@ -75,11 +75,11 @@ func TestRoutesList(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `=== foo Routes
-+------------+------+-----------+------------+--------------------+
-|    NAME    | TYPE |   KIND    |  GATEWAY   |      SECTION       |
-+------------+------+-----------+------------+--------------------+
-| example-go | web  | HTTPRoute | example-go | example-go-80-http |
-+------------+------+-----------+------------+--------------------+
++------------+------+-----------+------------+
+|    NAME    | TYPE |   KIND    |  GATEWAY   |
++------------+------+-----------+------------+
+| example-go | web  | HTTPRoute | example-go |
++------------+------+-----------+------------+
 `, "output")
 }
 

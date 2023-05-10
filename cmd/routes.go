@@ -51,16 +51,15 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 		d.Println("Could not find any route")
 	} else {
 		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Name", "Type", "Kind", "Gateway", "Section"})
+		table.SetHeader([]string{"Name", "Type", "Kind", "Gateway"})
 		for _, route := range routes {
 			if len(route.ParentRefs) > 0 {
 				for _, gateway := range route.ParentRefs {
-					table.Append([]string{route.Name, route.Type, route.Kind, gateway.Name, gateway.Section})
+					table.Append([]string{route.Name, route.Type, route.Kind, gateway.Name})
 				}
 			} else {
-				table.Append([]string{route.Name, route.Type, route.Kind, "", ""})
+				table.Append([]string{route.Name, route.Type, route.Kind, ""})
 			}
-
 		}
 		table.SetAutoMergeCellsByColumnIndex([]int{0})
 		table.SetRowLine(true)
