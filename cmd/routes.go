@@ -138,14 +138,15 @@ func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
 
 	var rules interface{}
 	var contents []byte
-	if _, err := os.Stat(ruleFile); err == nil {
-		contents, err = ioutil.ReadFile(ruleFile)
-		if err != nil {
-			return err
-		}
-		if err := json.Unmarshal(contents, &rules); err != nil {
-			return err
-		}
+	if _, err := os.Stat(ruleFile); err != nil {
+		return err
+	}
+	contents, err = ioutil.ReadFile(ruleFile)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(contents, &rules); err != nil {
+		return err
 	}
 
 	d.Print("Applying rules... ")

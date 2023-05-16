@@ -15,8 +15,8 @@ github.com/gorilla/websocket v1.5.0 h1:PPwGk2jz7EePpoHN/+ClbZu8SPxiqlu12wZP/3sWm
 github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/goware/urlx v0.3.2 h1:gdoo4kBHlkqZNaf6XlQ12LGtQOmpKJrR04Rc3RnpJEo=
 github.com/goware/urlx v0.3.2/go.mod h1:h8uwbJy68o+tQXCGZNa9D73WN8n0r9OBae5bUnLcgjw=
-github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230510015731-e76cc1c241d5 h1:ABcJ0u/yPS0mapA6OVPIMCN5cyS5PqMer+ChexMw2Gg=
-github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230510015731-e76cc1c241d5/go.mod h1:q6gbIO0f+xUM8mejPgbbUT8pdAYTIb5vugUsoTcbLw0=
+github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230516092539-830b42c9e810 h1:/agIwe7pL7gFCvL08kZnWL4syejqO5/rw0D6ZjGbyIg=
+github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230516092539-830b42c9e810/go.mod h1:q6gbIO0f+xUM8mejPgbbUT8pdAYTIb5vugUsoTcbLw0=
 github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
 github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
