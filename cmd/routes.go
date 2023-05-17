@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -51,14 +52,14 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 		d.Println("Could not find any route")
 	} else {
 		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Name", "Type", "Kind", "Gateway"})
+		table.SetHeader([]string{"Name", "Type", "Kind", "Service Port", "Gateway", "Listener Port"})
 		for _, route := range routes {
 			if len(route.ParentRefs) > 0 {
 				for _, gateway := range route.ParentRefs {
-					table.Append([]string{route.Name, route.Type, route.Kind, gateway.Name})
+					table.Append([]string{route.Name, route.Type, route.Kind, fmt.Sprint(route.Port), gateway.Name, fmt.Sprint(gateway.Port)})
 				}
 			} else {
-				table.Append([]string{route.Name, route.Type, route.Kind, ""})
+				table.Append([]string{route.Name, route.Type, route.Kind, fmt.Sprint(route.Port), "", ""})
 			}
 		}
 		table.SetAutoMergeCellsByColumnIndex([]int{0})
