@@ -26,4 +26,4 @@ require (
 	golang.org/x/text v0.7.0 // indirect
 )
 
-replace github.com/drycc/controller-sdk-go => github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230517053503-b97a90682782
+replace github.com/drycc/controller-sdk-go => github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230524075627-dcfa3f6f1df1

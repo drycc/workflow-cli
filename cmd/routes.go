@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
-
 	"github.com/drycc/controller-sdk-go/routes"
 	"github.com/olekukonko/tablewriter"
+	"gopkg.in/yaml.v3"
+	"io/ioutil"
+	"os"
 )
 
 // RoutesCreate create a route to an app.
@@ -146,7 +146,11 @@ func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(contents, &rules); err != nil {
+	// if err := json.Unmarshal(contents, &rules); err != nil {
+	// 	return err
+	// }
+
+	if err := yaml.Unmarshal(contents, &rules); err != nil {
 		return err
 	}
 
