@@ -1,12 +1,10 @@
 package cmd
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/drycc/controller-sdk-go/routes"
+	"github.com/ghodss/yaml"
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
 )
@@ -124,9 +122,12 @@ func (d *DryccCmd) RoutesGet(appID string, name string) error {
 		return err
 	}
 
-	var rules bytes.Buffer
-	json.Indent(&rules, []byte(route), "", "  ")
-	d.Println(rules.String())
+	var rules []byte
+	rules, err = yaml.JSONToYAML([]byte(route))
+	if err != nil {
+		return err
+	}
+	d.Println(string(rules))
 	return nil
 }
 
@@ -137,7 +138,6 @@ func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
 		return err
 	}
 
-	var rules interface{}
 	var contents []byte
 	if _, err := os.Stat(ruleFile); err != nil {
 		return err
@@ -146,17 +146,13 @@ func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
 	if err != nil {
 		return err
 	}
-	// if err := json.Unmarshal(contents, &rules); err != nil {
-	// 	return err
-	// }
-
-	if err := yaml.Unmarshal(contents, &rules); err != nil {
+	rules, err := yaml.YAMLToJSON(contents)
+	if err != nil {
 		return err
 	}
-
 	d.Print("Applying rules... ")
 	quit := progress(d.WOut)
-	err = routes.SetRule(s.Client, appID, name, string(contents))
+	err = routes.SetRule(s.Client, appID, name, string(rules))
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

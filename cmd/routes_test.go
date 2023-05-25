@@ -145,33 +145,46 @@ func TestRouteGet(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `[
-  {
-    "backendRefs": [
-      {
-        "kind": "Service",
-        "name": "py3django3",
-        "port": 80
-      }
-    ]
-  }
-]`)
+		fmt.Fprintf(w, `{
+  "stable": [
+    {
+      "backendRefs": [
+        {
+          "group": "",
+          "kind": "Service",
+          "name": "example-go",
+          "port": 1234,
+          "weight": 1
+        }
+      ],
+      "matches": [
+        {
+          "path": {
+            "type": "PathPrefix",
+            "value": "/get"
+          }
+        }
+      ]
+    }
+  ]
+}`)
 	})
 
 	err = cmdr.RoutesGet("foo", "example-go")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `[
-  {
-    "backendRefs": [
-      {
-        "kind": "Service",
-        "name": "py3django3",
-        "port": 80
-      }
-    ]
-  }
-]
+	assert.Equal(t, b.String(), `stable:
+- backendRefs:
+  - group: ""
+    kind: Service
+    name: example-go
+    port: 1234
+    weight: 1
+  matches:
+  - path:
+      type: PathPrefix
+      value: /get
+
 `, "output")
 }
 
@@ -190,27 +203,19 @@ func TestRoutesSet(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 		w.Write([]byte(""))
 	})
-	ruleFile, err := ioutil.TempFile("", "rules.json")
+	ruleFile, err := ioutil.TempFile("", "rules.yaml")
 	rules := `
-[
-	{
-		"backendRefs": [
-			{
-				"kind": "Service",
-				"name": "example-go",
-				"port": 1234
-			}
-		],
-		"matches": [
-			{
-				"path": {
-					"type": "PathPrefix",
-					"value": "/get"
-				}
-			}
-		]
-	}
-]`
+stable:
+- backendRefs:
+  - group: ""
+    kind: Service
+    name: example-go
+    port: 1234
+    weight: 1
+  matches:
+  - path:
+      type: PathPrefix
+      value: /get`
 	assert.NoError(t, err)
 	defer os.Remove(ruleFile.Name())
 	_, err = ruleFile.Write([]byte(rules))
