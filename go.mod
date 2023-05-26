@@ -28,4 +28,4 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-replace github.com/drycc/controller-sdk-go => github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230524075627-dcfa3f6f1df1
+replace github.com/drycc/controller-sdk-go => github.com/jianxiaoguo/controller-sdk-go v0.0.0-20230526072711-4ced8c7513c4
