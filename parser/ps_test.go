@@ -16,7 +16,7 @@ func (d FakeDryccCmd) PsList(string, int) error {
 	return errors.New("ps:list")
 }
 
-func (d FakeDryccCmd) PsExec(appID, podID string, tty, stdin bool, command []string) error {
+func (d FakeDryccCmd) PsExec(string, string, bool, bool, []string) error {
 	return errors.New("ps:exec")
 }
 

@@ -1,6 +1,8 @@
 package cmd
 
-import "github.com/drycc/controller-sdk-go/tls"
+import (
+	"github.com/drycc/controller-sdk-go/tls"
+)
 
 // TLSInfo prints info about the TLS settings for the given app.
 func (d *DryccCmd) TLSInfo(appID string) error {
@@ -99,6 +101,28 @@ func (d *DryccCmd) TLSAutoDisable(appID string) error {
 
 	quit := progress(d.WOut)
 	_, err = tls.DisableCertsAutoEnabled(s.Client, appID)
+	quit <- true
+	<-quit
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}
+
+// TLSAutoIssuer add issuer requests to the application.
+func (d *DryccCmd) TLSAutoIssuer(appID string, email string, server string, keyID string, keySecret string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Adding issuer requests for %s... ", appID)
+
+	quit := progress(d.WOut)
+	_, err = tls.AddCertsIssuer(s.Client, appID, email, server, keyID, keySecret)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

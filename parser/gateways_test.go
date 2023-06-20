@@ -12,31 +12,19 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) TLSInfo(string) error {
-	return errors.New("tls:info")
+func (d FakeDryccCmd) GatewaysList(string, int) error {
+	return errors.New("gateways:list")
 }
 
-func (d FakeDryccCmd) TLSForceEnable(string) error {
-	return errors.New("tls:force:enable")
+func (d FakeDryccCmd) GatewaysAdd(string, string, int, string) error {
+	return errors.New("gateways:add")
 }
 
-func (d FakeDryccCmd) TLSForceDisable(string) error {
-	return errors.New("tls:force:disable")
+func (d FakeDryccCmd) GatewaysRemove(string, string, int, string) error {
+	return errors.New("gateways:remove")
 }
 
-func (d FakeDryccCmd) TLSAutoEnable(string) error {
-	return errors.New("tls:auto:disable")
-}
-
-func (d FakeDryccCmd) TLSAutoDisable(string) error {
-	return errors.New("tls:auto:disable")
-}
-
-func (d FakeDryccCmd) TLSAutoIssuer(string, string, string, string, string) error {
-	return errors.New("tls:auto:issuer")
-}
-
-func TestTLS(t *testing.T) {
+func TestGateways(t *testing.T) {
 	t.Parallel()
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -54,24 +42,20 @@ func TestTLS(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"tls:info"},
+			args:     []string{"gateways:add", "example", "--port=80", "--protocol=http"},
 			expected: "",
 		},
 		{
-			args:     []string{"tls:force:enable"},
+			args:     []string{"gateways:list"},
 			expected: "",
 		},
 		{
-			args:     []string{"tls:force:disable"},
+			args:     []string{"gateways:remove", "example", "--port=80", "--protocol=http"},
 			expected: "",
 		},
 		{
-			args:     []string{"tls:auto:issuer", "--email=drycc@drycc.cc", "--server=https://acme.zerossl.com/v2/DV90", "--key-id=keyID", "--key-secret=keySecret"},
-			expected: "",
-		},
-		{
-			args:     []string{"tls"},
-			expected: "tls:info",
+			args:     []string{"gateways"},
+			expected: "gateways:list",
 		},
 	}
 
@@ -84,7 +68,7 @@ func TestTLS(t *testing.T) {
 		} else {
 			expected = c.expected
 		}
-		err = TLS(c.args, cmdr)
+		err = Gateways(c.args, cmdr)
 		assert.Error(t, errors.New(expected), err)
 	}
 }
