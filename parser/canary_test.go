@@ -12,19 +12,27 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) AllowlistAdd(string, string) error {
-	return errors.New("allowlist:add")
+func (d FakeDryccCmd) CanaryInfo(string) error {
+	return errors.New("canary:info")
 }
 
-func (d FakeDryccCmd) AllowlistList(string) error {
-	return errors.New("allowlist:list")
+func (d FakeDryccCmd) CanaryCreate(string, []string) error {
+	return errors.New("canary:create")
 }
 
-func (d FakeDryccCmd) AllowlistRemove(string, string) error {
-	return errors.New("allowlist:remove")
+func (d FakeDryccCmd) CanaryRemove(string, []string) error {
+	return errors.New("canary:remove")
 }
 
-func TestAllowlist(t *testing.T) {
+func (d FakeDryccCmd) CanaryRelease(string) error {
+	return errors.New("canary:release")
+}
+
+func (d FakeDryccCmd) CanaryRollback(string) error {
+	return errors.New("canary:rollback")
+}
+
+func TestCanary(t *testing.T) {
 	t.Parallel()
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -42,20 +50,28 @@ func TestAllowlist(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"allowlist:add", "1.2.3.4"},
+			args:     []string{"canary:info"},
 			expected: "",
 		},
 		{
-			args:     []string{"allowlist:list"},
+			args:     []string{"canary:create", "web cmd"},
 			expected: "",
 		},
 		{
-			args:     []string{"allowlist:remove", "1.2.3.4"},
+			args:     []string{"canary:remove", "web cmd"},
 			expected: "",
 		},
 		{
-			args:     []string{"allowlist"},
-			expected: "allowlist:list",
+			args:     []string{"canary:release"},
+			expected: "",
+		},
+		{
+			args:     []string{"canary:rollback"},
+			expected: "",
+		},
+		{
+			args:     []string{"canary"},
+			expected: "canary:info",
 		},
 	}
 
@@ -68,7 +84,7 @@ func TestAllowlist(t *testing.T) {
 		} else {
 			expected = c.expected
 		}
-		err = Allowlist(c.args, cmdr)
+		err = Canary(c.args, cmdr)
 		assert.Error(t, errors.New(expected), err)
 	}
 }

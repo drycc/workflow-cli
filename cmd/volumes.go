@@ -56,8 +56,8 @@ func printVolumes(d *DryccCmd, appID string, volumes api.Volumes, wOut io.Writer
 	max = max + 5
 
 	for _, volume := range volumes {
-		nameSpaces := strings.Repeat(" ", max-len(volume.Name)-4)
-		fmt.Fprintf(wOut, "--- %s%s%s\n", volume.Name, nameSpaces, volume.Size)
+		blankSpaces := strings.Repeat(" ", max-len(volume.Name)-4)
+		fmt.Fprintf(wOut, "--- %s%s%s\n", volume.Name, blankSpaces, volume.Size)
 
 		pathMap := make(map[string]string)
 		for key, value := range volume.Path {
