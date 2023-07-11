@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"regexp"
 	"strconv"
 	"strings"
@@ -124,7 +123,7 @@ func (d *DryccCmd) ResourcesList(appID string, results int) error {
 	if count == 0 {
 		d.Println("Could not find any resources")
 	} else {
-		printResources(d, appID, resources, d.WOut)
+		printResources(d, appID, resources)
 	}
 	return nil
 }
@@ -144,7 +143,7 @@ func (d *DryccCmd) ResourceGet(appID, name string) error {
 		return err
 	}
 	// todo format data json to yaml
-	printResourceDetail(d, appID, resource, d.WOut)
+	printResourceDetail(d, appID, resource)
 	//d.Println(resource)
 	return nil
 }
@@ -251,9 +250,8 @@ func (d *DryccCmd) ResourceUnbind(appID string, name string) error {
 }
 
 // printResources format Resources data
-func printResources(d *DryccCmd, appID string, resources api.Resources, wOut io.Writer) {
-
-	fmt.Fprintf(wOut, "=== %s resources\n", appID)
+func printResources(d *DryccCmd, appID string, resources api.Resources) {
+	fmt.Fprintf(d.WOut, "=== %s resources\n", appID)
 	resourceNames := make([]string, len(resources))
 
 	for _, resource := range resources {
@@ -263,11 +261,12 @@ func printResources(d *DryccCmd, appID string, resources api.Resources, wOut io.
 
 	for _, resource := range resources {
 		spaces := strings.Repeat(" ", lenResourceNames-len(resource.Name))
-		fmt.Fprintf(wOut, "%s%s%s\n", resource.Name, spaces, resource.Plan)
+		fmt.Fprintf(d.WOut, "%s%s%s\n", resource.Name, spaces, resource.Plan)
+
 	}
 }
 
-func printResourceDetail(d *DryccCmd, appID string, resource api.Resource, wOut io.Writer) {
+func printResourceDetail(d *DryccCmd, appID string, resource api.Resource) {
 	d.Printf("=== %s resource %s\n", appID, resource.Name)
 
 	dataMap := make(map[string]string)

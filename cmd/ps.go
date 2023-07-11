@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"io"
 	"log"
@@ -13,7 +12,7 @@ import (
 	"github.com/containerd/console"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/ps"
-	"github.com/gorilla/websocket"
+	"golang.org/x/net/websocket"
 )
 
 // PsList lists an app's processes.
@@ -43,7 +42,12 @@ func (d *DryccCmd) PsExec(appID, podID string, tty, stdin bool, command []string
 	if err != nil {
 		return err
 	}
-	conn, err := ps.Exec(s.Client, appID, podID, tty, stdin, command)
+	request := api.Command{
+		Tty:     tty,
+		Stdin:   stdin,
+		Command: command,
+	}
+	conn, err := ps.Exec(s.Client, appID, podID, request)
 	if err != nil {
 		return err
 	}
@@ -127,18 +131,13 @@ func printProcesses(appID string, input []api.Pods, wOut io.Writer) {
 }
 
 func printExec(d *DryccCmd, conn *websocket.Conn) error {
-	messageType, message, err := conn.ReadMessage()
+	var message string
+	err := websocket.Message.Receive(conn, &message)
 	if err != nil {
-		if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
-			log.Printf("error: %v", err)
-		}
+		log.Printf("error: %v", err)
 		return nil
 	}
-	if messageType == websocket.TextMessage {
-		d.Printf("%s", string(message))
-	} else {
-		d.Printf(base64.StdEncoding.EncodeToString(message))
-	}
+	d.Printf("%s", message)
 	return nil
 }
 
@@ -151,22 +150,22 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 		}
 	}
 
-	recvQueue := make(chan []byte)
+	recvQueue := make(chan string)
 	defer close(recvQueue)
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
 		for {
-			messageType, message, err := conn.ReadMessage()
-			if err != nil || messageType == websocket.CloseMessage {
+			var message string
+			err := websocket.Message.Receive(conn, &message)
+			if err != nil {
 				cancel()
 				break
-			} else {
-				recvQueue <- message
 			}
+			recvQueue <- message
 		}
 	}()
 
-	sendQueue := make(chan []byte)
+	sendQueue := make(chan string)
 	defer close(sendQueue)
 	go func() {
 		buf := make([]byte, 1024)
@@ -178,7 +177,7 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 			} else if err != nil {
 				continue
 			} else {
-				sendQueue <- buf[:size]
+				sendQueue <- string(buf[:size])
 			}
 		}
 	}()
@@ -188,11 +187,11 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 		case <-ctx.Done():
 			return nil
 		case message := <-sendQueue:
-			if err := conn.WriteMessage(websocket.TextMessage, message); err != nil {
+			if err := websocket.Message.Send(conn, message); err != nil {
 				return err
 			}
 		case message := <-recvQueue:
-			c.Write(message)
+			c.Write([]byte(message))
 		}
 	}
 }

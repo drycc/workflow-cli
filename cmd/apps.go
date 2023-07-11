@@ -8,13 +8,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/apps"
 	"github.com/drycc/controller-sdk-go/domains"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/pkg/logging"
 	"github.com/drycc/workflow-cli/pkg/webbrowser"
 	"github.com/drycc/workflow-cli/settings"
-	"github.com/gorilla/websocket"
+	"golang.org/x/net/websocket"
 )
 
 // AppCreate creates an app.
@@ -166,18 +167,21 @@ func (d *DryccCmd) AppLogs(appID string, lines int, follow bool, timeout int) er
 	if err != nil {
 		return err
 	}
-
-	conn, err := apps.Logs(s.Client, appID, lines, follow, timeout)
+	request := api.AppLogsRequest{
+		Lines:   lines,
+		Follow:  follow,
+		Timeout: timeout,
+	}
+	conn, err := apps.Logs(s.Client, appID, request)
 	if err != nil {
 		return err
 	}
 	defer conn.Close()
 	for {
-		_, message, err := conn.ReadMessage()
+		var message string
+		err := websocket.Message.Receive(conn, &message)
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
-				log.Printf("error: %v", err)
-			}
+			log.Printf("error: %v", err)
 			break
 		}
 		logging.PrintLog(os.Stdout, strings.TrimRight(string(message), "\n"))
