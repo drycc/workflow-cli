@@ -134,7 +134,9 @@ func printExec(d *DryccCmd, conn *websocket.Conn) error {
 	var message string
 	err := websocket.Message.Receive(conn, &message)
 	if err != nil {
-		log.Printf("error: %v", err)
+		if err != io.EOF {
+			log.Printf("error: %v", err)
+		}
 		return nil
 	}
 	d.Printf("%s", message)

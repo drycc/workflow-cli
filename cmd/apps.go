@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"regexp"
@@ -181,7 +182,9 @@ func (d *DryccCmd) AppLogs(appID string, lines int, follow bool, timeout int) er
 		var message string
 		err := websocket.Message.Receive(conn, &message)
 		if err != nil {
-			log.Printf("error: %v", err)
+			if err != io.EOF {
+				log.Printf("error: %v", err)
+			}
 			break
 		}
 		logging.PrintLog(os.Stdout, strings.TrimRight(string(message), "\n"))
