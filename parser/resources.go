@@ -123,7 +123,7 @@ Usage: drycc resources:create <plan> <name> [<param>=<value>...] [options]
 
 Arguments:
   <plan>
-    the resource's plan.
+    the resource's plan, pattern: <service_name>:<plan_name>.
   <name>
     this resource instance alias.
   <param>
@@ -134,6 +134,8 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  -f --values=<values_file>
+    specify values in a YAML file. If set, params will be discard.
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -143,10 +145,11 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
+	values := safeGetValue(args, "--values")
 	plan := safeGetValue(args, "<plan>")
 	name := safeGetValue(args, "<name>")
 
-	return cmdr.ResourcesCreate(app, plan, name, args["<param>=<value>"].([]string))
+	return cmdr.ResourcesCreate(app, plan, name, args["<param>=<value>"].([]string), values)
 }
 
 func resourcesList(argv []string, cmdr cmd.Commander) error {
@@ -216,7 +219,7 @@ Usage: drycc resources:update <plan> <name> [<param>=<value>...] [options]
 
 Arguments:
   <plan>
-    the resource's plan.
+    the resource's plan, pattern: <service_name>:<plan_name>.
   <name>
     this resource instance alias.
   <param>
@@ -227,6 +230,8 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  -f --values=<values_file>
+	specify values in a YAML file. If set, params will be discard.
 `
 
 	args, err := docopt.Parse(usage, argv, true, "", false, true)
@@ -236,10 +241,11 @@ Options:
 	}
 
 	app := safeGetValue(args, "--app")
+	values := safeGetValue(args, "--values")
 	plan := safeGetValue(args, "<plan>")
 	name := safeGetValue(args, "<name>")
 
-	return cmdr.ResourcePut(app, plan, name, args["<param>=<value>"].([]string))
+	return cmdr.ResourcePut(app, plan, name, args["<param>=<value>"].([]string), values)
 }
 
 func resourceDelete(argv []string, cmdr cmd.Commander) error {

@@ -20,7 +20,7 @@ func (d FakeDryccCmd) ResourcesPlans(string, int) error {
 	return errors.New("resources:plans")
 }
 
-func (d FakeDryccCmd) ResourcesCreate(string, string, string, []string) error {
+func (d FakeDryccCmd) ResourcesCreate(string, string, string, []string, string) error {
 	return errors.New("resources:create")
 }
 
@@ -32,7 +32,7 @@ func (d FakeDryccCmd) ResourceGet(string, string) error {
 	return errors.New("resources:describe")
 }
 
-func (d FakeDryccCmd) ResourcePut(string, string, string, []string) error {
+func (d FakeDryccCmd) ResourcePut(string, string, string, []string, string) error {
 	return errors.New("resources:update")
 }
 
