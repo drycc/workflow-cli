@@ -1,12 +1,16 @@
 package cmd
 
 import (
+	"encoding/base64"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/olekukonko/tablewriter"
+	"sigs.k8s.io/yaml"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/resources"
@@ -73,16 +77,39 @@ func (d *DryccCmd) ResourcesPlans(serviceName string, results int) error {
 }
 
 // ResourcesCreate create a resource for the application
-func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []string) error {
+func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []string, values string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
+	if len(params) != 0 && len(values) != 0 {
+		return fmt.Errorf("to avoid conflicts, either param or values file can be set, but not both")
+	}
+	paramsMap := make(map[string]interface{})
+	if values != "" {
+		valueFile, err := os.Stat(values)
+		if err != nil {
+			return err
+		}
+		if valueFile.Size() == 0 {
+			return fmt.Errorf("%s is empty", values)
+		}
+		rawValues, err := ioutil.ReadFile(values)
+		if err != nil {
+			return err
+		}
+		parsed := make(map[string]interface{})
+		err = yaml.Unmarshal(rawValues, &parsed)
+		if err != nil {
+			return err
+		}
+		paramsMap["rawValues"] = base64.StdEncoding.EncodeToString([]byte(rawValues))
+	}
 
 	d.Printf("Creating %s to %s... ", name, appID)
 
-	paramsMap, err := parseParams(params)
+	paramsMap, err = parseParams(paramsMap, params)
 	if err != nil {
 		return err
 	}
@@ -171,16 +198,39 @@ func (d *DryccCmd) ResourceDelete(appID, name string) error {
 }
 
 // ResourcePut update a resource for the application
-func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string) error {
+func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string, values string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
+	if len(params) != 0 && len(values) != 0 {
+		return fmt.Errorf("to avoid conflicts, either param or values file can be set, but not both")
+	}
+	paramsMap := make(map[string]interface{})
+	if values != "" {
+		valueFile, err := os.Stat(values)
+		if err != nil {
+			return err
+		}
+		if valueFile.Size() == 0 {
+			return fmt.Errorf("%s is empty", values)
+		}
+		rawValues, err := ioutil.ReadFile(values)
+		if err != nil {
+			return err
+		}
+		parsed := make(map[string]interface{})
+		err = yaml.Unmarshal(rawValues, &parsed)
+		if err != nil {
+			return err
+		}
+		paramsMap["rawValues"] = base64.StdEncoding.EncodeToString([]byte(rawValues))
+	}
 
 	d.Printf("Updating %s to %s... ", name, appID)
 
-	paramsMap, err := parseParams(params)
+	paramsMap, err = parseParams(paramsMap, params)
 	if err != nil {
 		return err
 	}
@@ -329,8 +379,7 @@ func maxNum(tempArray ...int) int {
 }
 
 // parseParams transfer params to map
-func parseParams(params []string) (map[string]interface{}, error) {
-	paramsMap := make(map[string]interface{})
+func parseParams(paramsMap map[string]interface{}, params []string) (map[string]interface{}, error) {
 	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*[\.{1}[A-z0-9_]+]*)=([\s\S]*)$`)
 	for _, param := range params {
 		if regex.MatchString(param) {
