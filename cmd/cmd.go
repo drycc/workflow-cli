@@ -119,11 +119,11 @@ type Commander interface {
 	VolumesUnmount(string, string, []string) error
 	ResourcesServices(int) error
 	ResourcesPlans(string, int) error
-	ResourcesCreate(string, string, string, []string) error
+	ResourcesCreate(string, string, string, []string, string) error
 	ResourcesList(string, int) error
 	ResourceDelete(string, string) error
 	ResourceGet(string, string) error
-	ResourcePut(string, string, string, []string) error
+	ResourcePut(string, string, string, []string, string) error
 	ResourceBind(string, string) error
 	ResourceUnbind(string, string) error
 }
