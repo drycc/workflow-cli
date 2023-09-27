@@ -36,7 +36,7 @@ $ mv drycc /usr/local/bin
 
 ### From Scratch on OS X and Linux
 
-To compile the client from scratch, ensure you have Docker installed and run
+To compile the client from scratch, ensure you have Container installed and run
 
     $ make
 

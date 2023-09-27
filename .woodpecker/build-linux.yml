@@ -22,7 +22,7 @@ pipeline:
 - name: publish-linux
   image: bash
   commands:
-  - docker run --rm
+  - podman run --rm
       -e DRONE_BUILD_EVENT=tag
       -e DRONE_REPO_OWNER="$CI_REPO_OWNER"
       -e DRONE_REPO_NAME="$CI_REPO_NAME"

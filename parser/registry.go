@@ -61,7 +61,7 @@ Options:
 func registrySet(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Sets registry information for an application. These credentials are the same as those used for
-'docker login' to the private registry.
+'podmain login' to the private registry.
 
 Usage: drycc registry:set [options] <key>=<value>...
 

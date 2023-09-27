@@ -74,7 +74,7 @@ Usage: drycc builds:create <image> [options]
 
 Arguments:
   <image>
-    A fully-qualified docker image, either from Docker Hub (e.g. drycc/example-go:latest)
+    A fully-qualified container image, either from Drycc Registry (e.g. registry.drycc.cc/drycc/example-go:latest)
     or from an in-house registry (e.g. myregistry.example.com:5000/example-go:latest).
     This image must include the tag.
 
