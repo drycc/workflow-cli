@@ -6,10 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/drycc/pkg/prettyprint"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
+	"github.com/drycc/pkg/prettyprint"
 )
 
 // VolumesList list volumes in the application
@@ -177,6 +176,7 @@ func (d *DryccCmd) VolumesMount(appID string, name string, volumeVars []string) 
 	}
 
 	d.Print("done\n")
+	d.Print("The pods should be restart, please check the pods up or not.\n")
 
 	return nil
 }
@@ -209,6 +209,7 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 	}
 
 	d.Print("done\n")
+	d.Print("The pods should be restart, please check the pods up or not.\n")
 
 	return nil
 }
