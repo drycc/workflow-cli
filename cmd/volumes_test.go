@@ -165,6 +165,7 @@ func TestVolumesMount(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Mounting volume... done
+The pods should be restart, please check the pods up or not.
 `, "output")
 }
 
@@ -204,5 +205,6 @@ func TestVolumesUnmount(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Unmounting volume... done
+The pods should be restart, please check the pods up or not.
 `, "output")
 }
