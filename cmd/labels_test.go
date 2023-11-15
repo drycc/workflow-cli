@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"testing"
 
-	"strings"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
@@ -37,9 +35,10 @@ func TestLabelsList(t *testing.T) {
 
 	err = cmdr.LabelsList("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, strings.TrimSpace(b.String()), `=== rivendell Label
-git_repo:      https://github.com/drycc/controller-sdk-go
-team:          drycc`, "output")
+	assert.Equal(t, b.String(), `UUID                                    OWNER    KEY         VALUE                                      
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jim      git_repo    https://github.com/drycc/controller-sdk-go    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jim      team        drycc                                         
+`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -55,7 +54,7 @@ team:          drycc`, "output")
 
 	err = cmdr.LabelsList("mordor")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), "=== mordor Label\nNo labels found.\n", "output")
+	assert.Equal(t, b.String(), "No labels found in mordor app.\n", "output")
 }
 
 func TestListsSet(t *testing.T) {

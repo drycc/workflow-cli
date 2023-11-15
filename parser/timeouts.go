@@ -50,7 +50,7 @@ Options:
     the uniquely identifiable name of the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -77,7 +77,7 @@ Options:
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -91,8 +91,7 @@ Options:
 
 func timeoutUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Unsets timeouts for an application. Default value (30s)
-or KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS is used
+Unsets timeouts for an application. Default value (30s) or set by drycc controller
 
 Usage: drycc timeouts:unset [options] <type>...
 
@@ -106,7 +105,7 @@ Options:
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

@@ -39,11 +39,8 @@ func TestResourcesServices(t *testing.T) {
 	err = cmdr.ResourcesServices(100)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `+-------+------------+
-| NAME  | UPDATEABLE |
-+-------+------------+
-| mysql | true       |
-+-------+------------+
+	assert.Equal(t, b.String(), `ID                                      NAME     UPDATEABLE 
+332588e0-6c2c-4f56-a6af-a56fd01ec4b4    mysql    true          
 `, "output")
 }
 
@@ -72,12 +69,8 @@ func TestResourcesPlans(t *testing.T) {
 	err = cmdr.ResourcesPlans("mysql", 100)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `+---------------+--------------------------------+
-|     NAME      |          DESCRIPTION           |
-+---------------+--------------------------------+
-| standard-1600 | mysql standard-1600 plan which |
-|               | limit persistence size 1600Gi. |
-+---------------+--------------------------------+
+	assert.Equal(t, b.String(), `ID                                      NAME             DESCRIPTION                                                   
+4d1dbd33-201b-45bc-9abb-757584ef7ab8    standard-1600    mysql standard-1600 plan which limit persistence size 1600Gi.    
 `, "output")
 }
 
@@ -142,8 +135,8 @@ func TestResourcesList(t *testing.T) {
 	err = cmdr.ResourcesList("example-go", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== example-go resources
-mysql     mysql:5.6
+	assert.Equal(t, b.String(), `UUID                                    NAME     OWNER    PLAN         UPDATED                
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    mysql    test     mysql:5.6    2020-09-08T00:00:00UTC    
 `, "output")
 }
 
@@ -177,16 +170,21 @@ func TestResourceGet(t *testing.T) {
 	err = cmdr.ResourceGet("example-go", "mysql")
 	assert.NoError(t, err)
 	// todo format data json to yaml
-	assert.Equal(t, b.String(), `=== example-go resource mysql
-plan:          mysql:5.6
-status:        Ready
-binding:       Ready
-
-data12:        value1
-data3:         value1
-
-para122:       value1
-para13451:     value2
+	assert.Equal(t, b.String(), `App:        example-go                              
+UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    
+Name:       mysql                                   
+Plan:       mysql:5.6                               
+Owner:      test                                    
+Status:     Ready                                   
+Binding:    Ready                                   
+Data:       
+            data12:                                 value1    
+            data3:                                  value1    
+Options:    
+            para122:                                value1    
+            para13451:                              value2    
+Created:    2020-09-08T00:00:00UTC                  
+Updated:    2020-09-08T00:00:00UTC                  
 `, "output")
 }
 

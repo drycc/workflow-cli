@@ -2,10 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/drycc/controller-sdk-go/routes"
-	"github.com/olekukonko/tablewriter"
-	"io/ioutil"
 	"os"
+
+	"github.com/drycc/controller-sdk-go/routes"
 	"sigs.k8s.io/yaml"
 )
 
@@ -45,23 +44,35 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-	d.Printf("=== %s Routes\n", appID)
 	if count == 0 {
-		d.Println("Could not find any route")
+		d.Println(fmt.Sprintf("No routes found in %s app.", appID))
 	} else {
-		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Name", "Type", "Kind", "Service Port", "Gateway", "Listener Port"})
+		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "TYPE", "KIND", "SERVICE-PORT", "GATEWAY", "LISTENER-PORT"})
 		for _, route := range routes {
 			if len(route.ParentRefs) > 0 {
 				for _, gateway := range route.ParentRefs {
-					table.Append([]string{route.Name, route.Type, route.Kind, fmt.Sprint(route.Port), gateway.Name, fmt.Sprint(gateway.Port)})
+					table.Append([]string{
+						route.Name,
+						route.Owner,
+						route.Type,
+						route.Kind,
+						fmt.Sprint(route.Port),
+						gateway.Name,
+						fmt.Sprint(gateway.Port),
+					})
 				}
 			} else {
-				table.Append([]string{route.Name, route.Type, route.Kind, fmt.Sprint(route.Port), "", ""})
+				table.Append([]string{
+					route.Name,
+					route.Owner,
+					route.Type,
+					route.Kind,
+					fmt.Sprint(route.Port),
+					"",
+					"",
+				})
 			}
 		}
-		table.SetAutoMergeCellsByColumnIndex([]int{0})
-		table.SetRowLine(true)
 		table.Render()
 	}
 	return nil
@@ -142,7 +153,7 @@ func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
 	if _, err := os.Stat(ruleFile); err != nil {
 		return err
 	}
-	contents, err = ioutil.ReadFile(ruleFile)
+	contents, err = os.ReadFile(ruleFile)
 	if err != nil {
 		return err
 	}

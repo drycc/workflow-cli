@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"time"
-
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cmd"
 )
@@ -61,7 +59,7 @@ Options:
     the maximum number of results to display, defaults to config setting
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
@@ -71,7 +69,7 @@ Options:
 		return err
 	}
 
-	return cmdr.CertsList(results, time.Now())
+	return cmdr.CertsList(results)
 }
 
 func certAdd(argv []string, cmdr cmd.Commander) error {
@@ -91,7 +89,7 @@ Arguments:
 Options:
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
@@ -116,7 +114,7 @@ Arguments:
 Options:
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
@@ -137,7 +135,7 @@ Arguments:
 Options:
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
@@ -160,7 +158,7 @@ Arguments:
 Options:
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
@@ -185,7 +183,7 @@ Arguments:
 Options:
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}

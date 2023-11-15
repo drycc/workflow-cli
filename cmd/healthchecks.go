@@ -1,26 +1,54 @@
 package cmd
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
 )
 
-func (d *DryccCmd) printHealthCheck(healthcheck api.Healthchecks) {
-	d.Println("--- Liveness")
-	if livenessProbe, found := healthcheck["livenessProbe"]; found {
-		d.Println(livenessProbe)
-	} else {
-		d.Println("No liveness probe configured.")
-	}
+func getHealthcheckString(procType, probeType string, healthcheck *api.Healthcheck) string {
+	params := fmt.Sprintf(
+		"delay=%ds timeout=%ds period=%ds #success=%d #failure=%d",
+		healthcheck.InitialDelaySeconds,
+		healthcheck.TimeoutSeconds,
+		healthcheck.PeriodSeconds,
+		healthcheck.SuccessThreshold,
+		healthcheck.FailureThreshold,
+	)
 
-	d.Println("\n--- Readiness")
-	if readinessProbe, found := healthcheck["readinessProbe"]; found {
-		d.Println(readinessProbe)
-	} else {
-		d.Println("No readiness probe configured.")
+	if healthcheck.Exec != nil {
+		return fmt.Sprintf("%s %s exec %v %s", probeType, procType, healthcheck.Exec.Command, params)
+	} else if healthcheck.TCPSocket != nil {
+		return fmt.Sprintf("%s %s tcp-socket port=%v %s", probeType, procType, healthcheck.TCPSocket.Port, params)
+	} else if healthcheck.HTTPGet != nil {
+		return fmt.Sprintf(
+			"%s %s http-get headers=%v path=%s port=%d %s",
+			probeType,
+			procType,
+			healthcheck.HTTPGet.HTTPHeaders,
+			healthcheck.HTTPGet.Path,
+			healthcheck.HTTPGet.Port,
+			params,
+		)
 	}
+	return ""
+}
+
+func getHealthchecksStrings(procType string, healthchecks *api.Healthchecks) []string {
+	var livenessProbe, readinessProbe string
+	if probe, found := (*healthchecks)["livenessProbe"]; found {
+		livenessProbe = getHealthcheckString(procType, "liveness", probe)
+	} else {
+		livenessProbe = ""
+	}
+	if probe, found := (*healthchecks)["readinessProbe"]; found {
+		readinessProbe = getHealthcheckString(procType, "readiness", probe)
+	} else {
+		readinessProbe = ""
+	}
+	return []string{livenessProbe, readinessProbe}
 }
 
 // HealthchecksList lists an app's healthchecks.
@@ -36,30 +64,50 @@ func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 		return err
 	}
 
-	d.Printf("=== %s Healthchecks\n", appID)
 	if procType == "" {
 		if len(config.Healthcheck) == 0 {
 			d.Println("No health checks configured.")
-			return nil
-		}
-		var keys []string
-		for k := range config.Healthcheck {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-		for _, key := range keys {
-			d.Printf("\n%s:\n", key)
-			d.printHealthCheck(*config.Healthcheck[key])
+		} else {
+			var keys []string
+			for k := range config.Healthcheck {
+				keys = append(keys, k)
+			}
+			sort.Strings(keys)
+			table := d.getDefaultFormatTable([]string{})
+			table.Append([]string{"App:", config.App})
+			table.Append([]string{"UUID:", config.UUID})
+			table.Append([]string{"Owner:", config.Owner})
+			table.Append([]string{"Created:", config.Created})
+			table.Append([]string{"Updated:", config.Updated})
+			table.Append([]string{"Healthchecks:"})
+			for _, key := range keys {
+				for _, probe := range getHealthchecksStrings(key, config.Healthcheck[key]) {
+					if probe != "" {
+						table.Append([]string{"", probe})
+					}
+				}
+			}
+			table.Render()
 		}
 	} else {
-		d.Printf("\n%s:\n", procType)
 		if healthcheck, found := config.Healthcheck[procType]; found {
-			d.printHealthCheck(*healthcheck)
+			table := d.getDefaultFormatTable([]string{})
+			table.Append([]string{"App:", config.App})
+			table.Append([]string{"UUID:", config.UUID})
+			table.Append([]string{"Owner:", config.Owner})
+			table.Append([]string{"Created:", config.Created})
+			table.Append([]string{"Updated:", config.Updated})
+			table.Append([]string{"Healthchecks:"})
+			for _, probe := range getHealthchecksStrings(procType, healthcheck) {
+				if probe != "" {
+					table.Append([]string{"", probe})
+				}
+			}
+			table.Render()
 		} else {
-			d.printHealthCheck(api.Healthchecks{})
+			d.Println("No health checks configured.")
 		}
 	}
-
 	return nil
 }
 

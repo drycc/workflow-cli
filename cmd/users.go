@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/drycc/controller-sdk-go/users"
 	"github.com/drycc/workflow-cli/settings"
 )
@@ -17,19 +19,22 @@ func (d *DryccCmd) UsersList(results int) error {
 		results = s.Limit
 	}
 
-	users, count, err := users.List(s.Client, results)
+	users, _, err := users.List(s.Client, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== Users (*=admin)%s", limitCount(len(users), count))
-
+	table := d.getDefaultFormatTable([]string{"USERNAME", "EMAIL", "ADMIN", "STAFF", "ACTIVE", "DATE-JOIN"})
 	for _, user := range users {
-		if user.IsSuperuser {
-			d.Print("*")
-		}
-		d.Println(user.Username)
+		table.Append([]string{
+			user.Username,
+			user.Email,
+			fmt.Sprintf("%v", user.IsSuperuser),
+			fmt.Sprintf("%v", user.IsStaff),
+			fmt.Sprintf("%v", user.IsActive),
+			user.DateJoined,
+		})
 	}
+	table.Render()
 	return nil
 }
 
@@ -47,6 +52,7 @@ func (d *DryccCmd) UsersEnable(username string) error {
 	}
 
 	d.Println("done")
+	d.Println("This modification is only temporary and will be reverted when the user login again.")
 	return nil
 }
 
@@ -65,5 +71,6 @@ func (d *DryccCmd) UsersDisable(username string) error {
 	}
 
 	d.Println("done")
+	d.Println("This modification is only temporary and will be reverted when the user login again.")
 	return nil
 }

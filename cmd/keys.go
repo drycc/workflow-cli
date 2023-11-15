@@ -3,12 +3,10 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"text/tabwriter"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/keys"
@@ -28,19 +26,24 @@ func (d *DryccCmd) KeysList(results int) error {
 		results = s.Limit
 	}
 
-	keys, count, err := keys.List(s.Client, results)
+	keys, _, err := keys.List(s.Client, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	d.Printf("=== %s Keys%s", s.Username, limitCount(len(keys), count))
-
-	w := tabwriter.NewWriter(d.WOut, 0, 8, 1, ' ', 0)
-
-	for _, key := range keys {
-		fmt.Fprintf(w, "%s\t%s...%s\n", key.ID, key.Public[:16], key.Public[len(key.Public)-10:])
+	if len(keys) > 0 {
+		table := d.getDefaultFormatTable([]string{"ID", "OWNER", "KEY"})
+		for _, key := range keys {
+			table.Append([]string{
+				key.ID,
+				key.Owner,
+				fmt.Sprintf("%s...%s", key.Public[:16], key.Public[len(key.Public)-10:]),
+			})
+		}
+		table.Render()
+	} else {
+		d.Println("No any key found.")
 	}
-	w.Flush()
 	return nil
 }
 
@@ -154,7 +157,7 @@ func chooseKey(keys []api.KeyCreateRequest, input io.Reader,
 
 func listKeys(wOut io.Writer) ([]api.KeyCreateRequest, error) {
 	folder := filepath.Join(settings.FindHome(), ".ssh")
-	files, err := ioutil.ReadDir(folder)
+	files, err := os.ReadDir(folder)
 
 	if err != nil {
 		return nil, err
@@ -178,7 +181,7 @@ func listKeys(wOut io.Writer) ([]api.KeyCreateRequest, error) {
 }
 
 func getKey(filename string) (api.KeyCreateRequest, error) {
-	keyContents, err := ioutil.ReadFile(filename)
+	keyContents, err := os.ReadFile(filename)
 
 	if err != nil {
 		return api.KeyCreateRequest{}, err

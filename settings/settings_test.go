@@ -2,7 +2,6 @@ package settings
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -16,7 +15,7 @@ import (
 const sFile string = `{"username":"t","ssl_verify":false,"controller":"http://foo.bar","token":"a"}`
 
 func createTempProfile(contents string) (string, error) {
-	name, err := ioutil.TempDir("", "client")
+	name, err := os.MkdirTemp("", "client")
 
 	if err != nil {
 		return "", err
@@ -24,7 +23,7 @@ func createTempProfile(contents string) (string, error) {
 
 	file := filepath.Join(name, "test.json")
 
-	return file, ioutil.WriteFile(file, []byte(contents), 0775)
+	return file, os.WriteFile(file, []byte(contents), 0775)
 }
 
 type comparison struct {
@@ -92,7 +91,7 @@ func TestLoadSave(t *testing.T) {
 	s.Client.ControllerURL = u
 
 	// Create a tempdir and set as HOME.
-	dir, err := ioutil.TempDir("", "drycchome")
+	dir, err := os.MkdirTemp("", "drycchome")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,7 +175,7 @@ func TestDeleteSettings(t *testing.T) {
 func TestNotLoggedIn(t *testing.T) {
 	t.Parallel()
 
-	name, err := ioutil.TempDir("", "client")
+	name, err := os.MkdirTemp("", "client")
 
 	if err != nil {
 		t.Fatal(err)

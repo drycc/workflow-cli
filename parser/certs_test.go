@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"testing"
-	"time"
 
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
@@ -13,7 +12,7 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) CertsList(int, time.Time) error {
+func (d FakeDryccCmd) CertsList(int) error {
 	return errors.New("certs:list")
 }
 

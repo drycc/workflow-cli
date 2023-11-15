@@ -49,9 +49,9 @@ func TestDomainsList(t *testing.T) {
 	err = cmdr.DomainsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Domains
-example.example.com
-foo
+	assert.Equal(t, b.String(), `APP    OWNER    CREATED                   UPDATED                   DOMAIN              
+foo    test     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    example.example.com    
+foo    test     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    foo                    
 `, "output")
 }
 
@@ -86,8 +86,8 @@ func TestDomainsListLimit(t *testing.T) {
 	err = cmdr.DomainsList("foo", 1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Domains (1 of 2)
-example.example.com
+	assert.Equal(t, b.String(), `APP    OWNER    CREATED                   UPDATED                   DOMAIN              
+foo    test     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    example.example.com    
 `, "output")
 }
 

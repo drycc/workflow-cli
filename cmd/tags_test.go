@@ -106,9 +106,9 @@ func TestTagsList(t *testing.T) {
 
 	err = cmdr.TagsList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== enterprise Tags
-ncc      1701
-warp     8
+	assert.Equal(t, b.String(), `UUID                                    OWNER    TYPE    TAG  
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    ncc     1701    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    warp    8       
 `, "output")
 }
 
@@ -154,8 +154,8 @@ func TestTagsSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-=== foo Tags
-true     false
+UUID                                    OWNER    TYPE    TAG   
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    true    false    
 `, "output")
 }
 
@@ -201,7 +201,7 @@ func TestTagsUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-=== foo Tags
-warp     8
+UUID                                    OWNER    TYPE    TAG 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    warp    8      
 `, "output")
 }

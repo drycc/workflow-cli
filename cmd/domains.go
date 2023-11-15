@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/drycc/controller-sdk-go/domains"
+import (
+	"fmt"
+
+	"github.com/drycc/controller-sdk-go/domains"
+)
 
 // DomainsList lists domains registered with an app.
 func (d *DryccCmd) DomainsList(appID string, results int) error {
@@ -18,11 +22,20 @@ func (d *DryccCmd) DomainsList(appID string, results int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Domains%s", appID, limitCount(len(domains), count))
-
-	for _, domain := range domains {
-		d.Println(domain.Domain)
+	if count > 0 {
+		table := d.getDefaultFormatTable([]string{"APP", "OWNER", "CREATED", "UPDATED", "DOMAIN"})
+		for _, domain := range domains {
+			table.Append([]string{
+				domain.App,
+				domain.Owner,
+				domain.Created,
+				domain.Updated,
+				domain.Domain,
+			})
+		}
+		table.Render()
+	} else {
+		d.Println(fmt.Sprintf("No domains found in %s app.", appID))
 	}
 	return nil
 }

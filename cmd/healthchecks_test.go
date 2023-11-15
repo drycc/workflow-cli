@@ -11,26 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPrintHealthCheck(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	testHealthCheck := api.Healthchecks{}
-	cmdr.printHealthCheck(testHealthCheck)
-	assert.Equal(t, b.String(), "--- Liveness\nNo liveness probe configured.\n\n--- Readiness\nNo readiness probe configured.\n", "healthcheck")
-	b.Reset()
-	testHealthCheck["livenessProbe"] = &api.Healthcheck{}
-	testHealthCheck["readinessProbe"] = &api.Healthcheck{}
-	cmdr.printHealthCheck(testHealthCheck)
-	assert.Equal(t, b.String(), "--- Liveness\nInitial Delay (seconds): 0\nTimeout (seconds): 0\nPeriod (seconds): 0\nSuccess Threshold: 0\nFailure Threshold: 0\nExec Probe: N/A\nHTTP GET Probe: N/A\nTCP Socket Probe: N/A\n\n--- Readiness\nInitial Delay (seconds): 0\nTimeout (seconds): 0\nPeriod (seconds): 0\nSuccess Threshold: 0\nFailure Threshold: 0\nExec Probe: N/A\nHTTP GET Probe: N/A\nTCP Socket Probe: N/A\n", "healthcheck")
-}
-
 func TestHealthchecksList(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -75,21 +55,13 @@ func TestHealthchecksList(t *testing.T) {
 	err = cmdr.HealthchecksList("foo", "web/cmd")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Healthchecks
-
-web/cmd:
---- Liveness
-Initial Delay (seconds): 50
-Timeout (seconds): 50
-Period (seconds): 10
-Success Threshold: 1
-Failure Threshold: 3
-Exec Probe: N/A
-HTTP GET Probe: Path="/" Port=80 HTTPHeaders=[]
-TCP Socket Probe: N/A
-
---- Readiness
-No readiness probe configured.
+	assert.Equal(t, b.String(), `App:             foo                                                                                                           
+UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                          
+Owner:           bar                                                                                                           
+Created:         2016-09-12T22:20:14Z                                                                                          
+Updated:         2016-09-12T22:20:14Z                                                                                          
+Healthchecks:    
+                 liveness web/cmd http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
 `, "output")
 }
 
@@ -123,8 +95,7 @@ func TestHealthchecksListNoHealthCheck(t *testing.T) {
 	err = cmdr.HealthchecksList("foo", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Healthchecks
-No health checks configured.
+	assert.Equal(t, b.String(), `No health checks configured.
 `, "output")
 }
 
@@ -185,35 +156,14 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
 	err = cmdr.HealthchecksList("foo", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Healthchecks
-
-web:
---- Liveness
-Initial Delay (seconds): 50
-Timeout (seconds): 50
-Period (seconds): 10
-Success Threshold: 1
-Failure Threshold: 3
-Exec Probe: N/A
-HTTP GET Probe: Path="/" Port=80 HTTPHeaders=[]
-TCP Socket Probe: N/A
-
---- Readiness
-No readiness probe configured.
-
-web/cmd:
---- Liveness
-Initial Delay (seconds): 50
-Timeout (seconds): 50
-Period (seconds): 10
-Success Threshold: 1
-Failure Threshold: 3
-Exec Probe: N/A
-HTTP GET Probe: Path="/" Port=80 HTTPHeaders=[]
-TCP Socket Probe: N/A
-
---- Readiness
-No readiness probe configured.
+	assert.Equal(t, b.String(), `App:             foo                                                                                                           
+UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                          
+Owner:           bar                                                                                                           
+Created:         2016-09-12T22:20:14Z                                                                                          
+Updated:         2016-09-12T22:20:14Z                                                                                          
+Healthchecks:    
+                 liveness web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3        
+                 liveness web/cmd http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
 `, "output")
 }
 
@@ -262,21 +212,13 @@ func TestHealthchecksSet(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying liveness healthcheck... done
 
-=== foo Healthchecks
-
-web/cmd:
---- Liveness
-Initial Delay (seconds): 50
-Timeout (seconds): 50
-Period (seconds): 10
-Success Threshold: 1
-Failure Threshold: 3
-Exec Probe: N/A
-HTTP GET Probe: Path="/" Port=80 HTTPHeaders=[]
-TCP Socket Probe: N/A
-
---- Readiness
-No readiness probe configured.
+App:             foo                                                                                                           
+UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                          
+Owner:           bar                                                                                                           
+Created:         2016-09-12T22:20:14Z                                                                                          
+Updated:         2016-09-12T22:20:14Z                                                                                          
+Healthchecks:    
+                 liveness web/cmd http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
 `, "output")
 }
 
@@ -311,13 +253,6 @@ func TestHealthchecksUnset(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing healthchecks... done
 
-=== foo Healthchecks
-
-web/cmd:
---- Liveness
-No liveness probe configured.
-
---- Readiness
-No readiness probe configured.
+No health checks configured.
 `, "output")
 }

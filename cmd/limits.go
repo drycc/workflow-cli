@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/drycc/pkg/prettyprint"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
 )
@@ -22,31 +20,30 @@ func (d *DryccCmd) LimitsList(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Limits\n\n", appID)
-
-	d.Println("--- Memory")
-	if len(config.Memory) != 0 {
-		memoryMap := make(map[string]string)
-
-		for key, value := range config.Memory {
-			memoryMap[key] = fmt.Sprintf("%v", value)
+	if len(config.CPU) > 0 || len(config.Memory) > 0 {
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "TYPE", "DEVICE", "QUOTA"})
+		for _, key := range *sortKeys(config.Memory) {
+			table.Append([]string{
+				config.UUID,
+				config.Owner,
+				key,
+				"MEM",
+				fmt.Sprintf("%v", config.Memory[key]),
+			})
 		}
-
-		d.Print(prettyprint.PrettyTabs(memoryMap, 5))
-	}
-
-	d.Println("\n--- CPU")
-	if len(config.CPU) != 0 {
-		cpuMap := make(map[string]string)
-
-		for key, value := range config.CPU {
-			cpuMap[key] = value.(string)
+		for _, key := range *sortKeys(config.CPU) {
+			table.Append([]string{
+				config.UUID,
+				config.Owner,
+				key,
+				"CPU",
+				fmt.Sprintf("%v", config.CPU[key]),
+			})
 		}
-
-		d.Print(prettyprint.PrettyTabs(cpuMap, 5))
+		table.Render()
+	} else {
+		d.Println(fmt.Sprintf("No limits found in %s app.", appID))
 	}
-
 	return nil
 }
 

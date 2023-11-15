@@ -50,7 +50,7 @@ Options:
     the maximum number of results to display, defaults to config setting
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -80,7 +80,7 @@ Arguments:
     a local file path to an SSH public key used to push application code.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ Arguments:
     the SSH public key to revoke source code push access.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}

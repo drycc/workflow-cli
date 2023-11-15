@@ -2,6 +2,7 @@ package parser
 
 import (
 	docopt "github.com/docopt/docopt-go"
+
 	"github.com/drycc/workflow-cli/cmd"
 )
 
@@ -47,21 +48,21 @@ Usage: drycc services:add --type=<type> --protocol=<protocol> --port=<port>:<tar
 
 Arguments:
   <type>
-    Procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
-    Only single extra service per Porcfile type could be created
+    procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
+    only single extra service per Porcfile type could be created
   <protocol>
-    The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
+    the IP protocol for this port. Supports TCP, UDP, and SCTP. Default is TCP.
   <port>
-    The port that will be exposed by this service.
+    the port that will be exposed by this service.
   <targetPort>
-    Number or name of the port to access on the pods targeted by the service.
+    number or name of the port to access on the pods targeted by the service.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -85,7 +86,7 @@ Options:
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -104,19 +105,19 @@ Usage: drycc services:remove --type=<type> --protocol=<protocol> --port=<port> [
 
 Arguments:
   <type>
-    Procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
+    procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
     Only single extra service per Porcfile type could be created
   <protocol>
-    The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
+    the IP protocol for this port. Supports TCP, UDP, and SCTP. Default is TCP.
   <port>
-    The port that will be exposed by this service.
+    the port exposed by this service.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

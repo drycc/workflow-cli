@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
 )
@@ -17,16 +19,20 @@ func (d *DryccCmd) AutoscaleList(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Autoscale\n\n", appID)
-
 	if appSettings.Autoscale == nil {
 		d.Println("No autoscale rules found.")
 	} else {
+		table := d.getDefaultFormatTable([]string{"UUID", "TYPE", "PERCENT", "MIN", "MAX"})
 		for process, kv := range appSettings.Autoscale {
-			d.Println("--- " + process + ":")
-			d.Println(*kv)
+			table.Append([]string{
+				appSettings.UUID,
+				process,
+				fmt.Sprintf("%d", (*kv).CPUPercent),
+				fmt.Sprintf("%d", (*kv).Min),
+				fmt.Sprintf("%d", (*kv).Max),
+			})
 		}
+		table.Render()
 	}
 
 	return nil

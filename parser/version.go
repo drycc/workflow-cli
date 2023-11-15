@@ -16,7 +16,7 @@ Options:
   -a --all
     list api and controller versions
 `
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}

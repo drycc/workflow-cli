@@ -3,18 +3,14 @@ package cmd
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"regexp"
 	"strconv"
-	"strings"
 
-	"github.com/olekukonko/tablewriter"
 	"sigs.k8s.io/yaml"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/resources"
-	"github.com/drycc/pkg/prettyprint"
 	"github.com/drycc/workflow-cli/settings"
 )
 
@@ -37,10 +33,13 @@ func (d *DryccCmd) ResourcesServices(results int) error {
 	if count == 0 {
 		d.Println("Could not find any services")
 	} else {
-		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Name", "Updateable"})
+		table := d.getDefaultFormatTable([]string{"ID", "NAME", "UPDATEABLE"})
 		for _, service := range services {
-			table.Append([]string{service.Name, strconv.FormatBool(service.Updateable)})
+			table.Append([]string{
+				service.ID,
+				service.Name,
+				strconv.FormatBool(service.Updateable),
+			})
 		}
 		table.Render()
 	}
@@ -64,12 +63,15 @@ func (d *DryccCmd) ResourcesPlans(serviceName string, results int) error {
 	}
 
 	if count == 0 {
-		d.Println("Could not find any services")
+		d.Println(fmt.Sprintf("Could not find any plans in %s service.", serviceName))
 	} else {
-		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Name", "Description"})
+		table := d.getDefaultFormatTable([]string{"ID", "NAME", "DESCRIPTION"})
 		for _, plan := range plans {
-			table.Append([]string{plan.Name, plan.Description})
+			table.Append([]string{
+				plan.ID,
+				plan.Name,
+				plan.Description,
+			})
 		}
 		table.Render()
 	}
@@ -95,7 +97,7 @@ func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []str
 		if valueFile.Size() == 0 {
 			return fmt.Errorf("%s is empty", values)
 		}
-		rawValues, err := ioutil.ReadFile(values)
+		rawValues, err := os.ReadFile(values)
 		if err != nil {
 			return err
 		}
@@ -148,9 +150,19 @@ func (d *DryccCmd) ResourcesList(appID string, results int) error {
 	}
 
 	if count == 0 {
-		d.Println("Could not find any resources")
+		d.Println(fmt.Sprintf("No resources found in %s app.", appID))
 	} else {
-		printResources(d, appID, resources)
+		table := d.getDefaultFormatTable([]string{"UUID", "NAME", "OWNER", "PLAN", "UPDATED"})
+		for _, resource := range resources {
+			table.Append([]string{
+				resource.UUID,
+				resource.Name,
+				resource.Owner,
+				resource.Plan,
+				resource.Updated,
+			})
+		}
+		table.Render()
 	}
 	return nil
 }
@@ -169,9 +181,25 @@ func (d *DryccCmd) ResourceGet(appID, name string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-	// todo format data json to yaml
-	printResourceDetail(d, appID, resource)
-	//d.Println(resource)
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"App:", appID})
+	table.Append([]string{"UUID:", resource.UUID})
+	table.Append([]string{"Name:", resource.Name})
+	table.Append([]string{"Plan:", resource.Plan})
+	table.Append([]string{"Owner:", resource.Owner})
+	table.Append([]string{"Status:", resource.Status})
+	table.Append([]string{"Binding:", resource.Binding})
+	table.Append([]string{"Data:"})
+	for _, key := range *sortKeys(resource.Data) {
+		table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Data[key])})
+	}
+	table.Append([]string{"Options:"})
+	for _, key := range *sortKeys(resource.Options) {
+		table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Options[key])})
+	}
+	table.Append([]string{"Created:", resource.Created})
+	table.Append([]string{"Updated:", resource.Updated})
+	table.Render()
 	return nil
 }
 
@@ -216,7 +244,7 @@ func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string,
 		if valueFile.Size() == 0 {
 			return fmt.Errorf("%s is empty", values)
 		}
-		rawValues, err := ioutil.ReadFile(values)
+		rawValues, err := os.ReadFile(values)
 		if err != nil {
 			return err
 		}
@@ -297,85 +325,6 @@ func (d *DryccCmd) ResourceUnbind(appID string, name string) error {
 	d.Print("done\n")
 
 	return nil
-}
-
-// printResources format Resources data
-func printResources(d *DryccCmd, appID string, resources api.Resources) {
-	fmt.Fprintf(d.WOut, "=== %s resources\n", appID)
-	resourceNames := make([]string, len(resources))
-
-	for _, resource := range resources {
-		resourceNames = append(resourceNames, resource.Name)
-	}
-	lenResourceNames := sliceMaxLen(resourceNames) + 5
-
-	for _, resource := range resources {
-		spaces := strings.Repeat(" ", lenResourceNames-len(resource.Name))
-		fmt.Fprintf(d.WOut, "%s%s%s\n", resource.Name, spaces, resource.Plan)
-
-	}
-}
-
-func printResourceDetail(d *DryccCmd, appID string, resource api.Resource) {
-	d.Printf("=== %s resource %s\n", appID, resource.Name)
-
-	dataMap := make(map[string]string)
-	for key, value := range resource.Data {
-		dataMap[key+":"] = fmt.Sprintf("%v", value)
-	}
-	optionsMap := make(map[string]string)
-	for key, value := range resource.Options {
-		optionsMap[key+":"] = fmt.Sprintf("%v", value)
-	}
-	lenDataMap := mapMaxLen(dataMap)
-	lenOptionsMap := mapMaxLen(optionsMap)
-	tempArray := []int{lenDataMap, lenOptionsMap, len("binding:")}
-	max := maxNum(tempArray...) + 5
-	d.Print(fmt.Sprintf("plan:%s%s\n", strings.Repeat(" ", max-len("plan:")), resource.Plan))
-	d.Print(fmt.Sprintf("status:%s%s\n", strings.Repeat(" ", max-len("status:")), resource.Status))
-	d.Print(fmt.Sprintf("binding:%s%s\n", strings.Repeat(" ", max-len("binding:")), resource.Binding))
-
-	if lenDataMap != 0 {
-		d.Println()
-		d.Print(prettyprint.PrettyTabs(dataMap, max-lenDataMap))
-	}
-	if lenOptionsMap != 0 {
-		d.Println()
-		d.Print(prettyprint.PrettyTabs(optionsMap, max-lenOptionsMap))
-	}
-}
-
-func mapMaxLen(msg map[string]string) int {
-	// find the longest key so we know how much padding to use
-	max := 0
-	for key := range msg {
-		if len(key) > max {
-			max = len(key)
-		}
-	}
-	return max
-}
-
-func sliceMaxLen(msgs []string) int {
-	// find the longest member so we know how much padding to use
-	max := 0
-	for _, msg := range msgs {
-		if len(msg) > max {
-			max = len(msg)
-		}
-	}
-	return max
-}
-
-func maxNum(tempArray ...int) int {
-	// find the longest num so we know how much padding to use
-	max := 0
-	for _, temp := range tempArray {
-		if max < temp {
-			max = temp
-		}
-	}
-	return max
 }
 
 // parseParams transfer params to map

@@ -49,7 +49,7 @@ Options:
     the maximum number of results to display, defaults to config setting
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ Options:
     A YAML string used to supply a Procfile to the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

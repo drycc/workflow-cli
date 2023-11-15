@@ -52,7 +52,7 @@ Options:
     the uniquely identifiable name of the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -101,7 +101,7 @@ Options:
 Use 'drycc help [command]' to learn more.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -146,7 +146,7 @@ Options:
     limits memory. [default: true]
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

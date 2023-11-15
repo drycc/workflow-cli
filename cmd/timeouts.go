@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/drycc/pkg/prettyprint"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
 )
@@ -23,18 +21,19 @@ func (d *DryccCmd) TimeoutsList(appID string) error {
 		return err
 	}
 
-	d.Printf("=== %s Timeouts (sec)\n", appID)
-
 	if len(config.Timeout) == 0 {
-		d.Println("default (30 sec) or controlled by env KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS")
+		d.Println("Default (30 sec) or controlled by drycc controller.")
 	} else {
-		timeoutsMap := make(map[string]string)
-
-		for key, value := range config.Timeout {
-			timeoutsMap[key] = fmt.Sprintf("%v", value)
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "TYPE", "TIMEOUT"})
+		for _, key := range *sortKeys(config.Timeout) {
+			table.Append([]string{
+				config.UUID,
+				config.Owner,
+				key,
+				fmt.Sprintf("%v", config.Timeout[key]),
+			})
 		}
-
-		d.Print(prettyprint.PrettyTabs(timeoutsMap, 5))
+		table.Render()
 	}
 
 	return nil

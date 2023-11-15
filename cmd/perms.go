@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/drycc/controller-sdk-go/perms"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/settings"
@@ -15,13 +17,12 @@ func (d *DryccCmd) PermsList(appID string, admin bool, results int) error {
 	}
 
 	var users []string
-	var count int
 
 	if admin {
 		if results == defaultLimit {
 			results = s.Limit
 		}
-		users, count, err = perms.ListAdmins(s.Client, results)
+		users, _, err = perms.ListAdmins(s.Client, results)
 	} else {
 		users, err = perms.List(s.Client, appID)
 	}
@@ -30,16 +31,11 @@ func (d *DryccCmd) PermsList(appID string, admin bool, results int) error {
 		return err
 	}
 
-	if admin {
-		d.Printf("=== Administrators%s", limitCount(len(users), count))
-	} else {
-		d.Printf("=== %s's Users\n", appID)
-	}
-
+	table := d.getDefaultFormatTable([]string{"USERNAME", "ADMIN"})
 	for _, user := range users {
-		d.Println(user)
+		table.Append([]string{user, fmt.Sprintf("%v", admin)})
 	}
-
+	table.Render()
 	return nil
 }
 

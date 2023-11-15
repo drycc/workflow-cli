@@ -40,7 +40,7 @@ Lists all relevant shortcuts for the CLI
 Usage: drycc shortcuts:list
 `
 
-	_, err := docopt.Parse(usage, argv, true, "", false, true)
+	_, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

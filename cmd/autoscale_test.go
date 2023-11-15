@@ -35,7 +35,9 @@ func TestAutoscaleList(t *testing.T) {
 
 	err = cmdr.AutoscaleList("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), "=== rivendell Autoscale\n\n--- cmd:\nMin Replicas: 3\nMax Replicas: 8\nCPU: 40%\n", "output")
+	assert.Equal(t, b.String(), `UUID                                    TYPE    PERCENT    MIN    MAX 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    cmd     40         3      8      
+`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -51,7 +53,7 @@ func TestAutoscaleList(t *testing.T) {
 
 	err = cmdr.AutoscaleList("mordor")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), "=== mordor Autoscale\n\nNo autoscale rules found.\n", "output")
+	assert.Equal(t, b.String(), "No autoscale rules found.\n", "output")
 }
 
 func TestAutoscaleSet(t *testing.T) {

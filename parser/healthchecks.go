@@ -64,7 +64,7 @@ Options:
     the procType for which the health check needs to be listed.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -138,7 +138,7 @@ Options:
     minimum consecutive successes for the probe to be considered failed after having succeeded [default: 3]
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -231,7 +231,7 @@ Options:
     the procType for which the health check needs to be removed.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

@@ -35,7 +35,9 @@ func TestCanaryInfo(t *testing.T) {
 
 	err = cmdr.CanaryInfo("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), "=== rivendell Canary\n\ncmd\n", "output")
+	assert.Equal(t, b.String(), `UUID                                    OWNER     TYPE    CREATED                   UPDATED                
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    elrond    cmd     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    
+`, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -51,7 +53,7 @@ func TestCanaryInfo(t *testing.T) {
 
 	err = cmdr.CanaryInfo("mordor")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), "=== mordor Canary\n\n", "output")
+	assert.Equal(t, b.String(), "No canaries found in mordor app.\n", "output")
 }
 
 func TestCanaryCreate(t *testing.T) {

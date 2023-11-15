@@ -50,7 +50,7 @@ Options:
     enables/disables SSL certificate verification for API requests
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ Usage: drycc auth:logout
 Options:
 `
 
-	if _, err := docopt.Parse(usage, argv, true, "", false, true); err != nil {
+	if _, err := docopt.ParseArgs(usage, argv, ""); err != nil {
 		return err
 	}
 
@@ -93,7 +93,7 @@ Options:
     fetch a more detailed description about the user.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

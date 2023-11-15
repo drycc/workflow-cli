@@ -2,13 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"regexp"
-	"strings"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
-	"github.com/drycc/pkg/prettyprint"
 )
 
 // VolumesList list volumes in the application
@@ -29,42 +26,26 @@ func (d *DryccCmd) VolumesList(appID string, results int) error {
 	}
 
 	if count == 0 {
-		d.Println("Could not find any volume")
+		d.Println("Could not find any volume.")
 	} else {
-		printVolumes(d, appID, volumes, d.WOut)
+		printVolumes(d, volumes)
 	}
 	return nil
 }
 
 // printVolumes format volume data
-func printVolumes(d *DryccCmd, appID string, volumes api.Volumes, wOut io.Writer) {
-
-	fmt.Fprintf(wOut, "=== %s volumes\n", appID)
-
-	var max int
+func printVolumes(d *DryccCmd, volumes api.Volumes) {
+	table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "TYPE", "PATH", "SIZE"})
 	for _, volume := range volumes {
-		if max < (len(volume.Name) + 4) {
-			max = len(volume.Name) + 4
-		}
-		for key := range volume.Path {
-			if max < len(key) {
-				max = len(key)
+		if len(volume.Path) > 0 {
+			for _, key := range *sortKeys(volume.Path) {
+				table.Append([]string{volume.Name, volume.Owner, key, fmt.Sprintf("%v", volume.Path[key]), volume.Size})
 			}
+		} else {
+			table.Append([]string{volume.Name, volume.Owner, "", "", volume.Size})
 		}
 	}
-	max = max + 5
-
-	for _, volume := range volumes {
-		blankSpaces := strings.Repeat(" ", max-len(volume.Name)-4)
-		fmt.Fprintf(wOut, "--- %s%s%s\n", volume.Name, blankSpaces, volume.Size)
-
-		pathMap := make(map[string]string)
-		for key, value := range volume.Path {
-			pathMap[key] = fmt.Sprintf("%v", value)
-		}
-		lenDataMap := mapMaxLen(pathMap)
-		d.Print(prettyprint.PrettyTabs(pathMap, max-lenDataMap))
-	}
+	table.Render()
 }
 
 // VolumesCreate create a volume for the application

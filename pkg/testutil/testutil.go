@@ -2,14 +2,15 @@ package testutil
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/drycc/controller-sdk-go"
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/workflow-cli/settings"
 )
 
@@ -40,7 +41,7 @@ func (t *TestServer) Close() {
 func NewTestServerAndClient() (string, *TestServer, error) {
 	server := NewTestServer()
 
-	name, err := ioutil.TempDir("", "client")
+	name, err := os.MkdirTemp("", "client")
 	if err != nil {
 		server.Close()
 		return "", nil, err
@@ -69,7 +70,7 @@ func NewTestServerAndClient() (string, *TestServer, error) {
 
 // AssertBody asserts the value of the body of a request.
 func AssertBody(t *testing.T, expected interface{}, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		t.Fatal(err)
 	}

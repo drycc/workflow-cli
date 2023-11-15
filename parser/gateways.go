@@ -2,6 +2,7 @@ package parser
 
 import (
 	docopt "github.com/docopt/docopt-go"
+
 	"github.com/drycc/workflow-cli/cmd"
 )
 
@@ -49,16 +50,16 @@ Arguments:
   <name>
     the gateway name.
   <port> 
-    Port is the network port, the listener expects to receive.
+    port is the network port, the listener expects to receive.
   <protocol>
-    Protocol specifies the network protocol this listener expects to receive. Supports "TCP", "UDP", TLS, "HTTP", and "HTTPS".
+    protocol specifies the network protocol this listener expects to receive. Supports TCP, UDP, TLS, HTTP, and HTTPS.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -85,7 +86,7 @@ Options:
     the maximum number of results to display, defaults to config setting
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -110,16 +111,16 @@ Arguments:
   <name>
     the gateway name.
   <port> 
-    Port is the network port, the listener expects to receive.
+    port is the network port, the listener expects to receive.
   <protocol>
-    Protocol specifies the network protocol this listener expects to receive.
+    protocol specifies the network protocol this listener expects to receive.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

@@ -91,7 +91,7 @@ Use 'git push drycc main' to deploy to an application.
 	// Reorganize some command line flags and commands.
 	command, argv := parseArgs(argv)
 	// Give docopt an optional final false arg so it doesn't call os.Exit().
-	_, err := docopt.Parse(usage, []string{command}, false, "", true, false)
+	_, err := docopt.ParseArgs(usage, []string{command}, "")
 
 	if err != nil {
 		fmt.Fprintln(wErr, err)

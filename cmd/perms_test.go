@@ -35,9 +35,9 @@ func TestPermsListUsers(t *testing.T) {
 	err = cmdr.PermsList("foo", false, -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `=== foo's Users
-baz
-bar
+	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
+baz         false    
+bar         false    
 `, "output")
 }
 
@@ -65,8 +65,8 @@ func TestPermsListUsersLimit(t *testing.T) {
 	err = cmdr.PermsList("foo", false, 1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `=== foo's Users
-baz
+	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
+baz         false    
 `, "output")
 }
 
@@ -104,9 +104,9 @@ func TestPermsListAdmins(t *testing.T) {
 	err = cmdr.PermsList("foo", true, -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `=== Administrators
-fred
-bob
+	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
+fred        true     
+bob         true     
 `, "output")
 }
 
@@ -140,8 +140,8 @@ func TestPermsListAdminsLimit(t *testing.T) {
 	err = cmdr.PermsList("foo", true, 1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `=== Administrators (1 of 2)
-fred
+	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
+fred        true     
 `, "output")
 }
 

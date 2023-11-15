@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"io/ioutil"
+	"fmt"
 	"os"
 
 	yaml "gopkg.in/yaml.v3"
@@ -25,11 +25,19 @@ func (d *DryccCmd) BuildsList(appID string, results int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Builds%s", appID, limitCount(len(builds), count))
-
-	for _, build := range builds {
-		d.Println(build.UUID, build.Created)
+	if count > 0 {
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "SHA", "CREATED"})
+		for _, build := range builds {
+			table.Append([]string{
+				build.UUID,
+				safeGetString(build.Owner),
+				safeGetString(build.Sha),
+				build.Created,
+			})
+		}
+		table.Render()
+	} else {
+		d.Println(fmt.Sprintf("No builds found in %s app.", appID))
 	}
 	return nil
 }
@@ -49,7 +57,7 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string) error {
 			return err
 		}
 	} else if _, err := os.Stat("Procfile"); err == nil {
-		contents, err := ioutil.ReadFile("Procfile")
+		contents, err := os.ReadFile("Procfile")
 		if err != nil {
 			return err
 		}

@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
 )
@@ -31,7 +30,7 @@ type Commander interface {
 	CanaryRemove(string, []string) error
 	CanaryRelease(string) error
 	CanaryRollback(string) error
-	CertsList(int, time.Time) error
+	CertsList(int) error
 	CertAdd(string, string, string) error
 	CertRemove(string) error
 	CertInfo(string) error

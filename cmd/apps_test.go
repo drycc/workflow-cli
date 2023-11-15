@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -63,9 +62,9 @@ func TestAppsList(t *testing.T) {
 
 	err = cmdr.AppsList(-1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== Apps
-lorem-ipsum
-consectetur
+	assert.Equal(t, b.String(), `ID             UUID                                    OWNER             CREATED                 UPDATED              
+lorem-ipsum    c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
+consectetur    c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    adipiscing        2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
 `, "output")
 }
 
@@ -102,8 +101,8 @@ func TestAppsListLimit(t *testing.T) {
 
 	err = cmdr.AppsList(1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== Apps (1 of 2)
-lorem-ipsum
+	assert.Equal(t, b.String(), `ID             UUID                                    OWNER             CREATED                 UPDATED              
+lorem-ipsum    c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
 `, "output")
 }
 
@@ -178,41 +177,35 @@ func TestAppsInfo(t *testing.T) {
 			}
 		}`)
 	})
-
 	s, err := settings.Load(cmdr.ConfigFile)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	url, err := cmdr.appURL(s, "lorem-ipsum")
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	if url == "" {
-		url = fmt.Sprintf(noDomainAssignedMsg, "lorem-ipsum")
-	}
-
 	err = cmdr.AppInfo("lorem-ipsum")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== lorem-ipsum Application
-updated:  2016-08-22T17:40:16Z
-uuid:     c4aed81c-d1ca-4ff1-ab89-d2151264e1a3
-created:  2016-08-22T17:40:16Z
-url:      `+url+`
-owner:    dolar-sit-amet
-id:       lorem-ipsum
-
-=== lorem-ipsum Processes
---- cmd:
-lorem-ipsum-cmd-1911796442-48b58 up (v2)
-
-=== lorem-ipsum Domains
-lorem-ipsum
-
-=== lorem-ipsum Label
-team:      frontend
-
+	assert.Equal(t, b.String(), `App:          lorem-ipsum                             
+URL:          `+url+`                 
+UUID:         c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    
+Owner:        dolar-sit-amet                          
+Created:      2016-08-22T17:40:16Z                    
+Updated:      2016-08-22T17:40:16Z                    
+Processes:    
+              Name:                                   lorem-ipsum-cmd-1911796442-48b58    
+              Release:                                v2                                  
+              State:                                  up                                  
+              Type:                                   cmd                                 
+              Started:                                2016-08-22T17:42:16UTC              
+Domains:      
+              Domain:                                 lorem-ipsum                         
+              Created:                                2016-08-22T17:40:16Z                
+              Updated:                                2016-08-22T17:40:16Z                
+Labels:       
+              Key:                                    team                                
+              Value:                                  frontend                            
 `, "output")
 }
 
@@ -319,7 +312,7 @@ func TestRemoteExists(t *testing.T) {
 	})
 
 	// create a remote first before running apps:create
-	dir, err := ioutil.TempDir("", "apps")
+	dir, err := os.MkdirTemp("", "apps")
 	assert.NoError(t, err)
 
 	defer os.RemoveAll(dir)

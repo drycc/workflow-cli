@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/drycc/controller-sdk-go/gateways"
-	"github.com/olekukonko/tablewriter"
 )
 
 // GatewaysList lists gateways for the app
@@ -22,19 +21,16 @@ func (d *DryccCmd) GatewaysList(appID string, results int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-	d.Printf("=== %s Gateways\n", appID)
 	if count == 0 {
-		d.Println("Could not find any gateway")
+		d.Println(fmt.Sprintf("No gateways found in %s app.", appID))
 	} else {
-		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Name", "Lisenter", "Port", "Protocol"})
+
+		table := d.getDefaultFormatTable([]string{"NAME", "LISENTER", "PORT", "PROTOCOL"})
 		for _, gateway := range gateways {
 			for _, listener := range gateway.Listeners {
 				table.Append([]string{gateway.Name, listener.Name, fmt.Sprint(listener.Port), listener.Protocol})
 			}
 		}
-		table.SetAutoMergeCellsByColumnIndex([]int{0})
-		table.SetRowLine(true)
 		table.Render()
 	}
 	return nil

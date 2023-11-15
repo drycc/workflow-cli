@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -46,7 +45,7 @@ func TestParseSSHKey(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, actual, validSSHKey, "base64 key")
 
-	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-sshkey")
+	keyFile, err := os.CreateTemp("", "drycc-cli-unit-test-sshkey")
 	assert.NoError(t, err)
 	defer os.Remove(keyFile.Name())
 	_, err = keyFile.Write([]byte(validSSHKey))
@@ -84,7 +83,7 @@ func TestSortKeys(t *testing.T) {
 		"a": nil,
 	}
 
-	assert.Equal(t, sortKeys(test), []string{"a", "b", "c", "d"}, "map")
+	assert.Equal(t, *sortKeys(test), []string{"a", "b", "c", "d"}, "map")
 }
 
 func TestConfigList(t *testing.T) {
@@ -122,11 +121,10 @@ func TestConfigList(t *testing.T) {
 	err = cmdr.ConfigList("foo", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Config
-FLOAT      12.34
-NCC        1701
-TEST       testing
-TRUE       false
+	assert.Equal(t, b.String(), `FLOAT    12.34      
+NCC      1701       
+TEST     testing    
+TRUE     false      
 `, "output")
 	b.Reset()
 
@@ -188,12 +186,11 @@ func TestConfigSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
 
-=== foo Config
-FLOAT        12.34
-NCC          1701
-SSH_KEY      LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=
-TEST         testing
-TRUE         false
+FLOAT      12.34                                               
+NCC        1701                                                
+SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
+TEST       testing                                             
+TRUE       false                                               
 `, "output")
 }
 
@@ -242,10 +239,9 @@ func TestConfigUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 
-=== foo Config
-FLOAT      12.34
-NCC        1701
-TEST       testing
-TRUE       false
+FLOAT    12.34      
+NCC      1701       
+TEST     testing    
+TRUE     false      
 `, "output")
 }

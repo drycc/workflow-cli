@@ -3,7 +3,6 @@ package settings
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -46,7 +45,7 @@ Are you logged in? Use 'drycc login' or 'drycc register' to get started`, filena
 		return nil, err
 	}
 
-	contents, err := ioutil.ReadFile(filename)
+	contents, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +95,7 @@ func (s *Settings) Save(cf string) (string, error) {
 
 	filename := locateSettingsFile(cf)
 
-	return filename, ioutil.WriteFile(filename, settingsContents, 0600)
+	return filename, os.WriteFile(filename, settingsContents, 0600)
 }
 
 // Delete user's settings file.

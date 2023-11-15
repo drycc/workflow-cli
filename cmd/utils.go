@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/settings"
+	"github.com/olekukonko/tablewriter"
 )
 
 var defaultLimit = -1
@@ -91,4 +93,39 @@ func (d *DryccCmd) checkAPICompatibility(c *drycc.Client, err error) error {
 	}
 
 	return err
+}
+
+// getDefaultFormatTable return default format ascii table
+func (d *DryccCmd) getDefaultFormatTable(headers []string) *tablewriter.Table {
+	table := tablewriter.NewWriter(d.WOut)
+	table.SetHeader(headers)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAutoWrapText(false)
+	table.SetAutoFormatHeaders(true)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetHeaderLine(false)
+	table.SetBorder(false)
+	table.SetTablePadding(fmt.Sprintf("%4s", " "))
+	table.SetNoWhiteSpace(true)
+	return table
+}
+
+func sortKeys(data map[string]interface{}) *[]string {
+	keys := make([]string, 0, len(data))
+	for k := range data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return &keys
+}
+
+func safeGetString(data string) string {
+	if data == "" {
+		return "<none>"
+	}
+	return data
 }

@@ -44,11 +44,9 @@ func TestVolumesList(t *testing.T) {
 
 	err = cmdr.VolumesList("example-go", -1)
 	assert.NoError(t, err)
-
-	assert.Equal(t, b.String(), `=== example-go volumes
---- myvolume     500G
-cmd              /data/cmd1
-cmd123           /data/cmd123
+	assert.Equal(t, b.String(), `NAME        OWNER    TYPE      PATH            SIZE 
+myvolume    test     cmd       /data/cmd1      500G    
+myvolume    test     cmd123    /data/cmd123    500G    
 `, "output")
 }
 

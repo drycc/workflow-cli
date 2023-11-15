@@ -105,9 +105,9 @@ func TestTimeoutsList(t *testing.T) {
 
 	err = cmdr.TimeoutsList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== enterprise Timeouts (sec)
-web        10
-worker     20
+	assert.Equal(t, b.String(), `UUID                                    OWNER    TYPE      TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       10         
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    20         
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -129,8 +129,7 @@ worker     20
 
 	err = cmdr.TimeoutsList("franklin")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== franklin Timeouts (sec)
-default (30 sec) or controlled by env KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS
+	assert.Equal(t, b.String(), `Default (30 sec) or controlled by drycc controller.
 `, "output")
 }
 
@@ -177,8 +176,8 @@ func TestTimeoutsSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== foo Timeouts (sec)
-web     10
+UUID                                    OWNER    TYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     10         
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -214,8 +213,8 @@ web     10
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== franklin Timeouts (sec)
-web     10
+UUID                                    OWNER      TYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     10         
 `, "output")
 
 	// with requests/timeout parameter
@@ -256,10 +255,10 @@ web     10
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== jim Timeouts (sec)
-db         300
-web        10
-worker     100
+UUID                                    OWNER    TYPE      TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        300        
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       10         
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    100        
 `, "output")
 
 }
@@ -307,8 +306,8 @@ func TestTimeoutsUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== foo Timeouts (sec)
-web     10
+UUID                                    OWNER    TYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     10         
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -344,7 +343,7 @@ web     10
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-=== franklin Timeouts (sec)
-web     10
+UUID                                    OWNER      TYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     10         
 `, "output")
 }

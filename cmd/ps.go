@@ -31,7 +31,7 @@ func (d *DryccCmd) PsList(appID string, results int) error {
 		return err
 	}
 
-	printProcesses(appID, processes, d.WOut)
+	printProcesses(d, appID, processes)
 
 	return nil
 }
@@ -83,14 +83,14 @@ func (d *DryccCmd) PsScale(appID string, targets []string) error {
 		return err
 	}
 
-	d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
+	d.Printf("done in %ds\n\n", int(time.Since(startTime).Seconds()))
 
 	processes, _, err := ps.List(s.Client, appID, s.Limit)
 	if err != nil {
 		return err
 	}
 
-	printProcesses(appID, processes, d.WOut)
+	printProcesses(d, appID, processes)
 	return nil
 }
 
@@ -116,17 +116,25 @@ func (d *DryccCmd) PsRestart(appID, target string) error {
 	return nil
 }
 
-func printProcesses(appID string, input []api.Pods, wOut io.Writer) {
+func printProcesses(d *DryccCmd, appID string, input []api.Pods) {
 	processes := ps.ByType(input)
 
-	fmt.Fprintf(wOut, "=== %s Processes\n", appID)
-
-	for _, process := range processes {
-		fmt.Fprintf(wOut, "--- %s:\n", process.Type)
-
-		for _, pod := range process.PodsList {
-			fmt.Fprintf(wOut, "%s %s (%s)\n", pod.Name, pod.State, pod.Release)
+	if len(processes) == 0 {
+		d.Println(fmt.Sprintf("No processes found in %s app.", appID))
+	} else {
+		table := d.getDefaultFormatTable([]string{"NAME", "RELEASE", "STATE", "TYPE", "STARTED"})
+		for _, process := range processes {
+			for _, pod := range process.PodsList {
+				table.Append([]string{
+					pod.Name,
+					pod.Release,
+					pod.State,
+					pod.Type,
+					pod.Started.Format("2006-01-02T15:04:05MST"),
+				})
+			}
 		}
+		table.Render()
 	}
 }
 

@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/drycc/pkg/prettyprint"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
 )
@@ -22,17 +20,20 @@ func (d *DryccCmd) RegistryList(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Registry\n", appID)
-
-	registryMap := make(map[string]string)
-
-	for key, value := range config.Registry {
-		registryMap[key] = fmt.Sprintf("%v", value)
+	if len(config.Registry) == 0 {
+		d.Println(fmt.Sprintf("No registrys found in %s app.", appID))
+	} else {
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "KEY", "VALUE"})
+		for _, key := range *sortKeys(config.Registry) {
+			table.Append([]string{
+				config.UUID,
+				config.Owner,
+				key,
+				fmt.Sprintf("%v", config.Registry[key]),
+			})
+		}
+		table.Render()
 	}
-
-	d.Print(prettyprint.PrettyTabs(registryMap, 5))
-
 	return nil
 }
 

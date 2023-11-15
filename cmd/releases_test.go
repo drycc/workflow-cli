@@ -3,7 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 
@@ -57,9 +57,9 @@ func TestReleasesList(t *testing.T) {
 
 	err = cmdr.ReleasesList("numenor", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== numenor Releases
-v2	2016-08-22T17:40:16Z	khamul added ANGMAR
-v1	2014-01-01T00:00:00UTC	nazgul created initial release
+	assert.Equal(t, b.String(), `UUID                                    OWNER     VERSION    CREATED                   SUMMARY                        
+c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    v2         2016-08-22T17:40:16Z      khamul added ANGMAR               
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    nazgul    v1         2014-01-01T00:00:00UTC    nazgul created initial release    
 `, "output")
 }
 
@@ -97,8 +97,8 @@ func TestReleasesListLimit(t *testing.T) {
 
 	err = cmdr.ReleasesList("numenor", 1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== numenor Releases (1 of 2)
-v2	2016-08-22T17:40:16Z	khamul added ANGMAR
+	assert.Equal(t, b.String(), `UUID                                    OWNER     VERSION    CREATED                 SUMMARY             
+c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    v2         2016-08-22T17:40:16Z    khamul added ANGMAR    
 `, "output")
 }
 
@@ -129,13 +129,15 @@ func TestReleasesInfo(t *testing.T) {
 
 	err = cmdr.ReleasesInfo("numenor", 2)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== numenor Release v2
-config:   3bb816b1-4fde-4b06-8afe-acd12f58a266
-owner:    nazgul
-created:  2016-08-22T17:40:16Z
-summary:  khamul added ANGMAR
-updated:  2016-08-22T17:40:16Z
-uuid:     c4aed81c-d1ca-4ff1-ab89-d2151264e1a3
+	assert.Equal(t, b.String(), `App:        numenor                                 
+UUID:       c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    
+Owner:      nazgul                                  
+Build:                                              
+Config:     3bb816b1-4fde-4b06-8afe-acd12f58a266    
+Created:    2016-08-22T17:40:16Z                    
+Updated:    2016-08-22T17:40:16Z                    
+Summary:    khamul added ANGMAR                     
+Version:    v2                                      
 `, "output")
 }
 
@@ -151,7 +153,7 @@ func TestReleasesRollback(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/numenor/releases/rollback/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		body, err := ioutil.ReadAll(r.Body)
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 
-	"github.com/olekukonko/tablewriter"
-
-	"github.com/drycc/controller-sdk-go"
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/certs"
 	dtime "github.com/drycc/controller-sdk-go/pkg/time"
 	"github.com/drycc/workflow-cli/settings"
@@ -17,7 +15,7 @@ import (
 const dateFormat = "2 Jan 2006"
 
 // CertsList lists certs registered with the controller.
-func (d *DryccCmd) CertsList(results int, now time.Time) error {
+func (d *DryccCmd) CertsList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
 
 	if err != nil {
@@ -35,65 +33,25 @@ func (d *DryccCmd) CertsList(results int, now time.Time) error {
 
 	if len(certList) == 0 {
 		d.Println("No certs")
-		return nil
-	}
-
-	table := tablewriter.NewWriter(d.WOut)
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	table.SetBorder(false)
-	table.SetAutoFormatHeaders(false)
-	table.SetHeaderLine(true)
-	table.SetHeader([]string{"Name", "Common Name", "SubjectAltName", "Expires", "Fingerprint", "Domains", "Updated", "Created"})
-	for _, cert := range certList {
-		domains := strings.Join(cert.Domains, ",")
-		san := strings.Join(cert.SubjectAltName, ",")
-
-		expires := "unknown"
-		if cert.Expires.Time != nil {
-			expires = cert.Expires.Format(dateFormat)
-
-			if cert.Expires.Time.Before(now) {
-				expires += " (expired)"
-			} else {
-				// Ghetto solution
-				expires += " (in"
-				year := cert.Expires.Time.Year() - now.Year()
-				month := cert.Expires.Time.Month() - now.Month()
-				day := cert.Expires.Time.Day() - now.Day()
-
-				if year > 0 {
-					expires += fmt.Sprintf(" %d year", year)
-					if year > 1 {
-						expires += "s"
-					}
-				} else if month > 0 {
-					expires += fmt.Sprintf(" %d month", month)
-					if month > 1 {
-						expires += "s"
-					}
-				} else if day != 0 {
-					expires += fmt.Sprintf(" %d day", day)
-					if day > 1 {
-						expires += "s"
-					}
-				}
-				expires += ")"
+	} else {
+		table := d.getDefaultFormatTable([]string{"NAME", "COMMON-NAME", "EXPIRES", "SAN", "DOMAINS"})
+		for _, cert := range certList {
+			expires := safeGetString("")
+			if cert.Expires.Time != nil {
+				expires = cert.Expires.Format(dateFormat)
 			}
+			san := safeGetString(strings.Join(cert.SubjectAltName[:], ","))
+			if len(san) > 32 {
+				san = fmt.Sprintf("%s[...]", san[:32])
+			}
+			domains := safeGetString(strings.Join(cert.Domains[:], ","))
+			if len(domains) > 32 {
+				domains = fmt.Sprintf("%s[...]", domains[:32])
+			}
+			table.Append([]string{cert.Name, cert.CommonName, expires, san, domains})
 		}
-
-		created := safeGetTime(cert.Created)
-		updated := safeGetTime(cert.Updated)
-
-		// show a shorter version of the fingerprint
-		fingerprint := cert.Fingerprint
-		if len(cert.Fingerprint) > 4 {
-			fingerprint = cert.Fingerprint[:5] + "[...]" + cert.Fingerprint[len(cert.Fingerprint)-5:]
-		}
-
-		table.Append([]string{cert.Name, cert.CommonName, san, expires, fingerprint, domains, updated, created})
+		table.Render()
 	}
-	table.Render()
-
 	return nil
 }
 
@@ -120,12 +78,12 @@ func (d *DryccCmd) CertAdd(cert string, key string, name string) error {
 }
 
 func (d *DryccCmd) doCertAdd(c *drycc.Client, cert string, key string, name string) error {
-	certFile, err := ioutil.ReadFile(cert)
+	certFile, err := os.ReadFile(cert)
 	if err != nil {
 		return err
 	}
 
-	keyFile, err := ioutil.ReadFile(key)
+	keyFile, err := os.ReadFile(key)
 	if err != nil {
 		return err
 	}
@@ -161,41 +119,26 @@ func (d *DryccCmd) CertInfo(name string) error {
 	if err != nil {
 		return err
 	}
-
 	cert, err := certs.Get(s.Client, name)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	domains := strings.Join(cert.Domains[:], ",")
-	if domains == "" {
-		domains = "No connected domains"
-	}
-
-	san := strings.Join(cert.SubjectAltName[:], ",")
-	if san == "" {
-		san = "N/A"
-	}
-
-	expires := safeGetTime(cert.Expires)
-	starts := safeGetTime(cert.Starts)
-	created := safeGetTime(cert.Created)
-	updated := safeGetTime(cert.Updated)
-
-	d.Printf("=== %s Certificate\n", cert.Name)
-	d.Println("Common Name(s):    ", cert.CommonName)
-	d.Println("Expires At:        ", expires)
-	d.Println("Starts At:         ", starts)
-	d.Println("Fingerprint:       ", cert.Fingerprint)
-	d.Println("Subject Alt Name:  ", san)
-	d.Println("Issuer:            ", cert.Issuer)
-	d.Println("Subject:           ", cert.Subject)
-	d.Println()
-	d.Println("Connected Domains: ", domains)
-	d.Println("Owner:             ", cert.Owner)
-	d.Println("Created:           ", created)
-	d.Println("Updated:           ", updated)
-
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"Name:", safeGetString(cert.Name)})
+	table.Append([]string{"Common Name(s):", safeGetString(cert.CommonName)})
+	table.Append([]string{"Expires At:", safeGetTime(cert.Expires, dateFormat)})
+	table.Append([]string{"Starts At:", safeGetTime(cert.Starts, dateFormat)})
+	table.Append([]string{"Fingerprint:", safeGetString(cert.Fingerprint)})
+	table.Append([]string{"Subject Alt Name:", safeGetString(strings.Join(cert.SubjectAltName[:], ","))})
+	table.Append([]string{"Issuer:", safeGetString(cert.Issuer)})
+	table.Append([]string{"Subject:", safeGetString(cert.Subject)})
+	table.Append([]string{""})
+	table.Append([]string{"Connected Domains:", safeGetString(strings.Join(cert.Domains[:], ","))})
+	table.Append([]string{"Owner:", safeGetString(cert.Owner)})
+	table.Append([]string{"Created:", safeGetTime(cert.Created, time.RFC3339)})
+	table.Append([]string{"Updated:", safeGetTime(cert.Updated, time.RFC3339)})
+	table.Render()
 	return nil
 }
 
@@ -242,11 +185,11 @@ func (d *DryccCmd) CertDetach(name, domain string) error {
 	return nil
 }
 
-func safeGetTime(t dtime.Time) string {
-	out := "unknown"
+func safeGetTime(t dtime.Time, format string) string {
+	out := ""
 	if t.Time != nil {
-		out = t.Format(dateFormat)
+		out = t.Format(format)
 	}
 
-	return out
+	return safeGetString(out)
 }

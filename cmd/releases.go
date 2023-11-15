@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"text/tabwriter"
 
 	"github.com/drycc/controller-sdk-go/releases"
 )
@@ -23,16 +22,19 @@ func (d *DryccCmd) ReleasesList(appID string, results int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Releases%s", appID, limitCount(len(releases), count))
-
-	w := new(tabwriter.Writer)
-
-	w.Init(d.WOut, 0, 8, 1, '\t', 0)
-	for _, r := range releases {
-		fmt.Fprintf(w, "v%d\t%s\t%s\n", r.Version, r.Created, r.Summary)
+	if count == 0 {
+		d.Println(fmt.Sprintf("No releases found in %s app.", appID))
+	} else {
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "VERSION", "CREATED", "SUMMARY"})
+		for _, r := range releases {
+			summary := r.Summary
+			if len(summary) > 64 {
+				summary = fmt.Sprintf("%s[...]", summary[:64])
+			}
+			table.Append([]string{r.UUID, r.Owner, fmt.Sprintf("v%d", r.Version), r.Created, summary})
+		}
+		table.Render()
 	}
-	w.Flush()
 	return nil
 }
 
@@ -48,18 +50,17 @@ func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Release v%d\n", appID, version)
-	if r.Build != "" {
-		d.Println("build:   ", r.Build)
-	}
-	d.Println("config:  ", r.Config)
-	d.Println("owner:   ", r.Owner)
-	d.Println("created: ", r.Created)
-	d.Println("summary: ", r.Summary)
-	d.Println("updated: ", r.Updated)
-	d.Println("uuid:    ", r.UUID)
-
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"App:", r.App})
+	table.Append([]string{"UUID:", r.UUID})
+	table.Append([]string{"Owner:", r.Owner})
+	table.Append([]string{"Build:", r.Build})
+	table.Append([]string{"Config:", r.Config})
+	table.Append([]string{"Created:", r.Created})
+	table.Append([]string{"Updated:", r.Updated})
+	table.Append([]string{"Summary:", r.Summary})
+	table.Append([]string{"Version:", fmt.Sprintf("v%v", r.Version)})
+	table.Render()
 	return nil
 }
 

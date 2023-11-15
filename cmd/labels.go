@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/drycc/pkg/prettyprint"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
 )
@@ -23,21 +21,19 @@ func (d *DryccCmd) LabelsList(appID string) error {
 		return err
 	}
 
-	sortedLabels := sortKeys(appSettings.Label)
-
-	d.Printf("=== %s Label\n", appID)
-
-	if len(sortedLabels) == 0 {
-		d.Println("No labels found.")
+	if len(appSettings.Label) == 0 {
+		d.Println(fmt.Sprintf("No labels found in %s app.", appID))
 	} else {
-		labels := make(map[string]string)
-
-		// appSettings.Label is type interface, so it needs to be converted to a string
-		for _, label := range sortedLabels {
-			labels[label+":"] = fmt.Sprintf("%v", appSettings.Label[label])
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "KEY", "VALUE"})
+		for _, key := range *sortKeys(appSettings.Label) {
+			table.Append([]string{
+				appSettings.UUID,
+				appSettings.Owner,
+				key,
+				fmt.Sprintf("%v", appSettings.Label[key]),
+			})
 		}
-
-		d.Print(prettyprint.PrettyTabs(labels, 6))
+		table.Render()
 	}
 
 	return nil

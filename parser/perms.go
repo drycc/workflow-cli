@@ -55,7 +55,7 @@ Options:
   -l --limit=<num>
     the maximum number of results to display, defaults to config setting`
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -92,7 +92,7 @@ Options:
     grants <username> system administrator privileges.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -123,7 +123,7 @@ Options:
   --admin
     revokes <username> system administrator privileges.`
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

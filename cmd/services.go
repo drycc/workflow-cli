@@ -5,8 +5,6 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/olekukonko/tablewriter"
-
 	"github.com/drycc/controller-sdk-go/services"
 )
 
@@ -22,19 +20,22 @@ func (d *DryccCmd) ServicesList(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Services\n", appID)
 	if len(services) > 0 {
-		table := tablewriter.NewWriter(d.WOut)
-		table.SetHeader([]string{"Type", "Name", "Port", "Protocol", "TargetPort"})
+		table := d.getDefaultFormatTable([]string{"TYPE", "NAME", "PORT", "PROTOCOL", "TARGET-PORT"})
 		for _, service := range services {
 			for _, port := range service.Ports {
-				table.Append([]string{service.ProcfileType, port.Name, fmt.Sprint(port.Port), port.Protocol, fmt.Sprint(port.TargetPort)})
+				table.Append([]string{
+					service.ProcfileType,
+					port.Name,
+					fmt.Sprint(port.Port),
+					port.Protocol,
+					fmt.Sprint(port.TargetPort),
+				})
 			}
 		}
-		table.SetAutoMergeCellsByColumnIndex([]int{0})
-		table.SetRowLine(true)
 		table.Render()
+	} else {
+		d.Println(fmt.Sprintf("No services found in %s app.", appID))
 	}
 	return nil
 }

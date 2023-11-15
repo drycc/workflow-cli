@@ -4,13 +4,9 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"regexp"
-	"sort"
 	"strings"
-
-	"github.com/drycc/pkg/prettyprint"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
@@ -19,47 +15,33 @@ import (
 // ConfigList lists an app's config.
 func (d *DryccCmd) ConfigList(appID string, format string) error {
 	s, appID, err := load(d.ConfigFile, appID)
-
 	if err != nil {
 		return err
 	}
-
 	config, err := config.List(s.Client, appID)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	keys := sortKeys(config.Values)
-
-	configOutput := new(bytes.Buffer)
-
+	keys := *sortKeys(config.Values)
 	switch format {
 	case "oneline":
-		for i, key := range keys {
-			sep := " "
-			if i == len(keys)-1 {
-				sep = "\n"
-			}
-			fmt.Fprintf(configOutput, "%s=%s%s", key, config.Values[key], sep)
+		var kv []string
+		for _, key := range keys {
+			kv = append(kv, fmt.Sprintf("%s=%s", key, config.Values[key]))
 		}
+		d.Println(strings.Join(kv, " "))
 	case "diff":
 		for _, key := range keys {
-			fmt.Fprintf(configOutput, "%s=%s\n", key, config.Values[key])
+			d.Println(fmt.Sprintf("%s=%s", key, config.Values[key]))
 		}
 	default:
-		fmt.Fprintf(configOutput, "=== %s Config\n", appID)
-
-		configMap := make(map[string]string)
-
-		// config.Values is type interface, so it needs to be converted to a string
+		table := d.getDefaultFormatTable([]string{})
 		for _, key := range keys {
-			configMap[key] = fmt.Sprintf("%v", config.Values[key])
+			table.Append([]string{key, fmt.Sprintf("%v", config.Values[key])})
 		}
-
-		fmt.Fprint(configOutput, prettyprint.PrettyTabs(configMap, 6))
+		table.Render()
 	}
-
-	d.Print(configOutput)
 	return nil
 }
 
@@ -181,7 +163,7 @@ func (d *DryccCmd) ConfigPull(appID string, interactive bool, overwrite bool) er
 	}
 
 	if interactive {
-		contents, err := ioutil.ReadFile(filename)
+		contents, err := os.ReadFile(filename)
 
 		if err != nil {
 			return err
@@ -212,10 +194,10 @@ func (d *DryccCmd) ConfigPull(appID string, interactive bool, overwrite bool) er
 			}
 		}
 
-		return ioutil.WriteFile(filename, []byte(formatConfig(configMap)), 0755)
+		return os.WriteFile(filename, []byte(formatConfig(configMap)), 0755)
 	}
 
-	return ioutil.WriteFile(filename, []byte(formatConfig(configVars.Values)), 0755)
+	return os.WriteFile(filename, []byte(formatConfig(configVars.Values)), 0755)
 }
 
 // ConfigPush pushes an app's config from a file.
@@ -233,7 +215,7 @@ func (d *DryccCmd) ConfigPush(appID, fileName string) error {
 		buffer.ReadFrom(os.Stdin)
 		contents = buffer.Bytes()
 	} else {
-		contents, err = ioutil.ReadFile(fileName)
+		contents, err = os.ReadFile(fileName)
 
 		if err != nil {
 			return err
@@ -292,7 +274,7 @@ func parseSSHKey(value string) (string, error) {
 
 	// NOTE(felixbuenemann): check if the value is a path to a private key.
 	if _, err := os.Stat(value); err == nil {
-		contents, err := ioutil.ReadFile(value)
+		contents, err := os.ReadFile(value)
 
 		if err != nil {
 			return "", err
@@ -309,19 +291,10 @@ func parseSSHKey(value string) (string, error) {
 func formatConfig(configVars map[string]interface{}) string {
 	var formattedConfig string
 
-	keys := sortKeys(configVars)
+	keys := *sortKeys(configVars)
 	for _, key := range keys {
 		formattedConfig += fmt.Sprintf("%s=%v\n", key, configVars[key])
 	}
 
 	return formattedConfig
-}
-
-func sortKeys(kv map[string]interface{}) []string {
-	var keys []string
-	for k := range kv {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
 }

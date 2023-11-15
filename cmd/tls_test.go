@@ -36,10 +36,8 @@ func TestTLSInfo(t *testing.T) {
 
 	err = cmdr.TLSInfo("numenor")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== numenor TLS
---- HTTPS Enforced: true
---- Certs Auto: false
---- Issuer: not set
+	assert.Equal(t, b.String(), `UUID                                    OWNER     CERTS-AUTO    HTTPS-ENFORCED    EMAIL    SERVER 
+c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    false         true                                 
 `, "output")
 }
 

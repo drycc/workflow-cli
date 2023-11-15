@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
-	"strings"
 )
 
 // CanaryList tells the informations about app's autoscale status
@@ -18,13 +20,21 @@ func (d *DryccCmd) CanaryInfo(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Canary\n\n", appID)
-
-	for _, procType := range appSettings.Canaries {
-		d.Println(procType)
+	if len(appSettings.Canaries) > 0 {
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "TYPE", "CREATED", "UPDATED"})
+		for _, procType := range appSettings.Canaries {
+			table.Append([]string{
+				appSettings.UUID,
+				appSettings.Owner,
+				procType,
+				appSettings.Created,
+				appSettings.Updated,
+			})
+		}
+		table.Render()
+	} else {
+		d.Println(fmt.Sprintf("No canaries found in %s app.", appID))
 	}
-
 	return nil
 }
 

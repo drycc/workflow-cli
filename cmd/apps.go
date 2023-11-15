@@ -11,7 +11,9 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/apps"
+	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/domains"
+	"github.com/drycc/controller-sdk-go/ps"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/pkg/logging"
 	"github.com/drycc/workflow-cli/pkg/webbrowser"
@@ -75,11 +77,20 @@ func (d *DryccCmd) AppsList(results int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== Apps%s", limitCount(len(apps), count))
-
-	for _, app := range apps {
-		d.Println(app.ID)
+	if count > 0 {
+		table := d.getDefaultFormatTable([]string{"ID", "UUID", "OWNER", "CREATED", "UPDATED"})
+		for _, app := range apps {
+			table.Append([]string{
+				app.ID,
+				app.UUID,
+				app.Owner,
+				app.Created,
+				app.Updated,
+			})
+		}
+		table.Render()
+	} else {
+		d.Println("No apps found.")
 	}
 	return nil
 }
@@ -102,38 +113,71 @@ func (d *DryccCmd) AppInfo(appID string) error {
 		return err
 	}
 
-	if url == "" {
-		url = fmt.Sprintf(noDomainAssignedMsg, appID)
-	}
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"App:", app.ID})
+	table.Append([]string{"URL:", url})
+	table.Append([]string{"UUID:", app.UUID})
+	table.Append([]string{"Owner:", app.Owner})
+	table.Append([]string{"Created:", app.Created})
+	table.Append([]string{"Updated:", app.Updated})
 
-	d.Printf("=== %s Application\n", app.ID)
-	d.Println("updated: ", app.Updated)
-	d.Println("uuid:    ", app.UUID)
-	d.Println("created: ", app.Created)
-	d.Println("url:     ", url)
-	d.Println("owner:   ", app.Owner)
-	d.Println("id:      ", app.ID)
-
-	d.Println()
 	// print the app processes
-	if err = d.PsList(app.ID, defaultLimit); err != nil {
+	processes, _, err := ps.List(s.Client, appID, defaultLimit)
+	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	d.Println()
-	// print the app domains
-	if err = d.DomainsList(app.ID, defaultLimit); err != nil {
-		return err
+	if len(processes) > 0 {
+		table.Append([]string{"Processes:"})
+		for index, process := range processes {
+			table.Append([]string{"", "Name:", process.Name})
+			table.Append([]string{"", "Release:", process.Release})
+			table.Append([]string{"", "State:", process.State})
+			table.Append([]string{"", "Type:", process.Type})
+			table.Append([]string{"", "Started:", process.Started.Format("2006-01-02T15:04:05MST")})
+			if len(processes) > index+1 {
+				table.Append([]string{""})
+			}
+		}
+	} else {
+		table.Append([]string{"Processes:", safeGetString("")})
 	}
 
-	d.Println()
-	// print the app labels
-	if err = d.LabelsList(app.ID); err != nil {
+	domains, _, err := domains.List(s.Client, appID, defaultLimit)
+	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
+	if len(domains) > 0 {
+		table.Append([]string{"Domains:"})
+		for index, domain := range domains {
+			table.Append([]string{"", "Domain:", domain.Domain})
+			table.Append([]string{"", "Created:", domain.Created})
+			table.Append([]string{"", "Updated:", domain.Updated})
+			if len(domains) > index+1 {
+				table.Append([]string{""})
+			}
+		}
+	} else {
+		table.Append([]string{"Domains:", safeGetString("")})
+	}
 
-	d.Println()
-
+	appSettings, err := appsettings.List(s.Client, appID)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+	if len(appSettings.Label) > 0 {
+		table.Append([]string{"Labels:"})
+		for index, label := range *sortKeys(appSettings.Label) {
+			table.Append([]string{"", "Key:", label})
+			table.Append([]string{"", "Value:", fmt.Sprintf("%v", appSettings.Label[label])})
+			if len(appSettings.Label) > index+1 {
+				table.Append([]string{""})
+			}
+		}
+	} else {
+		table.Append([]string{"Labels:", safeGetString("")})
+	}
+	table.Render()
 	return nil
 }
 
@@ -306,7 +350,7 @@ func (d *DryccCmd) AppTransfer(appID, username string) error {
 	return nil
 }
 
-const noDomainAssignedMsg = "No domain assigned to %s"
+const noDomainAssignedMsg = "no domain assigned to %s"
 
 // appURL grabs the first domain an app has and returns this.
 func (d *DryccCmd) appURL(s *settings.Settings, appID string) (string, error) {

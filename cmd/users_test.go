@@ -62,9 +62,9 @@ func TestUsersList(t *testing.T) {
 	err = cmdr.UsersList(-1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== Users (*=admin)
-test
-*jkirk
+	assert.Equal(t, b.String(), `USERNAME    EMAIL                      ADMIN    STAFF    ACTIVE    DATE-JOIN                
+test        test@example.com           false    false    true      2014-10-19T22:01:00.601Z    
+jkirk       jkrik@starfleet.ufp.gov    true     true     true      2014-10-19T22:01:00.601Z    
 `, "output")
 }
 
@@ -106,8 +106,8 @@ func TestUsersListLimit(t *testing.T) {
 	err = cmdr.UsersList(1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== Users (*=admin) (1 of 2)
-test
+	assert.Equal(t, b.String(), `USERNAME    EMAIL               ADMIN    STAFF    ACTIVE    DATE-JOIN                
+test        test@example.com    false    false    true      2014-10-19T22:01:00.601Z    
 `, "output")
 }
 
@@ -130,6 +130,7 @@ func TestUsersEnable(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `Enabling user test... done
+This modification is only temporary and will be reverted when the user login again.
 `, "output")
 }
 
@@ -151,5 +152,6 @@ func TestUsersDisable(t *testing.T) {
 	err = cmdr.UsersDisable("test")
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `Disabling user test... done
+This modification is only temporary and will be reverted when the user login again.
 `, "output")
 }

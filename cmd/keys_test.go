@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -20,7 +19,7 @@ import (
 func TestGetKey(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "drycc-key")
+	file, err := os.CreateTemp("", "drycc-key")
 	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc test@example.com")
@@ -46,7 +45,7 @@ func TestGetKey(t *testing.T) {
 func TestGetKeyNoComment(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "drycc-key")
+	file, err := os.CreateTemp("", "drycc-key")
 	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc")
@@ -69,7 +68,7 @@ func TestGetKeyNoComment(t *testing.T) {
 func TestGetInvalidKey(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "drycc-key")
+	file, err := os.CreateTemp("", "drycc-key")
 	assert.NoError(t, err)
 
 	toWrite := []byte("not a key")
@@ -83,7 +82,7 @@ func TestGetInvalidKey(t *testing.T) {
 }
 
 func TestListKeys(t *testing.T) {
-	name, err := ioutil.TempDir("", "drycc-key")
+	name, err := os.MkdirTemp("", "drycc-key")
 	assert.NoError(t, err)
 	settings.SetHome(name)
 
@@ -109,11 +108,11 @@ func TestListKeys(t *testing.T) {
 	}
 
 	for _, file := range fileNames {
-		ioutil.WriteFile(filepath.Join(folder, file), toWrite, 0775)
+		os.WriteFile(filepath.Join(folder, file), toWrite, 0775)
 		assert.NoError(t, err)
 	}
 
-	keys, err := listKeys(ioutil.Discard)
+	keys, err := listKeys(io.Discard)
 	assert.NoError(t, err)
 
 	assert.Equal(t, keys, expected, "key")
@@ -121,7 +120,7 @@ func TestListKeys(t *testing.T) {
 	var b bytes.Buffer
 	// Write bad ssh key
 	filename := filepath.Join(folder, "test3.pub")
-	ioutil.WriteFile(filename, []byte("ssh-rsa"), 0775)
+	os.WriteFile(filename, []byte("ssh-rsa"), 0775)
 	_, err = listKeys(&b)
 	assert.Equal(t, b.String(), filename+" is not a valid ssh key\n", "output")
 	assert.NoError(t, err)
@@ -139,7 +138,7 @@ type chooseKeyCases struct {
 func TestChooseKey(t *testing.T) {
 	t.Parallel()
 
-	file, err := ioutil.TempFile("", "drycc-key")
+	file, err := os.CreateTemp("", "drycc-key")
 	assert.NoError(t, err)
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	_, err = file.Write(toWrite)
@@ -235,9 +234,9 @@ func TestKeysList(t *testing.T) {
 
 	err = cmdr.KeysList(-1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== test Keys
-cpike@starfleet.ufp          ssh-rsa abc cpik...rfleet.ufp
-cpike@1701.ncc.starfleet.ufp ssh-rsa 123 cpik...rfleet.ufp
+	assert.Equal(t, b.String(), `ID                              OWNER    KEY                           
+cpike@starfleet.ufp             cpike    ssh-rsa abc cpik...rfleet.ufp    
+cpike@1701.ncc.starfleet.ufp    cpike    ssh-rsa 123 cpik...rfleet.ufp    
 `, "output")
 }
 
@@ -272,8 +271,8 @@ func TestKeysListLimit(t *testing.T) {
 
 	err = cmdr.KeysList(1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== test Keys (1 of 2)
-cpike@starfleet.ufp ssh-rsa abc cpik...rfleet.ufp
+	assert.Equal(t, b.String(), `ID                     OWNER    KEY                           
+cpike@starfleet.ufp    cpike    ssh-rsa abc cpik...rfleet.ufp    
 `, "output")
 }
 
@@ -299,7 +298,7 @@ func TestKeyRemove(t *testing.T) {
 
 func TestKeyAdd(t *testing.T) {
 	// Set temp home dir so no unknown files are listed.
-	name, err := ioutil.TempDir("", "drycc-key")
+	name, err := os.MkdirTemp("", "drycc-key")
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
@@ -314,7 +313,7 @@ func TestKeyAdd(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-ssh-key")
+	keyFile, err := os.CreateTemp("", "drycc-cli-unit-test-ssh-key")
 	assert.NoError(t, err)
 	toWrite := []byte("ssh-rsa abc test@example.com")
 	_, err = keyFile.Write(toWrite)
@@ -345,7 +344,7 @@ Which would you like to use with Drycc? Enter the path to the pubkey file: `+out
 
 func TestKeyAddName(t *testing.T) {
 	// Set temp home dir so no unknown files are listed.
-	name, err := ioutil.TempDir("", "drycc-key")
+	name, err := os.MkdirTemp("", "drycc-key")
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
@@ -360,7 +359,7 @@ func TestKeyAddName(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-ssh-key")
+	keyFile, err := os.CreateTemp("", "drycc-cli-unit-test-ssh-key")
 	assert.NoError(t, err)
 	// generate with one name but used another in the add
 	toWrite := []byte("ssh-rsa abc test@example.com")

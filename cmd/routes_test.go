@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -77,12 +76,8 @@ func TestRoutesList(t *testing.T) {
 	err = cmdr.RoutesList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Routes
-+------------+------+-----------+--------------+------------+---------------+
-|    NAME    | TYPE |   KIND    | SERVICE PORT |  GATEWAY   | LISTENER PORT |
-+------------+------+-----------+--------------+------------+---------------+
-| example-go | web  | HTTPRoute |           80 | example-go |            80 |
-+------------+------+-----------+--------------+------------+---------------+
+	assert.Equal(t, b.String(), `NAME          OWNER    TYPE    KIND         SERVICE-PORT    GATEWAY       LISTENER-PORT 
+example-go    test     web     HTTPRoute    80              example-go    80               
 `, "output")
 }
 
@@ -203,7 +198,7 @@ func TestRoutesSet(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 		w.Write([]byte(""))
 	})
-	ruleFile, err := ioutil.TempFile("", "rules.yaml")
+	ruleFile, err := os.CreateTemp("", "rules.yaml")
 	rules := `
 stable:
 - backendRefs:

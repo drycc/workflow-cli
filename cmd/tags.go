@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/drycc/pkg/prettyprint"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
 )
@@ -22,17 +20,20 @@ func (d *DryccCmd) TagsList(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s Tags\n", appID)
-
-	tagMap := make(map[string]string)
-
-	for key, value := range config.Tags {
-		tagMap[key] = fmt.Sprintf("%v", value)
+	if len(config.Tags) == 0 {
+		d.Println(fmt.Sprintf("No tags found in %s app.", appID))
+	} else {
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "TYPE", "TAG"})
+		for _, key := range *sortKeys(config.Tags) {
+			table.Append([]string{
+				config.UUID,
+				config.Owner,
+				key,
+				fmt.Sprintf("%v", config.Tags[key]),
+			})
+		}
+		table.Render()
 	}
-
-	d.Print(prettyprint.PrettyTabs(tagMap, 5))
-
 	return nil
 }
 

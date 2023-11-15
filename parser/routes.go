@@ -63,16 +63,16 @@ Arguments:
   <type>
     the process type needs to create route.
   <kind>
-    the route kind. Supports "HTTPRoute", "TCPRoute", "UDPRoute", and "TLSRoute".
+    the route kind. Supports HTTPRoute, TCPRoute, UDPRoute, and TLSRoute.
   <port>
-    port is the network port this Route targets.
+    the port that should be exposed by this service.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ Options:
     the maximum number of results to display, defaults to config setting
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -130,7 +130,7 @@ Options:
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -159,7 +159,7 @@ Options:
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -176,22 +176,22 @@ func routesAttach(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists routes for an application
 
-Usage: drycc routes:attach <name> --port=<port> --gateway=<gateway> [options]
+Usage: drycc routes:attach <name> --gateway=<gateway> --port=<port> [options]
 
 Arguments:
   <name>
     the route name.
-  <port>
-    port is the network port this Route targets.
   <gateway>
     the gateway name.
+  <port>
+    port is the network port, the gateway listener expects to receive.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -209,22 +209,22 @@ func routesDetach(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists routes for an application
 
-Usage: drycc routes:detach <name> --port=<port> --gateway=<gateway> [options]
+Usage: drycc routes:detach <name> --gateway=<gateway> --port=<port> [options]
 
 Arguments:
   <name>
     the route name.
-  <port>
-    port is the network port this Route targets.
   <gateway>
     the gateway name.
+  <port>
+    port is the network port, the gateway listener expects to receive.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err
@@ -253,7 +253,7 @@ Options:
     the uniquely identifiable name for the application.
 `
 
-	args, err := docopt.Parse(usage, argv, true, "", false, true)
+	args, err := docopt.ParseArgs(usage, argv, "")
 
 	if err != nil {
 		return err

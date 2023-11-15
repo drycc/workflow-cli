@@ -3,10 +3,9 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
-	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
@@ -68,15 +67,14 @@ func TestCertsList(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.CertsList(-1, time.Date(2016, time.June, 9, 0, 0, 0, 0, time.UTC))
+	err = cmdr.CertsList(-1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `        Name       |   Common Name    |    SubjectAltName    |         Expires          |   Fingerprint   |       Domains        |  Updated   |  Created    
--------------------+------------------+----------------------+--------------------------+-----------------+----------------------+------------+-------------
-  test-example-com | test.example.com | test.com,example.com | 10 Nov 2014 (expired)    | 12:34[...]78:90 | test.com,example.com | 9 Jun 2016 | 9 Jun 2016  
-  test-drycc-com   | test.drycc.com   |                      | 1 Aug 2016 (in 2 months) | ab:12[...]12:ab |                      | 9 Jun 2016 | 9 Jun 2016  
-  test1            | 1.test.drycc.com |                      | 11 Jun 2016 (in 2 days)  |                 |                      | unknown    | unknown     
-  test2            | 2.test.drycc.com |                      | 1 Jan 2018 (in 2 years)  |                 |                      | unknown    | unknown     
+	assert.Equal(t, b.String(), `NAME                COMMON-NAME         EXPIRES        SAN                     DOMAINS              
+test-example-com    test.example.com    10 Nov 2014    test.com,example.com    test.com,example.com    
+test-drycc-com      test.drycc.com      1 Aug 2016     <none>                  <none>                  
+test1               1.test.drycc.com    11 Jun 2016    <none>                  <none>                  
+test2               2.test.drycc.com    1 Jan 2018     <none>                  <none>                  
 `, "output")
 
 	cf, server, err = testutil.NewTestServerAndClient()
@@ -98,7 +96,7 @@ func TestCertsList(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.CertsList(-1, time.Now())
+	err = cmdr.CertsList(-1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), "No certs\n", "output")
@@ -126,10 +124,12 @@ func TestCertsListLimit(t *testing.T) {
 					"common_name": "test.example.com",
 					"san": [
 						"test.com",
+						"drycc.com",
 						"example.com"
 					],
 					"domains": [
 						"test.com",
+						"drycc.com",
 						"example.com"
 					],
 					"created": "2016-06-09T00:00:00UTC",
@@ -141,12 +141,11 @@ func TestCertsListLimit(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.CertsList(1, time.Date(2016, time.June, 9, 0, 0, 0, 0, time.UTC))
+	err = cmdr.CertsList(1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `        Name       |   Common Name    |    SubjectAltName    |        Expires        |   Fingerprint   |       Domains        |  Updated   |  Created    
--------------------+------------------+----------------------+-----------------------+-----------------+----------------------+------------+-------------
-  test-example-com | test.example.com | test.com,example.com | 10 Nov 2014 (expired) | 12:34[...]78:90 | test.com,example.com | 9 Jun 2016 | 9 Jun 2016  
+	assert.Equal(t, b.String(), `NAME                COMMON-NAME         EXPIRES        SAN                               DOMAINS                        
+test-example-com    test.example.com    10 Nov 2014    test.com,drycc.com,example.com    test.com,drycc.com,example.com    
 `, "output")
 
 }
@@ -187,19 +186,19 @@ func TestCertsInfo(t *testing.T) {
 
 	err = cmdr.CertInfo("test-example-com")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== test-example-com Certificate
-Common Name(s):     test.drycc.com
-Expires At:         9 Jun 2016
-Starts At:          9 Jun 2016
-Fingerprint:        ab:12:ab:12:ab
-Subject Alt Name:   test.com,example.com
-Issuer:             testca
-Subject:            testing
-
-Connected Domains:  test.com,example.com
-Owner:              admin
-Created:            9 Jun 2016
-Updated:            9 Jun 2016
+	assert.Equal(t, b.String(), `Name:                 test-example-com        
+Common Name(s):       test.drycc.com          
+Expires At:           9 Jun 2016              
+Starts At:            9 Jun 2016              
+Fingerprint:          ab:12:ab:12:ab          
+Subject Alt Name:     test.com,example.com    
+Issuer:               testca                  
+Subject:              testing                 
+                      
+Connected Domains:    test.com,example.com    
+Owner:                admin                   
+Created:              2016-06-09T00:00:00Z    
+Updated:              2016-06-09T00:00:00Z    
 `, "output")
 
 	server.Mux.HandleFunc("/v2/certs/test-drycc-com", func(w http.ResponseWriter, r *http.Request) {
@@ -212,19 +211,19 @@ Updated:            9 Jun 2016
 
 	err = cmdr.CertInfo("test-drycc-com")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== test-drycc-com Certificate
-Common Name(s):     
-Expires At:         unknown
-Starts At:          unknown
-Fingerprint:        
-Subject Alt Name:   N/A
-Issuer:             
-Subject:            
-
-Connected Domains:  No connected domains
-Owner:              
-Created:            unknown
-Updated:            unknown
+	assert.Equal(t, b.String(), `Name:                 test-drycc-com    
+Common Name(s):       <none>            
+Expires At:           <none>            
+Starts At:            <none>            
+Fingerprint:          <none>            
+Subject Alt Name:     <none>            
+Issuer:               <none>            
+Subject:              <none>            
+                      
+Connected Domains:    <none>            
+Owner:                <none>            
+Created:              <none>            
+Updated:              <none>            
 `, "output")
 }
 
@@ -309,13 +308,13 @@ func TestCertsAdd(t *testing.T) {
 		fmt.Fprintf(w, "{}")
 	})
 
-	keyFile, err := ioutil.TempFile("", "drycc-cli-unit-test-key")
+	keyFile, err := os.CreateTemp("", "drycc-cli-unit-test-key")
 	assert.NoError(t, err)
 	_, err = keyFile.Write([]byte("key"))
 	assert.NoError(t, err)
 	keyFile.Close()
 
-	certFile, err := ioutil.TempFile("", "drycc-cli-unit-test-cert")
+	certFile, err := os.CreateTemp("", "drycc-cli-unit-test-cert")
 	assert.NoError(t, err)
 	_, err = certFile.Write([]byte("cert"))
 	assert.NoError(t, err)

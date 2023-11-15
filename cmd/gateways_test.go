@@ -56,14 +56,9 @@ func TestGatewaysList(t *testing.T) {
 	err = cmdr.GatewaysList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Gateways
-+------+---------------+------+----------+
-| NAME |   LISENTER    | PORT | PROTOCOL |
-+------+---------------+------+----------+
-| foo  | foo-80-http   |   80 | HTTP     |
-+      +---------------+------+----------+
-|      | foo-443-https |  443 | HTTPS    |
-+------+---------------+------+----------+
+	assert.Equal(t, b.String(), `NAME    LISENTER         PORT    PROTOCOL 
+foo     foo-80-http      80      HTTP        
+foo     foo-443-https    443     HTTPS       
 `, "output")
 }
 

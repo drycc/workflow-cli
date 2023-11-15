@@ -119,17 +119,13 @@ func TestLimitsList(t *testing.T) {
 
 	err = cmdr.LimitsList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== enterprise Limits
-
---- Memory
-db         1000M
-web        2G
-worker     1G
-
---- CPU
-db         500m
-web        2
-worker     1
+	assert.Equal(t, b.String(), `UUID                                    OWNER    TYPE      DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    db        MEM       1000M    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       MEM       2G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    MEM       1G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    db        CPU       500m     
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       CPU       2        
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    CPU       1        
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -151,11 +147,7 @@ worker     1
 
 	err = cmdr.LimitsList("franklin")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `=== franklin Limits
-
---- Memory
-
---- CPU
+	assert.Equal(t, b.String(), `No limits found in franklin app.
 `, "output")
 }
 
@@ -201,13 +193,9 @@ func TestLimitsSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-=== foo Limits
-
---- Memory
-web     128M
-
---- CPU
-web     100m
+UUID                                    OWNER    TYPE    DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     MEM       128M     
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     CPU       100m     
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -244,13 +232,9 @@ web     100m
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-=== franklin Limits
-
---- Memory
-web     1G
-
---- CPU
-web     1
+UUID                                    OWNER      TYPE    DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     MEM       1G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     CPU       1        
 `, "output")
 
 	// with requests/limit parameter
@@ -294,17 +278,13 @@ web     1
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-=== jim Limits
-
---- Memory
-db         5G
-web        2000M
-worker     3G
-
---- CPU
-db         5
-web        1
-worker     1
+UUID                                    OWNER    TYPE      DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        MEM       5G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       MEM       2000M    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    MEM       3G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        CPU       5        
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       CPU       1        
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       1        
 `, "output")
 
 	// with requests/limit parameter
@@ -348,17 +328,13 @@ worker     1
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-=== phew Limits
-
---- Memory
-db         1G
-web        1G
-worker     1G
-
---- CPU
-db         5
-web        2
-worker     300m
+UUID                                    OWNER    TYPE      DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        MEM       1G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       MEM       1G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    MEM       1G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        CPU       5        
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       CPU       2        
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       300m     
 `, "output")
 }
 
@@ -406,13 +382,9 @@ func TestLimitsUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-=== foo Limits
-
---- Memory
-web     128M
-
---- CPU
-web     125m
+UUID                                    OWNER    TYPE    DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     MEM       128M     
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     CPU       125m     
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -448,10 +420,6 @@ web     125m
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-=== franklin Limits
-
---- Memory
-
---- CPU
+No limits found in franklin app.
 `, "output")
 }

@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/drycc/controller-sdk-go/tls"
 )
 
@@ -16,10 +18,23 @@ func (d *DryccCmd) TLSInfo(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	d.Printf("=== %s TLS\n", appID)
-	d.Println(tls)
-
+	table := d.getDefaultFormatTable(
+		[]string{"UUID", "OWNER", "CERTS-AUTO", "HTTPS-ENFORCED", "EMAIL", "SERVER"},
+	)
+	data := []string{
+		tls.UUID,
+		tls.Owner,
+		fmt.Sprintf("%v", tls.CertsAutoEnabled != nil && *(tls.CertsAutoEnabled)),
+		fmt.Sprintf("%v", tls.HTTPSEnforced != nil && *(tls.HTTPSEnforced)),
+		"",
+		"",
+	}
+	if tls.Issuer != nil {
+		data[3] = tls.Issuer.Email
+		data[4] = tls.Issuer.Server
+	}
+	table.Append(data)
+	table.Render()
 	return nil
 }
 

@@ -6,9 +6,10 @@ import (
 	"io"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
-	"github.com/drycc/controller-sdk-go/pkg/time"
+	dtime "github.com/drycc/controller-sdk-go/pkg/time"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/websocket"
@@ -16,31 +17,37 @@ import (
 
 func TestPrintProcesses(t *testing.T) {
 	var b bytes.Buffer
-
+	d, err := time.Parse("2006-01-02T15:04:05MST", "2023-11-15T11:55:16CST")
+	if err != nil {
+		t.Fatal(err)
+	}
 	pods := []api.Pods{
 		{
 			Release: "v3",
 			Name:    "benign-quilting-web-4084101150-c871y",
 			Type:    "web",
 			State:   "up",
-			Started: time.Time{},
+			Started: dtime.Time{Time: &d},
 		},
 		{
 			Release: "v3",
 			Name:    "benign-quilting-worker-4084101150-c871y",
 			Type:    "worker",
 			State:   "up",
-			Started: time.Time{},
+			Started: dtime.Time{Time: &d},
 		},
 	}
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
 
-	printProcesses("appname", pods, &b)
+	printProcesses(&DryccCmd{WOut: &b, ConfigFile: cf}, "appname", pods)
 
-	assert.Equal(t, b.String(), `=== appname Processes
---- web:
-benign-quilting-web-4084101150-c871y up (v3)
---- worker:
-benign-quilting-worker-4084101150-c871y up (v3)
+	assert.Equal(t, b.String(), `NAME                                       RELEASE    STATE    TYPE      STARTED                
+benign-quilting-web-4084101150-c871y       v3         up       web       2023-11-15T11:55:16CST    
+benign-quilting-worker-4084101150-c871y    v3         up       worker    2023-11-15T11:55:16CST    
 `, "output")
 }
 
@@ -75,9 +82,8 @@ func TestPsList(t *testing.T) {
 	err = cmdr.PsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `=== foo Processes
---- web:
-foo-web-4084101150-c871y up (v2)
+	assert.Equal(t, b.String(), `NAME                        RELEASE    STATE    TYPE    STARTED                
+foo-web-4084101150-c871y    v2         up       web     2016-02-13T00:47:52UTC    
 `, "output")
 }
 
@@ -172,9 +178,9 @@ func TestPsScale(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Scaling processes... but first, coffee!
 done in 0s
-=== foo Processes
---- web:
-foo-web-4084101150-c871y up (v2)
+
+NAME                        RELEASE    STATE    TYPE    STARTED                
+foo-web-4084101150-c871y    v2         up       web     2016-02-13T00:47:52UTC    
 `, "output")
 }
 

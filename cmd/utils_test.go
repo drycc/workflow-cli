@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,7 +13,7 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	name, err := ioutil.TempDir("", "drycc-cli-unit-test-load")
+	name, err := os.MkdirTemp("", "drycc-cli-unit-test-load")
 	assert.NoError(t, err)
 	defer os.RemoveAll(name)
 
