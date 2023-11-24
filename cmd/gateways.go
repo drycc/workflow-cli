@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/gateways"
 )
 
@@ -24,11 +26,11 @@ func (d *DryccCmd) GatewaysList(appID string, results int) error {
 	if count == 0 {
 		d.Println(fmt.Sprintf("No gateways found in %s app.", appID))
 	} else {
-
-		table := d.getDefaultFormatTable([]string{"NAME", "LISENTER", "PORT", "PROTOCOL"})
+		table := d.getDefaultFormatTable([]string{"NAME", "LISENTER", "PORT", "PROTOCOL", "ADDRESSES"})
 		for _, gateway := range gateways {
+			addresesStr := parseAddress(gateway.Addresses)
 			for _, listener := range gateway.Listeners {
-				table.Append([]string{gateway.Name, listener.Name, fmt.Sprint(listener.Port), listener.Protocol})
+				table.Append([]string{gateway.Name, listener.Name, fmt.Sprint(listener.Port), listener.Protocol, addresesStr})
 			}
 		}
 		table.Render()
@@ -76,4 +78,13 @@ func (d *DryccCmd) GatewaysRemove(appID, name string, port int, protocol string)
 
 	d.Println("done")
 	return nil
+}
+
+func parseAddress(addresses []api.Address) string {
+	var addresList []string
+	for _, address := range addresses {
+		addresList = append(addresList, address.Value)
+	}
+	addresStr := strings.Join(addresList, ",")
+	return addresStr
 }

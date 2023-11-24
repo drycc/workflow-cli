@@ -7,8 +7,9 @@ import (
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
-	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/drycc/workflow-cli/pkg/testutil"
 )
 
 func TestGatewaysList(t *testing.T) {
@@ -47,6 +48,12 @@ func TestGatewaysList(t *testing.T) {
                     "protocol": "HTTPS",
                     "allowedRoutes": {"namespaces": {"from": "All"}}
                 }
+            ],
+            "addresses": [
+                {
+                    "type": "IPAddress",
+                    "value": "192.168.11.1"
+                }
             ]
         }
     ]
@@ -56,9 +63,9 @@ func TestGatewaysList(t *testing.T) {
 	err = cmdr.GatewaysList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME    LISENTER         PORT    PROTOCOL 
-foo     foo-80-http      80      HTTP        
-foo     foo-443-https    443     HTTPS       
+	assert.Equal(t, b.String(), `NAME    LISENTER         PORT    PROTOCOL    ADDRESSES    
+foo     foo-80-http      80      HTTP        192.168.11.1    
+foo     foo-443-https    443     HTTPS       192.168.11.1    
 `, "output")
 }
 
