@@ -4,8 +4,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
-github.com/drycc/controller-sdk-go v0.0.0-20231108033734-99a7fbf94e7b h1:Z9n6Uia65mhX6oHFAZpB9UMopqmqgMyHxI+6lMFWeBs=
-github.com/drycc/controller-sdk-go v0.0.0-20231108033734-99a7fbf94e7b/go.mod h1:X69v0xts3XpvbcQpVeR+wwQqORPJ8ClXnYvnMoAOUHE=
+github.com/drycc/controller-sdk-go v0.0.0-20231124064538-8bbfc028ba6d h1:v4qJ9Wr41nP/Zj42F1hLkzTf7wtjNJOagqnbhkOVPzo=
+github.com/drycc/controller-sdk-go v0.0.0-20231124064538-8bbfc028ba6d/go.mod h1:X69v0xts3XpvbcQpVeR+wwQqORPJ8ClXnYvnMoAOUHE=
 github.com/drycc/pkg v0.0.0-20230619083908-711ad2e9f1b8 h1:bTPrdjJTYxMK3T6nYk7Qa8nDbvNNxvNOdI/fgVsiuCg=
 github.com/drycc/pkg v0.0.0-20230619083908-711ad2e9f1b8/go.mod h1:y/6vsR0kXRg3Vxj2M/UqApU2uL43KfMDMN2SyvwF0Ek=
 github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
