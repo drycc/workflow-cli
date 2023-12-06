@@ -121,10 +121,11 @@ func TestConfigList(t *testing.T) {
 	err = cmdr.ConfigList("foo", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `FLOAT    12.34      
-NCC      1701       
-TEST     testing    
-TRUE     false      
+	assert.Equal(t, b.String(), `UUID                                    OWNER    NAME     VALUE   
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    FLOAT    12.34      
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    NCC      1701       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TEST     testing    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TRUE     false      
 `, "output")
 	b.Reset()
 
@@ -186,11 +187,12 @@ func TestConfigSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
 
-FLOAT      12.34                                               
-NCC        1701                                                
-SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
-TEST       testing                                             
-TRUE       false                                               
+UUID                                    OWNER    NAME       VALUE                                            
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    FLOAT      12.34                                               
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    NCC        1701                                                
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TEST       testing                                             
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TRUE       false                                               
 `, "output")
 }
 
@@ -239,9 +241,10 @@ func TestConfigUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 
-FLOAT    12.34      
-NCC      1701       
-TEST     testing    
-TRUE     false      
+UUID                                    OWNER    NAME     VALUE   
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    FLOAT    12.34      
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    NCC      1701       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TEST     testing    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TRUE     false      
 `, "output")
 }

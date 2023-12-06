@@ -36,9 +36,14 @@ func (d *DryccCmd) ConfigList(appID string, format string) error {
 			d.Println(fmt.Sprintf("%s=%s", key, config.Values[key]))
 		}
 	default:
-		table := d.getDefaultFormatTable([]string{})
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "NAME", "VALUE"})
 		for _, key := range keys {
-			table.Append([]string{key, fmt.Sprintf("%v", config.Values[key])})
+			table.Append([]string{
+				config.UUID,
+				config.Owner,
+				key,
+				fmt.Sprintf("%v", config.Values[key]),
+			})
 		}
 		table.Render()
 	}
