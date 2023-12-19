@@ -85,9 +85,6 @@ func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []str
 	if err != nil {
 		return err
 	}
-	if len(params) != 0 && len(values) != 0 {
-		params = nil
-	}
 	paramsMap := make(map[string]interface{})
 	if values != "" {
 		valueFile, err := os.Stat(values)
@@ -197,6 +194,7 @@ func (d *DryccCmd) ResourceGet(appID, name string) error {
 	for _, key := range *sortKeys(resource.Options) {
 		table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Options[key])})
 	}
+	table.Append([]string{"Message:", safeGetString(resource.Message)})
 	table.Append([]string{"Created:", resource.Created})
 	table.Append([]string{"Updated:", resource.Updated})
 	table.Render()
@@ -231,9 +229,6 @@ func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string,
 
 	if err != nil {
 		return err
-	}
-	if len(params) != 0 && len(values) != 0 {
-		params = nil
 	}
 	paramsMap := make(map[string]interface{})
 	if values != "" {
