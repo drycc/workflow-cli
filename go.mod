@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/containerd/console v1.0.3
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20231124064538-8bbfc028ba6d
+	github.com/drycc/controller-sdk-go v0.0.0-20231220020712-6ad12c929b31
 	github.com/drycc/pkg v0.0.0-20230619083908-711ad2e9f1b8
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/stretchr/testify v1.8.4
