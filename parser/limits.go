@@ -93,7 +93,7 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  --cpu
+  -c --cpu
     value apply to CPU.
   -m --memory
     value apply to memory.
