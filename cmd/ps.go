@@ -15,6 +15,14 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+const (
+	STDIN_CHANNEL  = "\x00"
+	STDOUT_CHANNEL = "\x01"
+	STDERR_CHANNEL = "\x02"
+	ERROR_CHANNEL  = "\x03"
+	RESIZE_CHANNEL = "\x04"
+)
+
 // PsList lists an app's processes.
 func (d *DryccCmd) PsList(appID string, results int) error {
 	s, appID, err := load(d.ConfigFile, appID)
@@ -151,17 +159,7 @@ func printExec(d *DryccCmd, conn *websocket.Conn) error {
 	return nil
 }
 
-func streamExec(conn *websocket.Conn, tty bool) error {
-	c := console.Current()
-	defer c.Reset()
-	if tty {
-		if err := c.SetRaw(); err != nil {
-			return err
-		}
-	}
-
-	recvQueue := make(chan string)
-	defer close(recvQueue)
+func runRecvTask(conn *websocket.Conn, c console.Console, recvChan, sendChan chan string) (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
 		for {
@@ -171,12 +169,9 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 				cancel()
 				break
 			}
-			recvQueue <- message
+			recvChan <- message
 		}
 	}()
-
-	sendQueue := make(chan string)
-	defer close(sendQueue)
 	go func() {
 		buf := make([]byte, 1024)
 		for {
@@ -187,20 +182,55 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 			} else if err != nil {
 				continue
 			} else {
-				sendQueue <- string(buf[:size])
+				sendChan <- string(buf[:size])
 			}
 		}
 	}()
+	return ctx, cancel
+}
 
+func runResizeTask(conn *websocket.Conn, c console.Console) {
+	go func() {
+		var size console.WinSize
+		for {
+			if tmpSize, err := c.Size(); err == nil {
+				if size.Height != tmpSize.Height || size.Width != tmpSize.Width {
+					size = tmpSize
+					message := fmt.Sprintf(`{"Height": %d, "Width": %d}`, size.Height, size.Width)
+					if err := websocket.Message.Send(conn, RESIZE_CHANNEL+message); err != nil {
+						break
+					}
+				}
+			}
+			time.Sleep(time.Duration(1) * time.Second)
+		}
+	}()
+}
+
+func streamExec(conn *websocket.Conn, tty bool) error {
+	c := console.Current()
+	defer c.Reset()
+	if tty {
+		if err := c.SetRaw(); err != nil {
+			return err
+		} else {
+			runResizeTask(conn, c)
+		}
+	}
+	recvChan, sendChan := make(chan string, 10), make(chan string, 10)
+	ctx, cancel := runRecvTask(conn, c, recvChan, sendChan)
+	defer cancel()
+	defer close(recvChan)
+	defer close(sendChan)
 	for {
 		select {
 		case <-ctx.Done():
 			return nil
-		case message := <-sendQueue:
-			if err := websocket.Message.Send(conn, message); err != nil {
+		case message := <-sendChan:
+			if err := websocket.Message.Send(conn, STDIN_CHANNEL+message); err != nil {
 				return err
 			}
-		case message := <-recvQueue:
+		case message := <-recvChan:
 			c.Write([]byte(message))
 		}
 	}
