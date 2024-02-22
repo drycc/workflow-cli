@@ -56,7 +56,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TimeoutsList(safeGetValue(args, "--app"))
+	return cmdr.TimeoutsList(safeGetString(args, "--app"))
 }
 
 func timeoutSet(argv []string, cmdr cmd.Commander) error {
@@ -83,7 +83,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	timeouts := args["<type>=<value>"].([]string)
 
 	return cmdr.TimeoutsSet(app, timeouts)
@@ -111,7 +111,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	timeouts := args["<type>"].([]string)
 
 	return cmdr.TimeoutsUnset(app, timeouts)

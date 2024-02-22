@@ -22,7 +22,7 @@ func TestReleasesList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/numenor/releases/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/numenor/releases/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -73,7 +73,7 @@ func TestReleasesListLimit(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/numenor/releases/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/numenor/releases/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -112,7 +112,7 @@ func TestReleasesInfo(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/numenor/releases/v2/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/numenor/releases/v2/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",

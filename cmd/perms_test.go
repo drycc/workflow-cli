@@ -18,7 +18,7 @@ func TestPermsListUsers(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/foo/perms/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/perms/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 
 		fmt.Fprintf(w, `{
@@ -49,7 +49,7 @@ func TestPermsListUsersLimit(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/foo/perms/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/perms/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 
 		fmt.Fprintf(w, `{
@@ -78,7 +78,7 @@ func TestPermsListAdmins(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 
 		fmt.Fprintf(w, `{
@@ -118,7 +118,7 @@ func TestPermsListAdminsLimit(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 
 		fmt.Fprintf(w, `{
@@ -155,7 +155,7 @@ func TestPermsCreateUser(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -169,7 +169,7 @@ func TestPermsCreateUser(t *testing.T) {
 }`)
 	})
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/perms", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/perms", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 	})
 
@@ -189,7 +189,7 @@ func TestPermsCreateAdmin(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 	})
 
@@ -209,7 +209,7 @@ func TestPermsDeleteUser(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -223,7 +223,7 @@ func TestPermsDeleteUser(t *testing.T) {
 }`)
 	})
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/perms", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/perms", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 	})
 
@@ -243,7 +243,7 @@ func TestPermsDeleteAdmin(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 	})
 

@@ -56,7 +56,7 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
@@ -81,7 +81,7 @@ Arguments:
 	if err != nil {
 		return err
 	}
-	username := safeGetValue(args, "<username>")
+	username := safeGetString(args, "<username>")
 
 	if err != nil {
 		return err
@@ -106,7 +106,7 @@ Arguments:
 	if err != nil {
 		return err
 	}
-	username := safeGetValue(args, "<username>")
+	username := safeGetString(args, "<username>")
 
 	if err != nil {
 		return err

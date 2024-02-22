@@ -21,7 +21,7 @@ func (d *DryccCmd) LimitsList(appID string) error {
 		return err
 	}
 	if len(config.CPU) > 0 || len(config.Memory) > 0 {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "TYPE", "DEVICE", "QUOTA"})
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "PTYPE", "DEVICE", "QUOTA"})
 		for _, key := range *sortKeys(config.Memory) {
 			table.Append([]string{
 				config.UUID,

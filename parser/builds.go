@@ -55,13 +55,13 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
 	}
 
-	return cmdr.BuildsList(safeGetValue(args, "--app"), results)
+	return cmdr.BuildsList(safeGetString(args, "--app"), results)
 }
 
 func buildsCreate(argv []string, cmdr cmd.Commander) error {
@@ -93,13 +93,13 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	image := safeGetValue(args, "<image>")
-	stack := safeGetValue(args, "--stack")
+	app := safeGetString(args, "--app")
+	image := safeGetString(args, "<image>")
+	stack := safeGetString(args, "--stack")
 	if stack == "" {
 		stack = "container"
 	}
-	procfile := safeGetValue(args, "--procfile")
+	procfile := safeGetString(args, "--procfile")
 
 	return cmdr.BuildsCreate(app, image, stack, procfile)
 }

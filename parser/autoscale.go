@@ -56,7 +56,7 @@ Options:
 		return err
 	}
 
-	return cmdr.AutoscaleList(safeGetValue(args, "--app"))
+	return cmdr.AutoscaleList(safeGetString(args, "--app"))
 }
 
 func autoscaleSet(argv []string, cmdr cmd.Commander) error {
@@ -87,7 +87,7 @@ Options:
 	}
 
 	processType := args["<process-type>"].(string)
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	min := safeGetInt(args, "--min")
 	max := safeGetInt(args, "--max")
 	CPUPercent := safeGetInt(args, "--cpu-percent")
@@ -117,7 +117,7 @@ Options:
 	}
 
 	processType := args["<process-type>"].(string)
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.AutoscaleUnset(app, processType)
 }

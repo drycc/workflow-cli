@@ -64,7 +64,7 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 	if err != nil {
 		return err
 	}
@@ -119,7 +119,7 @@ Options:
 		return err
 	}
 
-	return cmdr.CertRemove(safeGetValue(args, "<name>"))
+	return cmdr.CertRemove(safeGetString(args, "<name>"))
 }
 
 func certInfo(argv []string, cmdr cmd.Commander) error {
@@ -140,7 +140,7 @@ Options:
 		return err
 	}
 
-	return cmdr.CertInfo(safeGetValue(args, "<name>"))
+	return cmdr.CertInfo(safeGetString(args, "<name>"))
 }
 
 func certAttach(argv []string, cmdr cmd.Commander) error {
@@ -163,8 +163,8 @@ Options:
 		return err
 	}
 
-	name := safeGetValue(args, "<name>")
-	domain := safeGetValue(args, "<domain>")
+	name := safeGetString(args, "<name>")
+	domain := safeGetString(args, "<domain>")
 	return cmdr.CertAttach(name, domain)
 }
 
@@ -188,7 +188,7 @@ Options:
 		return err
 	}
 
-	name := safeGetValue(args, "<name>")
-	domain := safeGetValue(args, "<domain>")
+	name := safeGetString(args, "<name>")
+	domain := safeGetString(args, "<domain>")
 	return cmdr.CertDetach(name, domain)
 }

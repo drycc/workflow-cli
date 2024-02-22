@@ -55,7 +55,7 @@ Options:
 		return err
 	}
 
-	return cmdr.RegistryList(safeGetValue(args, "--app"))
+	return cmdr.RegistryList(safeGetString(args, "--app"))
 }
 
 func registrySet(argv []string, cmdr cmd.Commander) error {
@@ -83,7 +83,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	info := args["<key>=<value>"].([]string)
 
 	return cmdr.RegistrySet(app, info)
@@ -109,7 +109,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	key := args["<key>"].([]string)
 
 	return cmdr.RegistryUnset(app, key)

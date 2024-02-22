@@ -65,10 +65,10 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 	port := safeGetInt(args, "--port")
-	protocol := safeGetValue(args, "--protocol")
+	protocol := safeGetString(args, "--protocol")
 
 	return cmdr.GatewaysAdd(app, name, port, protocol)
 }
@@ -91,12 +91,12 @@ Options:
 	if err != nil {
 		return err
 	}
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 	if err != nil {
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.GatewaysList(app, results)
 }
@@ -125,10 +125,10 @@ Options:
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 	port := safeGetInt(args, "--port")
-	protocol := safeGetValue(args, "--protocol")
+	protocol := safeGetString(args, "--protocol")
 
 	return cmdr.GatewaysRemove(app, name, port, protocol)
 }

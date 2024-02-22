@@ -21,7 +21,7 @@ func TestHealthchecksList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "uuid": "c039a380-6068-4511-b35a-535a73b86ef5",
@@ -75,7 +75,7 @@ func TestHealthchecksListNoHealthCheck(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "uuid": "c039a380-6068-4511-b35a-535a73b86ef5",
@@ -109,7 +109,7 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "uuid": "c039a380-6068-4511-b35a-535a73b86ef5",
@@ -177,7 +177,7 @@ func TestHealthchecksSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "uuid": "c039a380-6068-4511-b35a-535a73b86ef5",
@@ -232,7 +232,7 @@ func TestHealthchecksUnset(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "uuid": "c039a380-6068-4511-b35a-535a73b86ef5",

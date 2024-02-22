@@ -65,7 +65,7 @@ Options:
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	oneline := args["--oneline"].(bool)
 	diff := args["--diff"].(bool)
 
@@ -102,7 +102,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.ConfigSet(app, args["<var>=<value>"].([]string))
 }
@@ -127,7 +127,7 @@ Options:
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.ConfigUnset(app, args["<key>"].([]string))
 }
@@ -157,7 +157,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	interactive := args["--interactive"].(bool)
 	overwrite := args["--overwrite"].(bool)
 
@@ -187,8 +187,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	path := safeGetValue(args, "--path")
+	app := safeGetString(args, "--app")
+	path := safeGetString(args, "--path")
 
 	return cmdr.ConfigPush(app, path)
 }

@@ -74,7 +74,7 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
@@ -104,9 +104,9 @@ Options:
 		return err
 	}
 
-	service := safeGetValue(args, "<service>")
+	service := safeGetString(args, "<service>")
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
@@ -144,10 +144,10 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	values := safeGetValue(args, "--values")
-	plan := safeGetValue(args, "<plan>")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	values := safeGetString(args, "--values")
+	plan := safeGetString(args, "<plan>")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.ResourcesCreate(app, plan, name, args["<param>=<value>"].([]string), values)
 }
@@ -171,19 +171,19 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.ResourcesList(app, results)
 }
 
 func resourceGet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-get a resource's detail in the application.
+Get a resource's detail in the application.
 
 Usage: drycc resources:describe <name> [options]
 
@@ -204,8 +204,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.ResourceGet(app, name)
 }
@@ -240,10 +240,10 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	values := safeGetValue(args, "--values")
-	plan := safeGetValue(args, "<plan>")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	values := safeGetString(args, "--values")
+	plan := safeGetString(args, "<plan>")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.ResourcePut(app, plan, name, args["<param>=<value>"].([]string), values)
 }
@@ -270,8 +270,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.ResourceDelete(app, name)
 }
@@ -297,8 +297,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.ResourceBind(app, name)
 }
@@ -323,8 +323,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.ResourceUnbind(app, name)
 }

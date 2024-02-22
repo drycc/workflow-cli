@@ -46,7 +46,7 @@ func TestRoutesList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/routes/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/routes/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "count": 1,
@@ -76,8 +76,8 @@ func TestRoutesList(t *testing.T) {
 	err = cmdr.RoutesList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME          OWNER    TYPE    KIND         SERVICE-PORT    GATEWAY       LISTENER-PORT 
-example-go    test     web     HTTPRoute    80              example-go    80               
+	assert.Equal(t, b.String(), `NAME          OWNER    PTYPE    KIND         SERVICE-PORT    GATEWAY       LISTENER-PORT 
+example-go    test     web      HTTPRoute    80              example-go    80               
 `, "output")
 }
 
@@ -138,7 +138,7 @@ func TestRouteGet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "stable": [
@@ -193,7 +193,7 @@ func TestRoutesSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 		w.Write([]byte(""))
@@ -232,7 +232,7 @@ func TestRoutesRemove(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})

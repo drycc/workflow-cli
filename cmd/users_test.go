@@ -20,7 +20,7 @@ func TestUsersList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/users/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/users/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -78,7 +78,7 @@ func TestUsersListLimit(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/users/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/users/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -121,7 +121,7 @@ func TestUsersEnable(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/users/test/enable/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/users/test/enable/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, ``)
 	})
@@ -144,7 +144,7 @@ func TestUsersDisable(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/users/test/disable/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/users/test/disable/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, ``)
 	})

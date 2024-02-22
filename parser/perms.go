@@ -61,10 +61,10 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	admin := args["--admin"].(bool)
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
@@ -98,7 +98,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	username := args["<username>"].(string)
 	admin := args["--admin"].(bool)
 
@@ -129,7 +129,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	username := args["<username>"].(string)
 	admin := args["--admin"].(bool)
 

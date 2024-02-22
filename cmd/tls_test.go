@@ -21,7 +21,7 @@ func TestTLSInfo(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 	"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -51,7 +51,7 @@ func TestTLSForceEnable(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		b := true
 		a := api.NewTLS()
@@ -82,7 +82,7 @@ func TestTLSForceDisable(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		b := false
 		a := api.NewTLS()
@@ -113,7 +113,7 @@ func TestTLSAutoIssuer(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/numenor/tls/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		issuer := api.Issuer{
 			Email:     "drycc@drycc.cc",

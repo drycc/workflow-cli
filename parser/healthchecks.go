@@ -70,8 +70,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	procType := safeGetValue(args, "--type")
+	app := safeGetString(args, "--app")
+	procType := safeGetString(args, "--type")
 
 	return cmdr.HealthchecksList(app, procType)
 }
@@ -144,9 +144,9 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	path := safeGetValue(args, "--path")
-	procType := safeGetValue(args, "--type")
+	app := safeGetString(args, "--app")
+	path := safeGetString(args, "--path")
+	procType := safeGetString(args, "--type")
 	initialDelayTimeout := safeGetInt(args, "--initial-delay-timeout")
 	timeoutSeconds := safeGetInt(args, "--timeout-seconds")
 	periodSeconds := safeGetInt(args, "--period-seconds")
@@ -237,9 +237,9 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	healthchecks := args["<health-type>"].([]string)
-	procType := safeGetValue(args, "--type")
+	procType := safeGetString(args, "--type")
 	if procType == "" {
 		procType = defaultProcType
 	}

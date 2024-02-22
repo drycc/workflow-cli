@@ -47,7 +47,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 	if count == 0 {
 		d.Println(fmt.Sprintf("No routes found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "TYPE", "KIND", "SERVICE-PORT", "GATEWAY", "LISTENER-PORT"})
+		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "PTYPE", "KIND", "SERVICE-PORT", "GATEWAY", "LISTENER-PORT"})
 		for _, route := range routes {
 			if len(route.ParentRefs) > 0 {
 				for _, gateway := range route.ParentRefs {

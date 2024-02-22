@@ -82,9 +82,9 @@ Options:
 		return err
 	}
 
-	id := safeGetValue(args, "<id>")
-	remote := safeGetValue(args, "--remote")
-	noRemote := args["--no-remote"].(bool)
+	id := safeGetString(args, "<id>")
+	remote := safeGetString(args, "--remote")
+	noRemote := safeGetBool(args, "--no-remote")
 
 	return cmdr.AppCreate(id, remote, noRemote)
 }
@@ -106,7 +106,7 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
@@ -132,7 +132,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.AppInfo(app)
 }
@@ -154,7 +154,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.AppOpen(app)
 }
@@ -182,7 +182,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	lines := safeGetInt(args, "--lines")
 	if lines <= 0 {
 		lines = 300
@@ -221,7 +221,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	command := strings.Join(args["<command>"].([]string), " ")
 	mounts := args["--mount"].([]string)
 	return cmdr.AppRun(app, command, mounts)
@@ -247,8 +247,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	confirm := safeGetValue(args, "--confirm")
+	app := safeGetString(args, "--app")
+	confirm := safeGetString(args, "--confirm")
 
 	return cmdr.AppDestroy(app, confirm)
 }
@@ -274,8 +274,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	user := safeGetValue(args, "<username>")
+	app := safeGetString(args, "--app")
+	user := safeGetString(args, "<username>")
 
 	return cmdr.AppTransfer(app, user)
 }

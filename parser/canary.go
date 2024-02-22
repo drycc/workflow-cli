@@ -61,7 +61,7 @@ Options:
 		return err
 	}
 
-	return cmdr.CanaryInfo(safeGetValue(args, "--app"))
+	return cmdr.CanaryInfo(safeGetString(args, "--app"))
 }
 
 func canaryCreate(argv []string, cmdr cmd.Commander) error {
@@ -85,7 +85,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	return cmdr.CanaryCreate(app, args["<process-type>"].([]string))
 }
 
@@ -110,7 +110,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	return cmdr.CanaryRemove(app, args["<process-type>"].([]string))
 }
 
@@ -131,7 +131,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	return cmdr.CanaryRelease(app)
 }
 
@@ -152,6 +152,6 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	return cmdr.CanaryRollback(app)
 }

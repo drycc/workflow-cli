@@ -22,7 +22,7 @@ func TestGatewaysList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/gateways/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/gateways/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "count": 1,
@@ -103,7 +103,7 @@ func TestGatewaysDelete(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/gateways/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/gateways/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})

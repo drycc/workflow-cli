@@ -21,7 +21,7 @@ func (d *DryccCmd) CanaryInfo(appID string) error {
 		return err
 	}
 	if len(appSettings.Canaries) > 0 {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "TYPE", "CREATED", "UPDATED"})
+		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "PTYPE", "CREATED", "UPDATED"})
 		for _, procType := range appSettings.Canaries {
 			table.Append([]string{
 				appSettings.UUID,

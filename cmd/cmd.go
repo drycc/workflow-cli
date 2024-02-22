@@ -110,10 +110,11 @@ type Commander interface {
 	PrintErr(...interface{}) (int, error)
 	PrintErrf(string, ...interface{}) (int, error)
 	Version(bool) error
-	VolumesCreate(string, string, string) error
+	VolumesCreate(string, string, string, string, map[string]interface{}) error
 	VolumesExpand(string, string, string) error
 	VolumesDelete(string, string) error
 	VolumesList(string, int) error
+	VolumesInfo(string, string) error
 	VolumesMount(string, string, []string) error
 	VolumesUnmount(string, string, []string) error
 	ResourcesServices(int) error

@@ -65,7 +65,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TLSInfo(safeGetValue(args, "--app"))
+	return cmdr.TLSInfo(safeGetString(args, "--app"))
 }
 
 func tlsForceEnable(argv []string, cmdr cmd.Commander) error {
@@ -85,7 +85,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TLSForceEnable(safeGetValue(args, "--app"))
+	return cmdr.TLSForceEnable(safeGetString(args, "--app"))
 }
 
 func tlsForceDisable(argv []string, cmdr cmd.Commander) error {
@@ -105,7 +105,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TLSForceDisable(safeGetValue(args, "--app"))
+	return cmdr.TLSForceDisable(safeGetString(args, "--app"))
 }
 
 func tlsAutoEnable(argv []string, cmdr cmd.Commander) error {
@@ -125,7 +125,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TLSAutoEnable(safeGetValue(args, "--app"))
+	return cmdr.TLSAutoEnable(safeGetString(args, "--app"))
 }
 
 func tlsAutoDisable(argv []string, cmdr cmd.Commander) error {
@@ -145,7 +145,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TLSAutoDisable(safeGetValue(args, "--app"))
+	return cmdr.TLSAutoDisable(safeGetString(args, "--app"))
 }
 
 func tlsAutoIssuer(argv []string, cmdr cmd.Commander) error {
@@ -173,11 +173,11 @@ Options:
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
-	email := safeGetValue(args, "--email")
-	server := safeGetValue(args, "--server")
-	keyID := safeGetValue(args, "--key-id")
-	keySecret := safeGetValue(args, "--key-secret")
+	app := safeGetString(args, "--app")
+	email := safeGetString(args, "--email")
+	server := safeGetString(args, "--server")
+	keyID := safeGetString(args, "--key-id")
+	keySecret := safeGetString(args, "--key-secret")
 
 	return cmdr.TLSAutoIssuer(app, email, server, keyID, keySecret)
 }

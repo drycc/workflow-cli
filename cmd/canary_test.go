@@ -21,7 +21,7 @@ func TestCanaryInfo(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/rivendell/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/rivendell/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "elrond",
@@ -35,11 +35,11 @@ func TestCanaryInfo(t *testing.T) {
 
 	err = cmdr.CanaryInfo("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER     TYPE    CREATED                   UPDATED                
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    elrond    cmd     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    
+	assert.Equal(t, b.String(), `UUID                                    OWNER     PTYPE    CREATED                   UPDATED                
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    elrond    cmd      2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    
 `, "output")
 
-	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "sauron",
@@ -110,7 +110,7 @@ func TestCanaryRelease(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/bree/canary/release/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/bree/canary/release/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -130,7 +130,7 @@ func TestCanaryRollback(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/bree/canary/rollback/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/bree/canary/rollback/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})

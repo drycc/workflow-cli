@@ -60,8 +60,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	domain := safeGetValue(args, "<domain>")
+	app := safeGetString(args, "--app")
+	domain := safeGetString(args, "<domain>")
 
 	return cmdr.DomainsAdd(app, domain)
 }
@@ -85,12 +85,12 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.DomainsList(app, results)
 }
@@ -116,8 +116,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	domain := safeGetValue(args, "<domain>")
+	app := safeGetString(args, "--app")
+	domain := safeGetString(args, "<domain>")
 
 	return cmdr.DomainsRemove(app, domain)
 }

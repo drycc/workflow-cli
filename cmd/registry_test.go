@@ -81,7 +81,7 @@ func TestRegistryList(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",

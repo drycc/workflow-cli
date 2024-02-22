@@ -6,6 +6,7 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
+	"sigs.k8s.io/yaml"
 )
 
 // VolumesList list volumes in the application
@@ -33,23 +34,45 @@ func (d *DryccCmd) VolumesList(appID string, results int) error {
 	return nil
 }
 
-// printVolumes format volume data
-func printVolumes(d *DryccCmd, volumes api.Volumes) {
-	table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "TYPE", "PATH", "SIZE"})
-	for _, volume := range volumes {
-		if len(volume.Path) > 0 {
-			for _, key := range *sortKeys(volume.Path) {
-				table.Append([]string{volume.Name, volume.Owner, key, fmt.Sprintf("%v", volume.Path[key]), volume.Size})
-			}
-		} else {
-			table.Append([]string{volume.Name, volume.Owner, "", "", volume.Size})
-		}
+// VolumesInfo get volume in the application
+func (d *DryccCmd) VolumesInfo(appID, name string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+
+	if err != nil {
+		return err
 	}
+
+	volume, err := volumes.Get(s.Client, appID, name)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"UUID:", volume.UUID})
+	table.Append([]string{"Name:", volume.Name})
+	table.Append([]string{"Owner:", volume.Owner})
+	table.Append([]string{"Type:", volume.Type})
+	// table append path
+	table.Append([]string{"Path:"})
+	path, err := yaml.Marshal(volume.Path)
+	if err != nil {
+		return err
+	}
+	table.Append([]string{"", string(path)})
+	// table append parameters
+	table.Append([]string{"Parameters:"})
+	parameters, err := yaml.Marshal(volume.Parameters)
+	if err != nil {
+		return err
+	}
+	table.Append([]string{"", string(parameters)})
+	table.Append([]string{"Created: ", volume.Created})
+	table.Append([]string{"Updated: ", volume.Updated})
 	table.Render()
+	return nil
 }
 
 // VolumesCreate create a volume for the application
-func (d *DryccCmd) VolumesCreate(appID, name, size string) error {
+func (d *DryccCmd) VolumesCreate(appID, name, vType, size string, parameters map[string]interface{}) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -65,8 +88,10 @@ Examples: 2G 2g`, size)
 
 	quit := progress(d.WOut)
 	volume := api.Volume{
-		Name: name,
-		Size: size,
+		Name:       name,
+		Size:       size,
+		Type:       vType,
+		Parameters: parameters,
 	}
 	_, err = volumes.Create(s.Client, appID, volume)
 	quit <- true
@@ -209,4 +234,19 @@ func parseVolume(volumeVars []string) (map[string]interface{}, error) {
 	}
 
 	return volumeMap, nil
+}
+
+// printVolumes format volume data
+func printVolumes(d *DryccCmd, volumes api.Volumes) {
+	table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "TYPE", "PTYPE", "PATH", "SIZE"})
+	for _, volume := range volumes {
+		if len(volume.Path) > 0 {
+			for _, key := range *sortKeys(volume.Path) {
+				table.Append([]string{volume.Name, volume.Owner, volume.Type, key, fmt.Sprintf("%v", volume.Path[key]), volume.Size})
+			}
+		} else {
+			table.Append([]string{volume.Name, volume.Owner, "", "", volume.Size})
+		}
+	}
+	table.Render()
 }

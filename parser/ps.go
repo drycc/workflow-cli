@@ -62,7 +62,7 @@ Options:
 	}
 
 	// The 1000 is fake for now until API understands limits
-	return cmdr.PsList(safeGetValue(args, "--app"), 1000)
+	return cmdr.PsList(safeGetString(args, "--app"), 1000)
 }
 
 func psExec(argv []string, cmdr cmd.Commander) error {
@@ -84,8 +84,8 @@ Options:
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
-	pod := safeGetValue(args, "<pod>")
+	app := safeGetString(args, "--app")
+	pod := safeGetString(args, "<pod>")
 	tty := args["--tty"].(bool)
 	stdin := args["--stdin"].(bool)
 	index := slices.Index(os.Args, "--")
@@ -114,8 +114,8 @@ Options:
 		return err
 	}
 
-	apps := safeGetValue(args, "--app")
-	tp := safeGetValue(args, "<type>")
+	apps := safeGetString(args, "--app")
+	tp := safeGetString(args, "<type>")
 	return cmdr.PsRestart(apps, tp)
 }
 
@@ -143,6 +143,6 @@ Options:
 		return err
 	}
 
-	apps := safeGetValue(args, "--app")
+	apps := safeGetString(args, "--app")
 	return cmdr.PsScale(apps, args["<type>=<num>"].([]string))
 }

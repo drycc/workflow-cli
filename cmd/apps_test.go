@@ -29,7 +29,7 @@ func TestAppsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -78,7 +78,7 @@ func TestAppsListLimit(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -116,7 +116,7 @@ func TestAppsInfo(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -130,7 +130,7 @@ func TestAppsInfo(t *testing.T) {
 }`)
 	})
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/pods/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/pods/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "count": 1,
@@ -146,7 +146,7 @@ func TestAppsInfo(t *testing.T) {
 }`)
 	})
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/domains/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/domains/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "count": 1,
@@ -164,7 +164,7 @@ func TestAppsInfo(t *testing.T) {
 }`)
 	})
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "elrond",
@@ -219,7 +219,7 @@ func TestAppDestroy(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -252,7 +252,7 @@ func TestAppTransfer(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
@@ -300,7 +300,7 @@ func TestRemoteExists(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
     "owner": "jkirk",

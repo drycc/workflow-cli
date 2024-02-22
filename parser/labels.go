@@ -56,7 +56,7 @@ Options:
 		return err
 	}
 
-	return cmdr.LabelsList(safeGetValue(args, "--app"))
+	return cmdr.LabelsList(safeGetString(args, "--app"))
 }
 
 func labelsSet(argv []string, cmdr cmd.Commander) error {
@@ -82,7 +82,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	tags := args["<key>=<value>"].([]string)
 
 	return cmdr.LabelsSet(app, tags)
@@ -107,7 +107,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	tags := args["<key>"].([]string)
 
 	return cmdr.LabelsUnset(app, tags)

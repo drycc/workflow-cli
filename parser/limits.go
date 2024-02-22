@@ -58,7 +58,7 @@ Options:
 		return err
 	}
 
-	return cmdr.LimitsList(safeGetValue(args, "--app"))
+	return cmdr.LimitsList(safeGetString(args, "--app"))
 }
 
 func limitSet(argv []string, cmdr cmd.Commander) error {
@@ -107,7 +107,7 @@ Use 'drycc help [command]' to learn more.
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	cpuLimits := []string{}
 	memoryLimits := []string{}
 	for _, value := range args["<type>=<value>"].([]string) {
@@ -152,7 +152,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	cpuLimits := []string{}
 	memoryLimits := []string{}
 

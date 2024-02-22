@@ -68,10 +68,10 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	procfileType := safeGetValue(args, "--type")
-	protocol := safeGetValue(args, "--protocol")
-	ports := safeGetValue(args, "--port")
+	app := safeGetString(args, "--app")
+	procfileType := safeGetString(args, "--type")
+	protocol := safeGetString(args, "--protocol")
+	ports := safeGetString(args, "--port")
 	return cmdr.ServicesAdd(app, procfileType, ports, protocol)
 }
 
@@ -92,7 +92,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.ServicesList(app)
 }
@@ -123,9 +123,9 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	procfileType := safeGetValue(args, "--type")
-	protocol := safeGetValue(args, "--protocol")
+	app := safeGetString(args, "--app")
+	procfileType := safeGetString(args, "--type")
+	protocol := safeGetString(args, "--protocol")
 	port := safeGetInt(args, "--port")
 
 	return cmdr.ServicesRemove(app, procfileType, protocol, port)

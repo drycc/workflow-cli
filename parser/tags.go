@@ -56,7 +56,7 @@ Options:
 		return err
 	}
 
-	return cmdr.TagsList(safeGetValue(args, "--app"))
+	return cmdr.TagsList(safeGetString(args, "--app"))
 }
 
 func tagsSet(argv []string, cmdr cmd.Commander) error {
@@ -83,7 +83,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	tags := args["<key>=<value>"].([]string)
 
 	return cmdr.TagsSet(app, tags)
@@ -108,7 +108,7 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 	tags := args["<key>"].([]string)
 
 	return cmdr.TagsUnset(app, tags)

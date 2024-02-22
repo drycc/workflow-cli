@@ -22,7 +22,7 @@ func TestCertsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 4,
@@ -86,7 +86,7 @@ test2               2.test.drycc.com    1 Jan 2018     <none>                  <
 	cmdr.ConfigFile = cf
 	b.Reset()
 
-	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 0,
@@ -112,7 +112,7 @@ func TestCertsListLimit(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 4,
@@ -160,7 +160,7 @@ func TestCertsInfo(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"name": "test-example-com",
@@ -201,7 +201,7 @@ Created:              2016-06-09T00:00:00Z
 Updated:              2016-06-09T00:00:00Z    
 `, "output")
 
-	server.Mux.HandleFunc("/v2/certs/test-drycc-com", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/test-drycc-com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"name": "test-drycc-com"
@@ -237,7 +237,7 @@ func TestCertsRemove(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -280,7 +280,7 @@ func TestCertsDetach(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com/domain/drycc.com", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/certs/test-example-com/domain/drycc.com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})

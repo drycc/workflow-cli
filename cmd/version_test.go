@@ -22,7 +22,7 @@ func TestVersion(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Add("DRYCC_API_VERSION", "1234")
 		w.WriteHeader(200)
 	})

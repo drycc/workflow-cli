@@ -13,6 +13,7 @@ Valid commands for volumes:
 volumes:create           create a volume for the application
 volumes:expand           expand a volume for the application
 volumes:list             list volumes in the application
+volumes:info             print information about a volume
 volumes:delete           delete a volume from the application
 volumes:mount            mount a volume to process of the application
 volumes:unmount          unmount a volume from process of the application
@@ -27,6 +28,8 @@ Use 'drycc help [command]' to learn more.
 		return volumesExpand(argv, cmdr)
 	case "volumes:list":
 		return volumesList(argv, cmdr)
+	case "volumes:info":
+		return volumesInfo(argv, cmdr)
 	case "volumes:delete":
 		return volumesDelete(argv, cmdr)
 	case "volumes:mount":
@@ -63,6 +66,14 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  -t --type=<type>
+    the volume type, such as csi, nfs, default is 'csi'.
+  --nfs-server=<nfs-server>
+    the hostname or ip address of the nfs server.
+  --nfs-path=<nfs-path>
+    path that is exported by the nfs server.
+  --nfs-read-only
+    a flag indicating whether the storage will be mounted as read only.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -71,11 +82,23 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
-	size := safeGetValue(args, "<size>")
+	app := safeGetString(args, "--app")
+	vType := safeGetValue(args, "--type", "csi")
+	name := safeGetString(args, "<name>")
+	size := safeGetValue(args, "<size>", "0G")
+	parameters := map[string]interface{}{}
+	if vType == "nfs" {
+		server := safeGetString(args, "--nfs-server")
+		path := safeGetString(args, "--nfs-path")
+		readOnly := safeGetBool(args, "--nfs-read-only")
+		parameters["nfs"] = map[string]interface{}{
+			"server":   server,
+			"path":     path,
+			"readOnly": readOnly,
+		}
+	}
 
-	return cmdr.VolumesCreate(app, name, size)
+	return cmdr.VolumesCreate(app, name, vType, size, parameters)
 }
 
 func volumesExpand(argv []string, cmdr cmd.Commander) error {
@@ -101,9 +124,9 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
-	size := safeGetValue(args, "<size>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
+	size := safeGetString(args, "<size>")
 
 	return cmdr.VolumesExpand(app, name, size)
 }
@@ -127,14 +150,41 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.VolumesList(app, results)
+}
+
+func volumesInfo(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Print information about a volume.
+
+Usage: drycc volumes:info <name> [options]
+
+Arguments:
+  <name>
+    the volume name to be info.
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
+
+	return cmdr.VolumesInfo(app, name)
 }
 
 func volumesDelete(argv []string, cmdr cmd.Commander) error {
@@ -159,8 +209,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.VolumesDelete(app, name)
 }
@@ -191,8 +241,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.VolumesMount(app, name, args["<type>=<path>"].([]string))
 }
@@ -220,8 +270,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.VolumesUnmount(app, name, args["<type>"].([]string))
 }

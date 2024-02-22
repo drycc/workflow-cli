@@ -10,7 +10,7 @@ func TestSafeGet(t *testing.T) {
 	test := make(map[string]interface{}, 1)
 	test["test"] = "foo"
 
-	actual := safeGetValue(test, "test")
+	actual := safeGetString(test, "test")
 
 	if expected != actual {
 		t.Errorf("Expected %s, Got %s", expected, actual)
@@ -25,7 +25,7 @@ func TestSafeGetNil(t *testing.T) {
 	test := make(map[string]interface{}, 1)
 	test["test"] = nil
 
-	actual := safeGetValue(test, "test")
+	actual := safeGetString(test, "test")
 
 	if expected != actual {
 		t.Errorf("Expected %s, Got %s", expected, actual)

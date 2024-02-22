@@ -22,7 +22,7 @@ func (d *DryccCmd) AutoscaleList(appID string) error {
 	if appSettings.Autoscale == nil {
 		d.Println("No autoscale rules found.")
 	} else {
-		table := d.getDefaultFormatTable([]string{"UUID", "TYPE", "PERCENT", "MIN", "MAX"})
+		table := d.getDefaultFormatTable([]string{"UUID", "PTYPE", "PERCENT", "MIN", "MAX"})
 		for process, kv := range appSettings.Autoscale {
 			table.Append([]string{
 				appSettings.UUID,

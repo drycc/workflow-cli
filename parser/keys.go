@@ -56,7 +56,7 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
@@ -85,7 +85,7 @@ Arguments:
 		return err
 	}
 
-	return cmdr.KeyAdd(safeGetValue(args, "<name>"), safeGetValue(args, "<key>"))
+	return cmdr.KeyAdd(safeGetString(args, "<name>"), safeGetString(args, "<key>"))
 }
 
 func keyRemove(argv []string, cmdr cmd.Commander) error {
@@ -104,5 +104,5 @@ Arguments:
 		return err
 	}
 
-	return cmdr.KeyRemove(safeGetValue(args, "<key>"))
+	return cmdr.KeyRemove(safeGetString(args, "<key>"))
 }

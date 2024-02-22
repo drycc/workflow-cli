@@ -80,7 +80,7 @@ func TestTimeoutsList(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
       "owner": "jkirk",
@@ -105,12 +105,12 @@ func TestTimeoutsList(t *testing.T) {
 
 	err = cmdr.TimeoutsList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER    TYPE      TIMEOUT 
+	assert.Equal(t, b.String(), `UUID                                    OWNER    PTYPE     TIMEOUT 
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       10         
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    20         
 `, "output")
 
-	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
       "owner": "bedison",
@@ -176,8 +176,8 @@ func TestTimeoutsSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-UUID                                    OWNER    TYPE    TIMEOUT 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     10         
+UUID                                    OWNER    PTYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      10         
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -213,8 +213,8 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     10
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-UUID                                    OWNER      TYPE    TIMEOUT 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     10         
+UUID                                    OWNER      PTYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      10         
 `, "output")
 
 	// with requests/timeout parameter
@@ -255,7 +255,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     10
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-UUID                                    OWNER    TYPE      TIMEOUT 
+UUID                                    OWNER    PTYPE     TIMEOUT 
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        300        
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       10         
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    100        
@@ -306,8 +306,8 @@ func TestTimeoutsUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-UUID                                    OWNER    TYPE    TIMEOUT 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     10         
+UUID                                    OWNER    PTYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      10         
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -343,7 +343,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     10
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-UUID                                    OWNER      TYPE    TIMEOUT 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     10         
+UUID                                    OWNER      PTYPE    TIMEOUT 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      10         
 `, "output")
 }

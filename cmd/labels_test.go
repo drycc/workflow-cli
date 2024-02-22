@@ -21,7 +21,7 @@ func TestLabelsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/rivendell/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/rivendell/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "jim",
@@ -40,7 +40,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jim      git_repo    https://github.com/
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jim      team        drycc                                         
 `, "output")
 
-	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "priw",

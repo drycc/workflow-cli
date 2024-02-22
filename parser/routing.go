@@ -55,7 +55,7 @@ Options:
 		return err
 	}
 
-	return cmdr.RoutingInfo(safeGetValue(args, "--app"))
+	return cmdr.RoutingInfo(safeGetString(args, "--app"))
 }
 
 func routingEnable(argv []string, cmdr cmd.Commander) error {
@@ -74,7 +74,7 @@ Options:
 		return err
 	}
 
-	return cmdr.RoutingEnable(safeGetValue(args, "--app"))
+	return cmdr.RoutingEnable(safeGetString(args, "--app"))
 }
 
 func routingDisable(argv []string, cmdr cmd.Commander) error {
@@ -94,5 +94,5 @@ Options:
 		return err
 	}
 
-	return cmdr.RoutingDisable(safeGetValue(args, "--app"))
+	return cmdr.RoutingDisable(safeGetString(args, "--app"))
 }

@@ -45,7 +45,7 @@ func TestPrintProcesses(t *testing.T) {
 
 	printProcesses(&DryccCmd{WOut: &b, ConfigFile: cf}, "appname", pods)
 
-	assert.Equal(t, b.String(), `NAME                                       RELEASE    STATE    TYPE      STARTED                
+	assert.Equal(t, b.String(), `NAME                                       RELEASE    STATE    PTYPE     STARTED                
 benign-quilting-web-4084101150-c871y       v3         up       web       2023-11-15T11:55:16CST    
 benign-quilting-worker-4084101150-c871y    v3         up       worker    2023-11-15T11:55:16CST    
 `, "output")
@@ -61,7 +61,7 @@ func TestPsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/pods/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/pods/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 1,
@@ -82,8 +82,8 @@ func TestPsList(t *testing.T) {
 	err = cmdr.PsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME                        RELEASE    STATE    TYPE    STARTED                
-foo-web-4084101150-c871y    v2         up       web     2016-02-13T00:47:52UTC    
+	assert.Equal(t, b.String(), `NAME                        RELEASE    STATE    PTYPE    STARTED                
+foo-web-4084101150-c871y    v2         up       web      2016-02-13T00:47:52UTC    
 `, "output")
 }
 
@@ -149,7 +149,7 @@ func TestPsScale(t *testing.T) {
 	err = cmdr.PsScale("foo", []string{"test"})
 	assert.Equal(t, err.Error(), "'test' does not match the pattern 'type=num', ex: web=2", "error")
 
-	server.Mux.HandleFunc("/v2/apps/foo/pods/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/pods/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 1,
@@ -179,8 +179,8 @@ func TestPsScale(t *testing.T) {
 	assert.Equal(t, testutil.StripProgress(b.String()), `Scaling processes... but first, coffee!
 done in 0s
 
-NAME                        RELEASE    STATE    TYPE    STARTED                
-foo-web-4084101150-c871y    v2         up       web     2016-02-13T00:47:52UTC    
+NAME                        RELEASE    STATE    PTYPE    STARTED                
+foo-web-4084101150-c871y    v2         up       web      2016-02-13T00:47:52UTC    
 `, "output")
 }
 
@@ -194,7 +194,7 @@ func TestPsRestart(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/pods/restart/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -203,7 +203,7 @@ func TestPsRestart(t *testing.T) {
 	err = cmdr.PsRestart("foo", "")
 	assert.NoError(t, err)
 
-	server.Mux.HandleFunc("/v2/apps/coolapp/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/coolapp/pods/restart/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -213,7 +213,7 @@ func TestPsRestart(t *testing.T) {
 	err = cmdr.PsRestart("coolapp", "")
 	assert.NoError(t, err)
 
-	server.Mux.HandleFunc("/v2/apps/testapp/pods/web/restart/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/testapp/pods/web/restart/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})

@@ -78,10 +78,10 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
-	procType := safeGetValue(args, "--type")
-	kind := safeGetValue(args, "--kind")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
+	procType := safeGetString(args, "--type")
+	kind := safeGetString(args, "--kind")
 	port := safeGetInt(args, "--port")
 
 	return cmdr.RoutesCreate(app, name, procType, kind, port)
@@ -89,7 +89,7 @@ Options:
 
 func routesList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists routes for an application
+List routes for an application
 
 Usage: drycc routes:list [options]
 
@@ -105,19 +105,19 @@ Options:
 	if err != nil {
 		return err
 	}
-	results, err := responseLimit(safeGetValue(args, "--limit"))
+	results, err := responseLimit(safeGetString(args, "--limit"))
 	if err != nil {
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
+	app := safeGetString(args, "--app")
 
 	return cmdr.RoutesList(app, results)
 }
 
 func routesGet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists routes for an application
+Get a route for an application
 
 Usage: drycc routes:get <name> [options]
 
@@ -136,15 +136,15 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.RoutesGet(app, name)
 }
 
 func routesSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists routes for an application
+Set route for an application
 
 Usage: drycc routes:set <name> --rules-file=<rules-file> [options]
 
@@ -165,16 +165,16 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
-	rulesFile := safeGetValue(args, "--rules-file")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
+	rulesFile := safeGetString(args, "--rules-file")
 
 	return cmdr.RoutesSet(app, name, rulesFile)
 }
 
 func routesAttach(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists routes for an application
+Attach a route for an application
 
 Usage: drycc routes:attach <name> --gateway=<gateway> --port=<port> [options]
 
@@ -197,17 +197,17 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 	port := safeGetInt(args, "--port")
-	gateway := safeGetValue(args, "--gateway")
+	gateway := safeGetString(args, "--gateway")
 
 	return cmdr.RoutesAttach(app, name, port, gateway)
 }
 
 func routesDetach(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists routes for an application
+Detach a route for an application
 
 Usage: drycc routes:detach <name> --gateway=<gateway> --port=<port> [options]
 
@@ -230,17 +230,17 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 	port := safeGetInt(args, "--port")
-	gateway := safeGetValue(args, "--gateway")
+	gateway := safeGetString(args, "--gateway")
 
 	return cmdr.RoutesDetach(app, name, port, gateway)
 }
 
 func routesRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Deletes specific extra service for application
+Delete a route from the application.
 
 Usage: drycc routes:remove <name> [options]
 
@@ -258,8 +258,8 @@ Options:
 	if err != nil {
 		return err
 	}
-	app := safeGetValue(args, "--app")
-	name := safeGetValue(args, "<name>")
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
 
 	return cmdr.RoutesRemove(app, name)
 }

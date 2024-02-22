@@ -53,8 +53,8 @@ Options:
 		return err
 	}
 
-	app := safeGetValue(args, "--app")
-	remote := safeGetValue(args, "--remote")
+	app := safeGetString(args, "--app")
+	remote := safeGetString(args, "--remote")
 	force := args["--force"].(bool)
 
 	return cmdr.GitRemote(app, remote, force)
@@ -77,5 +77,5 @@ Options:
 		return err
 	}
 
-	return cmdr.GitRemove(safeGetValue(args, "--app"))
+	return cmdr.GitRemove(safeGetString(args, "--app"))
 }

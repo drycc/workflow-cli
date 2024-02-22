@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	STDIN_CHANNEL  = "\x00"
-	STDOUT_CHANNEL = "\x01"
-	STDERR_CHANNEL = "\x02"
-	ERROR_CHANNEL  = "\x03"
-	RESIZE_CHANNEL = "\x04"
+	stdinChannel  = "\x00"
+	stdoutChannel = "\x01"
+	stderrChannel = "\x02"
+	errorChannel  = "\x03"
+	resizeChannel = "\x04"
 )
 
 // PsList lists an app's processes.
@@ -130,7 +130,7 @@ func printProcesses(d *DryccCmd, appID string, input []api.Pods) {
 	if len(processes) == 0 {
 		d.Println(fmt.Sprintf("No processes found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "RELEASE", "STATE", "TYPE", "STARTED"})
+		table := d.getDefaultFormatTable([]string{"NAME", "RELEASE", "STATE", "PTYPE", "STARTED"})
 		for _, process := range processes {
 			for _, pod := range process.PodsList {
 				table.Append([]string{
@@ -181,9 +181,8 @@ func runRecvTask(conn *websocket.Conn, c console.Console, recvChan, sendChan cha
 				break
 			} else if err != nil {
 				continue
-			} else {
-				sendChan <- string(buf[:size])
 			}
+			sendChan <- string(buf[:size])
 		}
 	}()
 	return ctx, cancel
@@ -197,7 +196,7 @@ func runResizeTask(conn *websocket.Conn, c console.Console) {
 				if size.Height != tmpSize.Height || size.Width != tmpSize.Width {
 					size = tmpSize
 					message := fmt.Sprintf(`{"Height": %d, "Width": %d}`, size.Height, size.Width)
-					if err := websocket.Message.Send(conn, RESIZE_CHANNEL+message); err != nil {
+					if err := websocket.Message.Send(conn, resizeChannel+message); err != nil {
 						break
 					}
 				}
@@ -213,9 +212,8 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 	if tty {
 		if err := c.SetRaw(); err != nil {
 			return err
-		} else {
-			runResizeTask(conn, c)
 		}
+		runResizeTask(conn, c)
 	}
 	recvChan, sendChan := make(chan string, 10), make(chan string, 10)
 	ctx, cancel := runRecvTask(conn, c, recvChan, sendChan)
@@ -227,7 +225,7 @@ func streamExec(conn *websocket.Conn, tty bool) error {
 		case <-ctx.Done():
 			return nil
 		case message := <-sendChan:
-			if err := websocket.Message.Send(conn, STDIN_CHANNEL+message); err != nil {
+			if err := websocket.Message.Send(conn, stdinChannel+message); err != nil {
 				return err
 			}
 		case message := <-recvChan:

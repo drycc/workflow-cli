@@ -212,17 +212,16 @@ func TestDeleteAppRemotes(t *testing.T) {
 `, nil
 		} else if reflect.DeepEqual(cmd, []string{"remote", "remove", "drycc"}) {
 			return "", nil
-		} else {
-			t.Errorf("unexpected command %v", cmd)
-			return "", nil
 		}
+		t.Errorf("unexpected command %v", cmd)
+		return "", nil
 	}, "drycc.example.com", "test")
 
 	assert.NoError(t, err)
 
 	testErr := errors.New("test error")
 
-	err = DeleteAppRemotes(func(cmd []string) (string, error) {
+	err = DeleteAppRemotes(func([]string) (string, error) {
 		return "", testErr
 	}, "drycc.example.com", "test")
 
@@ -234,10 +233,9 @@ func TestDeleteAppRemotes(t *testing.T) {
 `, nil
 		} else if reflect.DeepEqual(cmd, []string{"remote", "remove", "drycc"}) {
 			return "", testErr
-		} else {
-			t.Errorf("unexpected command %v", cmd)
-			return "", nil
 		}
+		t.Errorf("unexpected command %v", cmd)
+		return "", nil
 	}, "drycc.example.com", "test")
 
 	assert.Error(t, testErr, err)

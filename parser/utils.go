@@ -8,11 +8,12 @@ import (
 	"github.com/drycc/workflow-cli/cmd"
 )
 
-func safeGetValue(args map[string]interface{}, key string) string {
-	if args[key] == nil {
-		return ""
-	}
-	return args[key].(string)
+func safeGetString(args map[string]interface{}, key string) string {
+	return safeGetValue(args, key, "")
+}
+
+func safeGetBool(args map[string]interface{}, key string) bool {
+	return safeGetValue(args, key, false)
 }
 
 func safeGetInt(args map[string]interface{}, key string) int {
@@ -24,6 +25,13 @@ func safeGetInt(args map[string]interface{}, key string) int {
 		log.Fatalf("could not convert %s to int: %v", args[key], err)
 	}
 	return retVal
+}
+
+func safeGetValue[T any](args map[string]interface{}, key string, defaultValue T) T {
+	if args[key] == nil {
+		return defaultValue
+	}
+	return args[key].(T)
 }
 
 func responseLimit(limit string) (int, error) {

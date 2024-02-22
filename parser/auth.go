@@ -56,7 +56,7 @@ Options:
 		return err
 	}
 
-	controller := safeGetValue(args, "<controller>")
+	controller := safeGetString(args, "<controller>")
 	sslVerify := true
 
 	if args["--ssl-verify"] != nil && args["--ssl-verify"].(string) == "false" {

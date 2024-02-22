@@ -90,7 +90,7 @@ func TestLimitsList(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
@@ -119,7 +119,7 @@ func TestLimitsList(t *testing.T) {
 
 	err = cmdr.LimitsList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER    TYPE      DEVICE    QUOTA 
+	assert.Equal(t, b.String(), `UUID                                    OWNER    PTYPE     DEVICE    QUOTA 
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    db        MEM       1000M    
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       MEM       2G       
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    MEM       1G       
@@ -128,7 +128,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       CPU       2
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    CPU       1        
 `, "output")
 
-	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "bedison",
@@ -193,9 +193,9 @@ func TestLimitsSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    TYPE    DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     MEM       128M     
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     CPU       100m     
+UUID                                    OWNER    PTYPE    DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      MEM       128M     
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       100m     
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
@@ -232,9 +232,9 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     CPU       100m
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER      TYPE    DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     MEM       1G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     CPU       1        
+UUID                                    OWNER      PTYPE    DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      MEM       1G       
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      CPU       1        
 `, "output")
 
 	// with requests/limit parameter
@@ -278,7 +278,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web     CPU       1
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    TYPE      DEVICE    QUOTA 
+UUID                                    OWNER    PTYPE     DEVICE    QUOTA 
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        MEM       5G       
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       MEM       2000M    
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    MEM       3G       
@@ -328,7 +328,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       1
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    TYPE      DEVICE    QUOTA 
+UUID                                    OWNER    PTYPE     DEVICE    QUOTA 
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        MEM       1G       
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       MEM       1G       
 de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    MEM       1G       
@@ -382,9 +382,9 @@ func TestLimitsUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    TYPE    DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     MEM       128M     
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web     CPU       125m     
+UUID                                    OWNER    PTYPE    DEVICE    QUOTA 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      MEM       128M     
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       125m     
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {

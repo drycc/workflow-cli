@@ -20,20 +20,20 @@ func TestLogin(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{}`)
 	})
 
-	server.Mux.HandleFunc("/v2/auth/login/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/auth/login/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.Header().Add("Location", "/v2/login/drycc/?key=fdbf3b34742e4ed2be4dfa848af13007/")
 		w.WriteHeader(http.StatusOK)
 		w.Write(nil)
 	})
 
-	server.Mux.HandleFunc("/v2/auth/token/fdbf3b34742e4ed2be4dfa848af13007/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/auth/token/fdbf3b34742e4ed2be4dfa848af13007/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"username":"test-user","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"}`))
@@ -70,7 +70,7 @@ func TestWhoami(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/auth/whoami/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/auth/whoami/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "email": "test@example.com",
@@ -104,7 +104,7 @@ func TestWhoamiAll(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/auth/whoami/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/auth/whoami/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
   "email": "test@example.com",

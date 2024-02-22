@@ -82,7 +82,7 @@ func TestTagsList(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
@@ -106,9 +106,9 @@ func TestTagsList(t *testing.T) {
 
 	err = cmdr.TagsList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER    TYPE    TAG  
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    ncc     1701    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    warp    8       
+	assert.Equal(t, b.String(), `UUID                                    OWNER    PTYPE    TAG  
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    ncc      1701    
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    warp     8       
 `, "output")
 }
 
@@ -154,8 +154,8 @@ func TestTagsSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-UUID                                    OWNER    TYPE    TAG   
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    true    false    
+UUID                                    OWNER    PTYPE    TAG   
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    true     false    
 `, "output")
 }
 
@@ -201,7 +201,7 @@ func TestTagsUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-UUID                                    OWNER    TYPE    TAG 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    warp    8      
+UUID                                    OWNER    PTYPE    TAG 
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    warp     8      
 `, "output")
 }

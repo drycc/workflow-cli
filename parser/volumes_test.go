@@ -16,7 +16,11 @@ func (d FakeDryccCmd) VolumesList(string, int) error {
 	return errors.New("volumes:list")
 }
 
-func (d FakeDryccCmd) VolumesCreate(string, string, string) error {
+func (d FakeDryccCmd) VolumesInfo(string, string) error {
+	return errors.New("volumes:info")
+}
+
+func (d FakeDryccCmd) VolumesCreate(string, string, string, string, map[string]interface{}) error {
 	return errors.New("volumes:create")
 }
 

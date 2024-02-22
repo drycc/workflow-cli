@@ -21,7 +21,7 @@ func TestRoutingInfo(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/rivendell/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/rivendell/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "elrond",
@@ -37,7 +37,7 @@ func TestRoutingInfo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), "Routing is enabled.\n", "output")
 
-	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "sauron",
@@ -55,7 +55,7 @@ func TestRoutingInfo(t *testing.T) {
 	assert.Equal(t, b.String(), "Routing is disabled.\n", "output")
 
 	// test that no routable field doesn't trigger a panic
-	server.Mux.HandleFunc("/v2/apps/gondor/settings/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/gondor/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"owner": "aragorn",

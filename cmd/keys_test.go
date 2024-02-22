@@ -205,7 +205,7 @@ func TestKeysList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -250,7 +250,7 @@ func TestKeysListLimit(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/keys/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 2,
@@ -286,7 +286,7 @@ func TestKeyRemove(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/keys/cpike@starfleet.ufp", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/keys/cpike@starfleet.ufp", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
