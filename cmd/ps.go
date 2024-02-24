@@ -13,6 +13,7 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/ps"
 	"golang.org/x/net/websocket"
+	yaml "gopkg.in/yaml.v3"
 )
 
 const (
@@ -147,29 +148,37 @@ func printProcesses(d *DryccCmd, appID string, input []api.Pods) {
 }
 
 func printExec(d *DryccCmd, conn *websocket.Conn) error {
-	var message string
-	err := websocket.Message.Receive(conn, &message)
+	var data string
+	err := websocket.Message.Receive(conn, &data)
 	if err != nil {
 		if err != io.EOF {
 			log.Printf("error: %v", err)
 		}
 		return nil
 	}
-	d.Printf("%s", message)
-	return nil
+	message, err := parseChannelMessage(data)
+	if err == nil {
+		d.Printf("%s", message)
+	}
+	return err
 }
 
 func runRecvTask(conn *websocket.Conn, c console.Console, recvChan, sendChan chan string) (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
 		for {
-			var message string
-			err := websocket.Message.Receive(conn, &message)
+			var data string
+			err := websocket.Message.Receive(conn, &data)
 			if err != nil {
 				cancel()
 				break
 			}
-			recvChan <- message
+			if message, err := parseChannelMessage(data); err != nil {
+				cancel()
+				break
+			} else {
+				recvChan <- message
+			}
 		}
 	}()
 	go func() {
@@ -253,4 +262,22 @@ func parsePsTargets(targets []string) (map[string]int, error) {
 	}
 
 	return targetMap, nil
+}
+
+func parseChannelMessage(data string) (string, error) {
+	channel, message := data[0], data[1:]
+	if string(channel) == errorChannel {
+		data := make(map[string]interface{})
+		yaml.Unmarshal([]byte(message), data)
+		if value, hasKey := data["message"]; hasKey {
+			if message, ok := value.(string); ok {
+				return message, nil
+			} else {
+				return "", fmt.Errorf("message is not string, type: %T", message)
+			}
+		} else {
+			return "", nil
+		}
+	}
+	return message, nil
 }
