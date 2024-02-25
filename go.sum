@@ -6,8 +6,8 @@ github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
 github.com/drycc/controller-sdk-go v0.0.0-20240222015357-c385680d03cd h1:e0473hmWPUVROSR51wiIOWb3Jvt5GJb571q8BNAPInw=
 github.com/drycc/controller-sdk-go v0.0.0-20240222015357-c385680d03cd/go.mod h1:EAzlvB5kQq4pFP+h+zl0mx2q1GUlHgzdQ92tlYtDQfQ=
-github.com/drycc/pkg v0.0.0-20230928024225-e3e090ee503a h1:OwlBnGkuYB3DWEMphPKTG3iYJV2kXPxy0XmCwoFiaC4=
-github.com/drycc/pkg v0.0.0-20230928024225-e3e090ee503a/go.mod h1:y/6vsR0kXRg3Vxj2M/UqApU2uL43KfMDMN2SyvwF0Ek=
+github.com/drycc/pkg v0.0.0-20240225112316-78fc9239f51f h1:kgjvUQJeAszDoU1Vo4vTTE92KI8Av3JPb6Qn890niXg=
+github.com/drycc/pkg v0.0.0-20240225112316-78fc9239f51f/go.mod h1:n+QxGif6ha9CEoxVnlipxb9IdmerybcUSzTEDFkvjiA=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
