@@ -245,7 +245,7 @@ func printVolumes(d *DryccCmd, volumes api.Volumes) {
 				table.Append([]string{volume.Name, volume.Owner, volume.Type, key, fmt.Sprintf("%v", volume.Path[key]), volume.Size})
 			}
 		} else {
-			table.Append([]string{volume.Name, volume.Owner, "", "", volume.Size})
+			table.Append([]string{volume.Name, volume.Owner, volume.Type, "", "", volume.Size})
 		}
 	}
 	table.Render()
