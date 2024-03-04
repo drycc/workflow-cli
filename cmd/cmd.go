@@ -14,7 +14,7 @@ type Commander interface {
 	AppInfo(string) error
 	AppOpen(string) error
 	AppLogs(string, int, bool, int) error
-	AppRun(string, string, []string) error
+	AppRun(string, string, []string, uint32, uint32) error
 	AppDestroy(string, string) error
 	AppTransfer(string, string) error
 	AutoscaleList(string) error

@@ -213,6 +213,10 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  --timeout=<timeout>
+    the timeout for command run, default to 3600 seconds.
+  --expires=<expires>
+    retention time of running records, default to 3600 seconds.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -222,9 +226,11 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
+	timeout := uint32(safeGetInt(args, "--timeout"))
+	expires := uint32(safeGetInt(args, "--expires"))
 	command := strings.Join(args["<command>"].([]string), " ")
 	mounts := args["--mount"].([]string)
-	return cmdr.AppRun(app, command, mounts)
+	return cmdr.AppRun(app, command, mounts, timeout, expires)
 }
 
 func appDestroy(argv []string, cmdr cmd.Commander) error {

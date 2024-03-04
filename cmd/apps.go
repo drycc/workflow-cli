@@ -237,7 +237,7 @@ func (d *DryccCmd) AppLogs(appID string, lines int, follow bool, timeout int) er
 }
 
 // AppRun runs a one time command in the app.
-func (d *DryccCmd) AppRun(appID, command string, volumeVars []string) error {
+func (d *DryccCmd) AppRun(appID, command string, volumeVars []string, timeout, expires uint32) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -250,7 +250,7 @@ func (d *DryccCmd) AppRun(appID, command string, volumeVars []string) error {
 		return err
 	}
 
-	if err := apps.Run(s.Client, appID, command, volumeMap); d.checkAPICompatibility(s.Client, err) != nil {
+	if err := apps.Run(s.Client, appID, command, volumeMap, timeout, expires); d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 	return nil

@@ -85,7 +85,7 @@ Options:
 	app := safeGetString(args, "--app")
 	vType := safeGetValue(args, "--type", "csi")
 	name := safeGetString(args, "<name>")
-	size := safeGetValue(args, "<size>", "0G")
+	size := safeGetString(args, "<size>")
 	parameters := map[string]interface{}{}
 	if vType == "nfs" {
 		server := safeGetString(args, "--nfs-server")

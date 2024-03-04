@@ -32,7 +32,7 @@ func (d FakeDryccCmd) AppLogs(string, int, bool, int) error {
 	return errors.New("apps:logs")
 }
 
-func (d FakeDryccCmd) AppRun(string, string, []string) error {
+func (d FakeDryccCmd) AppRun(string, string, []string, uint32, uint32) error {
 	return errors.New("apps:run")
 }
 
