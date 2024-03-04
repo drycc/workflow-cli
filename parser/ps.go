@@ -14,6 +14,7 @@ func Ps(argv []string, cmdr cmd.Commander) error {
 Valid commands for processes:
 
 ps:list        list application processes
+ps:logs        print the logs for a container
 ps:exec        execute a command in a container
 ps:restart     restart an application or process type
 ps:scale       scale processes (e.g. web=4 worker=2)
@@ -24,6 +25,8 @@ Use 'drycc help [command]' to learn more.
 	switch argv[0] {
 	case "ps:list":
 		return psList(argv, cmdr)
+	case "ps:logs":
+		return psLogs(argv, cmdr)
 	case "ps:exec":
 		return psExec(argv, cmdr)
 	case "ps:restart":
@@ -63,6 +66,41 @@ Options:
 
 	// The 1000 is fake for now until API understands limits
 	return cmdr.PsList(safeGetString(args, "--app"), 1000)
+}
+
+func psLogs(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Print the logs for a container in a pod or specified resource.
+
+Usage: drycc ps:logs <pod> [options]
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+  -n --lines=<lines>
+    the number of lines to display.
+  -f --follow
+    specify if the logs should be streamed.
+  -t --container=<container>
+    print the logs of this container.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	app := safeGetString(args, "--app")
+	lines := safeGetInt(args, "--lines")
+	if lines <= 0 {
+		lines = 300
+	}
+	follow := safeGetBool(args, "--follow")
+	podID := safeGetString(args, "<pod>")
+	container := safeGetString(args, "--container")
+
+	return cmdr.PsLogs(app, podID, lines, follow, container)
 }
 
 func psExec(argv []string, cmdr cmd.Commander) error {

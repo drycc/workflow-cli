@@ -250,18 +250,9 @@ func (d *DryccCmd) AppRun(appID, command string, volumeVars []string) error {
 		return err
 	}
 
-	out, err := apps.Run(s.Client, appID, command, volumeMap)
-	if d.checkAPICompatibility(s.Client, err) != nil {
+	if err := apps.Run(s.Client, appID, command, volumeMap); d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	if out.ReturnCode == 0 {
-		d.Print(out.Output)
-	} else {
-		d.PrintErr(out.Output)
-	}
-
-	os.Exit(out.ReturnCode)
 	return nil
 }
 

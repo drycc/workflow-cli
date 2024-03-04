@@ -16,6 +16,10 @@ func (d FakeDryccCmd) PsList(string, int) error {
 	return errors.New("ps:list")
 }
 
+func (d FakeDryccCmd) PsLogs(string, string, int, bool, string) error {
+	return errors.New("ps:logs")
+}
+
 func (d FakeDryccCmd) PsExec(string, string, bool, bool, []string) error {
 	return errors.New("ps:exec")
 }
@@ -47,6 +51,10 @@ func TestPs(t *testing.T) {
 	}{
 		{
 			args:     []string{"ps:list"},
+			expected: "",
+		},
+		{
+			args:     []string{"ps:logs", "myapp-web-111"},
 			expected: "",
 		},
 		{

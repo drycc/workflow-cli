@@ -187,7 +187,7 @@ Options:
 	if lines <= 0 {
 		lines = 300
 	}
-	follow := args["--follow"].(bool)
+	follow := safeGetBool(args, "--follow")
 	timeout := safeGetInt(args, "--timeout")
 	if timeout <= 0 {
 		timeout = 300

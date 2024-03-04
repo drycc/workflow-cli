@@ -106,6 +106,25 @@ func TestPsExec(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestPsLogs(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+	server.Mux.Handle(
+		"/v2/apps/foo/pods/foo-web-111/logs/",
+		websocket.Handler(func(conn *websocket.Conn) {
+			conn.WriteClose(100)
+		}),
+	)
+	err = cmdr.PsLogs("foo", "foo-web-111", 300, true, "runner")
+	assert.NoError(t, err)
+}
+
 type psTargetCases struct {
 	Targets       []string
 	ExpectedError bool

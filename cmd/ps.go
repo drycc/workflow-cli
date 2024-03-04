@@ -5,13 +5,16 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/containerd/console"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/ps"
+	"github.com/drycc/workflow-cli/pkg/logging"
 	"golang.org/x/net/websocket"
 	yaml "gopkg.in/yaml.v3"
 )
@@ -42,6 +45,37 @@ func (d *DryccCmd) PsList(appID string, results int) error {
 
 	printProcesses(d, appID, processes)
 
+	return nil
+}
+
+// PodLogs returns the logs from an pod.
+func (d *DryccCmd) PsLogs(appID, podID string, lines int, follow bool, container string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+
+	if err != nil {
+		return err
+	}
+	request := api.PodLogsRequest{
+		Lines:     lines,
+		Follow:    follow,
+		Container: container,
+	}
+	conn, err := ps.Logs(s.Client, appID, podID, request)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	for {
+		var message string
+		err := websocket.Message.Receive(conn, &message)
+		if err != nil {
+			if err != io.EOF {
+				log.Printf("error: %v", err)
+			}
+			break
+		}
+		logging.PrintLog(os.Stdout, strings.TrimRight(string(message), "\n"))
+	}
 	return nil
 }
 
@@ -173,12 +207,12 @@ func runRecvTask(conn *websocket.Conn, c console.Console, recvChan, sendChan cha
 				cancel()
 				break
 			}
-			if message, err := parseChannelMessage(data); err != nil {
+			message, err := parseChannelMessage(data)
+			if err != nil {
 				cancel()
 				break
-			} else {
-				recvChan <- message
 			}
+			recvChan <- message
 		}
 	}()
 	go func() {
@@ -272,12 +306,10 @@ func parseChannelMessage(data string) (string, error) {
 		if value, hasKey := data["message"]; hasKey {
 			if message, ok := value.(string); ok {
 				return message, nil
-			} else {
-				return "", fmt.Errorf("message is not string, type: %T", message)
 			}
-		} else {
-			return "", nil
+			return "", fmt.Errorf("message is not string, type: %T", message)
 		}
+		return "", nil
 	}
 	return message, nil
 }
