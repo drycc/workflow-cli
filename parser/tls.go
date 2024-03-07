@@ -157,13 +157,13 @@ Usage: drycc tls:auto:issuer --email=<email> --server=<server> --key-id=<key-id>
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  <email>
+  --email=<email>
     the email address to be associated with the ACME account.
-  <server>
+  --server=<server>
     Server is the URL used to access the ACME server's 'directory' endpoint.
-  <key-id>
+  --key-id=<key-id>
     keyID is the ID of the CA key that the External Account is bound to.
-  <key-secret>
+  --key-secret=<key-secret>
     keySecret holds the symmetric MAC key of the External Account Binding.
 
 `
