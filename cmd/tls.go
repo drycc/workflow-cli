@@ -26,12 +26,12 @@ func (d *DryccCmd) TLSInfo(appID string) error {
 		tls.Owner,
 		fmt.Sprintf("%v", tls.CertsAutoEnabled != nil && *(tls.CertsAutoEnabled)),
 		fmt.Sprintf("%v", tls.HTTPSEnforced != nil && *(tls.HTTPSEnforced)),
-		"",
-		"",
+		safeGetString(""),
+		safeGetString(""),
 	}
 	if tls.Issuer != nil {
-		data[3] = tls.Issuer.Email
-		data[4] = tls.Issuer.Server
+		data[4] = safeGetString(tls.Issuer.Email)
+		data[5] = safeGetString(tls.Issuer.Server)
 	}
 	table.Append(data)
 	table.Render()
