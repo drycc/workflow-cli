@@ -33,7 +33,7 @@ func TestHealthchecksList(t *testing.T) {
   "tags": {},
   "registry": {},
   "healthcheck": {
-    "web/cmd": {
+    "web": {
       "livenessProbe": {
         "initialDelaySeconds": 50,
         "timeoutSeconds": 50,
@@ -52,16 +52,16 @@ func TestHealthchecksList(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksList("foo", "web/cmd")
+	err = cmdr.HealthchecksList("foo", "web")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `App:             foo                                                                                                           
-UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                          
-Owner:           bar                                                                                                           
-Created:         2016-09-12T22:20:14Z                                                                                          
-Updated:         2016-09-12T22:20:14Z                                                                                          
+	assert.Equal(t, b.String(), `App:             foo                                                                                                            
+UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                           
+Owner:           bar                                                                                                            
+Created:         2016-09-12T22:20:14Z                                                                                           
+Updated:         2016-09-12T22:20:14Z                                                                                           
 Healthchecks:    
-                 liveness web/cmd http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
+                 livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
 `, "output")
 }
 
@@ -121,7 +121,7 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
   "tags": {},
   "registry": {},
   "healthcheck": {
-    "web/cmd": {
+    "web": {
       "livenessProbe": {
         "initialDelaySeconds": 50,
         "timeoutSeconds": 50,
@@ -134,14 +134,14 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
         "successThreshold": 1
       }
     },
-		"web": {
+		"task": {
       "livenessProbe": {
         "initialDelaySeconds": 50,
         "timeoutSeconds": 50,
         "periodSeconds": 10,
         "failureThreshold": 3,
         "httpGet": {
-          "port": 80,
+          "port": 8000,
           "path": "/"
         },
         "successThreshold": 1
@@ -156,14 +156,14 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
 	err = cmdr.HealthchecksList("foo", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `App:             foo                                                                                                           
-UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                          
-Owner:           bar                                                                                                           
-Created:         2016-09-12T22:20:14Z                                                                                          
-Updated:         2016-09-12T22:20:14Z                                                                                          
+	assert.Equal(t, b.String(), `App:             foo                                                                                                               
+UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                              
+Owner:           bar                                                                                                               
+Created:         2016-09-12T22:20:14Z                                                                                              
+Updated:         2016-09-12T22:20:14Z                                                                                              
 Healthchecks:    
-                 liveness web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3        
-                 liveness web/cmd http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
+                 livenessProbe task http-get headers=[] path=/ port=8000 delay=50s timeout=50s period=10s #success=1 #failure=3    
+                 livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3       
 `, "output")
 }
 
@@ -189,7 +189,7 @@ func TestHealthchecksSet(t *testing.T) {
   "tags": {},
   "registry": {},
   "healthcheck": {
-    "web/cmd": {
+    "web": {
       "livenessProbe": {
         "initialDelaySeconds": 50,
         "timeoutSeconds": 50,
@@ -208,17 +208,17 @@ func TestHealthchecksSet(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksSet("foo", "liveness", "web/cmd", &api.Healthcheck{})
+	err = cmdr.HealthchecksSet("foo", "livenessProbe", "web", &api.Healthcheck{})
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying liveness healthcheck... done
+	assert.Equal(t, testutil.StripProgress(b.String()), `Applying livenessProbe healthcheck... done
 
-App:             foo                                                                                                           
-UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                          
-Owner:           bar                                                                                                           
-Created:         2016-09-12T22:20:14Z                                                                                          
-Updated:         2016-09-12T22:20:14Z                                                                                          
+App:             foo                                                                                                            
+UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                           
+Owner:           bar                                                                                                            
+Created:         2016-09-12T22:20:14Z                                                                                           
+Updated:         2016-09-12T22:20:14Z                                                                                           
 Healthchecks:    
-                 liveness web/cmd http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
+                 livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
 `, "output")
 }
 
@@ -249,7 +249,7 @@ func TestHealthchecksUnset(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksUnset("foo", "web/cmd", []string{"liveness"})
+	err = cmdr.HealthchecksUnset("foo", "web", []string{"livenessProbe"})
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing healthchecks... done
 

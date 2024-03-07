@@ -290,7 +290,7 @@ func parseSSHKey(value string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("Could not parse SSH private key:\n %s", value)
+	return "", fmt.Errorf("could not parse SSH private key:\n %s", value)
 }
 
 func formatConfig(configVars map[string]interface{}) string {

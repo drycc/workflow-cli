@@ -19,7 +19,7 @@ var defaultLimit = -1
 func progress(wOut io.Writer) chan bool {
 	frames := []string{"...", "o..", ".o.", "..o"}
 	backspaces := strings.Repeat("\b", 3)
-	tick := time.Tick(400 * time.Millisecond)
+	tick := time.NewTicker(400 * time.Millisecond)
 	quit := make(chan bool)
 	go func() {
 		for {
@@ -30,7 +30,7 @@ func progress(wOut io.Writer) chan bool {
 					fmt.Fprint(wOut, backspaces)
 					close(quit)
 					return
-				case <-tick:
+				case <-tick.C:
 					fmt.Fprint(wOut, backspaces)
 				}
 			}

@@ -83,10 +83,6 @@ Arguments:
 	}
 	username := safeGetString(args, "<username>")
 
-	if err != nil {
-		return err
-	}
-
 	return cmdr.UsersEnable(username)
 }
 
@@ -107,10 +103,6 @@ Arguments:
 		return err
 	}
 	username := safeGetString(args, "<username>")
-
-	if err != nil {
-		return err
-	}
 
 	return cmdr.UsersDisable(username)
 }

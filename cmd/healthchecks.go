@@ -37,18 +37,11 @@ func getHealthcheckString(procType, probeType string, healthcheck *api.Healthche
 }
 
 func getHealthchecksStrings(procType string, healthchecks *api.Healthchecks) []string {
-	var livenessProbe, readinessProbe string
-	if probe, found := (*healthchecks)["livenessProbe"]; found {
-		livenessProbe = getHealthcheckString(procType, "liveness", probe)
-	} else {
-		livenessProbe = ""
+	var probes []string
+	for key := range *healthchecks {
+		probes = append(probes, getHealthcheckString(procType, key, (*healthchecks)[key]))
 	}
-	if probe, found := (*healthchecks)["readinessProbe"]; found {
-		readinessProbe = getHealthcheckString(procType, "readiness", probe)
-	} else {
-		readinessProbe = ""
-	}
-	return []string{livenessProbe, readinessProbe}
+	return probes
 }
 
 // HealthchecksList lists an app's healthchecks.

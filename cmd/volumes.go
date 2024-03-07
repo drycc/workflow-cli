@@ -199,9 +199,6 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 	for _, volumeVar := range volumeVars {
 		valuesMap[volumeVar] = nil
 	}
-	if err != nil {
-		return err
-	}
 
 	d.Print("Unmounting volume... ")
 

@@ -46,11 +46,11 @@ func TestAutoscale(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"autoscale:set", "web/cmd", "--min=1", "--max=3", "--cpu-percent=50"},
+			args:     []string{"autoscale:set", "web", "--min=1", "--max=3", "--cpu-percent=50"},
 			expected: "",
 		},
 		{
-			args:     []string{"autoscale:unset", "web/cmd"},
+			args:     []string{"autoscale:unset", "web"},
 			expected: "",
 		},
 		{

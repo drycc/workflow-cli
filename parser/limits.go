@@ -96,7 +96,7 @@ Options:
   -c --cpu
     value apply to CPU.
   -m --memory
-    value apply to memory.
+    value apply to memory. [default: true]
 
 Use 'drycc help [command]' to learn more.
 `
@@ -110,14 +110,22 @@ Use 'drycc help [command]' to learn more.
 	app := safeGetString(args, "--app")
 	cpuLimits := []string{}
 	memoryLimits := []string{}
+	cpuRegex, err := regexp.Compile(`\d+m?$`)
+	if err != nil {
+		return err
+	}
+	memoryRegex, err := regexp.Compile(`\d+[M|G]$`)
+	if err != nil {
+		return err
+	}
 	for _, value := range args["<type>=<value>"].([]string) {
 		if args["--cpu"].(bool) {
-			isCPU, _ := regexp.MatchString("\\d+m?$", value)
+			isCPU := cpuRegex.MatchString(value)
 			if isCPU {
 				cpuLimits = append(cpuLimits, value)
 			}
 		}
-		isMemory, _ := regexp.MatchString("\\d+[M|G]$", value)
+		isMemory := memoryRegex.MatchString(value)
 		if isMemory {
 			memoryLimits = append(memoryLimits, value)
 		}

@@ -14,7 +14,7 @@ import (
 // TODO: This is for supporting backward compatibility and should be removed
 // in future when next major version will be released.
 const (
-	defaultProcType string = "web/cmd"
+	defaultProcType string = "web"
 )
 
 // Healthchecks routes ealthcheck commands to their specific function
@@ -110,7 +110,7 @@ Usage: drycc healthchecks:set <health-type> <probe-type> [options] [--] <args>..
 
 Arguments:
   <health-type>
-    the healthcheck type, such as 'liveness' or 'readiness'.
+    the healthcheck type, such as 'livenessProbe' or 'readinessProbe'.
   <probe-type>
     the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'.
   <args>
@@ -168,10 +168,6 @@ Options:
 		return err
 	}
 
-	// NOTE(bacongobbler): k8s healthchecks use the term "livenessProbe" and "readinessProbe", so let's
-	// add that to the end of the healthcheck type so the controller sees the right probe type
-	healthcheckType += "Probe"
-
 	probe := &api.Healthcheck{
 		InitialDelaySeconds: initialDelayTimeout,
 		TimeoutSeconds:      timeoutSeconds,
@@ -208,7 +204,7 @@ Options:
 			Port: port,
 		}
 	default:
-		return fmt.Errorf("Invalid probe type. Must be one of: \"httpGet\", \"exec\"")
+		return fmt.Errorf("invalid probe type. Must be one of: \"httpGet\", \"exec\"")
 	}
 
 	return cmdr.HealthchecksSet(app, healthcheckType, procType, probe)
@@ -244,13 +240,10 @@ Options:
 		procType = defaultProcType
 	}
 
-	// NOTE(bacongobbler): k8s healthchecks use the term "livenessProbe" and "readinessProbe", so let's
-	// add that to the end of the healthcheck type so the controller sees the right probe type
 	for healthcheck := range healthchecks {
 		if err := checkProbeType(healthchecks[healthcheck]); err != nil {
 			return err
 		}
-		healthchecks[healthcheck] += "Probe"
 	}
 
 	return cmdr.HealthchecksUnset(app, procType, healthchecks)
@@ -282,8 +275,9 @@ func parseHeader(header string) (*api.KVPair, error) {
 func checkProbeType(probe string) error {
 	var found bool
 	probeTypes := []string{
-		"liveness",
-		"readiness",
+		"startupProbe",
+		"livenessProbe",
+		"readinessProbe",
 	}
 	for _, ptype := range probeTypes {
 		if probe == ptype {
