@@ -4,8 +4,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
-github.com/drycc/controller-sdk-go v0.0.0-20240304053455-0352ebbb02dc h1:tRMSrNX3qFzQsfVhij1pO2pwHIWTdSvCbrAcsX+wwrQ=
-github.com/drycc/controller-sdk-go v0.0.0-20240304053455-0352ebbb02dc/go.mod h1:EAzlvB5kQq4pFP+h+zl0mx2q1GUlHgzdQ92tlYtDQfQ=
+github.com/drycc/controller-sdk-go v0.0.0-20240322070846-b558c520d745 h1:eXYotkPeGfc7gmjle7v2ytiNGQzoV63BHHaWZh0SNGU=
+github.com/drycc/controller-sdk-go v0.0.0-20240322070846-b558c520d745/go.mod h1:RJ0QxVNWhximzfd08+FkZfKzrX7gOp2gsgXfpqVPJZQ=
 github.com/drycc/pkg v0.0.0-20240225112316-78fc9239f51f h1:kgjvUQJeAszDoU1Vo4vTTE92KI8Av3JPb6Qn890niXg=
 github.com/drycc/pkg v0.0.0-20240225112316-78fc9239f51f/go.mod h1:n+QxGif6ha9CEoxVnlipxb9IdmerybcUSzTEDFkvjiA=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
@@ -16,8 +16,8 @@ github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
-github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
+github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
+github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 golang.org/x/exp v0.0.0-20240213143201-ec583247a57a h1:HinSgX1tJRX3KsL//Gxynpw5CTOAIPhgL4W8PNiIpVE=
 golang.org/x/exp v0.0.0-20240213143201-ec583247a57a/go.mod h1:CxmFvTBINI24O/j8iY7H1xHzx2i4OsyguNBmN/uPtqc=
 golang.org/x/net v0.21.0 h1:AQyQV4dYCvJ7vGmJyKki9+PBdyvhkSd8EIx/qb0AYv4=

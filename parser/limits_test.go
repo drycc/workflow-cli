@@ -16,12 +16,18 @@ func (d FakeDryccCmd) LimitsList(string) error {
 	return errors.New("limits:list")
 }
 
-func (d FakeDryccCmd) LimitsSet(string, []string, []string) error {
+func (d FakeDryccCmd) LimitsSet(string, []string) error {
 	return errors.New("limits:set")
 }
 
-func (d FakeDryccCmd) LimitsUnset(string, []string, []string) error {
+func (d FakeDryccCmd) LimitsUnset(string, []string) error {
 	return errors.New("limits:unset")
+}
+func (d FakeDryccCmd) LimitsSpecs(string, int) error {
+	return errors.New("limits:specs")
+}
+func (d FakeDryccCmd) LimitsPlans(string, int, int, int) error {
+	return errors.New("limits:plans")
 }
 
 func TestLimits(t *testing.T) {
@@ -46,15 +52,11 @@ func TestLimits(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"limits:set", "web=1G"},
+			args:     []string{"limits:set", "web=std1.large.c1m1"},
 			expected: "",
 		},
 		{
-			args:     []string{"limits:set", "web=1G worker=2G"},
-			expected: "",
-		},
-		{
-			args:     []string{"limits:set", "--cpu", "web=1"},
+			args:     []string{"limits:set", "web=std1.large.c1m1 worker=std1.large.c1m1"},
 			expected: "",
 		},
 		{
@@ -62,7 +64,11 @@ func TestLimits(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"limits:unset", "--cpu", "web"},
+			args:     []string{"limits:specs"},
+			expected: "",
+		},
+		{
+			args:     []string{"limits:plans"},
 			expected: "",
 		},
 		{

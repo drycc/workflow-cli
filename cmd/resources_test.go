@@ -204,7 +204,7 @@ func TestResourceDelete(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err = cmdr.ResourceDelete("example-go", "mysql")
+	err = cmdr.ResourceDelete("example-go", "mysql", "mysql")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Deleting mysql from example-go... done\n", "output")

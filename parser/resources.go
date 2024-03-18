@@ -262,6 +262,9 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  --confirm=<resource>
+    skips the prompt for the resource name. <resource> is the uniquely identifiable
+    name for the resource.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -272,8 +275,9 @@ Options:
 
 	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
+	confirm := safeGetString(args, "--confirm")
 
-	return cmdr.ResourceDelete(app, name)
+	return cmdr.ResourceDelete(app, name, confirm)
 }
 
 func resourceBind(argv []string, cmdr cmd.Commander) error {

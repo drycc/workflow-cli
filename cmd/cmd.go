@@ -69,8 +69,10 @@ type Commander interface {
 	LabelsSet(string, []string) error
 	LabelsUnset(string, []string) error
 	LimitsList(string) error
-	LimitsSet(string, []string, []string) error
-	LimitsUnset(string, []string, []string) error
+	LimitsSet(string, []string) error
+	LimitsUnset(string, []string) error
+	LimitsSpecs(string, int) error
+	LimitsPlans(string, int, int, int) error
 	TimeoutsList(string) error
 	TimeoutsSet(string, []string) error
 	TimeoutsUnset(string, []string) error
@@ -122,7 +124,7 @@ type Commander interface {
 	ResourcesPlans(string, int) error
 	ResourcesCreate(string, string, string, []string, string) error
 	ResourcesList(string, int) error
-	ResourceDelete(string, string) error
+	ResourceDelete(string, string, string) error
 	ResourceGet(string, string) error
 	ResourcePut(string, string, string, []string, string) error
 	ResourceBind(string, string) error

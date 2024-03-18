@@ -202,14 +202,28 @@ func (d *DryccCmd) ResourceGet(appID, name string) error {
 }
 
 // ResourceDelete delete a resource from the application
-func (d *DryccCmd) ResourceDelete(appID, name string) error {
+func (d *DryccCmd) ResourceDelete(appID, name, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Deleting %s from %s... ", name, appID)
+	if confirm == "" {
+		d.Printf(` !    WARNING: Potentially Destructive Action
+ !    This command will destroy the resource: %s
+ !    To proceed, type "%s" or re-run this command with --confirm=%s
+
+> `, name, name, name)
+
+		fmt.Scanln(&confirm)
+	}
+
+	if confirm != name {
+		return fmt.Errorf("resource %s does not match confirm %s, aborting", name, confirm)
+	}
+
+	d.Printf("Destroying %s...\n", name)
 
 	quit := progress(d.WOut)
 	err = resources.Delete(s.Client, appID, name)

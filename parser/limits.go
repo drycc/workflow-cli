@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"regexp"
-
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cmd"
 )
@@ -15,6 +13,8 @@ Valid commands for limits:
 limits:list        list resource limits for an app
 limits:set         set resource limits for an app
 limits:unset       unset resource limits for an app
+limits:specs       unset resource limits for an app
+limits:plans       unset resource limits for an app
 
 Use 'drycc help [command]' to learn more.
 `
@@ -26,6 +26,10 @@ Use 'drycc help [command]' to learn more.
 		return limitSet(argv, cmdr)
 	case "limits:unset":
 		return limitUnset(argv, cmdr)
+	case "limits:specs":
+		return limitSpecs(argv, cmdr)
+	case "limits:plans":
+		return limitPlans(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -66,37 +70,19 @@ func limitSet(argv []string, cmdr cmd.Commander) error {
 Sets resource limits for an application.
 
 A resource limit is a finite resource within a pod which we can apply
-restrictions through Kubernetes.The limit is applied to each individual pod,
-so setting a memory limit of 1G for an application means that each pod gets 1G of memory.
+restrictions through Kubernetes.
 
 Usage: drycc limits:set [options] <type>=<value>...
 
 Arguments:
   <type>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
   <value>
-    The value to apply to the process type. By default, this is set to --memory.
-    Can be in <limit> format eg. web=2G db=1G
-    You can only set one type of limit per call.
-
-    With --memory, units are represented in Megabytes(M), or Gigabytes (G).
-	For example, 'drycc limit:set cmd=1G' will restrict all
-    "cmd" processes to a maximum of 1 Gigabyte of memory each.
-
-    With --cpu, units are represented in the number of CPUs. For example,
-    'drycc limit:set --cpu cmd=1' will restrict all "cmd" processes to a
-    maximum of 1 CPU. Alternatively, you can also use milli units to specify the
-    number of CPU shares the pod can use. For example, 'drycc limits:set --cpu cmd=500m'
-    will restrict all "cmd" processes to half of a CPU.
+    The limit plan id to apply to the process type.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  -c --cpu
-    value apply to CPU.
-  -m --memory
-    value apply to memory. [default: true]
 
 Use 'drycc help [command]' to learn more.
 `
@@ -108,37 +94,15 @@ Use 'drycc help [command]' to learn more.
 	}
 
 	app := safeGetString(args, "--app")
-	cpuLimits := []string{}
-	memoryLimits := []string{}
-	cpuRegex, err := regexp.Compile(`\d+m?$`)
-	if err != nil {
-		return err
-	}
-	memoryRegex, err := regexp.Compile(`\d+[M|G]$`)
-	if err != nil {
-		return err
-	}
-	for _, value := range args["<type>=<value>"].([]string) {
-		if args["--cpu"].(bool) {
-			isCPU := cpuRegex.MatchString(value)
-			if isCPU {
-				cpuLimits = append(cpuLimits, value)
-			}
-		}
-		isMemory := memoryRegex.MatchString(value)
-		if isMemory {
-			memoryLimits = append(memoryLimits, value)
-		}
-	}
-
-	return cmdr.LimitsSet(app, cpuLimits, memoryLimits)
+	limits := args["<type>=<value>"].([]string)
+	return cmdr.LimitsSet(app, limits)
 }
 
 func limitUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets resource limits for an application.
 
-Usage: drycc limits:unset [options] [--memory | --cpu] <type>...
+Usage: drycc limits:unset [options] <type>...
 
 Arguments:
   <type>
@@ -148,10 +112,6 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  --cpu
-    limits cpu shares.
-  -m --memory
-    limits memory. [default: true]
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -161,16 +121,68 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	cpuLimits := []string{}
-	memoryLimits := []string{}
+	limits := args["<type>"].([]string)
 
-	if args["--cpu"].(bool) {
-		cpuLimits = args["<type>"].([]string)
+	return cmdr.LimitsUnset(app, limits)
+}
+
+func limitSpecs(argv []string, cmdr cmd.Commander) error {
+	usage := `
+List all available limit specs.
+
+Usage: drycc limits:specs [options]
+
+Options:
+  -l --limit=<num>
+    the maximum number of results to display, defaults to config setting.
+  -k --keywords=<keywords>
+    search keywords separated by commas, matching must satisfy all of the specified.
+`
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+	results, err := responseLimit(safeGetString(args, "--limit"))
+
+	if err != nil {
+		return err
+	}
+	keywords := safeGetString(args, "--keywords")
+
+	return cmdr.LimitsSpecs(keywords, results)
+}
+
+func limitPlans(argv []string, cmdr cmd.Commander) error {
+	usage := `
+List all available limit plans.
+
+Usage: drycc limits:plans [options]
+
+Options:
+  --cpu=<cpu>
+    query plans that meet the specified number of cpu cores.
+  --memory=<memory>
+    query plans that meet the specified memory capacity, unit GiB.
+  --spec-id=<spec-id>
+    query plans that meet the specified spec id, see [specs] subcommand.
+  -l --limit=<num>
+    the maximum number of results to display, defaults to config setting.
+`
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+	results, err := responseLimit(safeGetString(args, "--limit"))
+
+	if err != nil {
+		return err
 	}
 
-	if args["--memory"].(bool) {
-		memoryLimits = args["<type>"].([]string)
-	}
+	specID := safeGetString(args, "--spec-id")
+	cpu := safeGetInt(args, "--cpu")
+	memory := safeGetInt(args, "--memory")
 
-	return cmdr.LimitsUnset(app, cpuLimits, memoryLimits)
+	return cmdr.LimitsPlans(specID, cpu, memory, results)
 }

@@ -36,7 +36,7 @@ func (d FakeDryccCmd) ResourcePut(string, string, string, []string, string) erro
 	return errors.New("resources:update")
 }
 
-func (d FakeDryccCmd) ResourceDelete(string, string) error {
+func (d FakeDryccCmd) ResourceDelete(string, string, string) error {
 	return errors.New("resources:destroy")
 }
 

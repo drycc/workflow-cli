@@ -6,10 +6,180 @@ import (
 	"net/http"
 	"testing"
 
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
+
+const getPlanFixture string = `
+{
+	"id": "std1.large.c1m1",
+	"spec": {
+	  "id": "std1",
+	  "cpu": {
+		"name": "Unknown CPU",
+		"cores": 32,
+		"clock": "3100MHZ",
+		"boost": "3700MHZ",
+		"threads": 64
+	  },
+	  "memory": {
+		"size": "64GB",
+		"type": "DDR4-ECC"
+	  },
+	  "features": {
+		"gpu": {
+		  "name": "Unknown Integrated GPU",
+		  "tmus": 1,
+		  "rops": 1,
+		  "cores": 128,
+		  "memory": {
+			"size": "shared",
+			"type": "shared"
+		  }
+		},
+		"network": "10G"
+	  },
+	  "keywords": [
+		"amd",
+		"intel",
+		"unknown"
+	  ],
+	  "disabled": false
+	},
+	"cpu": 1,
+	"memory": 1,
+	"features": {
+		"gpu": 1,
+		"network": 1
+	},
+	"disabled": false
+}
+`
+const specsFixture string = `
+{
+	"results": [{
+		"id": "std1",
+		"cpu": {
+			"name": "Unknown CPU",
+			"cores": 32,
+			"clock": "3100MHZ",
+			"boost": "3700MHZ",
+			"threads": 64
+		},
+		"memory": {
+			"size": "64GB",
+			"type": "DDR4-ECC"
+		},
+		"features": {
+			"gpu": {
+				"name": "Unknown Integrated GPU",
+				"tmus": 1,
+				"rops": 1,
+				"cores": 128,
+				"memory": {
+					"size": "shared",
+					"type": "shared"
+				}
+			},
+			"network": "10G"
+		},
+		"keywords": [
+			"amd",
+			"intel",
+			"unknown"
+		],
+		"disabled": false
+	}],
+	"count": 1
+}
+`
+
+const plansFixture string = `
+{
+	"results": [{
+			"id": "std1.large.c1m1",
+			"spec": {
+				"id": "std1",
+				"cpu": {
+					"name": "Unknown CPU",
+					"cores": 32,
+					"clock": "3100MHZ",
+					"boost": "3700MHZ",
+					"threads": 64
+				},
+				"memory": {
+					"size": "64GB",
+					"type": "DDR4-ECC"
+				},
+				"features": {
+					"gpu": {
+						"name": "Unknown Integrated GPU",
+						"tmus": 1,
+						"rops": 1,
+						"cores": 128,
+						"memory": {
+							"size": "shared",
+							"type": "shared"
+						}
+					},
+					"network": "10G"
+				},
+				"keywords": [
+					"amd",
+					"intel",
+					"unknown"
+				],
+				"disabled": false
+			},
+			"cpu": 1,
+			"memory": 1,
+			"disabled": false
+		},
+		{
+			"id": "std1.large.c1m2",
+			"spec": {
+				"id": "std1",
+				"cpu": {
+					"name": "Unknown CPU",
+					"cores": 32,
+					"clock": "3100MHZ",
+					"boost": "3700MHZ",
+					"threads": 64
+				},
+				"memory": {
+					"size": "64GB",
+					"type": "DDR4-ECC"
+				},
+				"features": {
+					"gpu": {
+						"name": "Unknown Integrated GPU",
+						"tmus": 1,
+						"rops": 1,
+						"cores": 128,
+						"memory": {
+							"size": "shared",
+							"type": "shared"
+						}
+					},
+					"network": "10G"
+				},
+				"keywords": [
+					"amd",
+					"intel",
+					"unknown"
+				],
+				"disabled": false
+			},
+			"cpu": 1,
+			"memory": 2,
+			"disabled": false
+		}
+	],
+	"count": 2
+}
+`
 
 type parseLimitCase struct {
 	Input         string
@@ -19,28 +189,46 @@ type parseLimitCase struct {
 	ExpectedMsg   string
 }
 
+func newTestServer(t *testing.T) (string, *testutil.TestServer) {
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	server.Mux.HandleFunc("/v2/limits/plans/std1.large.c1m1/", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Add("DRYCC_API_VERSION", drycc.APIVersion)
+		testutil.SetHeaders(w)
+		fmt.Fprint(w, getPlanFixture)
+	})
+	server.Mux.HandleFunc("/v2/limits/specs/", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Add("DRYCC_API_VERSION", drycc.APIVersion)
+		testutil.SetHeaders(w)
+		fmt.Fprint(w, specsFixture)
+	})
+
+	server.Mux.HandleFunc("/v2/limits/plans/", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Add("DRYCC_API_VERSION", drycc.APIVersion)
+		testutil.SetHeaders(w)
+		fmt.Fprint(w, plansFixture)
+	})
+
+	return cf, server
+}
+
 func TestParseLimit(t *testing.T) {
 	t.Parallel()
 
 	var errorHint = ` doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M db=1G`
+Examples: web=std1.large.c1m1`
 
 	cases := []parseLimitCase{
-		{"web=2G", "web", "2G", false, ""},
-		{"web=2", "web", "2", false, ""},
-		{"web=100m", "web", "100m", false, ""},
-		{"web1=2G", "web1", "2G", false, ""},
-		{"web-server=2G", "web-server", "2G", false, ""},
-		{"web-server1=2G", "web-server1", "2G", false, ""},
-		{"web=0.1", "", "", true, "web=0.1" + errorHint},
-		{"web=.123", "", "", true, "web=.123" + errorHint},
-		{"=1", "", "", true, "=1" + errorHint},
-		{"web=", "", "", true, "web=" + errorHint},
-		{"1=", "", "", true, "1=" + errorHint},
-		{"web=G", "", "", true, "web=G" + errorHint},
-		{"web-=2G", "", "", true, "web-=2G" + errorHint},
-		{"-web=2G", "", "", true, "-web=2G" + errorHint},
-		{"Web=2G", "", "", true, "Web=2G" + errorHint},
+		{"web=std1.large.c1m1", "web", "std1.large.c1m1", false, ""},
+		{"web=std1.large.c2m2", "web", "std1.large.c2m2", false, ""},
+		{"task=std1.large.c2m2", "task", "std1.large.c2m2", false, ""},
+		{"task=std1.large.c2m4", "task", "std1.large.c2m4", false, ""},
+		{"task-big=std1.large.c2m4", "task-big", "std1.large.c2m4", false, ""},
+		{"task=[]std1.large.c2m4", "", "", true, "task=[]std1.large.c2m4" + errorHint},
+		{"task[]=&std1.large.c2m4", "", "", true, "task[]=&std1.large.c2m4" + errorHint},
+		{"task~!=&std1.large.c2m4", "", "", true, "task~!=&std1.large.c2m4" + errorHint},
 	}
 
 	for _, check := range cases {
@@ -66,9 +254,9 @@ func TestLimitTags(t *testing.T) {
 	t.Parallel()
 
 	cases := []parseLimitsCase{
-		{[]string{"web=1G", "worker=2"}, map[string]interface{}{"web": "1G", "worker": "2"}, false, ""},
-		{[]string{"foo=", "web=1G"}, nil, true, `foo= doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M db=1G`},
+		{[]string{"web=std1.large.c1m1", "worker=std1.large.c1m2"}, map[string]interface{}{"web": "std1.large.c1m1", "worker": "std1.large.c1m2"}, false, ""},
+		{[]string{"foo=", "web=std1.large.c1m1"}, nil, true, `foo= doesn't fit format type=#unit or type=#
+Examples: web=std1.large.c1m1`},
 	}
 
 	for _, check := range cases {
@@ -84,10 +272,7 @@ Examples: web=2G worker=500M db=1G`},
 
 func TestLimitsList(t *testing.T) {
 	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
+	cf, server := newTestServer(t)
 	defer server.Close()
 
 	server.Mux.HandleFunc("/v2/apps/enterprise/config/", func(w http.ResponseWriter, _ *http.Request) {
@@ -96,15 +281,10 @@ func TestLimitsList(t *testing.T) {
 			"owner": "jkirk",
 			"app": "enterprise",
 			"values": {},
-			"memory": {
-				"web": "2G",
-				"worker": "1G",
-				"db": "1000M"
-			},
-			"cpu": {
-				"web": "2",
-				"worker": "1",
-				"db": "500m"
+			"limits": {
+				"web": "std1.large.c1m1",
+				"worker": "std1.large.c1m1",
+				"db": "std1.large.c1m1"
 			},
 			"tags": {},
 			"registry": {},
@@ -117,15 +297,12 @@ func TestLimitsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.LimitsList("enterprise")
+	err := cmdr.LimitsList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER    PTYPE     DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    db        MEM       1000M    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       MEM       2G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    MEM       1G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    db        CPU       500m     
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web       CPU       2        
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    CPU       1        
+	assert.Equal(t, b.String(), `PTYPE     PLAN               VCPUS    MEMORY    FEATURES                          
+db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
+web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
+worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, _ *http.Request) {
@@ -133,8 +310,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    CPU       1
 		fmt.Fprintf(w, `{
 			"owner": "bedison",
 			"app": "franklin",
-			"values": {},
-			"memory": {},
+			"limits": {},
 			"cpu": {},
 			"tags": {},
 			"registry": {},
@@ -153,18 +329,15 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    worker    CPU       1
 
 func TestLimitsSet(t *testing.T) {
 	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
+	cf, server := newTestServer(t)
 	defer server.Close()
 
 	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				CPU: map[string]interface{}{
-					"web": "100m",
+				Limits: map[string]interface{}{
+					"web": "std1.large.c1m1",
 				},
 			}, r)
 		}
@@ -173,10 +346,7 @@ func TestLimitsSet(t *testing.T) {
 			"owner": "jkirk",
 			"app": "foo",
 			"values": {},
-			"memory": {"web": "128M"},
-			"cpu": {
-				"web": "100m"
-			},
+			"limits": {"web": "std1.large.c1m1"},
 			"tags": {},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -188,22 +358,21 @@ func TestLimitsSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.LimitsSet("foo", []string{"web=100m"}, []string{})
+	err := cmdr.LimitsSet("foo", []string{"web=std1.large.c1m1"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    PTYPE    DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      MEM       128M     
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       100m     
+PTYPE    PLAN               VCPUS    MEMORY    FEATURES                          
+web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Memory: map[string]interface{}{
-					"web": "1G",
+				Limits: map[string]interface{}{
+					"web": "std1.large.c1m1",
 				},
 			}, r)
 		}
@@ -212,11 +381,8 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       100m
 			"owner": "bedison",
 			"app": "franklin",
 			"values": {},
-			"memory": {
-				"web": "1G"
-			},
-			"cpu": {
-				"web": "1"
+			"limits": {
+				"web": "std1.large.c1m1"
 			},
 			"tags": {},
 			"registry": {},
@@ -227,14 +393,13 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       100m
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("franklin", []string{}, []string{"web=1G"})
+	err = cmdr.LimitsSet("franklin", []string{"web=std1.large.c1m1"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER      PTYPE    DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      MEM       1G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      CPU       1        
+PTYPE    PLAN               VCPUS    MEMORY    FEATURES                          
+web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
 `, "output")
 
 	// with requests/limit parameter
@@ -242,10 +407,10 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      CPU       1
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Memory: map[string]interface{}{
-					"web":    "2000M",
-					"worker": "3G",
-					"db":     "5G",
+				Limits: map[string]interface{}{
+					"web":    "std1.large.c1m1",
+					"worker": "std1.large.c1m1",
+					"db":     "std1.large.c1m1",
 				},
 			}, r)
 		}
@@ -254,15 +419,10 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      CPU       1
 			"owner": "foo",
 			"app": "jim",
 			"values": {},
-			"memory": {
-				"web": "2000M",
-				"worker": "3G",
-				"db": "5G"
-			},
-			"cpu": {
-				"web": "1",
-				"worker": "1",
-				"db": "5"
+			"limits": {
+				"web": "std1.large.c1m1",
+				"worker": "std1.large.c1m1",
+				"db": "std1.large.c1m1"
 			},
 			"tags": {},
 			"registry": {},
@@ -273,18 +433,15 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    bedison    web      CPU       1
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("jim", []string{}, []string{"web=2000M", "worker=3G", "db=5G"})
+	err = cmdr.LimitsSet("jim", []string{"web=std1.large.c1m1", "worker=std1.large.c1m1", "db=std1.large.c1m1"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    PTYPE     DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        MEM       5G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       MEM       2000M    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    MEM       3G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        CPU       5        
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       CPU       1        
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       1        
+PTYPE     PLAN               VCPUS    MEMORY    FEATURES                          
+db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
+web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
+worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
 `, "output")
 
 	// with requests/limit parameter
@@ -292,10 +449,10 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       1
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				CPU: map[string]interface{}{
-					"web":    "2",
-					"worker": "300m",
-					"db":     "5",
+				Limits: map[string]interface{}{
+					"web":    "std1.large.c1m1",
+					"worker": "std1.large.c1m1",
+					"db":     "std1.large.c1m1",
 				},
 			}, r)
 		}
@@ -304,15 +461,10 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       1
 			"owner": "foo",
 			"app": "jim",
 			"values": {},
-			"cpu": {
-				"web": "2",
-				"worker": "300m",
-				"db": "5"
-			},
-			"memory": {
-				"web": "1G",
-				"worker": "1G",
-				"db": "1G"
+			"limits": {
+				"web": "std1.large.c1m1",
+				"worker": "std1.large.c1m1",
+				"db": "std1.large.c1m1"
 			},
 			"tags": {},
 			"registry": {},
@@ -323,34 +475,28 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       1
 	})
 	b.Reset()
 
-	err = cmdr.LimitsSet("phew", []string{"web=2", "worker=300m", "db=5"}, []string{})
+	err = cmdr.LimitsSet("phew", []string{"web=std1.large.c1m1", "worker=std1.large.c1m1", "db=std1.large.c1m1"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    PTYPE     DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        MEM       1G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       MEM       1G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    MEM       1G       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      db        CPU       5        
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      web       CPU       2        
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    foo      worker    CPU       300m     
+PTYPE     PLAN               VCPUS    MEMORY    FEATURES                          
+db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
+web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
+worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
 `, "output")
 }
 
 func TestLimitsUnset(t *testing.T) {
 	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
+	cf, server := newTestServer(t)
 	defer server.Close()
 
 	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Memory: map[string]interface{}{
+				Limits: map[string]interface{}{
 					"web": nil,
 				},
 			}, r)
@@ -360,11 +506,8 @@ func TestLimitsUnset(t *testing.T) {
 			"owner": "jkirk",
 			"app": "foo",
 			"values": {},
-			"memory": {
-				"web": "128M"
-			},
-			"cpu": {
-				"web": "125m"
+			"limits": {
+				"web": "std1.large.c1m1"
 			},
 			"tags": {},
 			"registry": {},
@@ -377,24 +520,20 @@ func TestLimitsUnset(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.LimitsUnset("foo", []string{}, []string{"web"})
+	err := cmdr.LimitsUnset("foo", []string{"web"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-UUID                                    OWNER    PTYPE    DEVICE    QUOTA 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      MEM       128M     
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       125m     
+PTYPE    PLAN               VCPUS    MEMORY    FEATURES                          
+web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				CPU: map[string]interface{}{
-					"web": nil,
-				},
-				Memory: map[string]interface{}{
+				Limits: map[string]interface{}{
 					"web": nil,
 				},
 			}, r)
@@ -404,8 +543,7 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       125m
 			"owner": "bedison",
 			"app": "franklin",
 			"values": {},
-			"memory": {},
-			"cpu": {},
+			"limits": {},
 			"tags": {},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -415,11 +553,42 @@ de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    web      CPU       125m
 	})
 	b.Reset()
 
-	err = cmdr.LimitsUnset("franklin", []string{"web"}, []string{"web"})
+	err = cmdr.LimitsUnset("franklin", []string{"web"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
 
 No limits found in franklin app.
+`, "output")
+}
+
+func TestLimitsSpecs(t *testing.T) {
+	t.Parallel()
+	cf, server := newTestServer(t)
+	defer server.Close()
+
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	err := cmdr.LimitsSpecs("", 10)
+	assert.NoError(t, err)
+	assert.Equal(t, b.String(), `ID      CPU            CLOCK      BOOST      CORES    THREADS    NETWORK    FEATURES                      
+std1    Unknown CPU    3100MHZ    3700MHZ    32       64         10G        Unknown Integrated GPU shared    
+`, "output")
+}
+
+func TestLimitsPlans(t *testing.T) {
+	t.Parallel()
+	cf, server := newTestServer(t)
+	defer server.Close()
+
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	err := cmdr.LimitsPlans("", 0, 0, 100)
+	assert.NoError(t, err)
+	assert.Equal(t, b.String(), `ID                 SPEC    CPU            VCPUS    MEMORY    FEATURES                      
+std1.large.c1m1    std1    Unknown CPU    1        1 GiB     Unknown Integrated GPU shared    
+std1.large.c1m2    std1    Unknown CPU    1        2 GiB     Unknown Integrated GPU shared    
 `, "output")
 }

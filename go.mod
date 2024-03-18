@@ -5,10 +5,10 @@ go 1.22
 require (
 	github.com/containerd/console v1.0.4
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20240304053455-0352ebbb02dc
+	github.com/drycc/controller-sdk-go v0.0.0-20240322070846-b558c520d745
 	github.com/drycc/pkg v0.0.0-20240225112316-78fc9239f51f
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20240213143201-ec583247a57a
 	golang.org/x/net v0.21.0
 	gopkg.in/yaml.v3 v3.0.1

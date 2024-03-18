@@ -40,8 +40,6 @@ func TestLogin(t *testing.T) {
 		w.Write(nil)
 	})
 	err = cmdr.Login(server.Server.URL, false)
-	fmt.Println(err)
-	fmt.Println(t)
 	assert.NoError(t, err)
 }
 

@@ -6,6 +6,8 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
+	"github.com/drycc/controller-sdk-go/limits"
+	"github.com/drycc/workflow-cli/settings"
 )
 
 // LimitsList lists an app's limits.
@@ -20,26 +22,32 @@ func (d *DryccCmd) LimitsList(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-	if len(config.CPU) > 0 || len(config.Memory) > 0 {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "PTYPE", "DEVICE", "QUOTA"})
-		for _, key := range *sortKeys(config.Memory) {
+	cached := make(map[string]api.LimitPlan)
+
+	if len(config.Limits) > 0 {
+		table := d.getDefaultFormatTable([]string{"PTYPE", "PLAN", "VCPUS", "MEMORY", "FEATURES"})
+		for _, ptype := range *sortKeys(config.Limits) {
+			limitPlanID := fmt.Sprintf("%v", config.Limits[ptype])
+			if _, ok := cached[limitPlanID]; !ok {
+				limitPlan, err := limits.GetPlan(s.Client, limitPlanID)
+				if err != nil {
+					return err
+				}
+				cached[limitPlanID] = limitPlan
+			}
+			limitPlan := cached[limitPlanID]
+			gpuCount := limitPlan.Features["gpu"]
+			gpuName := limitPlan.Spec.Features["gpu"].(map[string]interface{})["name"]
+			gpuMemory := limitPlan.Spec.Features["gpu"].(map[string]interface{})["memory"].(map[string]interface{})["size"]
 			table.Append([]string{
-				config.UUID,
-				config.Owner,
-				key,
-				"MEM",
-				fmt.Sprintf("%v", config.Memory[key]),
+				ptype,
+				limitPlanID,
+				fmt.Sprintf("%v", limitPlan.CPU),
+				fmt.Sprintf("%v GiB", limitPlan.Memory),
+				fmt.Sprintf("%v %v * %v", gpuName, gpuMemory, gpuCount),
 			})
 		}
-		for _, key := range *sortKeys(config.CPU) {
-			table.Append([]string{
-				config.UUID,
-				config.Owner,
-				key,
-				"CPU",
-				fmt.Sprintf("%v", config.CPU[key]),
-			})
-		}
+
 		table.Render()
 	} else {
 		d.Println(fmt.Sprintf("No limits found in %s app.", appID))
@@ -48,7 +56,7 @@ func (d *DryccCmd) LimitsList(appID string) error {
 }
 
 // LimitsSet sets an app's limits.
-func (d *DryccCmd) LimitsSet(appID string, cpuLimits []string, memoryLimits []string) error {
+func (d *DryccCmd) LimitsSet(appID string, limits []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -56,19 +64,12 @@ func (d *DryccCmd) LimitsSet(appID string, cpuLimits []string, memoryLimits []st
 	}
 
 	configObj := api.Config{}
-	if len(cpuLimits) > 0 {
-		cpuLimitsMap, err := parseLimits(cpuLimits)
+	if len(limits) > 0 {
+		limitsMap, err := parseLimits(limits)
 		if err != nil {
 			return err
 		}
-		configObj.CPU = cpuLimitsMap
-	}
-	if len(memoryLimits) > 0 {
-		memoryLimitsMap, err := parseLimits(memoryLimits)
-		if err != nil {
-			return err
-		}
-		configObj.Memory = memoryLimitsMap
+		configObj.Limits = limitsMap
 	}
 
 	d.Print("Applying limits... ")
@@ -88,7 +89,7 @@ func (d *DryccCmd) LimitsSet(appID string, cpuLimits []string, memoryLimits []st
 }
 
 // LimitsUnset removes an app's limits.
-func (d *DryccCmd) LimitsUnset(appID string, cpuLimits []string, memoryLimits []string) error {
+func (d *DryccCmd) LimitsUnset(appID string, limits []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -100,19 +101,12 @@ func (d *DryccCmd) LimitsUnset(appID string, cpuLimits []string, memoryLimits []
 	quit := progress(d.WOut)
 
 	configObj := api.Config{}
-	if len(cpuLimits) > 0 {
-		cpuMap := make(map[string]interface{})
-		for _, limit := range cpuLimits {
-			cpuMap[limit] = nil
+	if len(limits) > 0 {
+		limitsMap := make(map[string]interface{})
+		for _, limit := range limits {
+			limitsMap[limit] = nil
 		}
-		configObj.CPU = cpuMap
-	}
-	if len(memoryLimits) > 0 {
-		memoryMap := make(map[string]interface{})
-		for _, limit := range memoryLimits {
-			memoryMap[limit] = nil
-		}
-		configObj.Memory = memoryMap
+		configObj.Limits = limitsMap
 	}
 
 	_, err = config.Set(s.Client, appID, configObj)
@@ -125,6 +119,80 @@ func (d *DryccCmd) LimitsUnset(appID string, cpuLimits []string, memoryLimits []
 	d.Print("done\n\n")
 
 	return d.LimitsList(appID)
+}
+
+// LimitsSpecs list limit spec
+func (d *DryccCmd) LimitsSpecs(keywords string, results int) error {
+	s, err := settings.Load(d.ConfigFile)
+
+	if err != nil {
+		return err
+	}
+
+	if results == defaultLimit {
+		results = s.Limit
+	}
+	limitSpecs, count, err := limits.Specs(s.Client, keywords, results)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+	if count == 0 {
+		d.Println("Could not find any limit spec.")
+	} else {
+		table := d.getDefaultFormatTable([]string{"ID", "CPU", "CLOCK", "BOOST", "CORES", "THREADS", "NETWORK", "FEATURES"})
+		for _, limitSpec := range limitSpecs {
+			gpuName := limitSpec.Features["gpu"].(map[string]interface{})["name"]
+			gpuMemory := limitSpec.Features["gpu"].(map[string]interface{})["memory"].(map[string]interface{})["size"]
+			table.Append([]string{
+				limitSpec.ID,
+				fmt.Sprintf("%v", limitSpec.CPU["name"]),
+				fmt.Sprintf("%v", limitSpec.CPU["clock"]),
+				fmt.Sprintf("%v", limitSpec.CPU["boost"]),
+				fmt.Sprintf("%v", limitSpec.CPU["cores"]),
+				fmt.Sprintf("%v", limitSpec.CPU["threads"]),
+				fmt.Sprintf("%v", limitSpec.Features["network"]),
+				fmt.Sprintf("%v %v", gpuName, gpuMemory),
+			})
+		}
+		table.Render()
+	}
+	return nil
+}
+
+// LimitsPlans list limit plan
+func (d *DryccCmd) LimitsPlans(specID string, cpu, memory, results int) error {
+	s, err := settings.Load(d.ConfigFile)
+
+	if err != nil {
+		return err
+	}
+
+	if results == defaultLimit {
+		results = s.Limit
+	}
+	limitPlans, count, err := limits.Plans(s.Client, specID, cpu, memory, results)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+	if count == 0 {
+		d.Println("Could not find any limit spec.")
+	} else {
+		table := d.getDefaultFormatTable([]string{"ID", "SPEC", "CPU", "VCPUS", "MEMORY", "FEATURES"})
+		for _, limitPlan := range limitPlans {
+			gpuName := limitPlan.Spec.Features["gpu"].(map[string]interface{})["name"]
+			gpuMemory := limitPlan.Spec.Features["gpu"].(map[string]interface{})["memory"].(map[string]interface{})["size"]
+			table.Append([]string{
+				limitPlan.ID,
+				limitPlan.Spec.ID,
+				fmt.Sprintf("%v", limitPlan.Spec.CPU["name"]),
+				fmt.Sprintf("%v", limitPlan.CPU),
+				fmt.Sprintf("%v GiB", limitPlan.Memory),
+				fmt.Sprintf("%v %v", gpuName, gpuMemory),
+			})
+		}
+		table.Render()
+	}
+	return nil
 }
 
 func parseLimits(limits []string) (map[string]interface{}, error) {
@@ -144,11 +212,11 @@ func parseLimits(limits []string) (map[string]interface{}, error) {
 }
 
 func parseLimit(limit string) (string, string, error) {
-	regex := regexp.MustCompile("^([a-z0-9]+(?:-[a-z0-9]+)*)=(([1-9][0-9]*[mgMG]|[1-9][0-9]*m?))$")
+	regex := regexp.MustCompile("^([a-z0-9]+(?:-[a-z0-9]+)*)=([-.a-zA-Z0-9]+)$")
 
 	if !regex.MatchString(limit) {
 		return "", "", fmt.Errorf(`%s doesn't fit format type=#unit or type=#
-Examples: web=2G worker=500M db=1G`, limit)
+Examples: web=std1.large.c1m1`, limit)
 	}
 
 	capture := regex.FindStringSubmatch(limit)
