@@ -24,7 +24,7 @@ type Commander interface {
 	Logout() error
 	Whoami(bool) error
 	BuildsList(string, int) error
-	BuildsCreate(string, string, string, string) error
+	BuildsCreate(string, string, string, string, string) error
 	CanaryInfo(string) error
 	CanaryCreate(string, []string) error
 	CanaryRemove(string, []string) error

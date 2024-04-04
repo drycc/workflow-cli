@@ -32,6 +32,7 @@ func TestReleasesList(t *testing.T) {
 			{
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"app": "numenor",
+					"state": "succeed",
 					"owner": "nazgul",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
@@ -42,6 +43,7 @@ func TestReleasesList(t *testing.T) {
 				},
 				{
 					"app": "numenor",
+					"state": "succeed",
 					"build": null,
 					"config": "95bd6dea-1685-4f78-a03d-fd7270b058d1",
 					"created": "2014-01-01T00:00:00UTC",
@@ -57,9 +59,9 @@ func TestReleasesList(t *testing.T) {
 
 	err = cmdr.ReleasesList("numenor", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER     VERSION    CREATED                   SUMMARY                        
-c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    v2         2016-08-22T17:40:16Z      khamul added ANGMAR               
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    nazgul    v1         2014-01-01T00:00:00UTC    nazgul created initial release    
+	assert.Equal(t, b.String(), `UUID                                    OWNER     STATE      VERSION    CREATED                   SUMMARY                        
+c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    succeed    v2         2016-08-22T17:40:16Z      khamul added ANGMAR               
+de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    nazgul    succeed    v1         2014-01-01T00:00:00UTC    nazgul created initial release    
 `, "output")
 }
 
@@ -83,6 +85,7 @@ func TestReleasesListLimit(t *testing.T) {
 			{
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"app": "numenor",
+					"state": "succeed",
 					"owner": "nazgul",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
@@ -97,8 +100,8 @@ func TestReleasesListLimit(t *testing.T) {
 
 	err = cmdr.ReleasesList("numenor", 1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER     VERSION    CREATED                 SUMMARY             
-c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    v2         2016-08-22T17:40:16Z    khamul added ANGMAR    
+	assert.Equal(t, b.String(), `UUID                                    OWNER     STATE      VERSION    CREATED                 SUMMARY             
+c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    succeed    v2         2016-08-22T17:40:16Z    khamul added ANGMAR    
 `, "output")
 }
 
@@ -117,6 +120,7 @@ func TestReleasesInfo(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 			"app": "numenor",
+			"state": "succeed",
 			"owner": "nazgul",
 			"created": "2016-08-22T17:40:16Z",
 			"updated": "2016-08-22T17:40:16Z",
@@ -131,6 +135,7 @@ func TestReleasesInfo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `App:        numenor                                 
 UUID:       c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    
+State:      succeed                                 
 Owner:      nazgul                                  
 Build:                                              
 Config:     3bb816b1-4fde-4b06-8afe-acd12f58a266    

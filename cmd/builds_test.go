@@ -143,7 +143,7 @@ func TestBuildsCreate(t *testing.T) {
 		fmt.Fprintf(w, "{}")
 	})
 
-	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "container", "")
+	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "container", "", "")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
@@ -163,9 +163,22 @@ func TestBuildsCreate(t *testing.T) {
 	})
 	b.Reset()
 
-	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", "container", `web: ./drive
-warp: ./warp 8
-`)
+	tmpDir, err := os.MkdirTemp("", "tmpdir")
+	if err != nil {
+		t.Fatalf("error creating temp directory (%s)", err)
+	}
+	data := `web: ./drive
+warp: ./warp 8`
+	if err := os.WriteFile(tmpDir+"/Procfile", []byte(data), 0644); err != nil {
+		t.Fatalf("error creating %s/Procfile (%s)", tmpDir, err)
+	}
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			t.Fatalf("failed to remove Procfile from %s (%s)", tmpDir, err)
+		}
+	}()
+
+	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", "container", tmpDir+"/Procfile", "")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
@@ -177,6 +190,14 @@ warp: ./warp 8
 			Procfile: map[string]string{
 				"web":  "./drive",
 				"warp": "./warp 8",
+			},
+			Dryccfile: map[string]interface{}{
+				"deploy": map[string]interface{}{
+					"web": map[string]interface{}{
+						"command": []string{"bash", "-c"},
+						"args":    []string{"bundle exec puma -C config/puma.rb"},
+					},
+				},
 			},
 		}, r)
 
@@ -190,7 +211,18 @@ warp: ./warp 8
 `), os.ModePerm)
 	assert.NoError(t, err)
 
-	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "")
+	err = os.WriteFile("drycc.yaml", []byte(`
+deploy:
+  web:
+    command:
+    - bash
+    - -c
+    args:
+    - bundle exec puma -C config/puma.rb
+`), os.ModePerm)
+	assert.NoError(t, err)
+
+	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "Procfile", "drycc.yaml")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 

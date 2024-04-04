@@ -43,7 +43,7 @@ func (d *DryccCmd) BuildsList(appID string, results int) error {
 }
 
 // BuildsCreate creates a build for an app.
-func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string) error {
+func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string, dryccfile string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -51,13 +51,8 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string) error {
 	}
 
 	procfileMap := make(map[string]string)
-
-	if procfile != "" {
-		if procfileMap, err = parseProcfile([]byte(procfile)); err != nil {
-			return err
-		}
-	} else if _, err := os.Stat("Procfile"); err == nil {
-		contents, err := os.ReadFile("Procfile")
+	if _, err := os.Stat(procfile); err == nil {
+		contents, err := os.ReadFile(procfile)
 		if err != nil {
 			return err
 		}
@@ -67,9 +62,21 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string) error {
 		}
 	}
 
+	dryccfileMap := make(map[string]interface{})
+	if _, err := os.Stat(dryccfile); err == nil {
+		contents, err := os.ReadFile(dryccfile)
+		if err != nil {
+			return err
+		}
+
+		if dryccfileMap, err = parseDryccfile(contents); err != nil {
+			return err
+		}
+	}
+
 	d.Print("Creating build... ")
 	quit := progress(d.WOut)
-	_, err = builds.New(s.Client, appID, image, stack, procfileMap)
+	_, err = builds.New(s.Client, appID, image, stack, procfileMap, dryccfileMap)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -84,4 +91,9 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string) error {
 func parseProcfile(procfile []byte) (map[string]string, error) {
 	procfileMap := make(map[string]string)
 	return procfileMap, yaml.Unmarshal(procfile, &procfileMap)
+}
+
+func parseDryccfile(dryccfile []byte) (map[string]interface{}, error) {
+	dryccfileMap := make(map[string]interface{})
+	return dryccfileMap, yaml.Unmarshal(dryccfile, &dryccfileMap)
 }

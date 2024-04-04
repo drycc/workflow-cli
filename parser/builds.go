@@ -67,14 +67,14 @@ Options:
 func buildsCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Creates a new build of an application. Imports an <image> and deploys it to Drycc
-as a new release. If a Procfile is present in the current directory, it will be used
-as the default process types for this application.
+as a new release. If a Procfile or drycc.yaml is present in the current directory,
+it will be used as the default for this application.
 
 Usage: drycc builds:create <image> [options]
 
 Arguments:
   <image>
-    A fully-qualified container image, either from Drycc Registry (e.g. registry.drycc.cc/drycc/example-go:latest)
+    A default fully-qualified container image, either from Drycc Registry (e.g. registry.drycc.cc/drycc/example-go:latest)
     or from an in-house registry (e.g. myregistry.example.com:5000/example-go:latest).
     This image must include the tag.
 
@@ -84,7 +84,9 @@ Options:
   -s --stack=<stack>
     The stack name for the application, defaults to container.
   -p --procfile=<procfile>
-    A YAML string used to supply a Procfile to the application.
+    A YAML file used to supply a Procfile to the application.
+  -d --dryccfile=<dryccfile>
+    A YAML file used to supply a drycc.yaml to the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -99,7 +101,8 @@ Options:
 	if stack == "" {
 		stack = "container"
 	}
-	procfile := safeGetString(args, "--procfile")
+	procfile := safeGetValue(args, "--procfile", "Procfile")
+	dryccfile := safeGetValue(args, "--dryccfile", "drycc.yaml")
 
-	return cmdr.BuildsCreate(app, image, stack, procfile)
+	return cmdr.BuildsCreate(app, image, stack, procfile, dryccfile)
 }
