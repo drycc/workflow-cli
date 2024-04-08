@@ -59,7 +59,7 @@ func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 	table.Append([]string{"Config:", r.Config})
 	table.Append([]string{"Created:", r.Created})
 	table.Append([]string{"Updated:", r.Updated})
-	table.Append([]string{"Summary:", r.Summary})
+	table.Append([]string{"Summary:", d.wrapString(r.Summary)})
 	table.Append([]string{"Version:", fmt.Sprintf("v%v", r.Version)})
 	table.Render()
 	return nil

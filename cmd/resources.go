@@ -194,7 +194,7 @@ func (d *DryccCmd) ResourceGet(appID, name string) error {
 	for _, key := range *sortKeys(resource.Options) {
 		table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Options[key])})
 	}
-	table.Append([]string{"Message:", safeGetString(resource.Message)})
+	table.Append([]string{"Message:", d.wrapString(safeGetString(resource.Message))})
 	table.Append([]string{"Created:", resource.Created})
 	table.Append([]string{"Updated:", resource.Updated})
 	table.Render()

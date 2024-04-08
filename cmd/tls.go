@@ -18,22 +18,28 @@ func (d *DryccCmd) TLSInfo(appID string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-	table := d.getDefaultFormatTable(
-		[]string{"UUID", "OWNER", "CERTS-AUTO", "HTTPS-ENFORCED", "EMAIL", "SERVER"},
-	)
-	data := []string{
-		tls.UUID,
-		tls.Owner,
-		fmt.Sprintf("%v", tls.CertsAutoEnabled != nil && *(tls.CertsAutoEnabled)),
-		fmt.Sprintf("%v", tls.HTTPSEnforced != nil && *(tls.HTTPSEnforced)),
-		safeGetString(""),
-		safeGetString(""),
-	}
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"UUID:", tls.UUID})
+	table.Append([]string{"Owner:", tls.Owner})
+	table.Append([]string{"CertsAuto:", fmt.Sprintf("%v", tls.CertsAutoEnabled != nil && *(tls.CertsAutoEnabled))})
+	table.Append([]string{"HTTPSEnforced:", fmt.Sprintf("%v", tls.HTTPSEnforced != nil && *(tls.HTTPSEnforced))})
+	// Issuer
+	table.Append([]string{"Issuer:", ""})
 	if tls.Issuer != nil {
-		data[4] = safeGetString(tls.Issuer.Email)
-		data[5] = safeGetString(tls.Issuer.Server)
+		table.Append([]string{"", "Email:", safeGetString(tls.Issuer.Email)})
+		table.Append([]string{"", "Server:", safeGetString(tls.Issuer.Server)})
 	}
-	table.Append(data)
+	// Events
+	table.Append([]string{"Events:", ""})
+	for _, event := range tls.Events {
+		table.Append([]string{"", "Name:", event["name"]})
+		table.Append([]string{"", "Kind:", event["kind"]})
+		table.Append([]string{"", "Time:", event["time"]})
+		table.Append([]string{"", "Type:", event["type"]})
+		table.Append([]string{"", "Status:", event["status"]})
+		table.Append([]string{"", "Message:", d.wrapString(event["message"])})
+		table.Append([]string{""})
+	}
 	table.Render()
 	return nil
 }

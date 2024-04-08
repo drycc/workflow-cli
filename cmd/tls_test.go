@@ -36,14 +36,28 @@ func TestTLSInfo(t *testing.T) {
 		"email": "drycc@drycc.cc",
 		"key_id": "AA",
 		"key_secret": "BB"
-	}
+	},
+	"events": [{"name": "foo", "kind": "Issuer", "time": "2024-04-08T01:14:49Z", "type": "Ready", "status": "True", "message": "ready message"}]
 }`)
 	})
 
 	err = cmdr.TLSInfo("numenor")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER     CERTS-AUTO    HTTPS-ENFORCED    EMAIL             SERVER                           
-c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    nazgul    true          true              drycc@drycc.cc    https://acme.zerossl.com/v2/DV90    
+	assert.Equal(t, b.String(), `UUID:             c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    
+Owner:            nazgul                                  
+CertsAuto:        true                                    
+HTTPSEnforced:    true                                    
+Issuer:                                                   
+                  Email:                                  drycc@drycc.cc                      
+                  Server:                                 https://acme.zerossl.com/v2/DV90    
+Events:                                                   
+                  Name:                                   foo                                 
+                  Kind:                                   Issuer                              
+                  Time:                                   2024-04-08T01:14:49Z                
+                  Type:                                   Ready                               
+                  Status:                                 True                                
+                  Message:                                ready message                       
+                  
 `, "output")
 }
 

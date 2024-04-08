@@ -15,6 +15,7 @@ import (
 )
 
 var defaultLimit = -1
+var defaultLines = 64
 
 func progress(wOut io.Writer) chan bool {
 	frames := []string{"...", "o..", ".o.", "..o"}
@@ -112,6 +113,12 @@ func (d *DryccCmd) getDefaultFormatTable(headers []string) *tablewriter.Table {
 	table.SetTablePadding(fmt.Sprintf("%4s", " "))
 	table.SetNoWhiteSpace(true)
 	return table
+}
+
+// wrapString wraps s into a paragraph of lines of length lim, with minimal raggedness.
+func (d *DryccCmd) wrapString(s string) string {
+	sa, _ := tablewriter.WrapString(s, defaultLines)
+	return strings.Join(sa, "\r\n")
 }
 
 func sortKeys(data map[string]interface{}) *[]string {
