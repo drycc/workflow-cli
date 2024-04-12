@@ -12,7 +12,7 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) Login(string, bool) error {
+func (d FakeDryccCmd) Login(string, bool, string, string) error {
 	return errors.New("auth:login")
 }
 

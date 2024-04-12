@@ -20,7 +20,7 @@ type Commander interface {
 	AutoscaleList(string) error
 	AutoscaleSet(string, string, int, int, int) error
 	AutoscaleUnset(string, string) error
-	Login(string, bool) error
+	Login(string, bool, string, string) error
 	Logout() error
 	Whoami(bool) error
 	BuildsList(string, int) error

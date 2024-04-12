@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/containerd/console v1.0.4
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20240408054437-6ed94b0070f7
+	github.com/drycc/controller-sdk-go v0.0.0-20240412083348-10d3dbba3590
 	github.com/drycc/pkg v0.0.0-20240225112316-78fc9239f51f
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/stretchr/testify v1.9.0

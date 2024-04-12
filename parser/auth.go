@@ -46,6 +46,10 @@ Arguments:
     a fully-qualified controller URI, e.g. "http://drycc.local3.dryccapp.com/".
 
 Options:
+  --username=<username>
+    provide a username for the account.
+  --password=<password>
+    provide a password for the account.
   --ssl-verify=true
     enables/disables SSL certificate verification for API requests
 `
@@ -58,12 +62,13 @@ Options:
 
 	controller := safeGetString(args, "<controller>")
 	sslVerify := true
-
 	if args["--ssl-verify"] != nil && args["--ssl-verify"].(string) == "false" {
 		sslVerify = false
 	}
+	username := safeGetString(args, "--username")
+	password := safeGetString(args, "--password")
 
-	return cmdr.Login(controller, sslVerify)
+	return cmdr.Login(controller, sslVerify, username, password)
 }
 
 func authLogout(argv []string, cmdr cmd.Commander) error {

@@ -3,12 +3,15 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"testing"
 
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
+
+const keyFixture = "fdbf3b34742e4ed2be4dfa848af13007"
 
 func TestLogin(t *testing.T) {
 	t.Skip("Skip long running tests")
@@ -26,20 +29,31 @@ func TestLogin(t *testing.T) {
 		fmt.Fprintf(w, `{}`)
 	})
 
-	server.Mux.HandleFunc("/v2/auth/login/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		w.Header().Add("Location", "/v2/login/drycc/?key=fdbf3b34742e4ed2be4dfa848af13007/")
-		w.WriteHeader(http.StatusOK)
-		w.Write(nil)
+	server.Mux.HandleFunc("/v2/auth/login/", func(w http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(nil)
+		}
+		w.WriteHeader(http.StatusFound)
+		if len(body) == 0 {
+			testutil.SetHeaders(w)
+			w.Header().Add("Location", fmt.Sprintf("/v2/login/drycc/?key=%s/", keyFixture))
+			w.WriteHeader(http.StatusOK)
+			w.Write(nil)
+		} else {
+			w.Write([]byte(fmt.Sprintf(`{"key": "%s"}`, keyFixture)))
+		}
 	})
 
-	server.Mux.HandleFunc("/v2/auth/token/fdbf3b34742e4ed2be4dfa848af13007/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc(fmt.Sprintf("/v2/auth/token/%s/", keyFixture), func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"username":"test-user","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"}`))
+		w.Write([]byte(`{"username":"test-user","token":"eaf2d1d85f6b410b81d94bfec159019b"}`))
 		w.Write(nil)
 	})
-	err = cmdr.Login(server.Server.URL, false)
+	err = cmdr.Login(server.Server.URL, false, "", "")
 	assert.NoError(t, err)
 }
 

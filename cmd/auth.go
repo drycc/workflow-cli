@@ -14,25 +14,27 @@ import (
 	"github.com/drycc/workflow-cli/settings"
 )
 
-func (d *DryccCmd) doLogin(s settings.Settings) error {
-	URL, err := auth.Login(s.Client)
+func (d *DryccCmd) doLogin(s settings.Settings, username, password string) error {
+	key, err := auth.Login(s.Client, username, password)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 	if err != nil {
 		return nil
 	}
-	fmt.Printf("Opening browser to %s\n", URL)
-	d.Print("Waiting for login... ")
-	err = d.openBrower(URL)
-	if err != nil {
-		d.Print("Cannot open browser, please visit the website in yourself")
+	if username == "" || password == "" {
+		fmt.Printf("Opening browser to %s\n", key)
+		d.Print("Waiting for login... ")
+		err = d.openBrower(key)
+		if err != nil {
+			d.Print("Cannot open browser, please visit the website in yourself")
+		}
+		u, err := url.Parse(key)
+		if err != nil {
+			return err
+		}
+		key = u.Query()["key"][0]
 	}
-	u, err := url.Parse(URL)
-	if err != nil {
-		return err
-	}
-	key := u.Query()["key"][0]
 	quit := progress(d.WOut)
 	d.doToken(s, key)
 	quit <- true
@@ -60,13 +62,13 @@ func (d *DryccCmd) openBrower(URL string) error {
 }
 
 func (d *DryccCmd) doToken(s settings.Settings, key string) error {
-	var token api.AuthLoginResponse
+	var token api.AuthTokenResponse
 	for i := 0; i <= 120; i++ {
 		token, _ = auth.Token(s.Client, key)
-		if token != (api.AuthLoginResponse{}) {
+		time.Sleep(time.Duration(5) * time.Second)
+		if token.Token != "" && token.Username != "" {
 			break
 		}
-		time.Sleep(time.Duration(5) * time.Second)
 	}
 	if token.Token == "" || token.Token == "fail" {
 		d.Printf("Logged fail")
@@ -84,7 +86,7 @@ func (d *DryccCmd) doToken(s settings.Settings, key string) error {
 }
 
 // Login to a Drycc controller.
-func (d *DryccCmd) Login(controller string, sslVerify bool) error {
+func (d *DryccCmd) Login(controller string, sslVerify bool, username, password string) error {
 	c, err := drycc.New(sslVerify, controller, "")
 
 	if err != nil {
@@ -99,7 +101,7 @@ func (d *DryccCmd) Login(controller string, sslVerify bool) error {
 	}
 
 	s := settings.Settings{Client: c}
-	return d.doLogin(s)
+	return d.doLogin(s, username, password)
 }
 
 // Logout from a Drycc controller.
