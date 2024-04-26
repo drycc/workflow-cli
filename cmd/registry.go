@@ -23,11 +23,9 @@ func (d *DryccCmd) RegistryList(appID string) error {
 	if len(config.Registry) == 0 {
 		d.Println(fmt.Sprintf("No registrys found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "KEY", "VALUE"})
+		table := d.getDefaultFormatTable([]string{"KEY", "VALUE"})
 		for _, key := range *sortKeys(config.Registry) {
 			table.Append([]string{
-				config.UUID,
-				config.Owner,
 				key,
 				fmt.Sprintf("%v", config.Registry[key]),
 			})

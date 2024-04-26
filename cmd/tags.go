@@ -23,11 +23,9 @@ func (d *DryccCmd) TagsList(appID string) error {
 	if len(config.Tags) == 0 {
 		d.Println(fmt.Sprintf("No tags found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "PTYPE", "TAG"})
+		table := d.getDefaultFormatTable([]string{"PTYPE", "TAG"})
 		for _, key := range *sortKeys(config.Tags) {
 			table.Append([]string{
-				config.UUID,
-				config.Owner,
 				key,
 				fmt.Sprintf("%v", config.Tags[key]),
 			})

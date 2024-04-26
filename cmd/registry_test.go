@@ -105,9 +105,9 @@ func TestRegistryList(t *testing.T) {
 
 	err = cmdr.RegistryList("enterprise")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER    KEY         VALUE   
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    password    ncc1701    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    username    jkirk      
+	assert.Equal(t, b.String(), `KEY         VALUE   
+password    ncc1701    
+username    jkirk      
 `, "output")
 }
 
@@ -155,9 +155,9 @@ func TestRegistrySet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying registry information... done
 
-UUID                                    OWNER    KEY         VALUE   
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    password    ncc1701    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    username    jkirk      
+KEY         VALUE   
+password    ncc1701    
+username    jkirk      
 `, "output")
 }
 

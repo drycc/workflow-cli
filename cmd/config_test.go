@@ -20,11 +20,11 @@ func TestParseConfig(t *testing.T) {
 
 	actual, err := parseConfig([]string{"FOO=bar"})
 	assert.NoError(t, err)
-	assert.Equal(t, actual, map[string]interface{}{"FOO": "bar"}, "map")
+	assert.Equal(t, actual, api.ConfigValues{"FOO": "bar"}, "map")
 
 	actual, err = parseConfig([]string{"FOO="})
 	assert.NoError(t, err)
-	assert.Equal(t, actual, map[string]interface{}{"FOO": ""}, "map")
+	assert.Equal(t, actual, api.ConfigValues{"FOO": ""}, "map")
 }
 
 func TestParseSSHKey(t *testing.T) {
@@ -105,6 +105,11 @@ func TestConfigList(t *testing.T) {
         "TRUE":  "false",
         "FLOAT": "12.34"
     },
+    "typed_values": {
+		"web": {
+            "PORT":  "9000"
+		}
+    },
     "memory": {},
     "cpu": {},
     "tags": {},
@@ -121,23 +126,20 @@ func TestConfigList(t *testing.T) {
 	err = cmdr.ConfigList("foo", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `UUID                                    OWNER    NAME     VALUE   
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    FLOAT    12.34      
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    NCC      1701       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TEST     testing    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TRUE     false      
+	assert.Equal(t, b.String(), `NAME     VALUE   
+FLOAT    12.34      
+NCC      1701       
+TEST     testing    
+TRUE     false      
 `, "output")
-	b.Reset()
-
-	err = cmdr.ConfigList("foo", "oneline")
-	assert.NoError(t, err)
-	assert.Equal(t, b.String(), "FLOAT=12.34 NCC=1701 TEST=testing TRUE=false\n", "output")
 
 	b.Reset()
-
-	err = cmdr.ConfigList("foo", "diff")
+	err = cmdr.ConfigList("foo", "web")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), "FLOAT=12.34\nNCC=1701\nTEST=testing\nTRUE=false\n", "output")
+	assert.Equal(t, b.String(), `NAME    VALUE 
+PORT    9000     
+`, "output")
+
 }
 
 func TestConfigSet(t *testing.T) {
@@ -182,17 +184,17 @@ func TestConfigSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigSet("foo", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"})
+	err = cmdr.ConfigSet("foo", "", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
 
-UUID                                    OWNER    NAME       VALUE                                            
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    FLOAT      12.34                                               
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    NCC        1701                                                
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TEST       testing                                             
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TRUE       false                                               
+NAME       VALUE                                            
+FLOAT      12.34                                               
+NCC        1701                                                
+SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
+TEST       testing                                             
+TRUE       false                                               
 `, "output")
 }
 
@@ -236,15 +238,73 @@ func TestConfigUnset(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigUnset("foo", []string{"FOO"})
+	err = cmdr.ConfigUnset("foo", "", []string{"FOO"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 
-UUID                                    OWNER    NAME     VALUE   
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    FLOAT    12.34      
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    NCC      1701       
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TEST     testing    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jkirk    TRUE     false      
+NAME     VALUE   
+FLOAT    12.34      
+NCC      1701       
+TEST     testing    
+TRUE     false      
+`, "output")
+}
+
+func TestConfigUnsetTypedValues(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+
+	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		if r.Method == "POST" {
+			testutil.AssertBody(t, api.Config{
+				Values: map[string]interface{}{
+					"FOO": nil,
+				},
+			}, r)
+		}
+
+		fmt.Fprintf(w, `{
+	"owner": "jkirk",
+	"app": "foo",
+	"values": {
+		"RELEASE_VERSION": "v1"
+	},
+	"typed_values": {
+		"web": {
+			"TEST":  "testing",
+			"NCC":   "1701",
+			"TRUE":  "false",
+			"FLOAT": "12.34"
+		}
+	},
+	"memory": {},
+	"cpu": {},
+	"tags": {},
+	"registry": {},
+	"created": "2014-01-01T00:00:00UTC",
+	"updated": "2014-01-01T00:00:00UTC",
+	"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
+}`)
+	})
+
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	err = cmdr.ConfigUnset("foo", "web", []string{"FOO"})
+	assert.NoError(t, err)
+
+	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
+
+NAME     VALUE   
+FLOAT    12.34      
+NCC      1701       
+TEST     testing    
+TRUE     false      
 `, "output")
 }

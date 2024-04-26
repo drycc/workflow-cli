@@ -13,8 +13,8 @@ Valid commands for config:
 config:list        list environment variables for an app
 config:set         set environment variables for an app
 config:unset       unset environment variables for an app
-config:pull        extract environment variables to .env
-config:push        set environment variables from .env
+config:pull        pull environment variables to the path
+config:push        push environment variables from the path
 
 Use 'drycc help [command]' to learn more.
 `
@@ -52,12 +52,10 @@ Lists environment variables for an application.
 Usage: drycc config:list [options]
 
 Options:
-  --oneline
-    print output on one line.
-  --diff
-    print output on multiple lines for comparison against .env files.
   -a --app=<app>
-    the uniquely identifiable name of the application.
+    the application that you wish to listed.
+  --type=<type>
+    the procType for which the config needs to be listed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -66,17 +64,8 @@ Options:
 		return err
 	}
 	app := safeGetString(args, "--app")
-	oneline := args["--oneline"].(bool)
-	diff := args["--diff"].(bool)
-
-	format := ""
-	if oneline {
-		format = "oneline"
-	} else if diff {
-		format = "diff"
-	}
-
-	return cmdr.ConfigList(app, format)
+	procType := safeGetString(args, "--type")
+	return cmdr.ConfigList(app, procType)
 }
 
 func configSet(argv []string, cmdr cmd.Commander) error {
@@ -93,7 +82,9 @@ Arguments:
 
 Options:
   -a --app=<app>
-    the uniquely identifiable name for the application.
+    the application that you wish to set.
+  --type=<type>
+    the procType for which the config needs to be set.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -103,8 +94,9 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
+	procType := safeGetString(args, "--type")
 
-	return cmdr.ConfigSet(app, args["<var>=<value>"].([]string))
+	return cmdr.ConfigSet(app, procType, args["<var>=<value>"].([]string))
 }
 
 func configUnset(argv []string, cmdr cmd.Commander) error {
@@ -119,7 +111,9 @@ Arguments:
 
 Options:
   -a --app=<app>
-    the uniquely identifiable name for the application.
+    the application that you wish to unset.
+  --type=<type>
+    the procType for which the config needs to be unset.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -128,8 +122,8 @@ Options:
 		return err
 	}
 	app := safeGetString(args, "--app")
-
-	return cmdr.ConfigUnset(app, args["<key>"].([]string))
+	procType := safeGetString(args, "--type")
+	return cmdr.ConfigUnset(app, procType, args["<key>"].([]string))
 }
 
 func configPull(argv []string, cmdr cmd.Commander) error {
@@ -144,11 +138,15 @@ Usage: drycc config:pull [options]
 
 Options:
   -a --app=<app>
-    The application that you wish to pull from
+    the application that you wish to pull.
+  --type=<type>
+    the procType for which the config needs to be pull.
+  --path=<path>
+    a path leading to an environment file [default: .env]
   -i --interactive
-    Prompts for each value to be overwritten
+    prompts for each value to be overwritten.
   -o --overwrite
-    Allows you to have the pull overwrite keys in .env
+    allows you to have the pull overwrite keys to the path.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -158,10 +156,12 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
+	procType := safeGetString(args, "--type")
+	path := safeGetValue(args, "--path", ".env")
 	interactive := args["--interactive"].(bool)
 	overwrite := args["--overwrite"].(bool)
 
-	return cmdr.ConfigPull(app, interactive, overwrite)
+	return cmdr.ConfigPull(app, procType, path, interactive, overwrite)
 }
 
 func configPush(argv []string, cmdr cmd.Commander) error {
@@ -176,8 +176,10 @@ Usage: drycc config:push [options]
 
 Options:
   -a --app=<app>
-    the uniquely identifiable name for the application.
-  -p <path>, --path=<path>
+    the application that you wish to push.
+  --type=<type>
+    the procType for which the config needs to be push.
+  --path=<path>
     a path leading to an environment file [default: .env]
 `
 
@@ -188,7 +190,7 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	path := safeGetString(args, "--path")
-
-	return cmdr.ConfigPush(app, path)
+	procType := safeGetString(args, "--type")
+	path := safeGetValue(args, "--path", ".env")
+	return cmdr.ConfigPush(app, procType, path)
 }

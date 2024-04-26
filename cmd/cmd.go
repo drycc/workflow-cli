@@ -37,10 +37,10 @@ type Commander interface {
 	CertAttach(string, string) error
 	CertDetach(string, string) error
 	ConfigList(string, string) error
-	ConfigSet(string, []string) error
-	ConfigUnset(string, []string) error
-	ConfigPull(string, bool, bool) error
-	ConfigPush(string, string) error
+	ConfigSet(string, string, []string) error
+	ConfigUnset(string, string, []string) error
+	ConfigPull(string, string, string, bool, bool) error
+	ConfigPush(string, string, string) error
 	DomainsList(string, int) error
 	DomainsAdd(string, string) error
 	DomainsRemove(string, string) error

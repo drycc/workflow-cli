@@ -24,11 +24,9 @@ func (d *DryccCmd) TimeoutsList(appID string) error {
 	if len(config.Timeout) == 0 {
 		d.Println("Default (30 sec) or controlled by drycc controller.")
 	} else {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "PTYPE", "TIMEOUT"})
+		table := d.getDefaultFormatTable([]string{"PTYPE", "TIMEOUT"})
 		for _, key := range *sortKeys(config.Timeout) {
 			table.Append([]string{
-				config.UUID,
-				config.Owner,
 				key,
 				fmt.Sprintf("%v", config.Timeout[key]),
 			})

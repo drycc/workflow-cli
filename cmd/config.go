@@ -13,7 +13,7 @@ import (
 )
 
 // ConfigList lists an app's config.
-func (d *DryccCmd) ConfigList(appID string, format string) error {
+func (d *DryccCmd) ConfigList(appID string, procType string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -23,35 +23,26 @@ func (d *DryccCmd) ConfigList(appID string, format string) error {
 		return err
 	}
 
-	keys := *sortKeys(config.Values)
-	switch format {
-	case "oneline":
-		var kv []string
-		for _, key := range keys {
-			kv = append(kv, fmt.Sprintf("%s=%s", key, config.Values[key]))
-		}
-		d.Println(strings.Join(kv, " "))
-	case "diff":
-		for _, key := range keys {
-			d.Println(fmt.Sprintf("%s=%s", key, config.Values[key]))
-		}
-	default:
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "NAME", "VALUE"})
-		for _, key := range keys {
-			table.Append([]string{
-				config.UUID,
-				config.Owner,
-				key,
-				fmt.Sprintf("%v", config.Values[key]),
-			})
-		}
-		table.Render()
+	configValues := config.Values
+	if procType != "" {
+		configValues = config.TypedValues[procType]
 	}
+
+	keys := *sortKeys(configValues)
+	table := d.getDefaultFormatTable([]string{"NAME", "VALUE"})
+
+	for _, key := range keys {
+		table.Append([]string{
+			key,
+			fmt.Sprintf("%v", configValues[key]),
+		})
+	}
+	table.Render()
 	return nil
 }
 
 // ConfigSet sets an app's config variables.
-func (d *DryccCmd) ConfigSet(appID string, configVars []string) error {
+func (d *DryccCmd) ConfigSet(appID string, procType string, configVars []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -84,8 +75,12 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 	d.Print("Creating config... ")
 
 	quit := progress(d.WOut)
-	configObj := api.Config{Values: configMap}
-	configObj, err = config.Set(s.Client, appID, configObj)
+	configObj, err := config.Set(s.Client, appID, func() api.Config {
+		if procType != "" {
+			return api.Config{TypedValues: map[string]api.ConfigValues{procType: configMap}}
+		}
+		return api.Config{Values: configMap}
+	}())
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -98,11 +93,11 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 		d.Print("done\n\n")
 	}
 
-	return d.ConfigList(appID, "")
+	return d.ConfigList(appID, procType)
 }
 
 // ConfigUnset removes a config variable from an app.
-func (d *DryccCmd) ConfigUnset(appID string, configVars []string) error {
+func (d *DryccCmd) ConfigUnset(appID string, procType string, configVars []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -132,11 +127,11 @@ func (d *DryccCmd) ConfigUnset(appID string, configVars []string) error {
 
 	d.Print("done\n\n")
 
-	return d.ConfigList(appID, "")
+	return d.ConfigList(appID, procType)
 }
 
 // ConfigPull pulls an app's config to a file.
-func (d *DryccCmd) ConfigPull(appID string, interactive bool, overwrite bool) error {
+func (d *DryccCmd) ConfigPull(appID, procType, fileName string, interactive bool, overwrite bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -153,36 +148,34 @@ func (d *DryccCmd) ConfigPull(appID string, interactive bool, overwrite bool) er
 	if err != nil {
 		return err
 	}
+	configValues := configVars.Values
+	if procType != "" {
+		configValues = configVars.TypedValues[procType]
+	}
 
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		d.Print(formatConfig(configVars.Values))
+		d.Print(formatConfig(configValues))
 		return nil
 	}
 
-	filename := ".env"
-
 	if !overwrite {
-		if _, err := os.Stat(filename); err == nil {
-			return fmt.Errorf("%s already exists, pass -o to overwrite", filename)
+		if _, err := os.Stat(fileName); err == nil {
+			return fmt.Errorf("%s already exists, pass -o to overwrite", fileName)
 		}
 	}
 
 	if interactive {
-		contents, err := os.ReadFile(filename)
-
+		contents, err := os.ReadFile(fileName)
 		if err != nil {
 			return err
 		}
 		localConfigVars := strings.Split(string(contents), "\n")
-
 		configMap, err := parseConfig(localConfigVars[:len(localConfigVars)-1])
 		if err != nil {
 			return err
 		}
-
-		for key, value := range configVars.Values {
+		for key, value := range configValues {
 			localValue, ok := configMap[key]
-
 			if ok {
 				if value != localValue {
 					var confirm string
@@ -198,15 +191,13 @@ func (d *DryccCmd) ConfigPull(appID string, interactive bool, overwrite bool) er
 				configMap[key] = value
 			}
 		}
-
-		return os.WriteFile(filename, []byte(formatConfig(configMap)), 0755)
+		return os.WriteFile(fileName, []byte(formatConfig(configMap)), 0755)
 	}
-
-	return os.WriteFile(filename, []byte(formatConfig(configVars.Values)), 0755)
+	return os.WriteFile(fileName, []byte(formatConfig(configValues)), 0755)
 }
 
 // ConfigPush pushes an app's config from a file.
-func (d *DryccCmd) ConfigPush(appID, fileName string) error {
+func (d *DryccCmd) ConfigPush(appID, procType string, fileName string) error {
 	stat, err := os.Stdin.Stat()
 
 	if err != nil {
@@ -238,11 +229,11 @@ func (d *DryccCmd) ConfigPush(appID, fileName string) error {
 		}
 	}
 
-	return d.ConfigSet(appID, config)
+	return d.ConfigSet(appID, procType, config)
 }
 
-func parseConfig(configVars []string) (map[string]interface{}, error) {
-	configMap := make(map[string]interface{})
+func parseConfig(configVars []string) (api.ConfigValues, error) {
+	configMap := make(api.ConfigValues)
 
 	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*)=([\s\S]*)$`)
 	for _, config := range configVars {
