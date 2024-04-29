@@ -67,6 +67,7 @@ Subcommands, use 'drycc help [subcommand]' to learn more:
   tags          manage tags for application containers
   tls           manage TLS settings for applications
   users         manage users
+  tokens        manage tokens
   version       display client version
   services      manage services for your applications
   routes        manage routes for your applications
@@ -166,6 +167,8 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.TLS(argv, &cmdr)
 	case "users":
 		err = parser.Users(argv, &cmdr)
+	case "tokens":
+		err = parser.Tokens(argv, &cmdr)
 	case "version":
 		err = parser.Version(argv, &cmdr)
 	case "volumes":

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 )
 
@@ -23,6 +24,9 @@ type Commander interface {
 	Login(string, bool, string, string) error
 	Logout() error
 	Whoami(bool) error
+	TokensList(int) error
+	TokensAdd(*drycc.Client, string, string, string, string, bool) (*api.AuthTokenResponse, error)
+	TokensRemove(string, string) error
 	BuildsList(string, int) error
 	BuildsCreate(string, string, string, string, string) error
 	CanaryInfo(string) error
