@@ -16,7 +16,7 @@ func (d FakeDryccCmd) DomainsList(string, int) error {
 	return errors.New("domains:list")
 }
 
-func (d FakeDryccCmd) DomainsAdd(string, string) error {
+func (d FakeDryccCmd) DomainsAdd(string, string, string) error {
 	return errors.New("domains:add")
 }
 

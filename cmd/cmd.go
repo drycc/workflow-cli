@@ -46,7 +46,7 @@ type Commander interface {
 	ConfigPull(string, string, string, bool, bool) error
 	ConfigPush(string, string, string) error
 	DomainsList(string, int) error
-	DomainsAdd(string, string) error
+	DomainsAdd(string, string, string) error
 	DomainsRemove(string, string) error
 	ServicesList(string) error
 	ServicesAdd(string, string, string, string) error

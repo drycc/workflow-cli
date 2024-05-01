@@ -32,6 +32,7 @@ func TestDomainsList(t *testing.T) {
             "app": "foo",
             "created": "2014-01-01T00:00:00UTC",
             "domain": "example.example.com",
+			"procfile_type": "web",
             "owner": "test",
             "updated": "2014-01-01T00:00:00UTC"
         },
@@ -39,6 +40,7 @@ func TestDomainsList(t *testing.T) {
             "app": "foo",
             "created": "2014-01-01T00:00:00UTC",
             "domain": "foo",
+			"procfile_type": "web",
             "owner": "test",
             "updated": "2014-01-01T00:00:00UTC"
         }
@@ -49,9 +51,9 @@ func TestDomainsList(t *testing.T) {
 	err = cmdr.DomainsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `APP    OWNER    CREATED                   UPDATED                   DOMAIN              
-foo    test     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    example.example.com    
-foo    test     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    foo                    
+	assert.Equal(t, b.String(), `APP    OWNER    PTYPE    CREATED                   UPDATED                   DOMAIN              
+foo    test     web      2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    example.example.com    
+foo    test     web      2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    foo                    
 `, "output")
 }
 
@@ -76,6 +78,7 @@ func TestDomainsListLimit(t *testing.T) {
             "app": "foo",
             "created": "2014-01-01T00:00:00UTC",
             "domain": "example.example.com",
+			"procfile_type": "web",
             "owner": "test",
             "updated": "2014-01-01T00:00:00UTC"
         }
@@ -86,8 +89,8 @@ func TestDomainsListLimit(t *testing.T) {
 	err = cmdr.DomainsList("foo", 1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `APP    OWNER    CREATED                   UPDATED                   DOMAIN              
-foo    test     2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    example.example.com    
+	assert.Equal(t, b.String(), `APP    OWNER    PTYPE    CREATED                   UPDATED                   DOMAIN              
+foo    test     web      2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    example.example.com    
 `, "output")
 }
 
@@ -102,14 +105,14 @@ func TestDomainsAdd(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/domains/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.DomainCreateRequest{Domain: "example.example.com"}, r)
+		testutil.AssertBody(t, api.DomainCreateRequest{Domain: "example.example.com", ProcfileType: "web"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.DomainsAdd("foo", "example.example.com")
+	err = cmdr.DomainsAdd("foo", "example.example.com", "web")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Adding example.example.com to foo... done\n", "output")

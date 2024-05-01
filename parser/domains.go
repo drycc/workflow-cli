@@ -50,6 +50,8 @@ Arguments:
     the domain name to be bound to the application, such as 'domain.dryccapp.com'.
 
 Options:
+  --type=<type>
+    the procType type for domain, default[web].
   -a --app=<app>
     the uniquely identifiable name for the application.
 `
@@ -61,9 +63,10 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
+	procfileType := safeGetString(args, "--type")
 	domain := safeGetString(args, "<domain>")
 
-	return cmdr.DomainsAdd(app, domain)
+	return cmdr.DomainsAdd(app, domain, procfileType)
 }
 
 func domainsList(argv []string, cmdr cmd.Commander) error {
