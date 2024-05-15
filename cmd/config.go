@@ -235,7 +235,7 @@ func (d *DryccCmd) ConfigPush(appID, procType string, fileName string) error {
 func parseConfig(configVars []string) (api.ConfigValues, error) {
 	configMap := make(api.ConfigValues)
 
-	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*)=([\s\S]*)$`)
+	regex := regexp.MustCompile(`^([A-z0-9_\-\.]+)=([\s\S]*)$`)
 	for _, config := range configVars {
 		// Skip config that starts with an comment
 		if config[0] == '#' {
