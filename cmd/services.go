@@ -21,15 +21,15 @@ func (d *DryccCmd) ServicesList(appID string) error {
 		return err
 	}
 	if len(services) > 0 {
-		table := d.getDefaultFormatTable([]string{"PTYPE", "NAME", "PORT", "PROTOCOL", "TARGET-PORT"})
+		table := d.getDefaultFormatTable([]string{"PTYPE", "PORT", "PROTOCOL", "TARGET-PORT", "DOMAIN"})
 		for _, service := range services {
 			for _, port := range service.Ports {
 				table.Append([]string{
 					service.ProcfileType,
-					port.Name,
 					fmt.Sprint(port.Port),
 					port.Protocol,
 					fmt.Sprint(port.TargetPort),
+					service.Domain,
 				})
 			}
 		}
