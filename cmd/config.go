@@ -118,14 +118,24 @@ func (d *DryccCmd) ConfigUnset(appID string, procType string, configVars []strin
 
 	configObj.Values = valuesMap
 
-	_, err = config.Set(s.Client, appID, configObj)
+	configObj, err = config.Set(s.Client, appID, func() api.Config {
+		if procType != "" {
+			return api.Config{TypedValues: map[string]api.ConfigValues{procType: valuesMap}}
+		}
+		return api.Config{Values: valuesMap}
+	}())
+
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	d.Print("done\n\n")
+	if release, ok := configObj.Values["WORKFLOW_RELEASE"]; ok {
+		d.Printf("done, %s\n\n", release)
+	} else {
+		d.Print("done\n\n")
+	}
 
 	return d.ConfigList(appID, procType)
 }
