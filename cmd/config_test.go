@@ -263,8 +263,10 @@ func TestConfigUnsetTypedValues(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Values: map[string]interface{}{
-					"FOO": nil,
+				TypedValues: map[string]api.ConfigValues{
+					"web": {
+						"FOO": nil,
+					},
 				},
 			}, r)
 		}
