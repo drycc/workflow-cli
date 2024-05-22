@@ -67,7 +67,7 @@ func TestTokenDelete(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/tokens/f71e3b18-e702-499e-bd7f-8fb0a66d7b12/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/tokens/f71e3b18-e702-499e-bd7f-8fb0a66d7b12/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(204)
 	})
