@@ -88,6 +88,7 @@ type Commander interface {
 	PsExec(string, string, bool, bool, []string) error
 	PsScale(string, []string) error
 	PsRestart(string, string) error
+	PsDescribe(string, string) error
 	RegistryList(string) error
 	RegistrySet(string, []string) error
 	RegistryUnset(string, []string) error

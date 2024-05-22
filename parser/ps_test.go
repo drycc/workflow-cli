@@ -32,6 +32,9 @@ func (d FakeDryccCmd) PsRestart(string, string) error {
 	return errors.New("ps:restart")
 }
 
+func (d FakeDryccCmd) PsDescribe(string, string) error {
+	return errors.New("ps:describe")
+}
 func TestPs(t *testing.T) {
 	t.Parallel()
 

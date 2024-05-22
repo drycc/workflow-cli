@@ -18,6 +18,7 @@ ps:logs        print the logs for a container
 ps:exec        execute a command in a container
 ps:restart     restart an application or process type
 ps:scale       scale processes (e.g. web=4 worker=2)
+ps:describe    print a detailed description of the selected process
 
 Use 'drycc help [command]' to learn more.
 `
@@ -33,6 +34,8 @@ Use 'drycc help [command]' to learn more.
 		return psRestart(argv, cmdr)
 	case "ps:scale":
 		return psScale(argv, cmdr)
+	case "ps:describe":
+		return psDescribe(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -183,4 +186,26 @@ Options:
 
 	apps := safeGetString(args, "--app")
 	return cmdr.PsScale(apps, args["<type>=<num>"].([]string))
+}
+
+func psDescribe(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Print a detailed description of the selected process.
+
+Usage: drycc ps:describe <pod> [options]
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	app := safeGetString(args, "--app")
+	pod := safeGetString(args, "<pod>")
+	return cmdr.PsDescribe(app, pod)
 }

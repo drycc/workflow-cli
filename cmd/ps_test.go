@@ -242,3 +242,52 @@ func TestPsRestart(t *testing.T) {
 	err = cmdr.PsRestart("testapp", "web")
 	assert.NoError(t, err)
 }
+
+func TestPsDescribe(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/pods/foo-web-111/describe/", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+			"count": 1,
+			"next": null,
+			"previous": null,
+			"results": [{
+				"container": "web",
+				"image": "registry.drycc.cc/base/base",
+				"command": ["bash", "-c"],
+				"args": ["sleep 3600s"],
+				"state": {
+					"running": {
+					  "startedAt": "2024-05-21T02:27:03+00:00"
+					},
+					"waiting": {
+					  "message": "container create failed: executable file './start.sh' not found in $PATH: No such file or directory\n",
+					  "reason": "CreateContainerError"
+					}
+				},
+				"lastState": {
+					"terminated": {
+					  "containerID": "cri-o://ccfc73b0b4d966af4f93ca871a04fa97460620cd8005c1c36f7734a08ba49ed0",
+					  "exitCode": 1,
+					  "finishedAt": "2024-05-21T02:27:03+00:00",
+					  "reason": "Error",
+					  "startedAt": "2024-05-21T02:26:33+00:00"
+					}
+				},
+				"ready": true,
+				"restartCount": 1
+			}]
+		}`)
+	})
+
+	err = cmdr.PsDescribe("foo", "foo-web-111")
+	assert.NoError(t, err)
+}

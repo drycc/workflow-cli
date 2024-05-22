@@ -159,6 +159,53 @@ func (d *DryccCmd) PsRestart(appID, target string) error {
 	return nil
 }
 
+// PsDescribe describe an app's processes.
+func (d *DryccCmd) PsDescribe(appID, podID string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+	// The 1000 is fake for now until API understands limits
+	podState, _, err := ps.Describe(s.Client, appID, podID, 1000)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+	table := d.getDefaultFormatTable([]string{})
+	for _, containerState := range podState {
+		table.Append([]string{"Container:", containerState.Container})
+		table.Append([]string{"Image:", containerState.Image})
+		table.Append([]string{"Command:"})
+		for _, command := range containerState.Command {
+			table.Append([]string{"", fmt.Sprintf("- %v", command)})
+		}
+		table.Append([]string{"Args:"})
+		for _, arg := range containerState.Args {
+			table.Append([]string{"", fmt.Sprintf("- %v", arg)})
+		}
+		// State
+		for key := range containerState.State {
+			table.Append([]string{"State:", key})
+			value := containerState.State[key]
+			for innerKey := range value {
+				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strconv.Quote(fmt.Sprintf("%v", value[innerKey]))})
+			}
+		}
+		// LastState
+		for key := range containerState.LastState {
+			table.Append([]string{"Last State:", key})
+			value := containerState.LastState[key]
+			for innerKey := range value {
+				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strconv.Quote(fmt.Sprintf("%v", value[innerKey]))})
+			}
+		}
+		table.Append([]string{"Ready:", fmt.Sprintf("%v", containerState.Ready)})
+		table.Append([]string{"Restart Count:", fmt.Sprintf("%v", containerState.RestartCount)})
+		table.Append([]string{})
+	}
+	table.Render()
+	return nil
+}
+
 func printProcesses(d *DryccCmd, appID string, input []api.Pods) {
 	processes := ps.ByType(input)
 
