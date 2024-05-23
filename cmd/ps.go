@@ -212,7 +212,7 @@ func printProcesses(d *DryccCmd, appID string, input []api.Pods) {
 	if len(processes) == 0 {
 		d.Println(fmt.Sprintf("No processes found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "RELEASE", "STATE", "PTYPE", "STARTED"})
+		table := d.getDefaultFormatTable([]string{"NAME", "RELEASE", "STATE", "PTYPE", "READY", "RESTARTS", "STARTED"})
 		for _, process := range processes {
 			for _, pod := range process.PodsList {
 				table.Append([]string{
@@ -220,6 +220,8 @@ func printProcesses(d *DryccCmd, appID string, input []api.Pods) {
 					pod.Release,
 					pod.State,
 					pod.Type,
+					pod.Ready,
+					fmt.Sprintf("%v", pod.Restarts),
 					pod.Started.Format("2006-01-02T15:04:05MST"),
 				})
 			}
