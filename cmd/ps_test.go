@@ -23,18 +23,22 @@ func TestPrintProcesses(t *testing.T) {
 	}
 	pods := []api.Pods{
 		{
-			Release: "v3",
-			Name:    "benign-quilting-web-4084101150-c871y",
-			Type:    "web",
-			State:   "up",
-			Started: dtime.Time{Time: &d},
+			Release:  "v3",
+			Name:     "benign-quilting-web-4084101150-c871y",
+			Type:     "web",
+			State:    "up",
+			Ready:    "1/1",
+			Restarts: 0,
+			Started:  dtime.Time{Time: &d},
 		},
 		{
-			Release: "v3",
-			Name:    "benign-quilting-worker-4084101150-c871y",
-			Type:    "worker",
-			State:   "up",
-			Started: dtime.Time{Time: &d},
+			Release:  "v3",
+			Name:     "benign-quilting-worker-4084101150-c871y",
+			Type:     "worker",
+			State:    "up",
+			Ready:    "1/1",
+			Restarts: 0,
+			Started:  dtime.Time{Time: &d},
 		},
 	}
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -45,9 +49,9 @@ func TestPrintProcesses(t *testing.T) {
 
 	printProcesses(&DryccCmd{WOut: &b, ConfigFile: cf}, "appname", pods)
 
-	assert.Equal(t, b.String(), `NAME                                       RELEASE    STATE    PTYPE     STARTED                
-benign-quilting-web-4084101150-c871y       v3         up       web       2023-11-15T11:55:16CST    
-benign-quilting-worker-4084101150-c871y    v3         up       worker    2023-11-15T11:55:16CST    
+	assert.Equal(t, b.String(), `NAME                                       RELEASE    STATE    PTYPE     READY    RESTARTS    STARTED                
+benign-quilting-web-4084101150-c871y       v3         up       web       1/1      0           2023-11-15T11:55:16CST    
+benign-quilting-worker-4084101150-c871y    v3         up       worker    1/1      0           2023-11-15T11:55:16CST    
 `, "output")
 }
 
@@ -73,6 +77,8 @@ func TestPsList(t *testing.T) {
 					"type": "web",
 					"name": "foo-web-4084101150-c871y",
 					"state": "up",
+					"ready": "1/1",
+					"restarts": 0,
 					"started": "2016-02-13T00:47:52"
 				}
 			]
@@ -82,8 +88,8 @@ func TestPsList(t *testing.T) {
 	err = cmdr.PsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME                        RELEASE    STATE    PTYPE    STARTED                
-foo-web-4084101150-c871y    v2         up       web      2016-02-13T00:47:52UTC    
+	assert.Equal(t, b.String(), `NAME                        RELEASE    STATE    PTYPE    READY    RESTARTS    STARTED                
+foo-web-4084101150-c871y    v2         up       web      1/1      0           2016-02-13T00:47:52UTC    
 `, "output")
 }
 
@@ -180,6 +186,8 @@ func TestPsScale(t *testing.T) {
 					"type": "web",
 					"name": "foo-web-4084101150-c871y",
 					"state": "up",
+					"ready": "1/1",
+					"restarts": 0,
 					"started": "2016-02-13T00:47:52"
 				}
 			]
@@ -198,8 +206,8 @@ func TestPsScale(t *testing.T) {
 	assert.Equal(t, testutil.StripProgress(b.String()), `Scaling processes... but first, coffee!
 done in 0s
 
-NAME                        RELEASE    STATE    PTYPE    STARTED                
-foo-web-4084101150-c871y    v2         up       web      2016-02-13T00:47:52UTC    
+NAME                        RELEASE    STATE    PTYPE    READY    RESTARTS    STARTED                
+foo-web-4084101150-c871y    v2         up       web      1/1      0           2016-02-13T00:47:52UTC    
 `, "output")
 }
 
