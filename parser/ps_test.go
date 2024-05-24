@@ -28,7 +28,7 @@ func (d FakeDryccCmd) PsScale(string, []string) error {
 	return errors.New("ps:scale")
 }
 
-func (d FakeDryccCmd) PsRestart(string, string) error {
+func (d FakeDryccCmd) PsRestart(string, []string, string) error {
 	return errors.New("ps:restart")
 }
 
