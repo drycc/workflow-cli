@@ -138,15 +138,17 @@ func psRestart(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Restart an application or process type.
 
-Usage: drycc ps:restart [<type>] [options]
+Usage: drycc ps:restart [<type>...] [options]
 
 Arguments:
   <type>
-    the process name as defined in your Procfile, such as 'web' or 'worker'.
+    the process name as defined in your Procfile, such as 'web' or 'web worker'.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  --confirm=yes
+    To proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -156,8 +158,8 @@ Options:
 	}
 
 	apps := safeGetString(args, "--app")
-	tp := safeGetString(args, "<type>")
-	return cmdr.PsRestart(apps, tp)
+	confirm := safeGetString(args, "--confirm")
+	return cmdr.PsRestart(apps, args["<type>"].([]string), confirm)
 }
 
 func psScale(argv []string, cmdr cmd.Commander) error {

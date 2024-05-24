@@ -138,17 +138,31 @@ func (d *DryccCmd) PsScale(appID string, targets []string) error {
 }
 
 // PsRestart restarts an app's processes.
-func (d *DryccCmd) PsRestart(appID, target string) error {
+func (d *DryccCmd) PsRestart(appID string, targets []string, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
+	if len(targets) == 0 && confirm == "" {
+		d.Printf(` !    WARNING: Potentially Restart Action
+ !    This command will restart all processes of the application
+ !    To proceed, type "yes" !
 
+> `)
+
+		fmt.Scanln(&confirm)
+		if confirm != "yes" {
+			return fmt.Errorf("cancel the restart action")
+		}
+	}
 	d.Printf("Restarting processes... but first, %s!\n", drinkOfChoice())
 	startTime := time.Now()
 	quit := progress(d.WOut)
-
-	err = ps.Restart(s.Client, appID, target)
+	ptypes := strings.Join(targets, ",")
+	targetMap := map[string]string{
+		"types": ptypes,
+	}
+	err = ps.Restart(s.Client, appID, targetMap)
 	quit <- true
 	<-quit
 	if err != nil {

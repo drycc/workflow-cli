@@ -221,33 +221,36 @@ func TestPsRestart(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/pods/restart/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.AssertBody(t, map[string]string{"types": ""}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
 	b.Reset()
-	err = cmdr.PsRestart("foo", "")
+	err = cmdr.PsRestart("foo", []string{""}, "yes")
 	assert.NoError(t, err)
 
-	server.Mux.HandleFunc("/v2/apps/coolapp/pods/restart/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/coolapp/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.AssertBody(t, map[string]string{"types": "web"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
 	b.Reset()
 
-	err = cmdr.PsRestart("coolapp", "")
+	err = cmdr.PsRestart("coolapp", []string{"web"}, "")
 	assert.NoError(t, err)
 
-	server.Mux.HandleFunc("/v2/apps/testapp/pods/web/restart/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/testapp/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.AssertBody(t, map[string]string{"types": "web,worker"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
 	b.Reset()
 
-	err = cmdr.PsRestart("testapp", "web")
+	err = cmdr.PsRestart("testapp", []string{"web", "worker"}, "")
 	assert.NoError(t, err)
 }
 
