@@ -25,13 +25,13 @@ func (d *DryccCmd) ReleasesList(appID string, results int) error {
 	if count == 0 {
 		d.Println(fmt.Sprintf("No releases found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "STATE", "VERSION", "CREATED", "SUMMARY"})
+		table := d.getDefaultFormatTable([]string{"OWNER", "STATE", "VERSION", "CREATED", "SUMMARY"})
 		for _, r := range releases {
 			summary := r.Summary
 			if len(summary) > 64 {
 				summary = fmt.Sprintf("%s[...]", summary[:64])
 			}
-			table.Append([]string{r.UUID, r.Owner, r.State, fmt.Sprintf("v%d", r.Version), d.formatTime(r.Created), summary})
+			table.Append([]string{r.Owner, r.State, fmt.Sprintf("v%d", r.Version), d.formatTime(r.Created), summary})
 		}
 		table.Render()
 	}

@@ -35,8 +35,8 @@ func TestAutoscaleList(t *testing.T) {
 
 	err = cmdr.AutoscaleList("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    PTYPE    PERCENT    MIN    MAX 
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    cmd      40         3      8      
+	assert.Equal(t, b.String(), `PTYPE    PERCENT    MIN    MAX 
+cmd      40         3      8      
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, _ *http.Request) {

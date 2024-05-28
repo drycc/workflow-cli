@@ -35,8 +35,8 @@ func TestCanaryInfo(t *testing.T) {
 
 	err = cmdr.CanaryInfo("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER     PTYPE    CREATED                   UPDATED                
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    elrond    cmd      2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    
+	assert.Equal(t, b.String(), `OWNER     PTYPE    CREATED                   UPDATED                
+elrond    cmd      2014-01-01T00:00:00UTC    2014-01-01T00:00:00UTC    
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, _ *http.Request) {

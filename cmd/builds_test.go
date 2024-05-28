@@ -72,9 +72,9 @@ func TestBuildsList(t *testing.T) {
 
 	err = cmdr.BuildsList("foo", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER     SHA       CREATED                
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    <none>    <none>    2014-01-01T00:00:00UTC    
-c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    <none>    <none>    2014-01-05T00:00:00UTC    
+	assert.Equal(t, b.String(), `OWNER     SHA       CREATED                
+<none>    <none>    2014-01-01T00:00:00UTC    
+<none>    <none>    2014-01-05T00:00:00UTC    
 `, "output")
 }
 
@@ -112,8 +112,8 @@ func TestBuildsListLimit(t *testing.T) {
 
 	err = cmdr.BuildsList("foo", 1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER     SHA       CREATED                
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    <none>    <none>    2014-01-01T00:00:00UTC    
+	assert.Equal(t, b.String(), `OWNER     SHA       CREATED                
+<none>    <none>    2014-01-01T00:00:00UTC    
 `, "output")
 }
 

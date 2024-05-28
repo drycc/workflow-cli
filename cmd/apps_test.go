@@ -62,9 +62,9 @@ func TestAppsList(t *testing.T) {
 
 	err = cmdr.AppsList(-1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID             UUID                                    OWNER             CREATED                 UPDATED              
-lorem-ipsum    c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
-consectetur    c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    adipiscing        2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
+	assert.Equal(t, b.String(), `ID             OWNER             CREATED                 UPDATED              
+lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
+consectetur    adipiscing        2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
 `, "output")
 }
 
@@ -101,8 +101,8 @@ func TestAppsListLimit(t *testing.T) {
 
 	err = cmdr.AppsList(1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID             UUID                                    OWNER             CREATED                 UPDATED              
-lorem-ipsum    c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
+	assert.Equal(t, b.String(), `ID             OWNER             CREATED                 UPDATED              
+lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
 `, "output")
 }
 

@@ -135,8 +135,8 @@ func TestResourcesList(t *testing.T) {
 	err = cmdr.ResourcesList("example-go", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `UUID                                    NAME     OWNER    PLAN         UPDATED                
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    mysql    test     mysql:5.6    2020-09-08T00:00:00UTC    
+	assert.Equal(t, b.String(), `NAME     OWNER    PLAN         UPDATED                
+mysql    test     mysql:5.6    2020-09-08T00:00:00UTC    
 `, "output")
 }
 

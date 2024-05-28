@@ -78,11 +78,10 @@ func (d *DryccCmd) AppsList(results int) error {
 		return err
 	}
 	if count > 0 {
-		table := d.getDefaultFormatTable([]string{"ID", "UUID", "OWNER", "CREATED", "UPDATED"})
+		table := d.getDefaultFormatTable([]string{"ID", "OWNER", "CREATED", "UPDATED"})
 		for _, app := range apps {
 			table.Append([]string{
 				app.ID,
-				app.UUID,
 				app.Owner,
 				d.formatTime(app.Created),
 				d.formatTime(app.Updated),

@@ -35,9 +35,9 @@ func TestLabelsList(t *testing.T) {
 
 	err = cmdr.LabelsList("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID                                    OWNER    KEY         VALUE                                      
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jim      git_repo    https://github.com/drycc/controller-sdk-go    
-de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    jim      team        drycc                                         
+	assert.Equal(t, b.String(), `OWNER    KEY         VALUE                                      
+jim      git_repo    https://github.com/drycc/controller-sdk-go    
+jim      team        drycc                                         
 `, "output")
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, _ *http.Request) {

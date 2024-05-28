@@ -24,10 +24,9 @@ func (d *DryccCmd) LabelsList(appID string) error {
 	if len(appSettings.Label) == 0 {
 		d.Println(fmt.Sprintf("No labels found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "KEY", "VALUE"})
+		table := d.getDefaultFormatTable([]string{"OWNER", "KEY", "VALUE"})
 		for _, key := range *sortKeys(appSettings.Label) {
 			table.Append([]string{
-				appSettings.UUID,
 				appSettings.Owner,
 				key,
 				fmt.Sprintf("%v", appSettings.Label[key]),

@@ -26,10 +26,9 @@ func (d *DryccCmd) BuildsList(appID string, results int) error {
 		return err
 	}
 	if count > 0 {
-		table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "SHA", "CREATED"})
+		table := d.getDefaultFormatTable([]string{"OWNER", "SHA", "CREATED"})
 		for _, build := range builds {
 			table.Append([]string{
-				build.UUID,
 				safeGetString(build.Owner),
 				safeGetString(build.Sha),
 				d.formatTime(build.Created),

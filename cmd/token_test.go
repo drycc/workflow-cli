@@ -51,9 +51,9 @@ func TestTokensList(t *testing.T) {
 	err = cmdr.TokensList(-1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `UUID                                    OWNER    ALIAS     KEY                                 CREATE                    UPDATED                
-f71e3b18-e702-409e-bd7f-8fb0a66d7b12    test     <none>    c8e74fa4cbf...e4954d602ec5ed19ba    2023-04-18T00:00:00UTC    2023-04-19T00:00:00UTC    
-f71e3b18-e702-499e-bd7f-8fb0a66d7b12    test     test      c8e74fa4cbf...e4954d60cec5ed19ba    2023-04-18T10:00:00UTC    2023-04-19T12:00:00UTC    
+	assert.Equal(t, b.String(), `OWNER    ALIAS     KEY                                 CREATE                    UPDATED                
+test     <none>    c8e74fa4cbf...e4954d602ec5ed19ba    2023-04-18T00:00:00UTC    2023-04-19T00:00:00UTC    
+test     test      c8e74fa4cbf...e4954d60cec5ed19ba    2023-04-18T10:00:00UTC    2023-04-19T12:00:00UTC    
 `, "output")
 }
 
