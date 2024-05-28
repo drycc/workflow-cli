@@ -115,6 +115,18 @@ func (d *DryccCmd) getDefaultFormatTable(headers []string) *tablewriter.Table {
 	return table
 }
 
+// format time string to local time
+func (d *DryccCmd) formatTime(timeStr string) string {
+	t, err := time.Parse(time.RFC3339, timeStr)
+	if err != nil {
+		return timeStr
+	}
+	if d.Location != nil {
+		return t.In(d.Location).Format(time.RFC3339)
+	}
+	return t.In(time.UTC).Format(time.RFC3339)
+}
+
 // wrapString wraps s into a paragraph of lines of length lim, with minimal raggedness.
 func (d *DryccCmd) wrapString(s string) string {
 	sa, _ := tablewriter.WrapString(s, defaultLines)

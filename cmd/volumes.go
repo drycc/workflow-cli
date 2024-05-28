@@ -65,8 +65,8 @@ func (d *DryccCmd) VolumesInfo(appID, name string) error {
 		return err
 	}
 	table.Append([]string{"", string(parameters)})
-	table.Append([]string{"Created: ", volume.Created})
-	table.Append([]string{"Updated: ", volume.Updated})
+	table.Append([]string{"Created: ", d.formatTime(volume.Created)})
+	table.Append([]string{"Updated: ", d.formatTime(volume.Updated)})
 	table.Render()
 	return nil
 }

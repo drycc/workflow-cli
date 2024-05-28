@@ -32,7 +32,7 @@ func (d *DryccCmd) BuildsList(appID string, results int) error {
 				build.UUID,
 				safeGetString(build.Owner),
 				safeGetString(build.Sha),
-				build.Created,
+				d.formatTime(build.Created),
 			})
 		}
 		table.Render()

@@ -29,8 +29,8 @@ func (d *DryccCmd) DomainsList(appID string, results int) error {
 				domain.App,
 				domain.Owner,
 				domain.ProcfileType,
-				domain.Created,
-				domain.Updated,
+				d.formatTime(domain.Created),
+				d.formatTime(domain.Updated),
 				domain.Domain,
 			})
 		}

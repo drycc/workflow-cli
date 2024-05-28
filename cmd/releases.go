@@ -31,7 +31,7 @@ func (d *DryccCmd) ReleasesList(appID string, results int) error {
 			if len(summary) > 64 {
 				summary = fmt.Sprintf("%s[...]", summary[:64])
 			}
-			table.Append([]string{r.UUID, r.Owner, r.State, fmt.Sprintf("v%d", r.Version), r.Created, summary})
+			table.Append([]string{r.UUID, r.Owner, r.State, fmt.Sprintf("v%d", r.Version), d.formatTime(r.Created), summary})
 		}
 		table.Render()
 	}
@@ -57,8 +57,8 @@ func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 	table.Append([]string{"Owner:", r.Owner})
 	table.Append([]string{"Build:", r.Build})
 	table.Append([]string{"Config:", r.Config})
-	table.Append([]string{"Created:", r.Created})
-	table.Append([]string{"Updated:", r.Updated})
+	table.Append([]string{"Created:", d.formatTime(r.Created)})
+	table.Append([]string{"Updated:", d.formatTime(r.Updated)})
 	table.Append([]string{"Summary:", d.wrapString(r.Summary)})
 	table.Append([]string{"Version:", fmt.Sprintf("v%v", r.Version)})
 	table.Render()

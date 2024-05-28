@@ -70,8 +70,8 @@ func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 			table.Append([]string{"App:", config.App})
 			table.Append([]string{"UUID:", config.UUID})
 			table.Append([]string{"Owner:", config.Owner})
-			table.Append([]string{"Created:", config.Created})
-			table.Append([]string{"Updated:", config.Updated})
+			table.Append([]string{"Created:", d.formatTime(config.Created)})
+			table.Append([]string{"Updated:", d.formatTime(config.Updated)})
 			table.Append([]string{"Healthchecks:"})
 			for _, key := range keys {
 				for _, probe := range getHealthchecksStrings(key, config.Healthcheck[key]) {
@@ -88,8 +88,8 @@ func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 			table.Append([]string{"App:", config.App})
 			table.Append([]string{"UUID:", config.UUID})
 			table.Append([]string{"Owner:", config.Owner})
-			table.Append([]string{"Created:", config.Created})
-			table.Append([]string{"Updated:", config.Updated})
+			table.Append([]string{"Created:", d.formatTime(config.Created)})
+			table.Append([]string{"Updated:", d.formatTime(config.Updated)})
 			table.Append([]string{"Healthchecks:"})
 			for _, probe := range getHealthchecksStrings(procType, healthcheck) {
 				if probe != "" {

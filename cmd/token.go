@@ -37,8 +37,8 @@ func (d *DryccCmd) TokensList(results int) error {
 			token.Owner,
 			safeGetString(token.Alias),
 			token.Key,
-			token.Created,
-			token.Updated,
+			d.formatTime(token.Created),
+			d.formatTime(token.Updated),
 		})
 	}
 	table.Render()

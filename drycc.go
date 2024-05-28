@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
+	"time"
 
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cli"
@@ -107,7 +108,7 @@ Use 'git push drycc main' to deploy to an application.
 	configFlag := getConfigFlag(argv)
 	// Don't pass down config flag to parser because it isn't defined there.
 	argv = removeConfigFlag(argv)
-	cmdr := cmd.DryccCmd{ConfigFile: configFlag, WOut: wOut, WErr: wErr, WIn: wIn}
+	cmdr := cmd.DryccCmd{ConfigFile: configFlag, WOut: wOut, WErr: wErr, WIn: wIn, Location: time.Local}
 
 	// Dispatch the command, passing the argv through so subcommands can
 	// re-parse it according to their usage strings.

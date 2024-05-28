@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"time"
 
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
@@ -143,6 +144,7 @@ type DryccCmd struct {
 	WOut       io.Writer
 	WErr       io.Writer
 	WIn        io.Reader
+	Location   *time.Location
 }
 
 // Println prints a line to an output writer.

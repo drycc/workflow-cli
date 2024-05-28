@@ -156,7 +156,7 @@ func (d *DryccCmd) ResourcesList(appID string, results int) error {
 				resource.Name,
 				resource.Owner,
 				resource.Plan,
-				resource.Updated,
+				d.formatTime(resource.Updated),
 			})
 		}
 		table.Render()
@@ -195,8 +195,8 @@ func (d *DryccCmd) ResourceGet(appID, name string) error {
 		table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Options[key])})
 	}
 	table.Append([]string{"Message:", d.wrapString(safeGetString(resource.Message))})
-	table.Append([]string{"Created:", resource.Created})
-	table.Append([]string{"Updated:", resource.Updated})
+	table.Append([]string{"Created:", d.formatTime(resource.Created)})
+	table.Append([]string{"Updated:", d.formatTime(resource.Updated)})
 	table.Render()
 	return nil
 }

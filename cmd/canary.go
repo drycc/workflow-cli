@@ -27,8 +27,8 @@ func (d *DryccCmd) CanaryInfo(appID string) error {
 				appSettings.UUID,
 				appSettings.Owner,
 				procType,
-				appSettings.Created,
-				appSettings.Updated,
+				d.formatTime(appSettings.Created),
+				d.formatTime(appSettings.Updated),
 			})
 		}
 		table.Render()

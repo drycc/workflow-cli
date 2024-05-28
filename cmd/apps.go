@@ -84,8 +84,8 @@ func (d *DryccCmd) AppsList(results int) error {
 				app.ID,
 				app.UUID,
 				app.Owner,
-				app.Created,
-				app.Updated,
+				d.formatTime(app.Created),
+				d.formatTime(app.Updated),
 			})
 		}
 		table.Render()
@@ -118,8 +118,8 @@ func (d *DryccCmd) AppInfo(appID string) error {
 	table.Append([]string{"URL:", url})
 	table.Append([]string{"UUID:", app.UUID})
 	table.Append([]string{"Owner:", app.Owner})
-	table.Append([]string{"Created:", app.Created})
-	table.Append([]string{"Updated:", app.Updated})
+	table.Append([]string{"Created:", d.formatTime(app.Created)})
+	table.Append([]string{"Updated:", d.formatTime(app.Updated)})
 
 	// print the app processes
 	processes, _, err := ps.List(s.Client, appID, defaultLimit)
@@ -151,8 +151,8 @@ func (d *DryccCmd) AppInfo(appID string) error {
 		table.Append([]string{"Domains:"})
 		for index, domain := range domains {
 			table.Append([]string{"", "Domain:", domain.Domain})
-			table.Append([]string{"", "Created:", domain.Created})
-			table.Append([]string{"", "Updated:", domain.Updated})
+			table.Append([]string{"", "Created:", d.formatTime(domain.Created)})
+			table.Append([]string{"", "Updated:", d.formatTime(domain.Updated)})
 			if len(domains) > index+1 {
 				table.Append([]string{""})
 			}
