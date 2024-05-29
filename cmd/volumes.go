@@ -219,7 +219,7 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 
 func parseVolume(volumeVars []string) (map[string]interface{}, error) {
 	volumeMap := make(map[string]interface{})
-	regex := regexp.MustCompile(`^([a-z0-9]+(?:-[a-z0-9]+)*)=(\/(\w+\/?)+)$`)
+	regex := regexp.MustCompile(`^([a-z0-9]+(?:-[a-z0-9]+)*)=(\/([\w]+[\w-]*\/?)+)$`)
 	for _, volume := range volumeVars {
 		if regex.MatchString(volume) {
 			captures := regex.FindStringSubmatch(volume)
