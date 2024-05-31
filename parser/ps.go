@@ -81,10 +81,10 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -n --lines=<lines>
-    the number of lines to display.
+    the number of lines to display, value range 1-1000.
   -f --follow
     specify if the logs should be streamed.
-  -t --container=<container>
+  -c --container=<container>
     print the logs of this container.
 `
 
