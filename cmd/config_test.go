@@ -136,8 +136,13 @@ TRUE     false
 	b.Reset()
 	err = cmdr.ConfigList("foo", "web")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `NAME    VALUE 
-PORT    9000     
+	assert.Equal(t, b.String(), `NAME                  VALUE   
+PORT                  9000       
+--- Common Config:    
+FLOAT                 12.34      
+NCC                   1701       
+TEST                  testing    
+TRUE                  false      
 `, "output")
 
 }
@@ -184,7 +189,7 @@ func TestConfigSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigSet("foo", "", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"})
+	err = cmdr.ConfigSet("foo", "", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"}, "yes")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
@@ -238,7 +243,7 @@ func TestConfigUnset(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigUnset("foo", "", []string{"FOO"})
+	err = cmdr.ConfigUnset("foo", "", []string{"FOO"}, "yes")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
@@ -298,15 +303,17 @@ func TestConfigUnsetTypedValues(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigUnset("foo", "web", []string{"FOO"})
+	err = cmdr.ConfigUnset("foo", "web", []string{"FOO"}, "")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 
-NAME     VALUE   
-FLOAT    12.34      
-NCC      1701       
-TEST     testing    
-TRUE     false      
+NAME                  VALUE   
+FLOAT                 12.34      
+NCC                   1701       
+TEST                  testing    
+TRUE                  false      
+--- Common Config:    
+RELEASE_VERSION       v1         
 `, "output")
 }

@@ -16,11 +16,11 @@ func (d FakeDryccCmd) ConfigList(string, string) error {
 	return errors.New("config:list")
 }
 
-func (d FakeDryccCmd) ConfigSet(string, string, []string) error {
+func (d FakeDryccCmd) ConfigSet(string, string, []string, string) error {
 	return errors.New("config:set")
 }
 
-func (d FakeDryccCmd) ConfigUnset(string, string, []string) error {
+func (d FakeDryccCmd) ConfigUnset(string, string, []string, string) error {
 	return errors.New("config:unset")
 }
 
@@ -28,7 +28,7 @@ func (d FakeDryccCmd) ConfigPull(string, string, string, bool, bool) error {
 	return errors.New("config:pull")
 }
 
-func (d FakeDryccCmd) ConfigPush(string, string, string) error {
+func (d FakeDryccCmd) ConfigPush(string, string, string, string) error {
 	return errors.New("config:push")
 }
 
