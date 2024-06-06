@@ -143,7 +143,7 @@ func (d *DryccCmd) PsRestart(appID string, targets []string, confirm string) err
 	if err != nil {
 		return err
 	}
-	if len(targets) == 0 && confirm == "" {
+	if len(targets) == 0 && (confirm == "" || confirm != "yes") {
 		d.Printf(` !    WARNING: Potentially Restart Action
  !    This command will restart all processes of the application
  !    To proceed, type "yes" !
