@@ -96,7 +96,9 @@ Options:
 
 	app := safeGetString(args, "--app")
 	lines := safeGetInt(args, "--lines")
-	if lines <= 0 {
+	if lines < 0 {
+		lines = -1
+	} else if lines == 0 {
 		lines = 300
 	}
 	follow := safeGetBool(args, "--follow")
