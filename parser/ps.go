@@ -84,7 +84,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -n --lines=<lines>
-    the number of lines to display, value range 1-1000.
+    the number of lines to display, default to 300 lines, -1 showing all log lines
   -f --follow
     specify if the logs should be streamed.
   -c --container=<container>
