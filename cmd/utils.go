@@ -130,7 +130,7 @@ func (d *DryccCmd) formatTime(timeStr string) string {
 // wrapString wraps s into a paragraph of lines of length lim, with minimal raggedness.
 func (d *DryccCmd) wrapString(s string) string {
 	sa, _ := tablewriter.WrapString(s, defaultLines)
-	return strings.Join(sa, "\r\n")
+	return strings.Join(sa, "\n")
 }
 
 func sortKeys(data map[string]interface{}) *[]string {
