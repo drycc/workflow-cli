@@ -32,6 +32,10 @@ func (d FakeDryccCmd) VolumesDelete(string, string) error {
 	return errors.New("volumes:delete")
 }
 
+func (d FakeDryccCmd) VolumesClient(string, string, ...string) error {
+	return errors.New("volumes:client")
+}
+
 func (d FakeDryccCmd) VolumesMount(string, string, []string) error {
 	return errors.New("volumes:mount")
 }
@@ -71,6 +75,10 @@ func TestVolumes(t *testing.T) {
 		},
 		{
 			args:     []string{"volumes:delete", "myvolume"},
+			expected: "",
+		},
+		{
+			args:     []string{"volumes:client", "ls", "--", "vol://myvolume"},
 			expected: "",
 		},
 		{

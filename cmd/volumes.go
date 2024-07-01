@@ -2,7 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"os"
+	"path"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
@@ -157,6 +164,20 @@ func (d *DryccCmd) VolumesDelete(appID, name string) error {
 	return nil
 }
 
+// VolumesClient a client for manage volume file
+func (d *DryccCmd) VolumesClient(appID, cmd string, args ...string) error {
+	switch cmd {
+	case "ls":
+		return d.volumesClientLs(appID, args[0])
+	case "cp":
+		return d.volumesClientCp(appID, args[0], args[1])
+	case "rm":
+		return d.volumesClientRm(appID, args[0])
+	default:
+		return fmt.Errorf("unknown command %s", cmd)
+	}
+}
+
 // VolumesMount mount a volume to process of the application
 func (d *DryccCmd) VolumesMount(appID string, name string, volumeVars []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
@@ -217,6 +238,113 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 	return nil
 }
 
+// volumesClientLs get all directory entries sorted by filename.
+func (d *DryccCmd) volumesClientLs(appID, vol string) error {
+
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	name, path, err := parseVol(vol)
+	if err != nil {
+		return err
+	}
+	dirs, _, err := volumes.ListDir(s.Client, appID, name, path, 3000)
+	if err != nil {
+		return err
+	}
+
+	table := d.getDefaultFormatTable([]string{})
+	for _, dir := range dirs {
+		var size string
+		s, err := strconv.ParseInt(dir.Size, 10, 64)
+		if err != nil {
+			return err
+		}
+		if dir.Type == "dir" {
+			s = 4096
+			dir.Name = fmt.Sprintf("%s/", dir.Name)
+		}
+		if s > 1024 {
+			size = fmt.Sprintf("%dKiB", s/1024)
+		} else if s > 1024*1024 {
+			size = fmt.Sprintf("%dMiB", s/(1024*1024))
+		} else if s > 1024*1024*1024 {
+			size = fmt.Sprintf("%dGiB", s/(1024*1024*1024))
+		} else {
+			size = fmt.Sprintf("%d", s)
+		}
+		table.Append([]string{fmt.Sprintf("[%s]", d.formatTime(dir.Timestamp)), size, dir.Name})
+	}
+	table.Render()
+	return nil
+}
+
+// volumesClientCp copy files between volume and local file
+func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+	if strings.HasPrefix(src, "vol://") {
+		name, urlpath, err := parseVol(src)
+		if err != nil {
+			return err
+		}
+		res, err := volumes.GetFile(s.Client, appID, name, urlpath)
+		if err != nil {
+			return err
+		}
+
+		if f, err := os.Stat(dst); err == nil {
+			if f.IsDir() {
+				arrays := strings.Split(urlpath, "/")
+				dst = path.Join(dst, arrays[len(arrays)-1])
+			}
+		}
+		w, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			return err
+		}
+
+		defer w.Close()
+		if _, err = io.Copy(w, res.Body); err != nil {
+			return err
+		}
+	} else if strings.HasPrefix(dst, "vol://") {
+		name, path, err := parseVol(dst)
+		if err != nil {
+			return err
+		}
+		if _, err := volumes.PostFile(s.Client, appID, name, path, src); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// volumesClientRm delete a file from volume
+func (d *DryccCmd) volumesClientRm(appID, vol string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+	host, path, err := parseVol(vol)
+	if err != nil {
+		return err
+	}
+	res, err := volumes.DeleteFile(s.Client, appID, host, path)
+	if err != nil {
+		return err
+	}
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf("incorrect http status code %d", res.StatusCode)
+	}
+
+	return nil
+}
+
 func parseVolume(volumeVars []string) (map[string]interface{}, error) {
 	volumeMap := make(map[string]interface{})
 	regex := regexp.MustCompile(`^([a-z0-9]+(?:-[a-z0-9]+)*)=(\/([\w]+[\w-]*\/?)+)$`)
@@ -230,6 +358,18 @@ func parseVolume(volumeVars []string) (map[string]interface{}, error) {
 	}
 
 	return volumeMap, nil
+}
+
+// parseVol format volume url
+func parseVol(vol string) (string, string, error) {
+	u, err := url.Parse(vol)
+	if err != nil {
+		return "", "", err
+	}
+	if u.Scheme != "vol" || u.Host == "" {
+		return "", "", fmt.Errorf("vol %s format err", vol)
+	}
+	return u.Host, strings.TrimPrefix(u.Path, "/"), nil
 }
 
 // printVolumes format volume data

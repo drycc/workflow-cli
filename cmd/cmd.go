@@ -124,6 +124,7 @@ type Commander interface {
 	VolumesDelete(string, string) error
 	VolumesList(string, int) error
 	VolumesInfo(string, string) error
+	VolumesClient(string, string, ...string) error
 	VolumesMount(string, string, []string) error
 	VolumesUnmount(string, string, []string) error
 	ResourcesServices(int) error

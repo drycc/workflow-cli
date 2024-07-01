@@ -1,8 +1,11 @@
 package parser
 
 import (
+	"os"
+
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cmd"
+	"golang.org/x/exp/slices"
 )
 
 // Volumes commands to their specific function.
@@ -15,6 +18,7 @@ volumes:expand           expand a volume for the application
 volumes:list             list volumes in the application
 volumes:info             print information about a volume
 volumes:delete           delete a volume from the application
+volumes:client           the client used to manage volume files
 volumes:mount            mount a volume to process of the application
 volumes:unmount          unmount a volume from process of the application
 
@@ -32,6 +36,8 @@ Use 'drycc help [command]' to learn more.
 		return volumesInfo(argv, cmdr)
 	case "volumes:delete":
 		return volumesDelete(argv, cmdr)
+	case "volumes:client":
+		return volumesClient(argv, cmdr)
 	case "volumes:mount":
 		return volumesMount(argv, cmdr)
 	case "volumes:unmount":
@@ -188,7 +194,6 @@ Options:
 }
 
 func volumesDelete(argv []string, cmdr cmd.Commander) error {
-
 	usage := `
 Delete a volume from the application.
 
@@ -213,6 +218,38 @@ Options:
 	name := safeGetString(args, "<name>")
 
 	return cmdr.VolumesDelete(app, name)
+}
+
+func volumesClient(argv []string, cmdr cmd.Commander) error {
+	usage := `
+The client used to manage volume files.
+
+Usage: drycc volumes:client <cmd> [options] -- <args>...
+
+Arguments:
+  <cmd>
+    ls         list volume files
+    cp         copy volume files
+    rm         remove volume files
+  <args>
+    arguments for running commands
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	app := safeGetString(args, "--app")
+	cmd := safeGetString(args, "<cmd>")
+	index := slices.Index(os.Args, "--")
+	arguments := os.Args[index+1:]
+	return cmdr.VolumesClient(app, cmd, arguments...)
 }
 
 func volumesMount(argv []string, cmdr cmd.Commander) error {

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
@@ -131,6 +132,73 @@ Parameters:
 Created:       2020-08-26T00:00:00UTC                  
 Updated:       2020-08-26T00:00:00UTC                  
 `, "output")
+}
+
+func TestVolumesFsLs(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{"results": [
+  {"name":"handler.go","size":"4159","timestamp":"2024-06-25T22:55:16+08:00","type":"file"},
+  {"name":"handler_test.go","size":"2310","timestamp":"2024-06-04T15:29:45+08:00","type":"file"}
+], "count": 2}`)
+	})
+
+	err = cmdr.VolumesClient("example-go", "ls", "vol://myvolume")
+	assert.NoError(t, err)
+	assert.Contains(t, b.String(), "handler_test.go")
+}
+
+func TestVolumesFsCp(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/hello.txt", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `hello word`)
+	})
+	// test download file
+	err = cmdr.VolumesClient("example-go", "cp", "vol://myvolume/hello.txt", "/tmp/hello.txt")
+	assert.NoError(t, err)
+	result, err := os.ReadFile("/tmp/hello.txt")
+	assert.NoError(t, err)
+	assert.Equal(t, string(result), `hello word`, "output")
+	// test upload file
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+	})
+	err = cmdr.VolumesClient("example-go", "cp", "/tmp/hello.txt", "vol://myvolume/etc")
+	assert.NoError(t, err)
+}
+
+func TestVolumesFsRm(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+	// test rm file
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/etc/hello.txt", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		w.WriteHeader(http.StatusOK)
+	})
+	err = cmdr.VolumesClient("example-go", "rm", "vol://myvolume/etc/hello.txt")
+	assert.NoError(t, err)
 }
 
 func TestVolumesExpand(t *testing.T) {

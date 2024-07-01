@@ -77,6 +77,9 @@ Print the logs for a container in a pod or specified resource.
 
 Usage: drycc ps:logs <pod> [options]
 
+Arguments:
+  <pod> the pod name for the application.
+
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
@@ -111,6 +114,9 @@ func psExec(argv []string, cmdr cmd.Commander) error {
 Execute a command in a container.
 
 Usage: drycc ps:exec <pod> [options] -- <command>...
+
+Arguments:
+  <pod> the pod name for the application.
 
 Options:
   -a --app=<app>
@@ -195,6 +201,9 @@ func psDescribe(argv []string, cmdr cmd.Commander) error {
 Print a detailed description of the selected process.
 
 Usage: drycc ps:describe <pod> [options]
+
+Arguments:
+  <pod> the pod name for the application.
 
 Options:
   -a --app=<app>
