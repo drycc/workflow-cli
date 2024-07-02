@@ -51,7 +51,6 @@ Subcommands, use 'drycc help [subcommand]' to learn more:
   apps          manage applications used to provide services
   autoscale     manage autoscale for applications
   builds        manage builds created using 'git push'
-  canary        manage canary deploy for applications
   certs         manage SSL endpoints for an app
   config        manage environment variables that define app config
   domains       manage and assign domain names to your applications
@@ -121,8 +120,6 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.Autoscale(argv, &cmdr)
 	case "builds":
 		err = parser.Builds(argv, &cmdr)
-	case "canary":
-		err = parser.Canary(argv, &cmdr)
 	case "certs":
 		err = parser.Certs(argv, &cmdr)
 	case "config":
