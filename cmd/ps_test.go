@@ -162,98 +162,6 @@ func TestParsePsTargets(t *testing.T) {
 	}
 }
 
-func TestPsScale(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-	err = cmdr.PsScale("foo", []string{"test"})
-	assert.Equal(t, err.Error(), "'test' does not match the pattern 'type=num', ex: web=2", "error")
-
-	server.Mux.HandleFunc("/v2/apps/foo/pods/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `{
-			"count": 1,
-			"next": null,
-			"previous": null,
-			"results": [
-				{
-					"release": "v2",
-					"type": "web",
-					"name": "foo-web-4084101150-c871y",
-					"state": "up",
-					"ready": "1/1",
-					"restarts": 0,
-					"started": "2016-02-13T00:47:52"
-				}
-			]
-		}`)
-	})
-
-	server.Mux.HandleFunc("/v2/apps/foo/scale/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, map[string]int{"web": 1}, r)
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	b.Reset()
-	err = cmdr.PsScale("foo", []string{"web=1"})
-	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Scaling processes... but first, coffee!
-done in 0s
-
-NAME                        RELEASE    STATE    PTYPE    READY    RESTARTS    STARTED                
-foo-web-4084101150-c871y    v2         up       web      1/1      0           2016-02-13T00:47:52UTC    
-`, "output")
-}
-
-func TestPsRestart(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/apps/foo/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, map[string]string{"types": ""}, r)
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	b.Reset()
-	err = cmdr.PsRestart("foo", []string{""}, "yes")
-	assert.NoError(t, err)
-
-	server.Mux.HandleFunc("/v2/apps/coolapp/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, map[string]string{"types": "web"}, r)
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	b.Reset()
-
-	err = cmdr.PsRestart("coolapp", []string{"web"}, "")
-	assert.NoError(t, err)
-
-	server.Mux.HandleFunc("/v2/apps/testapp/pods/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, map[string]string{"types": "web,worker"}, r)
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	b.Reset()
-
-	err = cmdr.PsRestart("testapp", []string{"web", "worker"}, "")
-	assert.NoError(t, err)
-}
-
 func TestPsDescribe(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -298,7 +206,36 @@ func TestPsDescribe(t *testing.T) {
 			}]
 		}`)
 	})
-
+	server.Mux.HandleFunc("/v2/apps/foo/events/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+			"count": 1,
+			"next": null,
+			"previous": null,
+			"results": [{
+				"reason": "Scheduled",
+				"message": "Successfully assigned example-go/example-go-web-6b44dbd6c8-h89cg to node1",
+				"created": "2024-07-03T16:28:00"
+			}]
+		}`)
+	})
 	err = cmdr.PsDescribe("foo", "foo-web-111")
+	assert.NoError(t, err)
+}
+
+func TestPsDelete(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+	server.Mux.HandleFunc("/v2/apps/foo/pods/", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		w.WriteHeader(http.StatusNoContent)
+	})
+	err = cmdr.PsDelete("foo", []string{"foo-web-111"})
 	assert.NoError(t, err)
 }

@@ -12,26 +12,23 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) PsList(string, int) error {
-	return errors.New("ps:list")
+func (d FakeDryccCmd) PtsList(string, int) error {
+	return errors.New("pts:list")
 }
 
-func (d FakeDryccCmd) PsLogs(string, string, int, bool, string) error {
-	return errors.New("ps:logs")
+func (d FakeDryccCmd) PtsDescribe(string, string) error {
+	return errors.New("pts:describe")
 }
 
-func (d FakeDryccCmd) PsExec(string, string, bool, bool, []string) error {
-	return errors.New("ps:exec")
+func (d FakeDryccCmd) PtsScale(string, []string) error {
+	return errors.New("pts:scale")
 }
 
-func (d FakeDryccCmd) PsDescribe(string, string) error {
-	return errors.New("ps:describe")
+func (d FakeDryccCmd) PtsRestart(string, []string, string) error {
+	return errors.New("pts:restart")
 }
 
-func (d FakeDryccCmd) PsDelete(string, []string) error {
-	return errors.New("ps:delete")
-}
-func TestPs(t *testing.T) {
+func TestPts(t *testing.T) {
 	t.Parallel()
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -49,32 +46,24 @@ func TestPs(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"ps:list"},
+			args:     []string{"pts:list"},
 			expected: "",
 		},
 		{
-			args:     []string{"ps:logs", "myapp-web-111"},
+			args:     []string{"pts:describe", "web"},
 			expected: "",
 		},
 		{
-			args:     []string{"ps:exec", "myapp-web-111", "-it", "--", "bash"},
+			args:     []string{"pts:restart", "web"},
 			expected: "",
 		},
 		{
-			args:     []string{"ps:scale", "web", "5"},
+			args:     []string{"pts:scale", "web", "5"},
 			expected: "",
 		},
 		{
-			args:     []string{"ps:describe", "myapp-web-111"},
-			expected: "",
-		},
-		{
-			args:     []string{"ps:delete", "myapp-web-111"},
-			expected: "",
-		},
-		{
-			args:     []string{"ps"},
-			expected: "ps:list",
+			args:     []string{"pts"},
+			expected: "pts:list",
 		},
 	}
 
@@ -87,7 +76,7 @@ func TestPs(t *testing.T) {
 		} else {
 			expected = c.expected
 		}
-		err = Ps(c.args, cmdr)
+		err = Pts(c.args, cmdr)
 		assert.Error(t, errors.New(expected), err)
 	}
 }

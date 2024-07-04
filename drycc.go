@@ -61,6 +61,7 @@ Subcommands, use 'drycc help [subcommand]' to learn more:
   limits        manage resource limits for your application
   perms         manage permissions for applications
   ps            manage processes inside an app container
+  pts           manage process types inside an app container
   registry      manage private registry information for your application
   releases      manage releases of an application
   routing       manage routability of an application
@@ -151,6 +152,8 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.Perms(argv, &cmdr)
 	case "ps":
 		err = parser.Ps(argv, &cmdr)
+	case "pts":
+		err = parser.Pts(argv, &cmdr)
 	case "registry":
 		err = parser.Registry(argv, &cmdr)
 	case "releases":
