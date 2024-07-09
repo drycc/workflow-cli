@@ -16,9 +16,8 @@ Valid commands for processes:
 ps:list        list application processes
 ps:logs        print the logs for a container
 ps:exec        execute a command in a container
-ps:restart     restart an application or process type
-ps:scale       scale processes (e.g. web=4 worker=2)
 ps:describe    print a detailed description of the selected process
+ps:delete      delete the selected processes
 
 Use 'drycc help [command]' to learn more.
 `
@@ -30,12 +29,10 @@ Use 'drycc help [command]' to learn more.
 		return psLogs(argv, cmdr)
 	case "ps:exec":
 		return psExec(argv, cmdr)
-	case "ps:restart":
-		return psRestart(argv, cmdr)
-	case "ps:scale":
-		return psScale(argv, cmdr)
 	case "ps:describe":
 		return psDescribe(argv, cmdr)
+	case "ps:delete":
+		return psDelete(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -84,7 +81,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -n --lines=<lines>
-    the number of lines to display, value range 1-1000.
+    the number of lines to display, default to 300 lines, -1 showing all log lines
   -f --follow
     specify if the logs should be streamed.
   -c --container=<container>
@@ -99,7 +96,9 @@ Options:
 
 	app := safeGetString(args, "--app")
 	lines := safeGetInt(args, "--lines")
-	if lines <= 0 {
+	if lines < 0 {
+		lines = -1
+	} else if lines == 0 {
 		lines = 300
 	}
 	follow := safeGetBool(args, "--follow")
@@ -140,62 +139,6 @@ Options:
 	return cmdr.PsExec(app, pod, tty, stdin, command)
 }
 
-func psRestart(argv []string, cmdr cmd.Commander) error {
-	usage := `
-Restart an application or process type.
-
-Usage: drycc ps:restart [<type>...] [options]
-
-Arguments:
-  <type>
-    the process name as defined in your Procfile, such as 'web' or 'web worker'.
-
-Options:
-  -a --app=<app>
-    the uniquely identifiable name for the application.
-  --confirm=yes
-    To proceed, type "yes".
-`
-
-	args, err := docopt.ParseArgs(usage, argv, "")
-
-	if err != nil {
-		return err
-	}
-
-	apps := safeGetString(args, "--app")
-	confirm := safeGetString(args, "--confirm")
-	return cmdr.PsRestart(apps, args["<type>"].([]string), confirm)
-}
-
-func psScale(argv []string, cmdr cmd.Commander) error {
-	usage := `
-Scales an application's processes by type.
-
-Usage: drycc ps:scale <type>=<num>... [options]
-
-Arguments:
-  <type>
-    the process name as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
-  <num>
-    the number of processes.
-
-Options:
-  -a --app=<app>
-    the uniquely identifiable name for the application.
-`
-
-	args, err := docopt.ParseArgs(usage, argv, "")
-
-	if err != nil {
-		return err
-	}
-
-	apps := safeGetString(args, "--app")
-	return cmdr.PsScale(apps, args["<type>=<num>"].([]string))
-}
-
 func psDescribe(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Print a detailed description of the selected process.
@@ -219,4 +162,26 @@ Options:
 	app := safeGetString(args, "--app")
 	pod := safeGetString(args, "<pod>")
 	return cmdr.PsDescribe(app, pod)
+}
+
+func psDelete(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Delete the selected processes.
+
+Usage: drycc ps:delete <pod>... [options]
+
+Arguments:
+  <pod> the pod name for the application.
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+	if err != nil {
+		return err
+	}
+	app := safeGetString(args, "--app")
+	return cmdr.PsDelete(app, args["<pod>"].([]string))
 }

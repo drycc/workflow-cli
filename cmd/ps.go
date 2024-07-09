@@ -13,6 +13,7 @@ import (
 
 	"github.com/containerd/console"
 	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/events"
 	"github.com/drycc/controller-sdk-go/ps"
 	"github.com/drycc/workflow-cli/pkg/logging"
 	"golang.org/x/net/websocket"
@@ -103,76 +104,6 @@ func (d *DryccCmd) PsExec(appID, podID string, tty, stdin bool, command []string
 	return nil
 }
 
-// PsScale scales an app's processes.
-func (d *DryccCmd) PsScale(appID string, targets []string) error {
-	s, appID, err := load(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-
-	targetMap, err := parsePsTargets(targets)
-	if err != nil {
-		return err
-	}
-
-	d.Printf("Scaling processes... but first, %s!\n", drinkOfChoice())
-	startTime := time.Now()
-	quit := progress(d.WOut)
-
-	err = ps.Scale(s.Client, appID, targetMap)
-	quit <- true
-	<-quit
-	if d.checkAPICompatibility(s.Client, err) != nil {
-		return err
-	}
-
-	d.Printf("done in %ds\n\n", int(time.Since(startTime).Seconds()))
-
-	processes, _, err := ps.List(s.Client, appID, s.Limit)
-	if err != nil {
-		return err
-	}
-
-	printProcesses(d, appID, processes)
-	return nil
-}
-
-// PsRestart restarts an app's processes.
-func (d *DryccCmd) PsRestart(appID string, targets []string, confirm string) error {
-	s, appID, err := load(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-	if len(targets) == 0 && confirm == "" {
-		d.Printf(` !    WARNING: Potentially Restart Action
- !    This command will restart all processes of the application
- !    To proceed, type "yes" !
-
-> `)
-
-		fmt.Scanln(&confirm)
-		if confirm != "yes" {
-			return fmt.Errorf("cancel the restart action")
-		}
-	}
-	d.Printf("Restarting processes... but first, %s!\n", drinkOfChoice())
-	startTime := time.Now()
-	quit := progress(d.WOut)
-	ptypes := strings.Join(targets, ",")
-	targetMap := map[string]string{
-		"types": ptypes,
-	}
-	err = ps.Restart(s.Client, appID, targetMap)
-	quit <- true
-	<-quit
-	if err != nil {
-		return err
-	}
-
-	d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
-	return nil
-}
-
 // PsDescribe describe an app's processes.
 func (d *DryccCmd) PsDescribe(appID, podID string) error {
 	s, appID, err := load(d.ConfigFile, appID)
@@ -217,6 +148,47 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 		table.Append([]string{})
 	}
 	table.Render()
+	// display events
+	events, _, err := events.ListPodEvents(s.Client, appID, podID, 1000)
+	if err != nil {
+		return err
+	}
+	if len(events) != 0 {
+		// table event
+		te := d.getDefaultFormatTable([]string{})
+		te.Append([]string{"Events:"})
+		te.Append([]string{"  REASON", "MESSAGE", "CREATED"})
+		for _, ev := range events {
+			te.Append([]string{
+				fmt.Sprintf("  %s", ev.Reason),
+				ev.Message,
+				ev.Created.Format("2006-01-02T15:04:05MST"),
+			})
+		}
+		te.Render()
+	}
+	return nil
+}
+
+// PsDelete delete an pod.
+func (d *DryccCmd) PsDelete(appID string, podIDs []string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+
+	if err != nil {
+		return err
+	}
+	pods := strings.Join(podIDs, ",")
+	d.Printf("Deleting %s from %s... ", pods, appID)
+
+	quit := progress(d.WOut)
+	err = ps.Delete(s.Client, appID, pods)
+	quit <- true
+	<-quit
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
 	return nil
 }
 

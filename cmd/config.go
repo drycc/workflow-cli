@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/base64"
 	"fmt"
 	"os"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/drycc/controller-sdk-go/api"
@@ -37,14 +39,32 @@ func (d *DryccCmd) ConfigList(appID string, procType string) error {
 			fmt.Sprintf("%v", configValues[key]),
 		})
 	}
+
+	// common config
+	if procType != "" {
+		table.Append([]string{"--- Common Config:"})
+		configValues = config.Values
+		keys = *sortKeys(configValues)
+		for _, key := range keys {
+			table.Append([]string{
+				key,
+				fmt.Sprintf("%v", configValues[key]),
+			})
+		}
+	}
 	table.Render()
 	return nil
 }
 
 // ConfigSet sets an app's config variables.
-func (d *DryccCmd) ConfigSet(appID string, procType string, configVars []string) error {
+func (d *DryccCmd) ConfigSet(appID string, procType string, configVars []string, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
+	if err != nil {
+		return err
+	}
+
+	err = configConfirmAction(procType, confirm)
 	if err != nil {
 		return err
 	}
@@ -97,9 +117,14 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 }
 
 // ConfigUnset removes a config variable from an app.
-func (d *DryccCmd) ConfigUnset(appID string, procType string, configVars []string) error {
+func (d *DryccCmd) ConfigUnset(appID string, procType string, configVars []string, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
+	if err != nil {
+		return err
+	}
+
+	err = configConfirmAction(procType, confirm)
 	if err != nil {
 		return err
 	}
@@ -207,7 +232,7 @@ func (d *DryccCmd) ConfigPull(appID, procType, fileName string, interactive bool
 }
 
 // ConfigPush pushes an app's config from a file.
-func (d *DryccCmd) ConfigPush(appID, procType string, fileName string) error {
+func (d *DryccCmd) ConfigPush(appID, procType string, fileName string, confirm string) error {
 	stat, err := os.Stdin.Stat()
 
 	if err != nil {
@@ -217,10 +242,19 @@ func (d *DryccCmd) ConfigPush(appID, procType string, fileName string) error {
 	var contents []byte
 
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
+		err = configConfirmActionStdin(procType, confirm)
+		if err != nil {
+			return err
+		}
 		buffer := new(bytes.Buffer)
 		buffer.ReadFrom(os.Stdin)
 		contents = buffer.Bytes()
 	} else {
+		err = configConfirmAction(procType, confirm)
+		if err != nil {
+			return err
+		}
+
 		contents, err = os.ReadFile(fileName)
 
 		if err != nil {
@@ -239,7 +273,7 @@ func (d *DryccCmd) ConfigPush(appID, procType string, fileName string) error {
 		}
 	}
 
-	return d.ConfigSet(appID, procType, config)
+	return d.ConfigSet(appID, procType, config, "yes")
 }
 
 func parseConfig(configVars []string) (api.ConfigValues, error) {
@@ -303,4 +337,53 @@ func formatConfig(configVars map[string]interface{}) string {
 	}
 
 	return formattedConfig
+}
+
+func configConfirmAction(procType string, confirm string) error {
+	if procType == "" && (confirm == "" || confirm != "yes") {
+		fmt.Printf(` !    WARNING: Potentially Config Action
+ !    This command will deploy all processes of the application
+ !    To proceed, type "yes" !
+
+> `)
+
+		fmt.Scanln(&confirm)
+		if confirm != "yes" {
+			return fmt.Errorf("cancel the config action")
+		}
+	}
+	return nil
+}
+
+func configConfirmActionStdin(procType string, confirm string) error {
+	var reader *bufio.Reader
+	if runtime.GOOS == "windows" {
+		reader = bufio.NewReader(os.Stdin)
+	} else {
+		file, err := os.Open("/dev/tty")
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		reader = bufio.NewReader(file)
+	}
+
+	if procType == "" && (confirm == "" || confirm != "yes") {
+		fmt.Printf(` !    WARNING: Potentially Config Action
+ !    This command will deploy all processes of the application
+ !    To proceed, type "yes" !
+
+> `)
+
+		confirm, err := reader.ReadString('\n')
+		if err != nil {
+			return err
+		}
+
+		confirm = strings.TrimSpace(confirm)
+		if confirm != "yes" {
+			return fmt.Errorf("cancel the config action")
+		}
+	}
+	return nil
 }

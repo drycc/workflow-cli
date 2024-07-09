@@ -12,27 +12,23 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) ConfigList(string, string) error {
-	return errors.New("config:list")
+func (d FakeDryccCmd) PtsList(string, int) error {
+	return errors.New("pts:list")
 }
 
-func (d FakeDryccCmd) ConfigSet(string, string, []string, string) error {
-	return errors.New("config:set")
+func (d FakeDryccCmd) PtsDescribe(string, string) error {
+	return errors.New("pts:describe")
 }
 
-func (d FakeDryccCmd) ConfigUnset(string, string, []string, string) error {
-	return errors.New("config:unset")
+func (d FakeDryccCmd) PtsScale(string, []string) error {
+	return errors.New("pts:scale")
 }
 
-func (d FakeDryccCmd) ConfigPull(string, string, string, bool, bool) error {
-	return errors.New("config:pull")
+func (d FakeDryccCmd) PtsRestart(string, []string, string) error {
+	return errors.New("pts:restart")
 }
 
-func (d FakeDryccCmd) ConfigPush(string, string, string, string) error {
-	return errors.New("config:push")
-}
-
-func TestConfig(t *testing.T) {
+func TestPts(t *testing.T) {
 	t.Parallel()
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -50,28 +46,24 @@ func TestConfig(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"config:list"},
+			args:     []string{"pts:list"},
 			expected: "",
 		},
 		{
-			args:     []string{"config:set", "var=value"},
+			args:     []string{"pts:describe", "web"},
 			expected: "",
 		},
 		{
-			args:     []string{"config:unset", "var"},
+			args:     []string{"pts:restart", "web"},
 			expected: "",
 		},
 		{
-			args:     []string{"config:pull"},
+			args:     []string{"pts:scale", "web", "5"},
 			expected: "",
 		},
 		{
-			args:     []string{"config:push"},
-			expected: "",
-		},
-		{
-			args:     []string{"config"},
-			expected: "config:list",
+			args:     []string{"pts"},
+			expected: "pts:list",
 		},
 	}
 
@@ -84,7 +76,7 @@ func TestConfig(t *testing.T) {
 		} else {
 			expected = c.expected
 		}
-		err = Config(c.args, cmdr)
+		err = Pts(c.args, cmdr)
 		assert.Error(t, errors.New(expected), err)
 	}
 }

@@ -24,16 +24,12 @@ func (d FakeDryccCmd) PsExec(string, string, bool, bool, []string) error {
 	return errors.New("ps:exec")
 }
 
-func (d FakeDryccCmd) PsScale(string, []string) error {
-	return errors.New("ps:scale")
-}
-
-func (d FakeDryccCmd) PsRestart(string, []string, string) error {
-	return errors.New("ps:restart")
-}
-
 func (d FakeDryccCmd) PsDescribe(string, string) error {
 	return errors.New("ps:describe")
+}
+
+func (d FakeDryccCmd) PsDelete(string, []string) error {
+	return errors.New("ps:delete")
 }
 func TestPs(t *testing.T) {
 	t.Parallel()
@@ -61,7 +57,7 @@ func TestPs(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"ps:restart", "web"},
+			args:     []string{"ps:exec", "myapp-web-111", "-it", "--", "bash"},
 			expected: "",
 		},
 		{
@@ -69,7 +65,11 @@ func TestPs(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"ps:list"},
+			args:     []string{"ps:describe", "myapp-web-111"},
+			expected: "",
+		},
+		{
+			args:     []string{"ps:delete", "myapp-web-111"},
 			expected: "",
 		},
 		{

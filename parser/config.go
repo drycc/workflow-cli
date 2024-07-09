@@ -85,6 +85,8 @@ Options:
     the application that you wish to set.
   --type=<type>
     the procType for which the config needs to be set.
+  --confirm=yes
+    To proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -95,8 +97,8 @@ Options:
 
 	app := safeGetString(args, "--app")
 	procType := safeGetString(args, "--type")
-
-	return cmdr.ConfigSet(app, procType, args["<var>=<value>"].([]string))
+	confirm := safeGetString(args, "--confirm")
+	return cmdr.ConfigSet(app, procType, args["<var>=<value>"].([]string), confirm)
 }
 
 func configUnset(argv []string, cmdr cmd.Commander) error {
@@ -114,6 +116,8 @@ Options:
     the application that you wish to unset.
   --type=<type>
     the procType for which the config needs to be unset.
+  --confirm=yes
+    To proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -123,7 +127,8 @@ Options:
 	}
 	app := safeGetString(args, "--app")
 	procType := safeGetString(args, "--type")
-	return cmdr.ConfigUnset(app, procType, args["<key>"].([]string))
+	confirm := safeGetString(args, "--confirm")
+	return cmdr.ConfigUnset(app, procType, args["<key>"].([]string), confirm)
 }
 
 func configPull(argv []string, cmdr cmd.Commander) error {
@@ -181,6 +186,8 @@ Options:
     the procType for which the config needs to be push.
   --path=<path>
     a path leading to an environment file [default: .env]
+  --confirm=yes
+    To proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -192,5 +199,6 @@ Options:
 	app := safeGetString(args, "--app")
 	procType := safeGetString(args, "--type")
 	path := safeGetValue(args, "--path", ".env")
-	return cmdr.ConfigPush(app, procType, path)
+	confirm := safeGetString(args, "--confirm")
+	return cmdr.ConfigPush(app, procType, path, confirm)
 }

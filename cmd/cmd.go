@@ -37,10 +37,10 @@ type Commander interface {
 	CertAttach(string, string) error
 	CertDetach(string, string) error
 	ConfigList(string, string) error
-	ConfigSet(string, string, []string) error
-	ConfigUnset(string, string, []string) error
+	ConfigSet(string, string, []string, string) error
+	ConfigUnset(string, string, []string, string) error
 	ConfigPull(string, string, string, bool, bool) error
-	ConfigPush(string, string, string) error
+	ConfigPush(string, string, string, string) error
 	DomainsList(string, int) error
 	DomainsAdd(string, string, string) error
 	DomainsRemove(string, string) error
@@ -82,9 +82,12 @@ type Commander interface {
 	PsList(string, int) error
 	PsLogs(string, string, int, bool, string) error
 	PsExec(string, string, bool, bool, []string) error
-	PsScale(string, []string) error
-	PsRestart(string, []string, string) error
 	PsDescribe(string, string) error
+	PsDelete(string, []string) error
+	PtsList(string, int) error
+	PtsDescribe(string, string) error
+	PtsScale(string, []string) error
+	PtsRestart(string, []string, string) error
 	RegistryList(string) error
 	RegistrySet(string, []string) error
 	RegistryUnset(string, []string) error

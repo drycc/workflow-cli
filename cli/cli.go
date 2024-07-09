@@ -12,7 +12,7 @@ var Shortcuts = map[string]string{
 	"pull":           "builds:create",
 	"rollback":       "releases:rollback",
 	"run":            "apps:run",
-	"scale":          "ps:scale",
+	"scale":          "pts:scale",
 	"sharing":        "perms:list",
 	"sharing:list":   "perms:list",
 	"sharing:add":    "perms:create",
