@@ -263,7 +263,6 @@ Arguments:
     the volume name.
   <type>
     the process name as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
   <path>
     the filesystem path.
 
@@ -295,7 +294,6 @@ Arguments:
     the volume name.
   <type>
     the process name as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
 
 Options:
   -a --app=<app>

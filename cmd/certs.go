@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/certs"
@@ -136,8 +135,8 @@ func (d *DryccCmd) CertInfo(name string) error {
 	table.Append([]string{""})
 	table.Append([]string{"Connected Domains:", safeGetString(strings.Join(cert.Domains[:], ","))})
 	table.Append([]string{"Owner:", safeGetString(cert.Owner)})
-	table.Append([]string{"Created:", d.formatTime(safeGetTime(cert.Created, time.RFC3339))})
-	table.Append([]string{"Updated:", d.formatTime(safeGetTime(cert.Updated, time.RFC3339))})
+	table.Append([]string{"Created:", d.formatTime(cert.Created)})
+	table.Append([]string{"Updated:", d.formatTime(cert.Updated)})
 	table.Render()
 	return nil
 }

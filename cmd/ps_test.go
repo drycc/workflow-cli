@@ -6,10 +6,8 @@ import (
 	"io"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
-	dtime "github.com/drycc/controller-sdk-go/pkg/time"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/websocket"
@@ -17,10 +15,6 @@ import (
 
 func TestPrintProcesses(t *testing.T) {
 	var b bytes.Buffer
-	d, err := time.Parse("2006-01-02T15:04:05MST", "2023-11-15T11:55:16CST")
-	if err != nil {
-		t.Fatal(err)
-	}
 	pods := []api.Pods{
 		{
 			Release:  "v3",
@@ -29,7 +23,7 @@ func TestPrintProcesses(t *testing.T) {
 			State:    "up",
 			Ready:    "1/1",
 			Restarts: 0,
-			Started:  dtime.Time{Time: &d},
+			Started:  "2023-11-15T11:55:16CST",
 		},
 		{
 			Release:  "v3",
@@ -38,7 +32,7 @@ func TestPrintProcesses(t *testing.T) {
 			State:    "up",
 			Ready:    "1/1",
 			Restarts: 0,
-			Started:  dtime.Time{Time: &d},
+			Started:  "2023-11-15T11:55:16CST",
 		},
 	}
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -88,8 +82,8 @@ func TestPsList(t *testing.T) {
 	err = cmdr.PsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME                        RELEASE    STATE    PTYPE    READY    RESTARTS    STARTED                
-foo-web-4084101150-c871y    v2         up       web      1/1      0           2016-02-13T00:47:52UTC    
+	assert.Equal(t, b.String(), `NAME                        RELEASE    STATE    PTYPE    READY    RESTARTS    STARTED             
+foo-web-4084101150-c871y    v2         up       web      1/1      0           2016-02-13T00:47:52    
 `, "output")
 }
 

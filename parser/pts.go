@@ -124,7 +124,6 @@ Usage: drycc pts:scale <ptype>=<num>... [options]
 Arguments:
   <ptype>
     the process name as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
   <num>
     the number of processes.
 

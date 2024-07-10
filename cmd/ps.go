@@ -132,7 +132,11 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 			table.Append([]string{"State:", key})
 			value := containerState.State[key]
 			for innerKey := range value {
-				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strconv.Quote(fmt.Sprintf("%v", value[innerKey]))})
+				innerValue := strconv.Quote(fmt.Sprintf("%v", value[innerKey]))
+				if innerKey == "startedAt" || innerKey == "finishedAt" {
+					innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
+				}
+				table.Append([]string{fmt.Sprintf("  %s:", innerKey), innerValue})
 			}
 		}
 		// LastState
@@ -140,7 +144,11 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 			table.Append([]string{"Last State:", key})
 			value := containerState.LastState[key]
 			for innerKey := range value {
-				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strconv.Quote(fmt.Sprintf("%v", value[innerKey]))})
+				innerValue := strconv.Quote(fmt.Sprintf("%v", value[innerKey]))
+				if innerKey == "startedAt" || innerKey == "finishedAt" {
+					innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
+				}
+				table.Append([]string{fmt.Sprintf("  %s:", innerKey), innerValue})
 			}
 		}
 		table.Append([]string{"Ready:", fmt.Sprintf("%v", containerState.Ready)})
@@ -162,7 +170,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 			te.Append([]string{
 				fmt.Sprintf("  %s", ev.Reason),
 				ev.Message,
-				ev.Created.Format("2006-01-02T15:04:05MST"),
+				d.formatTime(ev.Created),
 			})
 		}
 		te.Render()
@@ -208,7 +216,7 @@ func printProcesses(d *DryccCmd, appID string, input []api.Pods) {
 					pod.Type,
 					pod.Ready,
 					fmt.Sprintf("%v", pod.Restarts),
-					pod.Started.Format("2006-01-02T15:04:05MST"),
+					d.formatTime(pod.Started),
 				})
 			}
 		}

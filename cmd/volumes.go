@@ -27,7 +27,6 @@ func (d *DryccCmd) VolumesList(appID string, results int) error {
 	if results == defaultLimit {
 		results = s.Limit
 	}
-	//fmt.Println("-----app-----", appID)  # debug
 	volumes, count, err := volumes.List(s.Client, appID, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
