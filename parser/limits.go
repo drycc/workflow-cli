@@ -13,8 +13,8 @@ Valid commands for limits:
 limits:list        list resource limits for an app
 limits:set         set resource limits for an app
 limits:unset       unset resource limits for an app
-limits:specs       unset resource limits for an app
-limits:plans       unset resource limits for an app
+limits:specs       list specification information of the server
+limits:plans       list resource limit plans
 
 Use 'drycc help [command]' to learn more.
 `
