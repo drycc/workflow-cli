@@ -5,20 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
-	dtime "github.com/drycc/controller-sdk-go/pkg/time"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPrintProcessTypes(t *testing.T) {
 	var b bytes.Buffer
-	d, err := time.Parse("2006-01-02T15:04:05MST", "2024-07-04T14:33:00CST")
-	if err != nil {
-		t.Fatal(err)
-	}
 	ptypes := api.Ptypes{
 		{
 			Name:              "web",
@@ -26,7 +20,7 @@ func TestPrintProcessTypes(t *testing.T) {
 			Ready:             "1/1",
 			UpToDate:          1,
 			AvailableReplicas: 1,
-			Started:           dtime.Time{Time: &d},
+			Started:           "2024-07-04T14:33:00CST",
 		},
 		{
 			Name:              "worker",
@@ -34,7 +28,7 @@ func TestPrintProcessTypes(t *testing.T) {
 			Ready:             "1/1",
 			UpToDate:          1,
 			AvailableReplicas: 1,
-			Started:           dtime.Time{Time: &d},
+			Started:           "2024-07-04T14:33:00CST",
 		},
 	}
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -83,8 +77,8 @@ func TestPtsList(t *testing.T) {
 	err = cmdr.PtsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME    RELEASE    READY    UP-TO-DATE    AVAILABLE    STARTED                
-web     v1         1/1      1             1            2016-02-13T00:47:52UTC    
+	assert.Equal(t, b.String(), `NAME    RELEASE    READY    UP-TO-DATE    AVAILABLE    STARTED             
+web     v1         1/1      1             1            2016-02-13T00:47:52    
 `, "output")
 }
 

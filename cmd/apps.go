@@ -133,7 +133,7 @@ func (d *DryccCmd) AppInfo(appID string) error {
 			table.Append([]string{"", "Release:", process.Release})
 			table.Append([]string{"", "State:", process.State})
 			table.Append([]string{"", "Type:", process.Type})
-			table.Append([]string{"", "Started:", process.Started.Format("2006-01-02T15:04:05MST")})
+			table.Append([]string{"", "Started:", d.formatTime(process.Started)})
 			if len(processes) > index+1 {
 				table.Append([]string{""})
 			}

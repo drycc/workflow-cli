@@ -168,8 +168,8 @@ func TestCertsInfo(t *testing.T) {
 			"issuer": "testca",
 			"subject": "testing",
 			"common_name": "test.drycc.com",
-			"created": "2016-06-09T00:00:00UTC",
-			"updated": "2016-06-09T00:00:00UTC",
+			"created": "2016-06-09T00:00:00Z",
+			"updated": "2016-06-09T00:00:00Z",
 			"expires": "2016-06-09T00:00:00UTC",
 			"starts": "2016-06-09T00:00:00UTC",
 			"fingerprint": "ab:12:ab:12:ab",
@@ -222,8 +222,8 @@ Subject:              <none>
                       
 Connected Domains:    <none>            
 Owner:                <none>            
-Created:              <none>            
-Updated:              <none>            
+Created:                                
+Updated:                                
 `, "output")
 }
 

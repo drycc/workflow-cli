@@ -198,7 +198,7 @@ Processes:
               Release:                                v2                                  
               State:                                  up                                  
               Type:                                   cmd                                 
-              Started:                                2016-08-22T17:42:16UTC              
+              Started:                                2016-08-22T17:42:16Z                
 Domains:      
               Domain:                                 lorem-ipsum                         
               Created:                                2016-08-22T17:40:16Z                

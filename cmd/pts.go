@@ -130,7 +130,7 @@ func printProcessTypes(d *DryccCmd, appID string, ptypes api.Ptypes) {
 				pt.Ready,
 				fmt.Sprintf("%v", pt.UpToDate),
 				fmt.Sprintf("%v", pt.AvailableReplicas),
-				pt.Started.Format("2006-01-02T15:04:05MST"),
+				d.formatTime(pt.Started),
 			})
 		}
 		table.Render()
@@ -190,7 +190,7 @@ func printProcessTypeDetail(d *DryccCmd, ptypeStates api.PtypeStates, events api
 			te.Append([]string{
 				fmt.Sprintf("  %s", ev.Reason),
 				ev.Message,
-				ev.Created.Format("2006-01-02T15:04:05MST"),
+				d.formatTime(ev.Created),
 			})
 		}
 		te.Render()
