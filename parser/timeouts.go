@@ -68,7 +68,6 @@ Usage: drycc timeouts:set [options] <type>=<value>...
 Arguments:
   <type>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
   <value>
     The value to apply to the process type in seconds.
 
@@ -98,7 +97,6 @@ Usage: drycc timeouts:unset [options] <type>...
 Arguments:
   <type>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
-    Note that Dockerfile apps have a default 'cmd' process type.
 
 Options:
   -a --app=<app>
