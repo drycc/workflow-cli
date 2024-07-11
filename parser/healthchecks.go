@@ -82,16 +82,20 @@ Sets healthchecks for an application.
 
 By default, Workflow only checks that the application starts in their Container. A health
 check may be added by configuring a health check probe for the application. The health
-checks are implemented as Kubernetes Container Probes. A 'liveness' and a 'readiness'
-probe can be configured, and each probe can be of type 'httpGet', 'exec' or 'tcpSocket'
-depending on the type of probe the Container requires.
+checks are implemented as Kubernetes Container Probes. A 'startupProbe' 'livenessProbe' 
+and a 'readinessProbe' can be configured, and each probe can be of type 'httpGet', 'exec' 
+or 'tcpSocket' depending on the type of probe the Container requires.
 
-A 'liveness' probe is useful for applications running for long periods of time, eventually
+A 'startupProbe' indicates whether the application within the container is started.
+All other probes are disabled if a startup probe is provided, until it succeeds.
+If the startup probe fails, the container is subjected to its restart policy.
+
+A 'livenessProbe' is useful for applications running for long periods of time, eventually
 transitioning to broken states and cannot recover except by restarting them.
 
-Other times, a 'readiness' probe is useful when the Container is only temporarily unable
-to serve, and will recover on its own. In this case, if a Container fails its 'readiness'
-probe, the Container will not be shut down, but rather the Container will stop receiving
+Other times, a 'readinessProbe' is useful when the Container is only temporarily unable
+to serve, and will recover on its own. In this case, if a Container fails its 'readinessProbe'
+, the Container will not be shut down, but rather the Container will stop receiving
 incoming requests.
 
 'httpGet' probes are just as it sounds: it performs a HTTP GET operation on the Container.
@@ -110,7 +114,7 @@ Usage: drycc healthchecks:set <health-type> <probe-type> [options] [--] <args>..
 
 Arguments:
   <health-type>
-    the healthcheck type, such as 'livenessProbe' or 'readinessProbe'.
+    the healthcheck type, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'.
   <probe-type>
     the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'.
   <args>
