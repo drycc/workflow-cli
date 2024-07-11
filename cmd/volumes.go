@@ -291,6 +291,9 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 		if err != nil {
 			return err
 		}
+		if urlpath == "" || urlpath == "/" {
+			return fmt.Errorf("path is a directory, not a file")
+		}
 		res, err := volumes.GetFile(s.Client, appID, name, urlpath)
 		if err != nil {
 			return err
@@ -302,7 +305,7 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 				dst = path.Join(dst, arrays[len(arrays)-1])
 			}
 		}
-		w, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, 0644)
+		w, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 		if err != nil {
 			return err
 		}
