@@ -232,7 +232,8 @@ Arguments:
     cp         copy volume files
     rm         remove volume files
   <args>
-    arguments for running commands
+    arguments for running commands, when cmd is 'cp', args should be '[source] [dest]'.
+    volume path format 'vol://volumename/', '/' is equivalent to the mount path.
 
 Options:
   -a --app=<app>
