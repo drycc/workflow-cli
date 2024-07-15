@@ -98,9 +98,9 @@ type Commander interface {
 	RoutingEnable(string) error
 	RoutingDisable(string) error
 	ShortcutsList() error
-	TagsList(string) error
-	TagsSet(string, []string) error
-	TagsUnset(string, []string) error
+	TagsList(string, string) error
+	TagsSet(string, string, []string) error
+	TagsUnset(string, string, []string) error
 	TLSInfo(string) error
 	TLSForceEnable(string) error
 	TLSForceDisable(string) error

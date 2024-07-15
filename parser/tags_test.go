@@ -12,15 +12,15 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) TagsList(string) error {
+func (d FakeDryccCmd) TagsList(string, string) error {
 	return errors.New("tags:list")
 }
 
-func (d FakeDryccCmd) TagsSet(string, []string) error {
+func (d FakeDryccCmd) TagsSet(string, string, []string) error {
 	return errors.New("tags:set")
 }
 
-func (d FakeDryccCmd) TagsUnset(string, []string) error {
+func (d FakeDryccCmd) TagsUnset(string, string, []string) error {
 	return errors.New("tags:unset")
 }
 
@@ -42,19 +42,19 @@ func TestTags(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"tags:list"},
+			args:     []string{"tags:list", "web"},
 			expected: "",
 		},
 		{
-			args:     []string{"tags:set", "environ", "prod"},
+			args:     []string{"tags:set", "web", "environ", "prod"},
 			expected: "",
 		},
 		{
-			args:     []string{"tags:unset", "environ"},
+			args:     []string{"tags:unset", "web", "environ"},
 			expected: "",
 		},
 		{
-			args:     []string{"tags"},
+			args:     []string{"tags", "web"},
 			expected: "tags:list",
 		},
 	}

@@ -91,8 +91,10 @@ func TestTagsList(t *testing.T) {
 			"memory": {},
 			"cpu": {},
 			"tags": {
-				"warp": "8",
-				"ncc": "1701"
+				"web": {
+					"warp": "8",
+					"ncc": "1701"
+				}
 			},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -104,11 +106,11 @@ func TestTagsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.TagsList("enterprise")
+	err = cmdr.TagsList("enterprise", "web")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `PTYPE    TAG  
-ncc      1701    
-warp     8       
+	assert.Equal(t, b.String(), `KEY     VALUE 
+ncc     1701     
+warp    8        
 `, "output")
 }
 
@@ -124,8 +126,8 @@ func TestTagsSet(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Tags: map[string]interface{}{
-					"true": "false",
+				Tags: map[string]api.ConfigTags{
+					"web": {"true": "false"},
 				},
 			}, r)
 		}
@@ -137,7 +139,9 @@ func TestTagsSet(t *testing.T) {
 			"memory": {},
 			"cpu": {},
 			"tags": {
-				"true": "false"
+				"web": {
+					"true": "false"
+				}
 			},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -149,13 +153,13 @@ func TestTagsSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.TagsSet("foo", []string{"true=false"})
+	err = cmdr.TagsSet("foo", "web", []string{"true=false"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-PTYPE    TAG   
-true     false    
+KEY     VALUE 
+true    false    
 `, "output")
 }
 
@@ -171,8 +175,8 @@ func TestTagsUnset(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Tags: map[string]interface{}{
-					"ncc": nil,
+				Tags: map[string]api.ConfigTags{
+					"web": {"ncc": nil},
 				},
 			}, r)
 		}
@@ -184,7 +188,9 @@ func TestTagsUnset(t *testing.T) {
 			"memory": {},
 			"cpu": {},
 			"tags": {
-				"warp": 8
+				"web": {
+					"warp": 8
+				}
 			},
 			"registry": {},
 			"created": "2014-01-01T00:00:00UTC",
@@ -196,12 +202,12 @@ func TestTagsUnset(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.TagsUnset("foo", []string{"ncc"})
+	err = cmdr.TagsUnset("foo", "web", []string{"ncc"})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-PTYPE    TAG 
-warp     8      
+KEY     VALUE 
+warp    8        
 `, "output")
 }
