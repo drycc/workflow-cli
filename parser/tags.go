@@ -43,7 +43,11 @@ func tagsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Lists tags for an application.
 
-Usage: drycc tags:list [options]
+Usage: drycc tags:list <ptype> [options]
+
+Arguments:
+  <ptype>
+    the process name as defined in your Procfile, such as 'web' or 'web worker'.
 
 Options:
   -a --app=<app>
@@ -56,7 +60,10 @@ Options:
 		return err
 	}
 
-	return cmdr.TagsList(safeGetString(args, "--app"))
+	ptype := safeGetString(args, "<ptype>")
+	appName := safeGetString(args, "--app")
+
+	return cmdr.TagsList(appName, ptype)
 }
 
 func tagsSet(argv []string, cmdr cmd.Commander) error {
@@ -67,11 +74,15 @@ A tag is a key/value pair used to tag an application's containers and is passed 
 scheduler. This is often used to restrict workloads to specific hosts matching the
 scheduler-configured metadata.
 
-Usage: drycc tags:set [options] <key>=<value>...
+Usage: drycc tags:set <ptype> <key>=<value>... [options]
 
 Arguments:
-  <key> the tag key, for example: "environ" or "rack"
-  <value> the tag value, for example: "prod" or "1"
+  <ptype>
+    the process name as defined in your Procfile, such as 'web' or 'web worker'.
+  <key>
+    the tag key, for example: "environ" or "rack"
+  <value>
+    the tag value, for example: "prod" or "1"
 
 Options:
   -a --app=<app>
@@ -82,21 +93,24 @@ Options:
 	if err != nil {
 		return err
 	}
-
+	ptype := safeGetString(args, "<ptype>")
 	app := safeGetString(args, "--app")
 	tags := args["<key>=<value>"].([]string)
 
-	return cmdr.TagsSet(app, tags)
+	return cmdr.TagsSet(app, ptype, tags)
 }
 
 func tagsUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets tags for an application.
 
-Usage: drycc tags:unset [options] <key>...
+Usage: drycc tags:unset <ptype> <key>... [options]
 
 Arguments:
-  <key> the tag key to unset, for example: "environ" or "rack"
+  <ptype>
+    the process name as defined in your Procfile, such as 'web' or 'web worker'.
+  <key>
+    the tag key to unset, for example: "environ" or "rack"
 
 Options:
   -a --app=<app>
@@ -107,9 +121,9 @@ Options:
 	if err != nil {
 		return err
 	}
-
+	ptype := safeGetString(args, "<ptype>")
 	app := safeGetString(args, "--app")
 	tags := args["<key>"].([]string)
 
-	return cmdr.TagsUnset(app, tags)
+	return cmdr.TagsUnset(app, ptype, tags)
 }

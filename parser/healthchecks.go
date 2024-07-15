@@ -283,8 +283,8 @@ func checkProbeType(probe string) error {
 		"livenessProbe",
 		"readinessProbe",
 	}
-	for _, ptype := range probeTypes {
-		if probe == ptype {
+	for _, probeType := range probeTypes {
+		if probe == probeType {
 			found = true
 		}
 	}
