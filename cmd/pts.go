@@ -140,46 +140,50 @@ func printProcessTypes(d *DryccCmd, appID string, ptypes api.Ptypes) {
 func printProcessTypeDetail(d *DryccCmd, ptypeStates api.PtypeStates, events api.AppEvents) {
 	// table process type
 	tpt := d.getDefaultFormatTable([]string{})
-	for _, containerState := range ptypeStates {
-		// tpt.Append([]string{"Container: " + containerState.Container})
-		// tpt.Append([]string{"Image: " + containerState.Image})
-		tpt.Append([]string{"Container:", containerState.Container})
-		tpt.Append([]string{"Image:", containerState.Image})
-		if len(containerState.Command) != 0 {
+	for _, ptypeState := range ptypeStates {
+		tpt.Append([]string{"Container:", ptypeState.Container})
+		tpt.Append([]string{"Image:", ptypeState.Image})
+		if len(ptypeState.Command) != 0 {
 			tpt.Append([]string{"Command:"})
-			for _, command := range containerState.Command {
+			for _, command := range ptypeState.Command {
 				tpt.Append([]string{"", fmt.Sprintf("- %v", command)})
 			}
 		}
-		if len(containerState.Args) != 0 {
+		if len(ptypeState.Args) != 0 {
 			tpt.Append([]string{"Args:"})
-			for _, arg := range containerState.Args {
+			for _, arg := range ptypeState.Args {
 				tpt.Append([]string{"", fmt.Sprintf("- %v", arg)})
 			}
 		}
-		if containerState.Limits != nil {
+		if ptypeState.Limits != nil {
 			tpt.Append([]string{"Limits:"})
-			for r, q := range containerState.Limits {
+			for r, q := range ptypeState.Limits {
 				tpt.Append([]string{"", fmt.Sprintf("%s %s", r, q)})
 			}
 		}
-		if len(containerState.VolumeMounts) != 0 {
+		if len(ptypeState.VolumeMounts) != 0 {
 			tpt.Append([]string{"Mounts:"})
-			for _, mount := range containerState.VolumeMounts {
+			for _, mount := range ptypeState.VolumeMounts {
 				tpt.Append([]string{"", fmt.Sprintf("%s from %s", mount.MountPath, mount.Name)})
 			}
 		}
-		sp := getHealthcheckString("", "", &containerState.StartupProbe)
+		sp := getHealthcheckString("", "", &ptypeState.StartupProbe)
 		if sp != "" {
 			tpt.Append([]string{"Startup:", strings.TrimSpace(sp)})
 		}
-		lp := getHealthcheckString("", "", &containerState.LivenessProbe)
+		lp := getHealthcheckString("", "", &ptypeState.LivenessProbe)
 		if lp != "" {
 			tpt.Append([]string{"Liveness:", strings.TrimSpace(lp)})
 		}
-		rp := getHealthcheckString("", "", &containerState.ReadinessProbe)
+		rp := getHealthcheckString("", "", &ptypeState.ReadinessProbe)
 		if rp != "" {
 			tpt.Append([]string{"Readiness:", strings.TrimSpace(rp)})
+		}
+		if ptypeState.NodeSelector != nil {
+			tpt.Append([]string{"Node-Selectors:"})
+			for k, v := range ptypeState.NodeSelector {
+				tpt.Append([]string{"", fmt.Sprintf("%s=%s", k, v)})
+			}
 		}
 
 	}

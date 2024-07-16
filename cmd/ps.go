@@ -127,6 +127,17 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 		for _, arg := range containerState.Args {
 			table.Append([]string{"", fmt.Sprintf("- %v", arg)})
 		}
+		// Status/Reason/Message
+		if containerState.Status != "" {
+			table.Append([]string{"Status:", containerState.Status})
+		}
+		if containerState.Reason != "" {
+			table.Append([]string{"Reason:", containerState.Reason})
+		}
+		if containerState.Message != "" {
+			table.Append([]string{"Message:", containerState.Message})
+		}
+
 		// State
 		for key := range containerState.State {
 			table.Append([]string{"State:", key})
