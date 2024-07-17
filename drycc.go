@@ -60,8 +60,8 @@ Subcommands, use 'drycc help [subcommand]' to learn more:
   labels        manage labels of application
   limits        manage resource limits for your application
   perms         manage permissions for applications
-  ps            manage processes inside an app container
-  pts           manage process types inside an app container
+  ps            manage processes inside an app
+  pts           manage process types inside an app
   registry      manage private registry information for your application
   releases      manage releases of an application
   routing       manage routability of an application

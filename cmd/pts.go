@@ -155,7 +155,7 @@ func printProcessTypeDetail(d *DryccCmd, ptypeStates api.PtypeStates, events api
 				tpt.Append([]string{"", fmt.Sprintf("- %v", arg)})
 			}
 		}
-		if ptypeState.Limits != nil {
+		if len(ptypeState.Limits) != 0 {
 			tpt.Append([]string{"Limits:"})
 			for r, q := range ptypeState.Limits {
 				tpt.Append([]string{"", fmt.Sprintf("%s %s", r, q)})
@@ -179,7 +179,7 @@ func printProcessTypeDetail(d *DryccCmd, ptypeStates api.PtypeStates, events api
 		if rp != "" {
 			tpt.Append([]string{"Readiness:", strings.TrimSpace(rp)})
 		}
-		if ptypeState.NodeSelector != nil {
+		if len(ptypeState.NodeSelector) != 0 {
 			tpt.Append([]string{"Node-Selectors:"})
 			for k, v := range ptypeState.NodeSelector {
 				tpt.Append([]string{"", fmt.Sprintf("%s=%s", k, v)})
