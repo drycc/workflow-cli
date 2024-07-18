@@ -1,11 +1,8 @@
 package parser
 
 import (
-	"os"
-
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cmd"
-	"golang.org/x/exp/slices"
 )
 
 // Volumes commands to their specific function.
@@ -224,7 +221,7 @@ func volumesClient(argv []string, cmdr cmd.Commander) error {
 	usage := `
 The client used to manage volume files.
 
-Usage: drycc volumes:client <cmd> [options] -- <args>...
+Usage: drycc volumes:client <cmd> <args>... [options]
 
 Arguments:
   <cmd>
@@ -248,8 +245,7 @@ Options:
 
 	app := safeGetString(args, "--app")
 	cmd := safeGetString(args, "<cmd>")
-	index := slices.Index(os.Args, "--")
-	arguments := os.Args[index+1:]
+	arguments := safeGetValue(args, "<args>", []string{})
 	return cmdr.VolumesClient(app, cmd, arguments...)
 }
 

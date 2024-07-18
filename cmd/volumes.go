@@ -10,9 +10,12 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
+	"github.com/schollz/progressbar/v3"
 	"sigs.k8s.io/yaml"
 )
 
@@ -251,7 +254,7 @@ func (d *DryccCmd) volumesClientLs(appID, vol string) error {
 	}
 	dirs, _, err := volumes.ListDir(s.Client, appID, name, path, 3000)
 	if err != nil {
-		return err
+		return fmt.Errorf("ls: cannot access '%s': No such file or directory", path)
 	}
 
 	table := d.getDefaultFormatTable([]string{})
@@ -280,6 +283,74 @@ func (d *DryccCmd) volumesClientLs(appID, vol string) error {
 	return nil
 }
 
+func (d *DryccCmd) volumesClientGetAll(client *drycc.Client, appID, volumeID, volumePath, localPath string) error {
+	dirs, _, err := volumes.ListDir(client, appID, volumeID, volumePath, 3000)
+	if err != nil {
+		return err
+	}
+	for _, dir := range dirs {
+		_, subpath := path.Split(dir.Path)
+		filepath := path.Join(localPath, subpath)
+		if dir.Type == "file" {
+			res, err := volumes.GetFile(client, appID, volumeID, dir.Path)
+			if err != nil {
+				return err
+			}
+			w, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+			if err != nil {
+				return err
+			}
+			bar := d.newProgressbar(res.ContentLength, "↓", filepath)
+			defer w.Close()
+			if _, err = io.Copy(io.MultiWriter(w, bar), res.Body); err != nil {
+				return err
+			}
+		} else {
+			os.MkdirAll(filepath, os.ModePerm)
+			if err := d.volumesClientGetAll(client, appID, volumeID, dir.Path, filepath); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, volumePath string, localPath string) error {
+	if file, err := os.Stat(localPath); err != nil {
+		return err
+	} else if !file.IsDir() {
+		file, err := os.Open(localPath)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		stat, err := file.Stat()
+		if err != nil {
+			return err
+		}
+		reader := progressbar.NewReader(file, d.newProgressbar(stat.Size(), "↑", localPath))
+		if _, err := volumes.PostFile(client, appID, volumeID, volumePath, file.Name(), &reader); err != nil {
+			return err
+		}
+		return nil
+	}
+	if entries, err := os.ReadDir(localPath); err == nil {
+		for _, entry := range entries {
+			var dstFilepath string
+			if entry.IsDir() {
+				dstFilepath = path.Join(volumePath, entry.Name())
+			} else {
+				dstFilepath = volumePath
+			}
+			d.volumesClientPostAll(client, appID, volumeID, dstFilepath, path.Join(localPath, entry.Name()))
+		}
+	} else {
+		return err
+	}
+	return nil
+}
+
 // volumesClientCp copy files between volume and local file
 func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 	s, appID, err := load(d.ConfigFile, appID)
@@ -287,41 +358,27 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 		return err
 	}
 	if strings.HasPrefix(src, "vol://") {
-		name, urlpath, err := parseVol(src)
+		f, err := os.Stat(dst)
 		if err != nil {
 			return err
 		}
-		if urlpath == "" || urlpath == "/" {
-			return fmt.Errorf("path is a directory, not a file")
+		if !f.IsDir() {
+			return fmt.Errorf("the local path must be an existing dir")
 		}
-		res, err := volumes.GetFile(s.Client, appID, name, urlpath)
+		volumeID, volumePath, err := parseVol(src)
 		if err != nil {
 			return err
 		}
-
-		if f, err := os.Stat(dst); err == nil {
-			if f.IsDir() {
-				arrays := strings.Split(urlpath, "/")
-				dst = path.Join(dst, arrays[len(arrays)-1])
-			}
-		}
-		w, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
-		if err != nil {
-			return err
-		}
-
-		defer w.Close()
-		if _, err = io.Copy(w, res.Body); err != nil {
-			return err
-		}
+		return d.volumesClientGetAll(s.Client, appID, volumeID, volumePath, dst)
 	} else if strings.HasPrefix(dst, "vol://") {
-		name, path, err := parseVol(dst)
+		volumeID, volumePath, err := parseVol(dst)
 		if err != nil {
 			return err
 		}
-		if _, err := volumes.PostFile(s.Client, appID, name, path, src); err != nil {
-			return err
+		if dirs, _, err := volumes.ListDir(s.Client, appID, volumeID, volumePath, 3000); err != nil && len(dirs) == 1 && dirs[0].Type == "file" {
+			return fmt.Errorf("the volume path cannot be an existing file")
 		}
+		return d.volumesClientPostAll(s.Client, appID, volumeID, volumePath, src)
 	}
 	return nil
 }
@@ -387,4 +444,33 @@ func printVolumes(d *DryccCmd, volumes api.Volumes) {
 		}
 	}
 	table.Render()
+}
+
+func (d *DryccCmd) newProgressbar(maxBytes int64, icon, description string) *progressbar.ProgressBar {
+	description = fmt.Sprintf("%-32s", description)
+	if len(description) > 32 {
+		description = fmt.Sprintf("...%s", description[len(description)-29:])
+	}
+	return progressbar.NewOptions64(
+		maxBytes,
+		progressbar.OptionSetDescription(description),
+		progressbar.OptionSetWriter(os.Stderr),
+		progressbar.OptionShowBytes(true),
+		progressbar.OptionEnableColorCodes(true),
+		progressbar.OptionSetWidth(10),
+		progressbar.OptionThrottle(65*time.Millisecond),
+		progressbar.OptionShowCount(),
+		progressbar.OptionOnCompletion(func() { fmt.Fprint(os.Stderr, "\n") }),
+		progressbar.OptionSpinnerType(14),
+		progressbar.OptionFullWidth(),
+		progressbar.OptionSetRenderBlankState(true),
+		progressbar.OptionSetDescription(fmt.Sprintf("[cyan][%s][reset] %s", icon, description)),
+		progressbar.OptionSetTheme(progressbar.Theme{
+			Saucer:        "[green]=[reset]",
+			SaucerHead:    "[green]>[reset]",
+			SaucerPadding: " ",
+			BarStart:      "[",
+			BarEnd:        "]",
+		}),
+	)
 }

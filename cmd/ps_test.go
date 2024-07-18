@@ -200,7 +200,7 @@ func TestPsDescribe(t *testing.T) {
 			}]
 		}`)
 	})
-	server.Mux.HandleFunc("/v2/apps/foo/events/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/events/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 1,
