@@ -254,7 +254,7 @@ func (d *DryccCmd) volumesClientLs(appID, vol string) error {
 	}
 	dirs, _, err := volumes.ListDir(s.Client, appID, name, path, 3000)
 	if err != nil {
-		return fmt.Errorf("ls: cannot access '%s': No such file or directory", path)
+		return err
 	}
 
 	table := d.getDefaultFormatTable([]string{})
@@ -375,8 +375,12 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 		if err != nil {
 			return err
 		}
-		if dirs, _, err := volumes.ListDir(s.Client, appID, volumeID, volumePath, 3000); err != nil && len(dirs) == 1 && dirs[0].Type == "file" {
-			return fmt.Errorf("the volume path cannot be an existing file")
+		if dirs, _, err := volumes.ListDir(s.Client, appID, volumeID, volumePath, 3000); err == nil {
+			if len(dirs) == 1 && dirs[0].Type == "file" {
+				return fmt.Errorf("the volume path cannot be an existing file")
+			}
+		} else if strings.Contains(fmt.Sprint(err), "no such file or directory") {
+			return err
 		}
 		return d.volumesClientPostAll(s.Client, appID, volumeID, volumePath, src)
 	}
