@@ -144,9 +144,13 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 			for innerKey := range value {
 				innerValue := strconv.Quote(fmt.Sprintf("%v", value[innerKey]))
 				if innerKey == "startedAt" || innerKey == "finishedAt" {
-					innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
+					if value[innerKey] != nil {
+						innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
+					} else {
+						innerValue = "null"
+					}
 				}
-				table.Append([]string{fmt.Sprintf("  %s:", innerKey), innerValue})
+				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strings.Trim(innerValue, `"`)})
 			}
 		}
 		// LastState
@@ -156,9 +160,13 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 			for innerKey := range value {
 				innerValue := strconv.Quote(fmt.Sprintf("%v", value[innerKey]))
 				if innerKey == "startedAt" || innerKey == "finishedAt" {
-					innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
+					if value[innerKey] != nil {
+						innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
+					} else {
+						innerValue = "null"
+					}
 				}
-				table.Append([]string{fmt.Sprintf("  %s:", innerKey), innerValue})
+				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strings.Trim(innerValue, `"`)})
 			}
 		}
 		table.Append([]string{"Ready:", fmt.Sprintf("%v", containerState.Ready)})
