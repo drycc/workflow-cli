@@ -63,7 +63,7 @@ Arguments:
   <type>
     the process type needs to create route.
   <kind>
-    the route kind. Supports HTTPRoute, TCPRoute, UDPRoute, and TLSRoute.
+    the route kind. Supports HTTPRoute, TCPRoute, UDPRoute, GRPCRoute, and TLSRoute.
   <port>
     the port that should be exposed by this service.
 
