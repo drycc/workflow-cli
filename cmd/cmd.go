@@ -19,6 +19,9 @@ type Commander interface {
 	AppRun(string, string, []string, uint32, uint32) error
 	AppDestroy(string, string) error
 	AppTransfer(string, string) error
+	AutorollbackInfo(string) error
+	AutorollbackEnable(string) error
+	AutorollbackDisable(string) error
 	AutoscaleList(string) error
 	AutoscaleSet(string, string, int, int, int) error
 	AutoscaleUnset(string, string) error
