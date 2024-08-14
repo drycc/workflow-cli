@@ -49,11 +49,13 @@ Auth commands, use 'drycc help auth' to learn more:
 Subcommands, use 'drycc help [subcommand]' to learn more:
 
   apps          manage applications used to provide services
+  autorollback  manage autorollback if or not for applications 
   autoscale     manage autoscale for applications
   builds        manage builds created using 'git push'
   certs         manage SSL endpoints for an app
   config        manage environment variables that define app config
   domains       manage and assign domain names to your applications
+  gateways      manage gateways for your applications
   git           manage git for applications
   healthchecks  manage healthchecks for applications
   keys          manage ssh keys used for 'git push' deployments
@@ -63,19 +65,18 @@ Subcommands, use 'drycc help [subcommand]' to learn more:
   ps            manage processes inside an app
   pts           manage process types inside an app
   registry      manage private registry information for your application
+  resources     manage resources for your applications 
   releases      manage releases of an application
+  routes        manage routes for your applications 
   routing       manage routability of an application
-  tags          manage tags for application containers
-  tls           manage TLS settings for applications
-  users         manage users
-  tokens        manage tokens
-  version       display client version
   services      manage services for your applications
-  routes        manage routes for your applications
-  gateways      manage gateways for your applications
-  timeouts      manage pods termination grace period
+  tags          manage tags for application containers
+  timeouts      manage pods termination grace period 
+  tls           manage TLS settings for applications
+  tokens        manage tokens
+  users         manage users
+  version       display client version
   volumes       manage volumes for your applications
-  resources     manage resources for your applications
 
 Shortcut commands, use 'drycc shortcuts' to see all:
 
@@ -117,6 +118,8 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.Apps(argv, &cmdr)
 	case "auth":
 		err = parser.Auth(argv, &cmdr)
+	case "autorollback":
+		err = parser.Autorollback(argv, &cmdr)
 	case "autoscale":
 		err = parser.Autoscale(argv, &cmdr)
 	case "builds":
