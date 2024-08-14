@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPermsListUsers(t *testing.T) {
+func TestPermCodes(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -18,30 +18,30 @@ func TestPermsListUsers(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/foo/perms/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/perms/codes/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
-
 		fmt.Fprintf(w, `{
-  "users": [
-    "baz",
-    "bar"
-  ]
+	"results": [
+		{"codename": "use_app", "description": "Can use app"},
+		{"codename": "use_cert", "description": "Can use cert"}
+	],
+	"count": 2
 }`)
 	})
 
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.PermsList("foo", false, -1)
+	err = cmdr.PermCodes(-1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
-baz         false    
-bar         false    
+	assert.Equal(t, testutil.StripProgress(b.String()), `CODENAME    DESCRIPTION  
+use_app     Can use app     
+use_cert    Can use cert    
 `, "output")
 }
 
-func TestPermsListUsersLimit(t *testing.T) {
+func TestListUserPerm(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -49,28 +49,30 @@ func TestPermsListUsersLimit(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/apps/foo/perms/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/perms/rules/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
-
 		fmt.Fprintf(w, `{
-  "users": [
-    "baz"
-  ]
+	"results": [
+		{"id": 1, "codename": "use_app", "uniqueid": "autotest-app", "username": "foo"},
+		{"id": 2, "codename": "use_cert", "uniqueid": "autotest-cert-1", "username": "foo"}
+	],
+	"count": 2
 }`)
 	})
 
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.PermsList("foo", false, 1)
+	err = cmdr.PermList("", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
-baz         false    
+	assert.Equal(t, testutil.StripProgress(b.String()), `ID    CODENAME    UNIQUEID           USERNAME 
+1     use_app     autotest-app       foo         
+2     use_cert    autotest-cert-1    foo         
 `, "output")
 }
 
-func TestPermsListAdmins(t *testing.T) {
+func TestListUserPermLimit(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -78,74 +80,28 @@ func TestPermsListAdmins(t *testing.T) {
 	}
 	defer server.Close()
 
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/perms/rules/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
-
 		fmt.Fprintf(w, `{
-  "count": 2,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "username": "fred",
-      "is_superuser": true
-    },
-    {
-      "username": "bob",
-      "is_superuser": true
-    }
-]
+	"results": [
+		{"id": 1, "codename": "use_app", "uniqueid": "autotest-app", "username": "foo"}
+	],
+	"count": 1
 }`)
 	})
 
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.PermsList("foo", true, -1)
+	err = cmdr.PermList("use_app", 1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
-fred        true     
-bob         true     
+	assert.Equal(t, testutil.StripProgress(b.String()), `ID    CODENAME    UNIQUEID        USERNAME 
+1     use_app     autotest-app    foo         
 `, "output")
 }
 
-func TestPermsListAdminsLimit(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-
-		fmt.Fprintf(w, `{
-  "count": 2,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "username": "fred",
-      "is_superuser": true
-    }
-  ]
-}`)
-	})
-
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	err = cmdr.PermsList("foo", true, 1)
-	assert.NoError(t, err)
-
-	assert.Equal(t, testutil.StripProgress(b.String()), `USERNAME    ADMIN 
-fred        true     
-`, "output")
-}
-
-func TestPermsCreateUser(t *testing.T) {
+func TestCreateUserPerm(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -169,37 +125,18 @@ func TestPermsCreateUser(t *testing.T) {
 }`)
 	})
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/perms", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/perms/rules/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 	})
 
-	err = cmdr.PermCreate("lorem-ipsum", "test-user", false)
+	err = cmdr.PermCreate("use_app", "lorem-ipsum", "test-user")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Adding test-user to lorem-ipsum collaborators... done
-`, "output")
+	assert.Equal(t,
+		testutil.StripProgress(b.String()),
+		"Adding test-user to use_app:lorem-ipsum collaborators... done\n", "output")
 }
 
-func TestPermsCreateAdmin(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-	})
-
-	err = cmdr.PermCreate("lorem-ipsum", "test-admin", true)
-	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Adding test-admin to system administrators... done
-`, "output")
-}
-
-func TestPermsDeleteUser(t *testing.T) {
+func TestDeleteUserPerm(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -223,32 +160,13 @@ func TestPermsDeleteUser(t *testing.T) {
 }`)
 	})
 
-	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/perms", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/perms/rules/1/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 	})
 
-	err = cmdr.PermDelete("lorem-ipsum", "test-user", false)
+	err = cmdr.PermDelete(1)
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Removing test-user from lorem-ipsum collaborators... done
-`, "output")
-}
-
-func TestPermsDeleteAdmin(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/admin/perms/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-	})
-
-	err = cmdr.PermDelete("lorem-ipsum", "test-admin", true)
-	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Removing test-admin from system administrators... done
-`, "output")
+	assert.Equal(t,
+		testutil.StripProgress(b.String()),
+		"Removing user perm with id 1... done\n", "output")
 }

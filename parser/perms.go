@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cmd"
 )
@@ -10,14 +12,17 @@ func Perms(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for perms:
 
-perms:list            list permissions granted on an app
-perms:create          create a new permission for a user
-perms:delete          delete a permission for a user
+perms:codes           list all policy codenames
+perms:list            list all user permission for objects
+perms:create          create a user permission for objects
+perms:delete          delete a user permission for objects
 
 Use 'drycc help perms:[command]' to learn more.
 `
 
 	switch argv[0] {
+	case "perms:codes":
+		return permsCodes(argv, cmdr)
 	case "perms:list":
 		return permsList(argv, cmdr)
 	case "perms:create":
@@ -39,57 +44,15 @@ Use 'drycc help perms:[command]' to learn more.
 	}
 }
 
-func permsList(argv []string, cmdr cmd.Commander) error {
+func permsCodes(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists all users with permission to use an app, or lists all users with system
-administrator privileges.
+List all object policy codenames.
 
-Usage: drycc perms:list [-a --app=<app>|--admin|--admin --limit=<num>]
+Usage: drycc perms:codes [options]
 
 Options:
-  -a --app=<app>
-    lists all users with permission to <app>. <app> is the uniquely identifiable name
-    for the application.
-  --admin
-    lists all users with system administrator privileges.
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting`
-
-	args, err := docopt.ParseArgs(usage, argv, "")
-
-	if err != nil {
-		return err
-	}
-
-	app := safeGetString(args, "--app")
-	admin := args["--admin"].(bool)
-
-	results, err := responseLimit(safeGetString(args, "--limit"))
-
-	if err != nil {
-		return err
-	}
-
-	return cmdr.PermsList(app, admin, results)
-}
-
-func permCreate(argv []string, cmdr cmd.Commander) error {
-	usage := `
-Gives another user permission to use an app, or gives another user
-system administrator privileges.
-
-Usage: drycc perms:create <username> [-a --app=<app>|--admin]
-
-Arguments:
-  <username>
-    the name of the new user.
-
-Options:
-  -a --app=<app>
-    grants <username> permission to use <app>. <app> is the uniquely identifiable name
-    for the application.
-  --admin
-    grants <username> system administrator privileges.
+    the maximum number of results to display, defaults to config setting
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -98,30 +61,27 @@ Options:
 		return err
 	}
 
-	app := safeGetString(args, "--app")
-	username := args["<username>"].(string)
-	admin := args["--admin"].(bool)
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
-	return cmdr.PermCreate(app, username, admin)
+	if err != nil {
+		return err
+	}
+
+	return cmdr.PermCodes(results)
 }
 
-func permDelete(argv []string, cmdr cmd.Commander) error {
+func permsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Revokes another user's permission to use an app, or revokes another user's system
-administrator privileges.
+List all user permission for objects
 
-Usage: drycc perms:delete <username> [-a --app=<app>|--admin]
-
-Arguments:
-  <username>
-    the name of the user.
+Usage: drycc perms:list [options]
 
 Options:
-  -a --app=<app>
-    revokes <username> permission to use <app>. <app> is the uniquely identifiable name
-    for the application.
-  --admin
-    revokes <username> system administrator privileges.`
+  -c --codename=<codename>
+    filter all user permissions by codename
+  -l --limit=<num>
+    the maximum number of results to display, defaults to config setting
+`
 
 	args, err := docopt.ParseArgs(usage, argv, "")
 
@@ -129,9 +89,61 @@ Options:
 		return err
 	}
 
-	app := safeGetString(args, "--app")
-	username := args["<username>"].(string)
-	admin := args["--admin"].(bool)
+	codename := safeGetString(args, "--codename")
+	results, err := responseLimit(safeGetString(args, "--limit"))
 
-	return cmdr.PermDelete(app, username, admin)
+	if err != nil {
+		return err
+	}
+
+	return cmdr.PermList(codename, results)
+}
+
+func permCreate(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Gives another user permission to use an object.
+
+Usage: drycc perms:create <username> <codename> <uniqueid>
+
+Arguments:
+  <username>
+    the name of the new user
+  <codename>
+    the object policy codename
+  <uniqueid>
+    unique identifier for shared objects
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	username := safeGetString(args, "<username>")
+	codename := safeGetString(args, "<codename>")
+	uniqueid := safeGetString(args, "<uniqueid>")
+	fmt.Println(username, codename, uniqueid)
+	return cmdr.PermCreate(codename, uniqueid, username)
+}
+
+func permDelete(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Revokes another user's permission to use an object.
+
+Usage: drycc perms:delete <id>
+
+Arguments:
+  <id>
+    the id of the user perm.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	id := uint64(safeGetInt(args, "<id>"))
+	return cmdr.PermDelete(id)
 }

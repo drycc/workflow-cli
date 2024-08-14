@@ -12,15 +12,19 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) PermsList(string, bool, int) error {
+func (d FakeDryccCmd) PermCodes(int) error {
+	return errors.New("perms:codes")
+}
+
+func (d FakeDryccCmd) PermList(string, int) error {
 	return errors.New("perms:list")
 }
 
-func (d FakeDryccCmd) PermCreate(string, string, bool) error {
+func (d FakeDryccCmd) PermCreate(string, string, string) error {
 	return errors.New("perms:create")
 }
 
-func (d FakeDryccCmd) PermDelete(string, string, bool) error {
+func (d FakeDryccCmd) PermDelete(uint64) error {
 	return errors.New("perms:delete")
 }
 
@@ -42,15 +46,19 @@ func TestPerms(t *testing.T) {
 		expected string
 	}{
 		{
+			args:     []string{"perms:codes"},
+			expected: "",
+		},
+		{
 			args:     []string{"perms:list"},
 			expected: "",
 		},
 		{
-			args:     []string{"perms:create", "test-user"},
+			args:     []string{"perms:create", "test-user", "use_app", "autotest-app"},
 			expected: "",
 		},
 		{
-			args:     []string{"perms:delete", "test-user"},
+			args:     []string{"perms:delete", "1"},
 			expected: "",
 		},
 		{

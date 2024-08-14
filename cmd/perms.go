@@ -4,57 +4,53 @@ import (
 	"fmt"
 
 	"github.com/drycc/controller-sdk-go/perms"
-	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/settings"
 )
 
-// PermsList prints which users have permissions.
-func (d *DryccCmd) PermsList(appID string, admin bool, results int) error {
-	s, appID, err := permsLoad(d.ConfigFile, appID, admin)
-
+// PermCodes prints all perm codenames.
+func (d *DryccCmd) PermCodes(results int) error {
+	s, err := settings.Load(d.ConfigFile)
 	if err != nil {
 		return err
 	}
-
-	var users []string
-
-	if admin {
-		if results == defaultLimit {
-			results = s.Limit
-		}
-		users, _, err = perms.ListAdmins(s.Client, results)
-	} else {
-		users, err = perms.List(s.Client, appID)
-	}
-
+	codenames, _, err := perms.Codes(s.Client, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
-	table := d.getDefaultFormatTable([]string{"USERNAME", "ADMIN"})
-	for _, user := range users {
-		table.Append([]string{user, fmt.Sprintf("%v", admin)})
+	table := d.getDefaultFormatTable([]string{"CODENAME", "DESCRIPTION"})
+	for _, code := range codenames {
+		table.Append([]string{code.Codename, code.Description})
 	}
 	table.Render()
 	return nil
 }
 
-// PermCreate adds a user to an app or makes them an administrator.
-func (d *DryccCmd) PermCreate(appID string, username string, admin bool) error {
-
-	s, appID, err := permsLoad(d.ConfigFile, appID, admin)
-
+// PermList prints which users have permissions.
+func (d *DryccCmd) PermList(codename string, results int) error {
+	s, err := settings.Load(d.ConfigFile)
 	if err != nil {
 		return err
 	}
-
-	if admin {
-		d.Printf("Adding %s to system administrators... ", username)
-		err = perms.NewAdmin(s.Client, username)
-	} else {
-		d.Printf("Adding %s to %s collaborators... ", username, appID)
-		err = perms.New(s.Client, appID, username)
+	perms, _, err := perms.List(s.Client, codename, results)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
 	}
+	table := d.getDefaultFormatTable([]string{"ID", "CODENAME", "UNIQUEID", "USERNAME"})
+	for _, perm := range perms {
+		table.Append([]string{fmt.Sprintf("%d", perm.ID), perm.Codename, perm.Uniqueid, perm.Username})
+	}
+	table.Render()
+	return nil
+}
+
+// PermCreate create user perm to user.
+func (d *DryccCmd) PermCreate(codename, uniqueid, username string) error {
+	s, err := settings.Load(d.ConfigFile)
+	if err != nil {
+		return err
+	}
+	d.Printf("Adding %s to %s:%s collaborators... ", username, codename, uniqueid)
+	err = perms.Create(s.Client, codename, uniqueid, username)
 
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
@@ -66,45 +62,17 @@ func (d *DryccCmd) PermCreate(appID string, username string, admin bool) error {
 }
 
 // PermDelete removes a user from an app or revokes admin privileges.
-func (d *DryccCmd) PermDelete(appID, username string, admin bool) error {
-
-	s, appID, err := permsLoad(d.ConfigFile, appID, admin)
-
+func (d *DryccCmd) PermDelete(userPermID uint64) error {
+	s, err := settings.Load(d.ConfigFile)
 	if err != nil {
 		return err
 	}
-
-	if admin {
-		d.Printf("Removing %s from system administrators... ", username)
-		err = perms.DeleteAdmin(s.Client, username)
-	} else {
-		d.Printf("Removing %s from %s collaborators... ", username, appID)
-		err = perms.Delete(s.Client, appID, username)
-	}
+	d.Printf("Removing user perm with id %d... ", userPermID)
+	err = perms.Delete(s.Client, fmt.Sprintf("%d", userPermID))
 
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-
 	d.Println("done")
-
 	return nil
-}
-
-func permsLoad(cf, appID string, admin bool) (*settings.Settings, string, error) {
-	s, err := settings.Load(cf)
-
-	if err != nil {
-		return nil, "", err
-	}
-
-	if !admin && appID == "" {
-		appID, err = git.DetectAppName(git.DefaultCmd, s.Client.ControllerURL.Host)
-
-		if err != nil {
-			return nil, "", err
-		}
-	}
-
-	return s, appID, err
 }

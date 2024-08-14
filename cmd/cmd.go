@@ -76,9 +76,10 @@ type Commander interface {
 	TimeoutsList(string) error
 	TimeoutsSet(string, []string) error
 	TimeoutsUnset(string, []string) error
-	PermsList(string, bool, int) error
-	PermCreate(string, string, bool) error
-	PermDelete(string, string, bool) error
+	PermCodes(int) error
+	PermList(string, int) error
+	PermCreate(string, string, string) error
+	PermDelete(uint64) error
 	PsList(string, int) error
 	PsLogs(string, string, int, bool, string) error
 	PsExec(string, string, bool, bool, []string) error
