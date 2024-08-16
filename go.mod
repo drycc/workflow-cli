@@ -7,6 +7,7 @@ require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/drycc/controller-sdk-go v0.0.0-20240814100555-0168972aa222
 	github.com/drycc/pkg v0.0.0-20240225112316-78fc9239f51f
+	github.com/minio/selfupdate v0.6.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/schollz/progressbar/v3 v3.14.4
 	github.com/stretchr/testify v1.9.0
@@ -17,11 +18,13 @@ require (
 )
 
 require (
+	aead.dev/minisign v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/term v0.20.0 // indirect
 )

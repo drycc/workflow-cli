@@ -73,8 +73,9 @@ Subcommands, use 'drycc help [subcommand]' to learn more:
   tags          manage tags for application containers
   timeouts      manage pods termination grace period 
   tls           manage TLS settings for applications
-  tokens        manage tokens
-  users         manage users
+  tokens        manage user tokens
+  update        update workflow cli to latest release
+  users         manage registered users
   version       display client version
   volumes       manage volumes for your applications
 
@@ -169,6 +170,8 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.Tags(argv, &cmdr)
 	case "tls":
 		err = parser.TLS(argv, &cmdr)
+	case "update":
+		err = parser.Update(argv, &cmdr)
 	case "users":
 		err = parser.Users(argv, &cmdr)
 	case "tokens":

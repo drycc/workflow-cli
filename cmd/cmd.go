@@ -111,7 +111,8 @@ type Commander interface {
 	TLSAutoEnable(string) error
 	TLSAutoDisable(string) error
 	TLSAutoIssuer(string, string, string, string, string) error
-	UsersList(results int) error
+	Update(bool) error
+	UsersList(int) error
 	UsersEnable(string) error
 	UsersDisable(string) error
 	Println(...interface{}) (int, error)
