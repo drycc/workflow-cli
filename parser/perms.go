@@ -12,10 +12,10 @@ func Perms(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for perms:
 
-perms:codes           list all policy codenames
-perms:list            list all user permission for objects
-perms:create          create a user permission for objects
-perms:delete          delete a user permission for objects
+perms:codes           list all policy codename
+perms:list            list all user permission
+perms:create          create a user permission
+perms:delete          delete a user permission
 
 Use 'drycc help perms:[command]' to learn more.
 `
@@ -46,7 +46,7 @@ Use 'drycc help perms:[command]' to learn more.
 
 func permsCodes(argv []string, cmdr cmd.Commander) error {
 	usage := `
-List all object policy codenames.
+List all policy codename.
 
 Usage: drycc perms:codes [options]
 
@@ -72,7 +72,7 @@ Options:
 
 func permsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-List all user permission for objects
+List all user permission.
 
 Usage: drycc perms:list [options]
 
@@ -101,7 +101,7 @@ Options:
 
 func permCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Gives another user permission to use an object.
+Create a user permission.
 
 Usage: drycc perms:create <username> <codename> <uniqueid>
 
@@ -129,7 +129,7 @@ Arguments:
 
 func permDelete(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Revokes another user's permission to use an object.
+Delete a user permission.
 
 Usage: drycc perms:delete <id>
 

@@ -49,9 +49,11 @@ func (d *DryccCmd) PermCreate(codename, uniqueid, username string) error {
 	if err != nil {
 		return err
 	}
-	d.Printf("Adding %s to %s:%s collaborators... ", username, codename, uniqueid)
+	d.Printf("Adding user %s as a collaborator for %s %s... ", username, codename, uniqueid)
+	quit := progress(d.WOut)
 	err = perms.Create(s.Client, codename, uniqueid, username)
-
+	quit <- true
+	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -67,9 +69,11 @@ func (d *DryccCmd) PermDelete(userPermID uint64) error {
 	if err != nil {
 		return err
 	}
-	d.Printf("Removing user perm with id %d... ", userPermID)
+	d.Printf("Removing user permission... ")
+	quit := progress(d.WOut)
 	err = perms.Delete(s.Client, fmt.Sprintf("%d", userPermID))
-
+	quit <- true
+	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}

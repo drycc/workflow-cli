@@ -133,7 +133,7 @@ func TestCreateUserPerm(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t,
 		testutil.StripProgress(b.String()),
-		"Adding test-user to use_app:lorem-ipsum collaborators... done\n", "output")
+		"Adding user test-user as a collaborator for use_app lorem-ipsum... done\n", "output")
 }
 
 func TestDeleteUserPerm(t *testing.T) {
@@ -168,5 +168,5 @@ func TestDeleteUserPerm(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t,
 		testutil.StripProgress(b.String()),
-		"Removing user perm with id 1... done\n", "output")
+		"Removing user permission... done\n", "output")
 }

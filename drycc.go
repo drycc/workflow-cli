@@ -42,7 +42,6 @@ Options:
 
 Auth commands, use 'drycc help auth' to learn more:
 
-  register      register a new user with a controller
   login         login to a controller
   logout        logout from the current controller
 
