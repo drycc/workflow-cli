@@ -13,7 +13,7 @@ Update workflow cli to latest release.
 Usage: drycc update [options]
 
 Options:
-  -p --dry-run
+  -d --dry-run
     simulate an update, only print the version info
 `
 	args, err := docopt.ParseArgs(usage, argv, "")
