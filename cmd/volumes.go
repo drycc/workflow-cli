@@ -330,7 +330,7 @@ func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, v
 			return err
 		}
 		reader := progressbar.NewReader(file, d.newProgressbar(stat.Size(), "↑", localPath))
-		if _, err := volumes.PostFile(client, appID, volumeID, volumePath, file.Name(), &reader); err != nil {
+		if _, err := volumes.PostFile(client, appID, volumeID, volumePath, file.Name(), stat.Size(), &reader); err != nil {
 			return err
 		}
 		return nil
@@ -343,7 +343,9 @@ func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, v
 			} else {
 				dstFilepath = volumePath
 			}
-			d.volumesClientPostAll(client, appID, volumeID, dstFilepath, path.Join(localPath, entry.Name()))
+			if err := d.volumesClientPostAll(client, appID, volumeID, dstFilepath, path.Join(localPath, entry.Name())); err != nil {
+				return err
+			}
 		}
 	} else {
 		return err
