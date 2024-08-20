@@ -111,7 +111,7 @@ Arguments:
   <codename>
     the object policy codename
   <uniqueid>
-    the uniquely identifiable name of shared objects, for example: application name or cert name.
+    the uniquely identifiable name of shared objects, for example: app id or cert name.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
