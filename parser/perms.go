@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"fmt"
-
 	docopt "github.com/docopt/docopt-go"
 	"github.com/drycc/workflow-cli/cmd"
 )
@@ -123,7 +121,6 @@ Arguments:
 	username := safeGetString(args, "<username>")
 	codename := safeGetString(args, "<codename>")
 	uniqueid := safeGetString(args, "<uniqueid>")
-	fmt.Println(username, codename, uniqueid)
 	return cmdr.PermCreate(codename, uniqueid, username)
 }
 
