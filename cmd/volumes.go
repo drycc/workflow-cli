@@ -284,6 +284,9 @@ func (d *DryccCmd) volumesClientLs(appID, vol string) error {
 }
 
 func (d *DryccCmd) volumesClientGetAll(client *drycc.Client, appID, volumeID, volumePath, localPath string) error {
+	if _, err := os.Stat(localPath); err != nil && os.IsNotExist(err) {
+		os.MkdirAll(localPath, os.ModePerm)
+	}
 	dirs, _, err := volumes.ListDir(client, appID, volumeID, volumePath, 3000)
 	if err != nil {
 		return err
@@ -371,7 +374,7 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 		if err != nil {
 			return err
 		}
-		return d.volumesClientGetAll(s.Client, appID, volumeID, volumePath, dst)
+		return d.volumesClientGetAll(s.Client, appID, volumeID, volumePath, mergeDestDir(dst, src))
 	} else if strings.HasPrefix(dst, "vol://") {
 		volumeID, volumePath, err := parseVol(dst)
 		if err != nil {
@@ -384,7 +387,7 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 		} else if strings.Contains(fmt.Sprint(err), "no such file or directory") {
 			return err
 		}
-		return d.volumesClientPostAll(s.Client, appID, volumeID, volumePath, src)
+		return d.volumesClientPostAll(s.Client, appID, volumeID, mergeDestDir(volumePath, src), src)
 	}
 	return nil
 }
@@ -435,6 +438,15 @@ func parseVol(vol string) (string, string, error) {
 		return "", "", fmt.Errorf("vol %s format err", vol)
 	}
 	return u.Host, strings.TrimPrefix(u.Path, "/"), nil
+}
+
+// mergeDestDir merge dest dir
+func mergeDestDir(prefix, dir string) string {
+	if !strings.HasSuffix(dir, "/") {
+		names := strings.Split(dir, "/")
+		return strings.Join([]string{prefix, names[len(names)-1]}, "/")
+	}
+	return prefix
 }
 
 // printVolumes format volume data
