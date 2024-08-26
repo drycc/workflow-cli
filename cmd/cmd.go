@@ -97,6 +97,7 @@ type Commander interface {
 	RegistryUnset(string, []string) error
 	ReleasesList(string, int) error
 	ReleasesInfo(string, int) error
+	ReleasesDeploy(string, []string, string) error
 	ReleasesRollback(string, int) error
 	RoutingInfo(string) error
 	RoutingEnable(string) error

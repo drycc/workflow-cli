@@ -150,7 +150,7 @@ func TestPtsRestart(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/ptypes/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, map[string]string{"types": ""}, r)
+		testutil.AssertBody(t, map[string]string{"ptypes": ""}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -160,7 +160,7 @@ func TestPtsRestart(t *testing.T) {
 	assert.NoError(t, err)
 
 	server.Mux.HandleFunc("/v2/apps/coolapp/ptypes/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, map[string]string{"types": "web"}, r)
+		testutil.AssertBody(t, map[string]string{"ptypes": "web"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -171,7 +171,7 @@ func TestPtsRestart(t *testing.T) {
 	assert.NoError(t, err)
 
 	server.Mux.HandleFunc("/v2/apps/testapp/ptypes/restart/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, map[string]string{"types": "web,worker"}, r)
+		testutil.AssertBody(t, map[string]string{"ptypes": "web,worker"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})

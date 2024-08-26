@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/drycc/controller-sdk-go/releases"
 )
@@ -62,6 +64,42 @@ func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 	table.Append([]string{"Summary:", d.wrapString(r.Summary)})
 	table.Append([]string{"Version:", fmt.Sprintf("v%v", r.Version)})
 	table.Render()
+	return nil
+}
+
+// ReleasesDeploy force deploy lastest release.
+func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, confirm string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+	if len(targets) == 0 && (confirm == "" || confirm != "yes") {
+		d.Printf(` !    WARNING: Potentially Deploy Action
+ !    This command will deploy all processes of the application ptype
+ !    To proceed, type "yes" !
+
+> `)
+
+		fmt.Scanln(&confirm)
+		if confirm != "yes" {
+			return fmt.Errorf("cancel the deploy action")
+		}
+	}
+	d.Printf("Deploying process types... but first, %s!\n", drinkOfChoice())
+	startTime := time.Now()
+	quit := progress(d.WOut)
+	ptypes := strings.Join(targets, ",")
+	targetMap := map[string]string{
+		"ptypes": ptypes,
+	}
+	err = releases.Deploy(s.Client, appID, targetMap)
+	quit <- true
+	<-quit
+	if err != nil {
+		return err
+	}
+
+	d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
 	return nil
 }
 

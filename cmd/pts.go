@@ -103,7 +103,7 @@ func (d *DryccCmd) PtsRestart(appID string, targets []string, confirm string) er
 	quit := progress(d.WOut)
 	ptypes := strings.Join(targets, ",")
 	targetMap := map[string]string{
-		"types": ptypes,
+		"ptypes": ptypes,
 	}
 	err = pts.Restart(s.Client, appID, targetMap)
 	quit <- true

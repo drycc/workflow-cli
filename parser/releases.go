@@ -15,6 +15,7 @@ Valid commands for releases:
 
 releases:list        list an application's release history
 releases:info        print information about a specific release
+releases:deploy      deploy the latest release by process types
 releases:rollback    return to a previous release
 
 Use 'drycc help [command]' to learn more.
@@ -25,6 +26,8 @@ Use 'drycc help [command]' to learn more.
 		return releasesList(argv, cmdr)
 	case "releases:info":
 		return releasesInfo(argv, cmdr)
+	case "releases:deploy":
+		return releasesDeploy(argv, cmdr)
 	case "releases:rollback":
 		return releasesRollback(argv, cmdr)
 	default:
@@ -99,6 +102,34 @@ Options:
 	app := safeGetString(args, "--app")
 
 	return cmdr.ReleasesInfo(app, version)
+}
+
+func releasesDeploy(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Deploy the latest release by process types.
+
+Usage: drycc releases:deploy [<ptype>...] [options]
+
+Arguments:
+  <ptype>
+    the process name as defined in your Procfile, such as 'web' or 'web worker'.
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+  --confirm=yes
+    To proceed, type "yes".
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	apps := safeGetString(args, "--app")
+	confirm := safeGetString(args, "--confirm")
+	return cmdr.ReleasesDeploy(apps, args["<ptype>"].([]string), confirm)
 }
 
 func releasesRollback(argv []string, cmdr cmd.Commander) error {

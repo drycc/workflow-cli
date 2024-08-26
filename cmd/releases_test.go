@@ -146,6 +146,36 @@ Version:    v2
 `, "output")
 }
 
+func TestReleasesDeploy(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+	server.Mux.HandleFunc("/v2/apps/example-go/releases/deploy/", func(res http.ResponseWriter, req *http.Request) {
+		testutil.SetHeaders(res)
+		io.ReadAll(req.Body)
+		if err != nil {
+			fmt.Println(err)
+			res.WriteHeader(http.StatusInternalServerError)
+			res.Write(nil)
+		}
+
+		res.WriteHeader(http.StatusCreated)
+	})
+	err = cmdr.ReleasesDeploy("example-go", []string{}, "yes")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = cmdr.ReleasesDeploy("example-go", []string{"web", "task"}, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestReleasesRollback(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()

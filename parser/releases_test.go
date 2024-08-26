@@ -20,6 +20,10 @@ func (d FakeDryccCmd) ReleasesInfo(string, int) error {
 	return errors.New("releases:info")
 }
 
+func (d FakeDryccCmd) ReleasesDeploy(string, []string, string) error {
+	return errors.New("releases:deploy")
+}
+
 func (d FakeDryccCmd) ReleasesRollback(string, int) error {
 	return errors.New("releases:rollback")
 }
@@ -47,6 +51,10 @@ func TestReleases(t *testing.T) {
 		},
 		{
 			args:     []string{"releases:info", "v1"},
+			expected: "",
+		},
+		{
+			args:     []string{"releases:deploy", "web"},
 			expected: "",
 		},
 		{

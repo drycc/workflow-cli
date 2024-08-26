@@ -318,7 +318,7 @@ func (d *DryccCmd) volumesClientGetAll(client *drycc.Client, appID, volumeID, vo
 	return nil
 }
 
-func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, volumePath string, localPath string) error {
+func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, volumePath, localPath string) error {
 	if file, err := os.Stat(localPath); err != nil {
 		return err
 	} else if !file.IsDir() {
@@ -374,7 +374,10 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 		if err != nil {
 			return err
 		}
-		return d.volumesClientGetAll(s.Client, appID, volumeID, volumePath, mergeDestDir(dst, src))
+		if dirs, _, err := volumes.ListDir(s.Client, appID, volumeID, volumePath, 3000); err == nil && (len(dirs) != 1 || dirs[0].Type != "file") {
+			dst = mergeDestDir(dst, volumePath)
+		}
+		return d.volumesClientGetAll(s.Client, appID, volumeID, volumePath, dst)
 	} else if strings.HasPrefix(dst, "vol://") {
 		volumeID, volumePath, err := parseVol(dst)
 		if err != nil {
@@ -387,7 +390,10 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 		} else if strings.Contains(fmt.Sprint(err), "no such file or directory") {
 			return err
 		}
-		return d.volumesClientPostAll(s.Client, appID, volumeID, mergeDestDir(volumePath, src), src)
+		if file, err := os.Stat(src); err == nil && file.IsDir() {
+			volumePath = mergeDestDir(volumePath, src)
+		}
+		return d.volumesClientPostAll(s.Client, appID, volumeID, volumePath, src)
 	}
 	return nil
 }
