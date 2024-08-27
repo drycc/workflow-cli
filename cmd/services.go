@@ -25,7 +25,7 @@ func (d *DryccCmd) ServicesList(appID string) error {
 		for _, service := range services {
 			for _, port := range service.Ports {
 				table.Append([]string{
-					service.ProcfileType,
+					service.Ptype,
 					fmt.Sprint(port.Port),
 					port.Protocol,
 					fmt.Sprint(port.TargetPort),
@@ -41,7 +41,7 @@ func (d *DryccCmd) ServicesList(appID string) error {
 }
 
 // ServicesAdd adds a service to an app.
-func (d *DryccCmd) ServicesAdd(appID, procfileType string, ports string, protocol string) error {
+func (d *DryccCmd) ServicesAdd(appID, ptype string, ports string, protocol string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -51,10 +51,10 @@ func (d *DryccCmd) ServicesAdd(appID, procfileType string, ports string, protoco
 	if err != nil {
 		return err
 	}
-	d.Printf("Adding %s (%d) to %s... ", procfileType, portArray[0], appID)
+	d.Printf("Adding %s (%d) to %s... ", ptype, portArray[0], appID)
 
 	quit := progress(d.WOut)
-	err = services.New(s.Client, appID, procfileType, portArray[0], protocol, portArray[1])
+	err = services.New(s.Client, appID, ptype, portArray[0], protocol, portArray[1])
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -65,18 +65,18 @@ func (d *DryccCmd) ServicesAdd(appID, procfileType string, ports string, protoco
 	return nil
 }
 
-// ServicesRemove removes a service for procfileType registered with an app.
-func (d *DryccCmd) ServicesRemove(appID, procfileType string, protocol string, port int) error {
+// ServicesRemove removes a service for Ptype registered with an app.
+func (d *DryccCmd) ServicesRemove(appID, ptype string, protocol string, port int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Removing %s from %s... ", procfileType, appID)
+	d.Printf("Removing %s from %s... ", ptype, appID)
 
 	quit := progress(d.WOut)
-	err = services.Delete(s.Client, appID, procfileType, protocol, port)
+	err = services.Delete(s.Client, appID, ptype, protocol, port)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

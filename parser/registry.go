@@ -63,7 +63,7 @@ func registrySet(argv []string, cmdr cmd.Commander) error {
 Sets registry information for an application. These credentials are the same as those used for
 'podmain login' to the private registry.
 
-Usage: drycc registry:set [options] <key>=<value>...
+Usage: drycc registry:set <key>=<value>... [options]
 
 Arguments:
   <key>
@@ -93,7 +93,7 @@ func registryUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets registry information for an application.
 
-Usage: drycc registry:unset [options] <key>...
+Usage: drycc registry:unset <key>... [options]
 
 Arguments:
   <key> the registry key to unset, for example: "username" or "password"

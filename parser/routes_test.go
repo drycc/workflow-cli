@@ -12,7 +12,7 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 func (d FakeDryccCmd) RoutesCreate(string, string, string, string, int) error {
-	return errors.New("routes:create")
+	return errors.New("routes:add")
 }
 
 func (d FakeDryccCmd) RoutesList(string, int) error {
@@ -57,7 +57,7 @@ func TestRoutes(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"routes:create", "example", "--type=web", "--kind=http", "--port=80"},
+			args:     []string{"routes:add", "example", "--ptype=web", "--kind=http", "--port=80"},
 			expected: "",
 		},
 		{

@@ -219,7 +219,7 @@ func parsePtsTargets(targets []string) (map[string]int, error) {
 				return nil, err
 			}
 		} else {
-			return nil, fmt.Errorf("'%s' does not match the pattern 'type=num', ex: web=2", target)
+			return nil, fmt.Errorf("'%s' does not match the pattern 'ptype=num', ex: web=2", target)
 		}
 	}
 

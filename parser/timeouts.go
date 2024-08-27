@@ -63,10 +63,10 @@ func timeoutSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Sets termination grace period for an application.
 
-Usage: drycc timeouts:set [options] <type>=<value>...
+Usage: drycc timeouts:set <ptype>=<value>... [options]
 
 Arguments:
-  <type>
+  <ptype>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
   <value>
     The value to apply to the process type in seconds.
@@ -83,7 +83,7 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	timeouts := args["<type>=<value>"].([]string)
+	timeouts := args["<ptype>=<value>"].([]string)
 
 	return cmdr.TimeoutsSet(app, timeouts)
 }
@@ -92,10 +92,10 @@ func timeoutUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets timeouts for an application. Default value (30s) or set by drycc controller
 
-Usage: drycc timeouts:unset [options] <type>...
+Usage: drycc timeouts:unset <ptype>... [options]
 
 Arguments:
-  <type>
+  <ptype>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
 
 Options:
@@ -110,7 +110,7 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	timeouts := args["<type>"].([]string)
+	timeouts := args["<ptype>"].([]string)
 
 	return cmdr.TimeoutsUnset(app, timeouts)
 }

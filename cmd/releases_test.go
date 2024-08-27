@@ -127,7 +127,15 @@ func TestReleasesInfo(t *testing.T) {
 			"version": 2,
 			"summary": "khamul added ANGMAR",
 			"config": "3bb816b1-4fde-4b06-8afe-acd12f58a266",
-			"build": null
+			"build": null,
+			"exception": null,
+			"conditions": [{
+				"state": "succeed",
+				"action": "pipeline",
+				"ptypes": ["web"],
+				"exception": "Boom!",
+				"created": "2024-08-27T08:31:36Z"
+			}]
 		}`)
 	})
 
@@ -143,6 +151,12 @@ Created:    2016-08-22T17:40:16Z
 Updated:    2016-08-22T17:40:16Z                    
 Summary:    khamul added ANGMAR                     
 Version:    v2                                      
+Conditions:       
+  - created:      2024-08-27T08:31:36Z    
+    state:        succeed                 
+    action:       pipeline                
+    ptypes:       web                     
+    exception:    Boom!                   
 `, "output")
 }
 
@@ -166,11 +180,11 @@ func TestReleasesDeploy(t *testing.T) {
 
 		res.WriteHeader(http.StatusCreated)
 	})
-	err = cmdr.ReleasesDeploy("example-go", []string{}, "yes")
+	err = cmdr.ReleasesDeploy("example-go", []string{}, false, "yes")
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = cmdr.ReleasesDeploy("example-go", []string{"web", "task"}, "")
+	err = cmdr.ReleasesDeploy("example-go", []string{"web", "task"}, false, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -198,20 +212,20 @@ func TestReleasesRollback(t *testing.T) {
 		fmt.Fprintf(w, `{"version": 5}`)
 	})
 
-	err = cmdr.ReleasesRollback("numenor", -1)
+	err = cmdr.ReleasesRollback("numenor", []string{"web"}, -1)
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Rolling back one release... done, v5\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/angmar/releases/rollback/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.ReleaseRollback{Version: 3}, r)
+		testutil.AssertBody(t, api.ReleaseRollback{Ptypes: "web", Version: 3}, r)
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, `{"version": 3}`)
 	})
 
 	b.Reset()
 
-	err = cmdr.ReleasesRollback("angmar", 3)
+	err = cmdr.ReleasesRollback("angmar", []string{"web"}, 3)
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Rolling back to v3... done, v3\n", "output")
 }

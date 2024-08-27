@@ -10,11 +10,11 @@ func Volumes(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for volumes:
 
-volumes:create           create a volume for the application
+volumes:add              create a volume for the application
 volumes:expand           expand a volume for the application
 volumes:list             list volumes in the application
 volumes:info             print information about a volume
-volumes:delete           delete a volume from the application
+volumes:remove           delete a volume from the application
 volumes:client           the client used to manage volume files
 volumes:mount            mount a volume to process of the application
 volumes:unmount          unmount a volume from process of the application
@@ -23,7 +23,7 @@ Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
-	case "volumes:create":
+	case "volumes:add":
 		return volumesCreate(argv, cmdr)
 	case "volumes:expand":
 		return volumesExpand(argv, cmdr)
@@ -31,7 +31,7 @@ Use 'drycc help [command]' to learn more.
 		return volumesList(argv, cmdr)
 	case "volumes:info":
 		return volumesInfo(argv, cmdr)
-	case "volumes:delete":
+	case "volumes:remove":
 		return volumesDelete(argv, cmdr)
 	case "volumes:client":
 		return volumesClient(argv, cmdr)
@@ -58,7 +58,7 @@ func volumesCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Create a volume for the application.
 
-Usage: drycc volumes:create <name> <size> [options]
+Usage: drycc volumes:add <name> <size> [options]
 
 Arguments:
   <name>
@@ -69,7 +69,7 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  -t --type=<type>
+  -t --ptype=<ptype>
     the volume type, such as csi, nfs, default is 'csi'.
   --nfs-server=<nfs-server>
     the hostname or ip address of the nfs server.
@@ -194,7 +194,7 @@ func volumesDelete(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Delete a volume from the application.
 
-Usage: drycc volumes:delete <name> [options]
+Usage: drycc volumes:remove <name> [options]
 
 Arguments:
   <name>
@@ -253,12 +253,12 @@ func volumesMount(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Mount a volume for an application.
 
-Usage: drycc volumes:mount <name> <type>=<path>... [options]
+Usage: drycc volumes:mount <name> <ptype>=<path>... [options]
 
 Arguments:
   <name>
     the volume name.
-  <type>
+  <ptype>
     the process name as defined in your Procfile, such as 'web' or 'worker'.
   <path>
     the filesystem path.
@@ -277,19 +277,19 @@ Options:
 	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
 
-	return cmdr.VolumesMount(app, name, args["<type>=<path>"].([]string))
+	return cmdr.VolumesMount(app, name, args["<ptype>=<path>"].([]string))
 }
 
 func volumesUnmount(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unmount a volume for an application.
 
-Usage: drycc volumes:unmount <name> <type>... [options]
+Usage: drycc volumes:unmount <name> <ptype>... [options]
 
 Arguments:
   <name>
     the volume name.
-  <type>
+  <ptype>
     the process name as defined in your Procfile, such as 'web' or 'worker'.
 
 Options:
@@ -305,5 +305,5 @@ Options:
 	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
 
-	return cmdr.VolumesUnmount(app, name, args["<type>"].([]string))
+	return cmdr.VolumesUnmount(app, name, args["<ptype>"].([]string))
 }

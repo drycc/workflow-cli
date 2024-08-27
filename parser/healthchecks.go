@@ -14,7 +14,7 @@ import (
 // TODO: This is for supporting backward compatibility and should be removed
 // in future when next major version will be released.
 const (
-	defaultProcType string = "web"
+	defaultPtype string = "web"
 )
 
 // Healthchecks routes ealthcheck commands to their specific function
@@ -60,8 +60,8 @@ Usage: drycc healthchecks:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
-  --type=<type>
-    the procType for which the health check needs to be listed.
+  --ptype=<ptype>
+    the ptype for which the health check needs to be listed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -71,9 +71,9 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	procType := safeGetString(args, "--type")
+	ptype := safeGetString(args, "--ptype")
 
-	return cmdr.HealthchecksList(app, procType)
+	return cmdr.HealthchecksList(app, ptype)
 }
 
 func healthchecksSet(argv []string, cmdr cmd.Commander) error {
@@ -126,8 +126,8 @@ Options:
     the uniquely identifiable name for the application.
   -p --path=<path>
     the relative URL path for 'httpGet' probes. [default: /]
-  --type=<type>
-    the procType for which the health check needs to be applied.
+  --ptype=<ptype>
+    the ptype for which the health check needs to be applied.
   --headers=<headers>...
     the HTTP headers to send for 'httpGet' probes, separated by commas.
   --initial-delay-timeout=<initial-delay-timeout>
@@ -150,7 +150,7 @@ Options:
 
 	app := safeGetString(args, "--app")
 	path := safeGetString(args, "--path")
-	procType := safeGetString(args, "--type")
+	ptype := safeGetString(args, "--ptype")
 	initialDelayTimeout := safeGetInt(args, "--initial-delay-timeout")
 	timeoutSeconds := safeGetInt(args, "--timeout-seconds")
 	periodSeconds := safeGetInt(args, "--period-seconds")
@@ -160,8 +160,8 @@ Options:
 	if args["--headers"] != nil {
 		headers = strings.Split(args["--headers"].(string), ",")
 	}
-	if procType == "" {
-		procType = defaultProcType
+	if ptype == "" {
+		ptype = defaultPtype
 	}
 
 	healthcheckType := args["<health-type>"].(string)
@@ -211,24 +211,24 @@ Options:
 		return fmt.Errorf("invalid probe type. Must be one of: \"httpGet\", \"exec\"")
 	}
 
-	return cmdr.HealthchecksSet(app, healthcheckType, procType, probe)
+	return cmdr.HealthchecksSet(app, healthcheckType, ptype, probe)
 }
 
 func healthchecksUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets healthchecks for an application.
 
-Usage: drycc healthchecks:unset [options] <health-type>...
+Usage: drycc healthchecks:unset <health-type>... [options]
 
 Arguments:
   <health-type>
-    the healthcheck type, such as 'liveness' or 'readiness'.
+    the healthcheck type, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  --type=<type>
-    the procType for which the health check needs to be removed.
+  --ptype=<ptype>
+    the ptype for which the health check needs to be removed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -239,9 +239,9 @@ Options:
 
 	app := safeGetString(args, "--app")
 	healthchecks := args["<health-type>"].([]string)
-	procType := safeGetString(args, "--type")
-	if procType == "" {
-		procType = defaultProcType
+	ptype := safeGetString(args, "--ptype")
+	if ptype == "" {
+		ptype = defaultPtype
 	}
 
 	for healthcheck := range healthchecks {
@@ -250,7 +250,7 @@ Options:
 		}
 	}
 
-	return cmdr.HealthchecksUnset(app, procType, healthchecks)
+	return cmdr.HealthchecksUnset(app, ptype, healthchecks)
 }
 
 func parseHeaders(headers []string) ([]*api.KVPair, error) {

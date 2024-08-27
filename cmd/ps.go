@@ -147,7 +147,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 					if value[innerKey] != nil {
 						innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
 					} else {
-						innerValue = "null"
+						innerValue = "<none>"
 					}
 				}
 				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strings.Trim(innerValue, `"`)})
@@ -163,7 +163,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 					if value[innerKey] != nil {
 						innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
 					} else {
-						innerValue = "null"
+						innerValue = "<none>"
 					}
 				}
 				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strings.Trim(innerValue, `"`)})
@@ -352,7 +352,7 @@ func parsePsTargets(targets []string) (map[string]int, error) {
 				return nil, err
 			}
 		} else {
-			return nil, fmt.Errorf("'%s' does not match the pattern 'type=num', ex: web=2", target)
+			return nil, fmt.Errorf("'%s' does not match the pattern 'ptype=num', ex: web=2", target)
 		}
 	}
 

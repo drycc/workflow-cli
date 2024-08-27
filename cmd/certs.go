@@ -8,14 +8,13 @@ import (
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/certs"
 	dtime "github.com/drycc/controller-sdk-go/pkg/time"
-	"github.com/drycc/workflow-cli/settings"
 )
 
 const dateFormat = "2 Jan 2006"
 
 // CertsList lists certs registered with the controller.
-func (d *DryccCmd) CertsList(results int) error {
-	s, err := settings.Load(d.ConfigFile)
+func (d *DryccCmd) CertsList(appID string, results int) error {
+	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
@@ -25,7 +24,7 @@ func (d *DryccCmd) CertsList(results int) error {
 		results = s.Limit
 	}
 
-	certList, _, err := certs.List(s.Client, results)
+	certList, _, err := certs.List(s.Client, appID, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -55,8 +54,8 @@ func (d *DryccCmd) CertsList(results int) error {
 }
 
 // CertAdd adds a cert to the controller.
-func (d *DryccCmd) CertAdd(cert string, key string, name string) error {
-	s, err := settings.Load(d.ConfigFile)
+func (d *DryccCmd) CertAdd(appID string, cert string, key string, name string) error {
+	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
@@ -64,7 +63,7 @@ func (d *DryccCmd) CertAdd(cert string, key string, name string) error {
 
 	d.Print("Adding SSL endpoint... ")
 	quit := progress(d.WOut)
-	err = d.doCertAdd(s.Client, cert, key, name)
+	err = d.doCertAdd(s.Client, appID, cert, key, name)
 	quit <- true
 	<-quit
 
@@ -76,7 +75,7 @@ func (d *DryccCmd) CertAdd(cert string, key string, name string) error {
 	return nil
 }
 
-func (d *DryccCmd) doCertAdd(c *drycc.Client, cert string, key string, name string) error {
+func (d *DryccCmd) doCertAdd(c *drycc.Client, appID string, cert string, key string, name string) error {
 	certFile, err := os.ReadFile(cert)
 	if err != nil {
 		return err
@@ -87,13 +86,13 @@ func (d *DryccCmd) doCertAdd(c *drycc.Client, cert string, key string, name stri
 		return err
 	}
 
-	_, err = certs.New(c, string(certFile), string(keyFile), name)
+	_, err = certs.New(c, appID, string(certFile), string(keyFile), name)
 	return d.checkAPICompatibility(c, err)
 }
 
 // CertRemove deletes a cert from the controller.
-func (d *DryccCmd) CertRemove(name string) error {
-	s, err := settings.Load(d.ConfigFile)
+func (d *DryccCmd) CertRemove(appID string, name string) error {
+	s, appID, err := load(d.ConfigFile, appID)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -101,7 +100,7 @@ func (d *DryccCmd) CertRemove(name string) error {
 	d.Printf("Removing %s... ", name)
 	quit := progress(d.WOut)
 
-	err = certs.Delete(s.Client, name)
+	err = certs.Delete(s.Client, appID, name)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -113,12 +112,12 @@ func (d *DryccCmd) CertRemove(name string) error {
 }
 
 // CertInfo gets info about certficiate
-func (d *DryccCmd) CertInfo(name string) error {
-	s, err := settings.Load(d.ConfigFile)
+func (d *DryccCmd) CertInfo(appID string, name string) error {
+	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
-	cert, err := certs.Get(s.Client, name)
+	cert, err := certs.Get(s.Client, appID, name)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -142,8 +141,8 @@ func (d *DryccCmd) CertInfo(name string) error {
 }
 
 // CertAttach attaches a certificate to a domain
-func (d *DryccCmd) CertAttach(name, domain string) error {
-	s, err := settings.Load(d.ConfigFile)
+func (d *DryccCmd) CertAttach(appID string, name, domain string) error {
+	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
@@ -152,7 +151,7 @@ func (d *DryccCmd) CertAttach(name, domain string) error {
 	d.Printf("Attaching certificate %s to domain %s... ", name, domain)
 	quit := progress(d.WOut)
 
-	err = certs.Attach(s.Client, name, domain)
+	err = certs.Attach(s.Client, appID, name, domain)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) == nil {
@@ -163,8 +162,8 @@ func (d *DryccCmd) CertAttach(name, domain string) error {
 }
 
 // CertDetach detaches a certificate from a domain
-func (d *DryccCmd) CertDetach(name, domain string) error {
-	s, err := settings.Load(d.ConfigFile)
+func (d *DryccCmd) CertDetach(appID, name, domain string) error {
+	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
@@ -173,7 +172,7 @@ func (d *DryccCmd) CertDetach(name, domain string) error {
 	d.Printf("Detaching certificate %s from domain %s... ", name, domain)
 	quit := progress(d.WOut)
 
-	err = certs.Detach(s.Client, name, domain)
+	err = certs.Detach(s.Client, appID, name, domain)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

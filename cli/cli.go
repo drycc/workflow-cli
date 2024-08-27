@@ -15,7 +15,7 @@ var Shortcuts = map[string]string{
 	"scale":          "pts:scale",
 	"sharing":        "perms:list",
 	"sharing:list":   "perms:list",
-	"sharing:add":    "perms:create",
-	"sharing:remove": "perms:delete",
+	"sharing:add":    "perms:add",
+	"sharing:remove": "perms:remove",
 	"whoami":         "auth:whoami",
 }

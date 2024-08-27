@@ -164,8 +164,6 @@ func TestVolumesClientCp(t *testing.T) {
 	}
 	server.Mux.HandleFunc("/v2/apps/example-go/volumes/*", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		fmt.Println(r.URL.Path)
-		fmt.Println(r.URL.RawQuery)
 		if r.URL.Path == "/v2/apps/example-go/volumes/myvolume/client/" {
 			if r.URL.RawQuery == "path=etc" {
 				fmt.Fprintf(w, `{"results":[],"count":0}`)

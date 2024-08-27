@@ -20,11 +20,11 @@ func (d FakeDryccCmd) ReleasesInfo(string, int) error {
 	return errors.New("releases:info")
 }
 
-func (d FakeDryccCmd) ReleasesDeploy(string, []string, string) error {
+func (d FakeDryccCmd) ReleasesDeploy(string, []string, bool, string) error {
 	return errors.New("releases:deploy")
 }
 
-func (d FakeDryccCmd) ReleasesRollback(string, int) error {
+func (d FakeDryccCmd) ReleasesRollback(string, []string, int) error {
 	return errors.New("releases:rollback")
 }
 

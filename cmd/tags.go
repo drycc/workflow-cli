@@ -9,7 +9,7 @@ import (
 )
 
 // TagsList lists an app's tags.
-func (d *DryccCmd) TagsList(appID, procType string) error {
+func (d *DryccCmd) TagsList(appID, ptype string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -23,12 +23,12 @@ func (d *DryccCmd) TagsList(appID, procType string) error {
 	if len(config.Tags) == 0 {
 		d.Println(fmt.Sprintf("No tags found in %s app.", appID))
 	} else {
-		if tags, ok := config.Tags[procType]; ok {
+		if tags, ok := config.Tags[ptype]; ok {
 			table := d.getDefaultFormatTable([]string{"KEY", "VALUE"})
 			for _, key := range *sortKeys(tags) {
 				table.Append([]string{
 					key,
-					fmt.Sprintf("%v", config.Tags[procType][key]),
+					fmt.Sprintf("%v", config.Tags[ptype][key]),
 				})
 			}
 			table.Render()
@@ -38,7 +38,7 @@ func (d *DryccCmd) TagsList(appID, procType string) error {
 }
 
 // TagsSet sets an app's tags.
-func (d *DryccCmd) TagsSet(appID, procType string, tags []string) error {
+func (d *DryccCmd) TagsSet(appID, ptype string, tags []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -54,7 +54,7 @@ func (d *DryccCmd) TagsSet(appID, procType string, tags []string) error {
 
 	quit := progress(d.WOut)
 	configObj := api.Config{Tags: make(map[string]api.ConfigTags)}
-	configObj.Tags[procType] = tagsMap
+	configObj.Tags[ptype] = tagsMap
 
 	_, err = config.Set(s.Client, appID, configObj)
 	quit <- true
@@ -65,11 +65,11 @@ func (d *DryccCmd) TagsSet(appID, procType string, tags []string) error {
 
 	d.Print("done\n\n")
 
-	return d.TagsList(appID, procType)
+	return d.TagsList(appID, ptype)
 }
 
 // TagsUnset removes an app's tags.
-func (d *DryccCmd) TagsUnset(appID, procType string, tags []string) error {
+func (d *DryccCmd) TagsUnset(appID, ptype string, tags []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -85,7 +85,7 @@ func (d *DryccCmd) TagsUnset(appID, procType string, tags []string) error {
 	for _, tag := range tags {
 		configTags[tag] = nil
 	}
-	configObj.Tags[procType] = configTags
+	configObj.Tags[ptype] = configTags
 
 	_, err = config.Set(s.Client, appID, configObj)
 	quit <- true
@@ -96,7 +96,7 @@ func (d *DryccCmd) TagsUnset(appID, procType string, tags []string) error {
 
 	d.Print("done\n\n")
 
-	return d.TagsList(appID, procType)
+	return d.TagsList(appID, ptype)
 }
 
 func parseTags(tags []string) (map[string]interface{}, error) {

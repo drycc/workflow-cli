@@ -23,7 +23,7 @@ func TestRoutesCreate(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/routes/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.RouteCreateRequest{Name: "example-go", Type: "web", Port: 443, Kind: "HTTPRoute"}, r)
+		testutil.AssertBody(t, api.RouteCreateRequest{Name: "example-go", Ptype: "web", Port: 443, Kind: "HTTPRoute"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.
@@ -59,7 +59,7 @@ func TestRoutesList(t *testing.T) {
             "owner": "test",
             "updated": "2023-04-19T00:00:00UTC",
             "name": "example-go",
-            "procfile_type": "web",
+            "ptype": "web",
             "kind": "HTTPRoute",
             "port": 80,
             "parent_refs": [

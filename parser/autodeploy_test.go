@@ -12,31 +12,19 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) CertsList(string, int) error {
-	return errors.New("certs:list")
+func (d FakeDryccCmd) AutodeployInfo(string) error {
+	return errors.New("autodeploy:info")
 }
 
-func (d FakeDryccCmd) CertAdd(string, string, string, string) error {
-	return errors.New("certs:add")
+func (d FakeDryccCmd) AutodeployEnable(string) error {
+	return errors.New("autodeploy:enable")
 }
 
-func (d FakeDryccCmd) CertRemove(string, string) error {
-	return errors.New("certs:remove")
+func (d FakeDryccCmd) AutodeployDisable(string) error {
+	return errors.New("autodeploy:disable")
 }
 
-func (d FakeDryccCmd) CertInfo(string, string) error {
-	return errors.New("certs:info")
-}
-
-func (d FakeDryccCmd) CertAttach(string, string, string) error {
-	return errors.New("certs:attach")
-}
-
-func (d FakeDryccCmd) CertDetach(string, string, string) error {
-	return errors.New("certs:detach")
-}
-
-func TestCerts(t *testing.T) {
+func TestAutodeploy(t *testing.T) {
 	t.Parallel()
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -54,32 +42,20 @@ func TestCerts(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"certs:list"},
+			args:     []string{"autodeploy:info"},
 			expected: "",
 		},
 		{
-			args:     []string{"certs:add", "name", "cert", "key"},
+			args:     []string{"autodeploy:enable"},
 			expected: "",
 		},
 		{
-			args:     []string{"certs:remove", "name"},
+			args:     []string{"autodeploy:disable"},
 			expected: "",
 		},
 		{
-			args:     []string{"certs:info", "name"},
-			expected: "",
-		},
-		{
-			args:     []string{"certs:attach", "name", "example.com"},
-			expected: "",
-		},
-		{
-			args:     []string{"certs:detach", "name", "example.com"},
-			expected: "",
-		},
-		{
-			args:     []string{"certs"},
-			expected: "certs:list",
+			args:     []string{"autodeploy"},
+			expected: "autodeploy:info",
 		},
 	}
 
@@ -92,7 +68,7 @@ func TestCerts(t *testing.T) {
 		} else {
 			expected = c.expected
 		}
-		err = Certs(c.args, cmdr)
+		err = Autodeploy(c.args, cmdr)
 		assert.Error(t, errors.New(expected), err)
 	}
 }

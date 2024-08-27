@@ -10,22 +10,22 @@ func Perms(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for perms:
 
-perms:codes           list all policy codename
 perms:list            list all user permission
-perms:create          create a user permission
-perms:delete          delete a user permission
+perms:add             create a user permission
+perms:update          update a user permission
+perms:remove          delete a user permission
 
 Use 'drycc help perms:[command]' to learn more.
 `
 
 	switch argv[0] {
-	case "perms:codes":
-		return permsCodes(argv, cmdr)
 	case "perms:list":
 		return permsList(argv, cmdr)
-	case "perms:create":
+	case "perms:add":
 		return permCreate(argv, cmdr)
-	case "perms:delete":
+	case "perms:update":
+		return permUpdate(argv, cmdr)
+	case "perms:remove":
 		return permDelete(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
@@ -42,43 +42,17 @@ Use 'drycc help perms:[command]' to learn more.
 	}
 }
 
-func permsCodes(argv []string, cmdr cmd.Commander) error {
-	usage := `
-List all policy codename.
-
-Usage: drycc perms:codes [options]
-
-Options:
-  -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
-`
-
-	args, err := docopt.ParseArgs(usage, argv, "")
-
-	if err != nil {
-		return err
-	}
-
-	results, err := responseLimit(safeGetString(args, "--limit"))
-
-	if err != nil {
-		return err
-	}
-
-	return cmdr.PermCodes(results)
-}
-
 func permsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-List all user permission.
+List all user permissions.
 
 Usage: drycc perms:list [options]
 
 Options:
-  -c --codename=<codename>
-    filter all user permissions by codename
+  -a --app=<app>
+    the uniquely identifiable name for the application.
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -87,29 +61,29 @@ Options:
 		return err
 	}
 
-	codename := safeGetString(args, "--codename")
 	results, err := responseLimit(safeGetString(args, "--limit"))
 
 	if err != nil {
 		return err
 	}
-
-	return cmdr.PermList(codename, results)
+	app := safeGetString(args, "--app")
+	return cmdr.PermList(app, results)
 }
 
 func permCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Create a user permission.
+Grant permissions to user.
 
-Usage: drycc perms:create <username> <codename> <uniqueid>
+Usage: drycc perms:add <username> <permissions> [options]
 
 Arguments:
   <username>
-    the name of the new user
-  <codename>
-    the object policy codename
-  <uniqueid>
-    the uniquely identifiable name of shared objects, for example: app id or cert name.
+    the name of the user.
+  <permissions>
+	comma-delimited list of permissions (view,change,delete).
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -118,21 +92,52 @@ Arguments:
 		return err
 	}
 
+	app := safeGetString(args, "--app")
 	username := safeGetString(args, "<username>")
-	codename := safeGetString(args, "<codename>")
-	uniqueid := safeGetString(args, "<uniqueid>")
-	return cmdr.PermCreate(codename, uniqueid, username)
+	permissions := safeGetString(args, "<permissions>")
+	return cmdr.PermCreate(app, username, permissions)
+}
+
+func permUpdate(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Update permissions to user.
+
+Usage: drycc perms:update <username> <permissions> [options]
+
+Arguments:
+  <username>
+    the name of the user.
+  <permissions>
+    comma-delimited list of permissions (view,change,delete).
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	app := safeGetString(args, "--app")
+	username := safeGetString(args, "<username>")
+	permissions := safeGetString(args, "<permissions>")
+	return cmdr.PermUpdate(app, username, permissions)
 }
 
 func permDelete(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Delete a user permission.
+Delete a user from the app.
 
-Usage: drycc perms:delete <id>
+Usage: drycc perms:remove <username> [options]
 
 Arguments:
-  <id>
-    the id of the user perm.
+  <username>
+    the name of the user.
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -141,6 +146,7 @@ Arguments:
 		return err
 	}
 
-	id := uint64(safeGetInt(args, "<id>"))
-	return cmdr.PermDelete(id)
+	app := safeGetString(args, "--app")
+	username := safeGetString(args, "<username>")
+	return cmdr.PermDelete(app, username)
 }

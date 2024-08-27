@@ -38,18 +38,18 @@ func (d *DryccCmd) AutoscaleList(appID string) error {
 }
 
 // AutoscaleSet sets autoscale options for the app.
-func (d *DryccCmd) AutoscaleSet(appID string, processType string, min int, max int, CPUPercent int) error {
+func (d *DryccCmd) AutoscaleSet(appID string, ptype string, min int, max int, CPUPercent int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Applying autoscale settings for process type %s on %s... ", processType, appID)
+	d.Printf("Applying autoscale settings for process type %s on %s... ", ptype, appID)
 
 	quit := progress(d.WOut)
 	data := map[string]*api.Autoscale{
-		processType: {
+		ptype: {
 			Min:        min,
 			Max:        max,
 			CPUPercent: CPUPercent,
@@ -69,18 +69,18 @@ func (d *DryccCmd) AutoscaleSet(appID string, processType string, min int, max i
 }
 
 // AutoscaleUnset removes autoscale for the app.
-func (d *DryccCmd) AutoscaleUnset(appID string, processType string) error {
+func (d *DryccCmd) AutoscaleUnset(appID string, ptype string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Removing autoscale for process type %s on %s... ", processType, appID)
+	d.Printf("Removing autoscale for process type %s on %s... ", ptype, appID)
 
 	quit := progress(d.WOut)
 	data := map[string]*api.Autoscale{
-		processType: nil,
+		ptype: nil,
 	}
 	_, err = appsettings.Set(s.Client, appID, api.AppSettings{Autoscale: data})
 
