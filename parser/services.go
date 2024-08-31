@@ -44,22 +44,22 @@ func servicesAdd(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Creates extra service for an application and binds it to specific route of the main app domain
 
-Usage: drycc services:add --type=<type> --protocol=<protocol> --port=<port>:<target_port> [options]
+Usage: drycc services:add <type> <port>:<target> [options]
 
 Arguments:
   <type>
     procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
     only single extra service per Porcfile type could be created
-  <protocol>
-    the IP protocol for this port. Supports TCP, UDP, and SCTP. Default is TCP.
   <port>
     the port that will be exposed by this service.
-  <targetPort>
+  <target>
     number or name of the port to access on the pods targeted by the service.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  --protocol=<protocol>
+    the IP protocol for this port. Supports TCP, UDP, and SCTP. Default is TCP.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -69,9 +69,9 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	procfileType := safeGetString(args, "--type")
+	procfileType := safeGetString(args, "<type>")
 	protocol := safeGetString(args, "--protocol")
-	ports := safeGetString(args, "--port")
+	ports := safeGetString(args, "<port>:<target>")
 	return cmdr.ServicesAdd(app, procfileType, ports, protocol)
 }
 
@@ -101,20 +101,20 @@ func servicesRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Deletes specific extra service for application
 
-Usage: drycc services:remove --type=<type> --protocol=<protocol> --port=<port> [options]
+Usage: drycc services:remove <type> <port> [options]
 
 Arguments:
   <type>
     procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
     Only single extra service per Porcfile type could be created
-  <protocol>
-    the IP protocol for this port. Supports TCP, UDP, and SCTP. Default is TCP.
   <port>
     the port exposed by this service.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  --protocol=<protocol>
+    the IP protocol for this port. Supports TCP, UDP, and SCTP. Default is TCP.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -124,9 +124,9 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	procfileType := safeGetString(args, "--type")
+	procfileType := safeGetString(args, "<type>")
 	protocol := safeGetString(args, "--protocol")
-	port := safeGetInt(args, "--port")
+	port := safeGetInt(args, "<port>")
 
 	return cmdr.ServicesRemove(app, procfileType, protocol, port)
 }
