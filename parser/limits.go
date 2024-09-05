@@ -72,10 +72,10 @@ Sets resource limits for an application.
 A resource limit is a finite resource within a pod which we can apply
 restrictions through Kubernetes.
 
-Usage: drycc limits:set [options] <type>=<value>...
+Usage: drycc limits:set <ptype>=<value>... [options]
 
 Arguments:
-  <type>
+  <ptype>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
   <value>
     The limit plan id to apply to the process type.
@@ -94,7 +94,7 @@ Use 'drycc help [command]' to learn more.
 	}
 
 	app := safeGetString(args, "--app")
-	limits := args["<type>=<value>"].([]string)
+	limits := args["<ptype>=<value>"].([]string)
 	return cmdr.LimitsSet(app, limits)
 }
 
@@ -102,10 +102,10 @@ func limitUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets resource limits for an application.
 
-Usage: drycc limits:unset [options] <type>...
+Usage: drycc limits:unset <ptype>... [options]
 
 Arguments:
-  <type>
+  <ptype>
     the process type as defined in your Procfile, such as 'web' or 'worker'.
 
 Options:
@@ -120,7 +120,7 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	limits := args["<type>"].([]string)
+	limits := args["<ptype>"].([]string)
 
 	return cmdr.LimitsUnset(app, limits)
 }

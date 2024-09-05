@@ -30,9 +30,10 @@ func (d *DryccCmd) TokensList(results int) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-	table := d.getDefaultFormatTable([]string{"OWNER", "ALIAS", "KEY", "CREATE", "UPDATED"})
+	table := d.getDefaultFormatTable([]string{"UUID", "OWNER", "ALIAS", "KEY", "CREATE", "UPDATED"})
 	for _, token := range tokens {
 		table.Append([]string{
+			token.UUID,
 			token.Owner,
 			safeGetString(token.Alias),
 			token.Key,

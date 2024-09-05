@@ -136,10 +136,10 @@ func TestParsePsTargets(t *testing.T) {
 	t.Parallel()
 
 	cases := []psTargetCases{
-		{[]string{"test"}, true, nil, "'test' does not match the pattern 'type=num', ex: web=2"},
-		{[]string{"test=a"}, true, nil, "'test=a' does not match the pattern 'type=num', ex: web=2"},
-		{[]string{"test="}, true, nil, "'test=' does not match the pattern 'type=num', ex: web=2"},
-		{[]string{"Test=2"}, true, nil, "'Test=2' does not match the pattern 'type=num', ex: web=2"},
+		{[]string{"test"}, true, nil, "'test' does not match the pattern 'ptype=num', ex: web=2"},
+		{[]string{"test=a"}, true, nil, "'test=a' does not match the pattern 'ptype=num', ex: web=2"},
+		{[]string{"test="}, true, nil, "'test=' does not match the pattern 'ptype=num', ex: web=2"},
+		{[]string{"Test=2"}, true, nil, "'Test=2' does not match the pattern 'ptype=num', ex: web=2"},
 		{[]string{"test=2"}, false, map[string]int{"test": 2}, ""},
 		{[]string{"test-proc=2"}, false, map[string]int{"test-proc": 2}, ""},
 		{[]string{"test1=2"}, false, map[string]int{"test1": 2}, ""},

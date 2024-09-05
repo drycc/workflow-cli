@@ -66,7 +66,7 @@ Sets labels for an application.
 A label is a key/value pair used to label an application. This label is a general information for drycc user.
 Mostly used for administration/maintenance information, note for application. This information isn't send to scheduler.
 
-Usage: drycc labels:set [options] <key>=<value>...
+Usage: drycc labels:set <key>=<value>... [options]
 
 Arguments:
   <key> the label key, for example: "git_repo" or "team"
@@ -92,7 +92,7 @@ func labelsUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets labels for an application.
 
-Usage: drycc labels:unset [options] <key>...
+Usage: drycc labels:unset <key>... [options]
 
 Arguments:
   <key> the label key to unset, for example: "git_repo" or "team"

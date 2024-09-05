@@ -93,10 +93,10 @@ func TestParsePtsTargets(t *testing.T) {
 	t.Parallel()
 
 	cases := []ptsTargetCases{
-		{[]string{"test"}, true, nil, "'test' does not match the pattern 'type=num', ex: web=2"},
-		{[]string{"test=a"}, true, nil, "'test=a' does not match the pattern 'type=num', ex: web=2"},
-		{[]string{"test="}, true, nil, "'test=' does not match the pattern 'type=num', ex: web=2"},
-		{[]string{"Test=2"}, true, nil, "'Test=2' does not match the pattern 'type=num', ex: web=2"},
+		{[]string{"test"}, true, nil, "'test' does not match the pattern 'ptype=num', ex: web=2"},
+		{[]string{"test=a"}, true, nil, "'test=a' does not match the pattern 'ptype=num', ex: web=2"},
+		{[]string{"test="}, true, nil, "'test=' does not match the pattern 'ptype=num', ex: web=2"},
+		{[]string{"Test=2"}, true, nil, "'Test=2' does not match the pattern 'ptype=num', ex: web=2"},
 		{[]string{"test=2"}, false, map[string]int{"test": 2}, ""},
 		{[]string{"test-proc=2"}, false, map[string]int{"test-proc": 2}, ""},
 		{[]string{"test1=2"}, false, map[string]int{"test1": 2}, ""},
@@ -123,7 +123,7 @@ func TestPtsScale(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 	err = cmdr.PtsScale("foo", []string{"test"})
-	assert.Equal(t, err.Error(), "'test' does not match the pattern 'type=num', ex: web=2", "error")
+	assert.Equal(t, err.Error(), "'test' does not match the pattern 'ptype=num', ex: web=2", "error")
 
 	server.Mux.HandleFunc("/v2/apps/foo/ptypes/scale/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.AssertBody(t, map[string]int{"web": 1}, r)

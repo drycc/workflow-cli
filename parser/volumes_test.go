@@ -21,7 +21,7 @@ func (d FakeDryccCmd) VolumesInfo(string, string) error {
 }
 
 func (d FakeDryccCmd) VolumesCreate(string, string, string, string, map[string]interface{}) error {
-	return errors.New("volumes:create")
+	return errors.New("volumes:add")
 }
 
 func (d FakeDryccCmd) VolumesExpand(string, string, string) error {
@@ -29,7 +29,7 @@ func (d FakeDryccCmd) VolumesExpand(string, string, string) error {
 }
 
 func (d FakeDryccCmd) VolumesDelete(string, string) error {
-	return errors.New("volumes:delete")
+	return errors.New("volumes:remove")
 }
 
 func (d FakeDryccCmd) VolumesClient(string, string, ...string) error {
@@ -62,7 +62,7 @@ func TestVolumes(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"volumes:create", "myvolume", "500G"},
+			args:     []string{"volumes:add", "myvolume", "500G"},
 			expected: "",
 		},
 		{
@@ -74,7 +74,7 @@ func TestVolumes(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"volumes:delete", "myvolume"},
+			args:     []string{"volumes:remove", "myvolume"},
 			expected: "",
 		},
 		{

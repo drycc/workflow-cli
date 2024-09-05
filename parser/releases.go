@@ -117,6 +117,8 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  -f --force
+    force deploy.
   --confirm=yes
     To proceed, type "yes".
 `
@@ -129,17 +131,20 @@ Options:
 
 	apps := safeGetString(args, "--app")
 	confirm := safeGetString(args, "--confirm")
-	return cmdr.ReleasesDeploy(apps, args["<ptype>"].([]string), confirm)
+	force := args["--force"].(bool)
+	return cmdr.ReleasesDeploy(apps, args["<ptype>"].([]string), force, confirm)
 }
 
 func releasesRollback(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Rolls back to a previous application release.
 
-Usage: drycc releases:rollback [<version>] [options]
+Usage: drycc releases:rollback [<ptype>...] [<version>] [options]
 
 Arguments:
-  <version>
+<ptype>
+    the process name as defined in your Procfile, such as 'web'.
+<version>
     the release of the application, such as 'v1'.
 
 Options:
@@ -166,7 +171,7 @@ Options:
 
 	app := safeGetString(args, "--app")
 
-	return cmdr.ReleasesRollback(app, version)
+	return cmdr.ReleasesRollback(app, args["<ptype>"].([]string), version)
 }
 
 func versionFromString(version string) (int, error) {

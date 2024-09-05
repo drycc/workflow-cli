@@ -28,7 +28,7 @@ func (d *DryccCmd) DomainsList(appID string, results int) error {
 			table.Append([]string{
 				domain.App,
 				domain.Owner,
-				domain.ProcfileType,
+				domain.Ptype,
 				d.formatTime(domain.Created),
 				d.formatTime(domain.Updated),
 				domain.Domain,
@@ -42,7 +42,7 @@ func (d *DryccCmd) DomainsList(appID string, results int) error {
 }
 
 // DomainsAdd adds a domain to an app.
-func (d *DryccCmd) DomainsAdd(appID, domain, procfileType string) error {
+func (d *DryccCmd) DomainsAdd(appID, domain, ptype string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -52,7 +52,7 @@ func (d *DryccCmd) DomainsAdd(appID, domain, procfileType string) error {
 	d.Printf("Adding %s to %s... ", domain, appID)
 
 	quit := progress(d.WOut)
-	_, err = domains.New(s.Client, appID, domain, procfileType)
+	_, err = domains.New(s.Client, appID, domain, ptype)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

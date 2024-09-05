@@ -54,8 +54,8 @@ Usage: drycc config:list [options]
 Options:
   -a --app=<app>
     the application that you wish to listed.
-  --type=<type>
-    the procType for which the config needs to be listed.
+  --ptype=<ptype>
+    the ptype for which the config needs to be listed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -64,8 +64,8 @@ Options:
 		return err
 	}
 	app := safeGetString(args, "--app")
-	procType := safeGetString(args, "--type")
-	return cmdr.ConfigList(app, procType)
+	ptype := safeGetString(args, "--ptype")
+	return cmdr.ConfigList(app, ptype)
 }
 
 func configSet(argv []string, cmdr cmd.Commander) error {
@@ -83,8 +83,8 @@ Arguments:
 Options:
   -a --app=<app>
     the application that you wish to set.
-  --type=<type>
-    the procType for which the config needs to be set.
+  --ptype=<ptype>
+    the ptype for which the config needs to be set.
   --confirm=yes
     To proceed, type "yes".
 `
@@ -96,9 +96,9 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	procType := safeGetString(args, "--type")
+	ptype := safeGetString(args, "--ptype")
 	confirm := safeGetString(args, "--confirm")
-	return cmdr.ConfigSet(app, procType, args["<var>=<value>"].([]string), confirm)
+	return cmdr.ConfigSet(app, ptype, args["<var>=<value>"].([]string), confirm)
 }
 
 func configUnset(argv []string, cmdr cmd.Commander) error {
@@ -114,8 +114,8 @@ Arguments:
 Options:
   -a --app=<app>
     the application that you wish to unset.
-  --type=<type>
-    the procType for which the config needs to be unset.
+  --ptype=<ptype>
+    the ptype for which the config needs to be unset.
   --confirm=yes
     To proceed, type "yes".
 `
@@ -126,9 +126,9 @@ Options:
 		return err
 	}
 	app := safeGetString(args, "--app")
-	procType := safeGetString(args, "--type")
+	ptype := safeGetString(args, "--ptype")
 	confirm := safeGetString(args, "--confirm")
-	return cmdr.ConfigUnset(app, procType, args["<key>"].([]string), confirm)
+	return cmdr.ConfigUnset(app, ptype, args["<key>"].([]string), confirm)
 }
 
 func configPull(argv []string, cmdr cmd.Commander) error {
@@ -144,8 +144,8 @@ Usage: drycc config:pull [options]
 Options:
   -a --app=<app>
     the application that you wish to pull.
-  --type=<type>
-    the procType for which the config needs to be pull.
+  --ptype=<ptype>
+    the ptype for which the config needs to be pull.
   --path=<path>
     a path leading to an environment file [default: .env]
   -i --interactive
@@ -161,12 +161,12 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	procType := safeGetString(args, "--type")
+	ptype := safeGetString(args, "--ptype")
 	path := safeGetValue(args, "--path", ".env")
 	interactive := args["--interactive"].(bool)
 	overwrite := args["--overwrite"].(bool)
 
-	return cmdr.ConfigPull(app, procType, path, interactive, overwrite)
+	return cmdr.ConfigPull(app, ptype, path, interactive, overwrite)
 }
 
 func configPush(argv []string, cmdr cmd.Commander) error {
@@ -182,8 +182,8 @@ Usage: drycc config:push [options]
 Options:
   -a --app=<app>
     the application that you wish to push.
-  --type=<type>
-    the procType for which the config needs to be push.
+  --ptype=<ptype>
+    the ptype for which the config needs to be push.
   --path=<path>
     a path leading to an environment file [default: .env]
   --confirm=yes
@@ -197,8 +197,8 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	procType := safeGetString(args, "--type")
+	ptype := safeGetString(args, "--ptype")
 	path := safeGetValue(args, "--path", ".env")
 	confirm := safeGetString(args, "--confirm")
-	return cmdr.ConfigPush(app, procType, path, confirm)
+	return cmdr.ConfigPush(app, ptype, path, confirm)
 }

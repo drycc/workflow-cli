@@ -67,11 +67,34 @@ func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 	}
 	table.Append([]string{"Version:", fmt.Sprintf("v%v", r.Version)})
 	table.Render()
+	// Conditions
+	if len(r.Conditions) != 0 {
+		// table event
+		te := d.getDefaultFormatTable([]string{})
+		te.Append([]string{"Conditions:"})
+		for _, c := range r.Conditions {
+			ptypes := "<none>"
+			if len(c.Ptypes) != 0 {
+				ptypes = strings.Join(c.Ptypes, ",")
+			}
+			exception := "<none>"
+			if c.Exception != "" {
+				exception = c.Exception
+			}
+
+			te.Append([]string{"  - created:", d.formatTime(c.Created)})
+			te.Append([]string{"    state:", c.State})
+			te.Append([]string{"    action:", c.Action})
+			te.Append([]string{"    ptypes:", d.wrapString(ptypes)})
+			te.Append([]string{"    exception:", d.wrapString(exception)})
+		}
+		te.Render()
+	}
 	return nil
 }
 
 // ReleasesDeploy force deploy lastest release.
-func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, confirm string) error {
+func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, force bool, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -92,8 +115,9 @@ func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, confirm string
 	startTime := time.Now()
 	quit := progress(d.WOut)
 	ptypes := strings.Join(targets, ",")
-	targetMap := map[string]string{
+	targetMap := map[string]interface{}{
 		"ptypes": ptypes,
+		"force":  force,
 	}
 	err = releases.Deploy(s.Client, appID, targetMap)
 	quit <- true
@@ -107,13 +131,13 @@ func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, confirm string
 }
 
 // ReleasesRollback rolls an app back to a previous release.
-func (d *DryccCmd) ReleasesRollback(appID string, version int) error {
+func (d *DryccCmd) ReleasesRollback(appID string, targets []string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
-
+	ptypes := strings.Join(targets, ",")
 	if version == -1 {
 		d.Print("Rolling back one release... ")
 	} else {
@@ -121,7 +145,7 @@ func (d *DryccCmd) ReleasesRollback(appID string, version int) error {
 	}
 
 	quit := progress(d.WOut)
-	newVersion, err := releases.Rollback(s.Client, appID, version)
+	newVersion, err := releases.Rollback(s.Client, appID, ptypes, version)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

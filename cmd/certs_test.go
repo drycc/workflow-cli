@@ -22,14 +22,15 @@ func TestCertsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 4,
 			"next": null,
 			"previous": null,
 			"results": [
-				{
+				{	
+					"app": "foo",
 					"name": "test-example-com",
 					"common_name": "test.example.com",
 					"san": [
@@ -46,6 +47,7 @@ func TestCertsList(t *testing.T) {
 					"fingerprint": "12:34:56:78:90"
 				},
 				{
+					"app": "foo",
 					"name": "test-drycc-com",
 					"common_name": "test.drycc.com",
 					"created": "2016-06-09T00:00:00UTC",
@@ -54,11 +56,13 @@ func TestCertsList(t *testing.T) {
 					"fingerprint": "ab:12:ab:12:ab"
 				},
 				{
+					"app": "foo",
 					"name": "test1",
 					"common_name": "1.test.drycc.com",
 					"expires": "2016-06-11T00:00:00UTC"
 				},
 				{
+					"app": "foo",
 					"name": "test2",
 					"common_name": "2.test.drycc.com",
 					"expires": "2018-01-01T00:00:00UTC"
@@ -67,7 +71,7 @@ func TestCertsList(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.CertsList(-1)
+	err = cmdr.CertsList("foo", -1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `NAME                COMMON-NAME         EXPIRES        SAN                     DOMAINS              
@@ -86,7 +90,7 @@ test2               2.test.drycc.com    1 Jan 2018     <none>                  <
 	cmdr.ConfigFile = cf
 	b.Reset()
 
-	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 0,
@@ -96,7 +100,7 @@ test2               2.test.drycc.com    1 Jan 2018     <none>                  <
 		}`)
 	})
 
-	err = cmdr.CertsList(-1)
+	err = cmdr.CertsList("foo", -1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), "No certs\n", "output")
@@ -112,7 +116,7 @@ func TestCertsListLimit(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"count": 4,
@@ -141,7 +145,7 @@ func TestCertsListLimit(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.CertsList(1)
+	err = cmdr.CertsList("foo", 1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `NAME                COMMON-NAME         EXPIRES        SAN                               DOMAINS                        
@@ -160,9 +164,10 @@ func TestCertsInfo(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/test-example-com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
+			"app": "foo",
 			"name": "test-example-com",
 			"owner": "admin",
 			"issuer": "testca",
@@ -184,7 +189,7 @@ func TestCertsInfo(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.CertInfo("test-example-com")
+	err = cmdr.CertInfo("foo", "test-example-com")
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `Name:                 test-example-com        
 Common Name(s):       test.drycc.com          
@@ -201,7 +206,7 @@ Created:              2016-06-09T00:00:00Z
 Updated:              2016-06-09T00:00:00Z    
 `, "output")
 
-	server.Mux.HandleFunc("/v2/certs/test-drycc-com", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/test-drycc-com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
 			"name": "test-drycc-com"
@@ -209,7 +214,7 @@ Updated:              2016-06-09T00:00:00Z
 	})
 	b.Reset()
 
-	err = cmdr.CertInfo("test-drycc-com")
+	err = cmdr.CertInfo("foo", "test-drycc-com")
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `Name:                 test-drycc-com    
 Common Name(s):       <none>            
@@ -237,12 +242,12 @@ func TestCertsRemove(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/test-example-com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err = cmdr.CertRemove("test-example-com")
+	err = cmdr.CertRemove("foo", "test-example-com")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Removing test-example-com... done\n", "output")
@@ -258,13 +263,13 @@ func TestCertsAttach(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com/domain/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/test-example-com/domain/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CertAttachRequest{Domain: "drycc.com"}, r)
 		w.WriteHeader(http.StatusCreated)
 	})
 
-	err = cmdr.CertAttach("test-example-com", "drycc.com")
+	err = cmdr.CertAttach("foo", "test-example-com", "drycc.com")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Attaching certificate test-example-com to domain drycc.com... done\n", "output")
@@ -280,12 +285,12 @@ func TestCertsDetach(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/test-example-com/domain/drycc.com", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/test-example-com/domain/drycc.com", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err = cmdr.CertDetach("test-example-com", "drycc.com")
+	err = cmdr.CertDetach("foo", "test-example-com", "drycc.com")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Detaching certificate test-example-com from domain drycc.com... done\n", "output")
@@ -301,7 +306,7 @@ func TestCertsAdd(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/certs/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/certs/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CertCreateRequest{Certificate: "cert", Key: "key", Name: "testcert"}, r)
 		w.WriteHeader(http.StatusCreated)
@@ -320,7 +325,7 @@ func TestCertsAdd(t *testing.T) {
 	assert.NoError(t, err)
 	certFile.Close()
 
-	err = cmdr.CertAdd(certFile.Name(), keyFile.Name(), "testcert")
+	err = cmdr.CertAdd("foo", certFile.Name(), keyFile.Name(), "testcert")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Adding SSL endpoint... done\n", "output")

@@ -10,7 +10,7 @@ func Routes(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for routes:
 
-routes:create        create a route for an application
+routes:add        create a route for an application
 routes:list          list application routes
 routes:get           get rule of route
 routes:set           set rule of route
@@ -22,7 +22,7 @@ Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
-	case "routes:create":
+	case "routes:add":
 		return routesCreate(argv, cmdr)
 	case "routes:list":
 		return routesList(argv, cmdr)
@@ -55,12 +55,12 @@ func routesCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Creates routes for an application, provides a way to route requests
 
-Usage: drycc routes:create <name> --type=<type> --kind=<kind> --port=<port> [options]
+Usage: drycc routes:add <name> --ptype=<ptype> --kind=<kind> --port=<port> [options]
 
 Arguments:
   <name>
     the route name.
-  <type>
+  <ptype>
     the process type needs to create route.
   <kind>
     the route kind. Supports HTTPRoute, TCPRoute, UDPRoute, GRPCRoute, and TLSRoute.
@@ -80,11 +80,11 @@ Options:
 
 	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
-	procType := safeGetString(args, "--type")
+	ptype := safeGetString(args, "--ptype")
 	kind := safeGetString(args, "--kind")
 	port := safeGetInt(args, "--port")
 
-	return cmdr.RoutesCreate(app, name, procType, kind, port)
+	return cmdr.RoutesCreate(app, name, ptype, kind, port)
 }
 
 func routesList(argv []string, cmdr cmd.Commander) error {

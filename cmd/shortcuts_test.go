@@ -19,9 +19,9 @@ rollback -> releases:rollback
 run -> apps:run
 scale -> pts:scale
 sharing -> perms:list
-sharing:add -> perms:create
+sharing:add -> perms:add
 sharing:list -> perms:list
-sharing:remove -> perms:delete
+sharing:remove -> perms:remove
 whoami -> auth:whoami
 `
 	actual := sortShortcuts()

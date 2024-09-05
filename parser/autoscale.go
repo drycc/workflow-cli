@@ -63,10 +63,10 @@ func autoscaleSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Set autoscale option per process type for an app.
 
-Usage: drycc autoscale:set <process-type> --min=<min> --max=<max> --cpu-percent=<percent> [options]
+Usage: drycc autoscale:set <ptype> --min=<min> --max=<max> --cpu-percent=<percent> [options]
 
 Arguments:
-  <process-type>
+  <ptype>
     the process type to add to the application's autoscale settings.
   --min=<min>
 	minimum replicas to keep around
@@ -86,23 +86,23 @@ Options:
 		return err
 	}
 
-	processType := args["<process-type>"].(string)
+	ptype := args["<ptype>"].(string)
 	app := safeGetString(args, "--app")
 	min := safeGetInt(args, "--min")
 	max := safeGetInt(args, "--max")
 	CPUPercent := safeGetInt(args, "--cpu-percent")
 
-	return cmdr.AutoscaleSet(app, processType, min, max, CPUPercent)
+	return cmdr.AutoscaleSet(app, ptype, min, max, CPUPercent)
 }
 
 func autoscaleUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unset autoscale per process type for an app.
 
-Usage: drycc autoscale:unset <process-type> [options]
+Usage: drycc autoscale:unset <ptype> [options]
 
 Arguments:
-  <process-type>
+  <ptype>
     the process type to remove from the application's autoscale settings.
 
 Options:
@@ -116,8 +116,8 @@ Options:
 		return err
 	}
 
-	processType := args["<process-type>"].(string)
+	ptype := args["<ptype>"].(string)
 	app := safeGetString(args, "--app")
 
-	return cmdr.AutoscaleUnset(app, processType)
+	return cmdr.AutoscaleUnset(app, ptype)
 }

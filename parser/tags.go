@@ -60,7 +60,7 @@ Options:
 		return err
 	}
 
-	ptype := safeGetString(args, "--ptype")
+	ptype := safeGetString(args, "<ptype>")
 	appName := safeGetString(args, "--app")
 
 	return cmdr.TagsList(appName, ptype)
@@ -93,7 +93,7 @@ Options:
 	if err != nil {
 		return err
 	}
-	ptype := safeGetString(args, "--ptype")
+	ptype := safeGetString(args, "<ptype>")
 	app := safeGetString(args, "--app")
 	tags := args["<key>=<value>"].([]string)
 
@@ -121,7 +121,7 @@ Options:
 	if err != nil {
 		return err
 	}
-	ptype := safeGetString(args, "--ptype")
+	ptype := safeGetString(args, "<ptype>")
 	app := safeGetString(args, "--app")
 	tags := args["<key>"].([]string)
 

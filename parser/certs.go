@@ -55,6 +55,8 @@ Show certificate information for an SSL application.
 Usage: drycc certs:list [options]
 
 Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
   -l --limit=<num>
     the maximum number of results to display, defaults to config setting
 `
@@ -68,8 +70,8 @@ Options:
 	if err != nil {
 		return err
 	}
-
-	return cmdr.CertsList(results)
+	app := safeGetString(args, "--app")
+	return cmdr.CertsList(app, results)
 }
 
 func certAdd(argv []string, cmdr cmd.Commander) error {
@@ -87,6 +89,8 @@ Arguments:
     The private key of the SSL certificate.
 
 Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -97,8 +101,8 @@ Options:
 	name := args["<name>"].(string)
 	cert := args["<cert>"].(string)
 	key := args["<key>"].(string)
-
-	return cmdr.CertAdd(cert, key, name)
+	app := safeGetString(args, "--app")
+	return cmdr.CertAdd(app, cert, key, name)
 }
 
 func certRemove(argv []string, cmdr cmd.Commander) error {
@@ -112,14 +116,17 @@ Arguments:
     the name of the cert to remove from the app.
 
 Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
-
-	return cmdr.CertRemove(safeGetString(args, "<name>"))
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
+	return cmdr.CertRemove(app, name)
 }
 
 func certInfo(argv []string, cmdr cmd.Commander) error {
@@ -133,14 +140,17 @@ Arguments:
     the name of the cert to get information from
 
 Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
-
-	return cmdr.CertInfo(safeGetString(args, "<name>"))
+	app := safeGetString(args, "--app")
+	name := safeGetString(args, "<name>")
+	return cmdr.CertInfo(app, name)
 }
 
 func certAttach(argv []string, cmdr cmd.Commander) error {
@@ -156,16 +166,18 @@ Arguments:
     common name of the domain to attach to (needs to already be in the system)
 
 Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
-
+	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
 	domain := safeGetString(args, "<domain>")
-	return cmdr.CertAttach(name, domain)
+	return cmdr.CertAttach(app, name, domain)
 }
 
 func certDetach(argv []string, cmdr cmd.Commander) error {
@@ -181,14 +193,16 @@ Arguments:
     common name of the domain to detach from
 
 Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {
 		return err
 	}
-
+	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
 	domain := safeGetString(args, "<domain>")
-	return cmdr.CertDetach(name, domain)
+	return cmdr.CertDetach(app, name, domain)
 }

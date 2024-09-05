@@ -19,6 +19,9 @@ type Commander interface {
 	AppRun(string, string, []string, uint32, uint32) error
 	AppDestroy(string, string) error
 	AppTransfer(string, string) error
+	AutodeployInfo(string) error
+	AutodeployEnable(string) error
+	AutodeployDisable(string) error
 	AutorollbackInfo(string) error
 	AutorollbackEnable(string) error
 	AutorollbackDisable(string) error
@@ -33,12 +36,12 @@ type Commander interface {
 	TokensRemove(string, string) error
 	BuildsList(string, int) error
 	BuildsCreate(string, string, string, string, string) error
-	CertsList(int) error
-	CertAdd(string, string, string) error
-	CertRemove(string) error
-	CertInfo(string) error
-	CertAttach(string, string) error
-	CertDetach(string, string) error
+	CertsList(string, int) error
+	CertAdd(string, string, string, string) error
+	CertRemove(string, string) error
+	CertInfo(string, string) error
+	CertAttach(string, string, string) error
+	CertDetach(string, string, string) error
 	ConfigList(string, string) error
 	ConfigSet(string, string, []string, string) error
 	ConfigUnset(string, string, []string, string) error
@@ -79,10 +82,10 @@ type Commander interface {
 	TimeoutsList(string) error
 	TimeoutsSet(string, []string) error
 	TimeoutsUnset(string, []string) error
-	PermCodes(int) error
 	PermList(string, int) error
 	PermCreate(string, string, string) error
-	PermDelete(uint64) error
+	PermUpdate(string, string, string) error
+	PermDelete(string, string) error
 	PsList(string, int) error
 	PsLogs(string, string, int, bool, string) error
 	PsExec(string, string, bool, bool, []string) error
@@ -97,8 +100,8 @@ type Commander interface {
 	RegistryUnset(string, []string) error
 	ReleasesList(string, int) error
 	ReleasesInfo(string, int) error
-	ReleasesDeploy(string, []string, string) error
-	ReleasesRollback(string, int) error
+	ReleasesDeploy(string, []string, bool, string) error
+	ReleasesRollback(string, []string, int) error
 	RoutingInfo(string) error
 	RoutingEnable(string) error
 	RoutingDisable(string) error

@@ -48,6 +48,7 @@ Auth commands, use 'drycc help auth' to learn more:
 Subcommands, use 'drycc help [subcommand]' to learn more:
 
   apps          manage applications used to provide services
+  autodeploy    manage autodeploy if or not for applications 
   autorollback  manage autorollback if or not for applications 
   autoscale     manage autoscale for applications
   builds        manage builds created using 'git push'
@@ -118,6 +119,8 @@ Use 'git push drycc main' to deploy to an application.
 		err = parser.Apps(argv, &cmdr)
 	case "auth":
 		err = parser.Auth(argv, &cmdr)
+	case "autodeploy":
+		err = parser.Autodeploy(argv, &cmdr)
 	case "autorollback":
 		err = parser.Autorollback(argv, &cmdr)
 	case "autoscale":

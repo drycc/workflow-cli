@@ -10,12 +10,14 @@ import (
 	"runtime"
 	"strings"
 
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
+	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/config"
 )
 
 // ConfigList lists an app's config.
-func (d *DryccCmd) ConfigList(appID string, procType string) error {
+func (d *DryccCmd) ConfigList(appID string, ptype string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -26,8 +28,8 @@ func (d *DryccCmd) ConfigList(appID string, procType string) error {
 	}
 
 	configValues := config.Values
-	if procType != "" {
-		configValues = config.TypedValues[procType]
+	if ptype != "" {
+		configValues = config.TypedValues[ptype]
 	}
 
 	keys := *sortKeys(configValues)
@@ -41,7 +43,7 @@ func (d *DryccCmd) ConfigList(appID string, procType string) error {
 	}
 
 	// common config
-	if procType != "" {
+	if ptype != "" {
 		table.Append([]string{"--- Common Config:"})
 		configValues = config.Values
 		keys = *sortKeys(configValues)
@@ -57,14 +59,14 @@ func (d *DryccCmd) ConfigList(appID string, procType string) error {
 }
 
 // ConfigSet sets an app's config variables.
-func (d *DryccCmd) ConfigSet(appID string, procType string, configVars []string, confirm string) error {
+func (d *DryccCmd) ConfigSet(appID string, ptype string, configVars []string, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	err = configConfirmAction(procType, confirm)
+	err = configConfirmAction(s.Client, appID, ptype, confirm)
 	if err != nil {
 		return err
 	}
@@ -96,8 +98,8 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 
 	quit := progress(d.WOut)
 	configObj, err := config.Set(s.Client, appID, func() api.Config {
-		if procType != "" {
-			return api.Config{TypedValues: map[string]api.ConfigValues{procType: configMap}}
+		if ptype != "" {
+			return api.Config{TypedValues: map[string]api.ConfigValues{ptype: configMap}}
 		}
 		return api.Config{Values: configMap}
 	}())
@@ -113,18 +115,18 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 		d.Print("done\n\n")
 	}
 
-	return d.ConfigList(appID, procType)
+	return d.ConfigList(appID, ptype)
 }
 
 // ConfigUnset removes a config variable from an app.
-func (d *DryccCmd) ConfigUnset(appID string, procType string, configVars []string, confirm string) error {
+func (d *DryccCmd) ConfigUnset(appID string, ptype string, configVars []string, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	err = configConfirmAction(procType, confirm)
+	err = configConfirmAction(s.Client, appID, ptype, confirm)
 	if err != nil {
 		return err
 	}
@@ -144,8 +146,8 @@ func (d *DryccCmd) ConfigUnset(appID string, procType string, configVars []strin
 	configObj.Values = valuesMap
 
 	configObj, err = config.Set(s.Client, appID, func() api.Config {
-		if procType != "" {
-			return api.Config{TypedValues: map[string]api.ConfigValues{procType: valuesMap}}
+		if ptype != "" {
+			return api.Config{TypedValues: map[string]api.ConfigValues{ptype: valuesMap}}
 		}
 		return api.Config{Values: valuesMap}
 	}())
@@ -162,11 +164,11 @@ func (d *DryccCmd) ConfigUnset(appID string, procType string, configVars []strin
 		d.Print("done\n\n")
 	}
 
-	return d.ConfigList(appID, procType)
+	return d.ConfigList(appID, ptype)
 }
 
 // ConfigPull pulls an app's config to a file.
-func (d *DryccCmd) ConfigPull(appID, procType, fileName string, interactive bool, overwrite bool) error {
+func (d *DryccCmd) ConfigPull(appID, ptype, fileName string, interactive bool, overwrite bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -184,8 +186,8 @@ func (d *DryccCmd) ConfigPull(appID, procType, fileName string, interactive bool
 		return err
 	}
 	configValues := configVars.Values
-	if procType != "" {
-		configValues = configVars.TypedValues[procType]
+	if ptype != "" {
+		configValues = configVars.TypedValues[ptype]
 	}
 
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
@@ -232,17 +234,21 @@ func (d *DryccCmd) ConfigPull(appID, procType, fileName string, interactive bool
 }
 
 // ConfigPush pushes an app's config from a file.
-func (d *DryccCmd) ConfigPush(appID, procType string, fileName string, confirm string) error {
+func (d *DryccCmd) ConfigPush(appID, ptype string, fileName string, confirm string) error {
 	stat, err := os.Stdin.Stat()
 
 	if err != nil {
 		return err
 	}
-
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
 	var contents []byte
 
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		err = configConfirmActionStdin(procType, confirm)
+
+		err = configConfirmActionStdin(s.Client, appID, ptype, confirm)
 		if err != nil {
 			return err
 		}
@@ -250,7 +256,7 @@ func (d *DryccCmd) ConfigPush(appID, procType string, fileName string, confirm s
 		buffer.ReadFrom(os.Stdin)
 		contents = buffer.Bytes()
 	} else {
-		err = configConfirmAction(procType, confirm)
+		err = configConfirmAction(s.Client, appID, ptype, confirm)
 		if err != nil {
 			return err
 		}
@@ -273,7 +279,7 @@ func (d *DryccCmd) ConfigPush(appID, procType string, fileName string, confirm s
 		}
 	}
 
-	return d.ConfigSet(appID, procType, config, "yes")
+	return d.ConfigSet(appID, ptype, config, "yes")
 }
 
 func parseConfig(configVars []string) (api.ConfigValues, error) {
@@ -339,8 +345,13 @@ func formatConfig(configVars map[string]interface{}) string {
 	return formattedConfig
 }
 
-func configConfirmAction(procType string, confirm string) error {
-	if procType == "" && (confirm == "" || confirm != "yes") {
+func configConfirmAction(s *drycc.Client, appID string, ptype string, confirm string) error {
+	appSettings, _ := appsettings.List(s, appID)
+	autodeploy := true
+	if appSettings.Autodeploy != nil && !*appSettings.Autodeploy {
+		autodeploy = false
+	}
+	if ptype == "" && (confirm == "" || confirm != "yes") && autodeploy {
 		fmt.Printf(` !    WARNING: Potentially Config Action
  !    This command will deploy all processes of the application
  !    To proceed, type "yes" !
@@ -355,7 +366,7 @@ func configConfirmAction(procType string, confirm string) error {
 	return nil
 }
 
-func configConfirmActionStdin(procType string, confirm string) error {
+func configConfirmActionStdin(s *drycc.Client, appID string, ptype string, confirm string) error {
 	var reader *bufio.Reader
 	if runtime.GOOS == "windows" {
 		reader = bufio.NewReader(os.Stdin)
@@ -367,8 +378,12 @@ func configConfirmActionStdin(procType string, confirm string) error {
 		defer file.Close()
 		reader = bufio.NewReader(file)
 	}
-
-	if procType == "" && (confirm == "" || confirm != "yes") {
+	appSettings, _ := appsettings.List(s, appID)
+	autodeploy := true
+	if appSettings.Autodeploy != nil && !*appSettings.Autodeploy {
+		autodeploy = false
+	}
+	if ptype == "" && (confirm == "" || confirm != "yes") && autodeploy {
 		fmt.Printf(` !    WARNING: Potentially Config Action
  !    This command will deploy all processes of the application
  !    To proceed, type "yes" !

@@ -8,7 +8,7 @@ import (
 	"github.com/drycc/controller-sdk-go/config"
 )
 
-func getHealthcheckString(procType, probeType string, healthcheck *api.Healthcheck) string {
+func getHealthcheckString(ptype, probeType string, healthcheck *api.Healthcheck) string {
 	params := fmt.Sprintf(
 		"delay=%ds timeout=%ds period=%ds #success=%d #failure=%d",
 		healthcheck.InitialDelaySeconds,
@@ -19,14 +19,14 @@ func getHealthcheckString(procType, probeType string, healthcheck *api.Healthche
 	)
 
 	if healthcheck.Exec != nil {
-		return fmt.Sprintf("%s %s exec %v %s", probeType, procType, healthcheck.Exec.Command, params)
+		return fmt.Sprintf("%s %s exec %v %s", probeType, ptype, healthcheck.Exec.Command, params)
 	} else if healthcheck.TCPSocket != nil {
-		return fmt.Sprintf("%s %s tcp-socket port=%v %s", probeType, procType, healthcheck.TCPSocket.Port, params)
+		return fmt.Sprintf("%s %s tcp-socket port=%v %s", probeType, ptype, healthcheck.TCPSocket.Port, params)
 	} else if healthcheck.HTTPGet != nil {
 		return fmt.Sprintf(
 			"%s %s http-get headers=%v path=%s port=%d %s",
 			probeType,
-			procType,
+			ptype,
 			healthcheck.HTTPGet.HTTPHeaders,
 			healthcheck.HTTPGet.Path,
 			healthcheck.HTTPGet.Port,
@@ -36,16 +36,16 @@ func getHealthcheckString(procType, probeType string, healthcheck *api.Healthche
 	return ""
 }
 
-func getHealthchecksStrings(procType string, healthchecks *api.Healthchecks) []string {
+func getHealthchecksStrings(ptype string, healthchecks *api.Healthchecks) []string {
 	var probes []string
 	for key := range *healthchecks {
-		probes = append(probes, getHealthcheckString(procType, key, (*healthchecks)[key]))
+		probes = append(probes, getHealthcheckString(ptype, key, (*healthchecks)[key]))
 	}
 	return probes
 }
 
 // HealthchecksList lists an app's healthchecks.
-func (d *DryccCmd) HealthchecksList(appID, procType string) error {
+func (d *DryccCmd) HealthchecksList(appID, ptype string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -57,7 +57,7 @@ func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 		return err
 	}
 
-	if procType == "" {
+	if ptype == "" {
 		if len(config.Healthcheck) == 0 {
 			d.Println("No health checks configured.")
 		} else {
@@ -83,7 +83,7 @@ func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 			table.Render()
 		}
 	} else {
-		if healthcheck, found := config.Healthcheck[procType]; found {
+		if healthcheck, found := config.Healthcheck[ptype]; found {
 			table := d.getDefaultFormatTable([]string{})
 			table.Append([]string{"App:", config.App})
 			table.Append([]string{"UUID:", config.UUID})
@@ -91,7 +91,7 @@ func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 			table.Append([]string{"Created:", d.formatTime(config.Created)})
 			table.Append([]string{"Updated:", d.formatTime(config.Updated)})
 			table.Append([]string{"Healthchecks:"})
-			for _, probe := range getHealthchecksStrings(procType, healthcheck) {
+			for _, probe := range getHealthchecksStrings(ptype, healthcheck) {
 				if probe != "" {
 					table.Append([]string{"", probe})
 				}
@@ -105,7 +105,7 @@ func (d *DryccCmd) HealthchecksList(appID, procType string) error {
 }
 
 // HealthchecksSet sets an app's healthchecks.
-func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, procType string, probe *api.Healthcheck) error {
+func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *api.Healthcheck) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -119,7 +119,7 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, procType string, prob
 	healthcheckMap := make(api.Healthchecks)
 	healthcheckMap[healthcheckType] = probe
 	configObj := api.Config{Healthcheck: make(map[string]*api.Healthchecks)}
-	configObj.Healthcheck[procType] = &healthcheckMap
+	configObj.Healthcheck[ptype] = &healthcheckMap
 
 	_, err = config.Set(s.Client, appID, configObj)
 
@@ -132,11 +132,11 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, procType string, prob
 
 	d.Print("done\n\n")
 
-	return d.HealthchecksList(appID, procType)
+	return d.HealthchecksList(appID, ptype)
 }
 
 // HealthchecksUnset removes an app's healthchecks.
-func (d *DryccCmd) HealthchecksUnset(appID, procType string, healthchecks []string) error {
+func (d *DryccCmd) HealthchecksUnset(appID, ptype string, healthchecks []string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -154,7 +154,7 @@ func (d *DryccCmd) HealthchecksUnset(appID, procType string, healthchecks []stri
 	for _, healthcheck := range healthchecks {
 		healthcheckMap[healthcheck] = nil
 	}
-	healthchecksMap[procType] = &healthcheckMap
+	healthchecksMap[ptype] = &healthcheckMap
 
 	configObj.Healthcheck = healthchecksMap
 
@@ -169,5 +169,5 @@ func (d *DryccCmd) HealthchecksUnset(appID, procType string, healthchecks []stri
 
 	d.Print("done\n\n")
 
-	return d.HealthchecksList(appID, procType)
+	return d.HealthchecksList(appID, ptype)
 }

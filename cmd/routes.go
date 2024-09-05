@@ -9,7 +9,7 @@ import (
 )
 
 // RoutesCreate create a route to an app.
-func (d *DryccCmd) RoutesCreate(appID, name string, procType string, kind string, port int) error {
+func (d *DryccCmd) RoutesCreate(appID, name string, ptype string, kind string, port int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -18,7 +18,7 @@ func (d *DryccCmd) RoutesCreate(appID, name string, procType string, kind string
 	d.Printf("Adding route %s to %s... ", name, appID)
 
 	quit := progress(d.WOut)
-	err = routes.New(s.Client, appID, name, procType, kind, port)
+	err = routes.New(s.Client, appID, name, ptype, kind, port)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -54,7 +54,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 					table.Append([]string{
 						route.Name,
 						route.Owner,
-						route.Type,
+						route.Ptype,
 						route.Kind,
 						fmt.Sprint(route.Port),
 						gateway.Name,
@@ -65,7 +65,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 				table.Append([]string{
 					route.Name,
 					route.Owner,
-					route.Type,
+					route.Ptype,
 					route.Kind,
 					fmt.Sprint(route.Port),
 					"",

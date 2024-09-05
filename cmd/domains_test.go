@@ -32,7 +32,7 @@ func TestDomainsList(t *testing.T) {
             "app": "foo",
             "created": "2014-01-01T00:00:00UTC",
             "domain": "example.example.com",
-			"procfile_type": "web",
+			"ptype": "web",
             "owner": "test",
             "updated": "2014-01-01T00:00:00UTC"
         },
@@ -40,7 +40,7 @@ func TestDomainsList(t *testing.T) {
             "app": "foo",
             "created": "2014-01-01T00:00:00UTC",
             "domain": "foo",
-			"procfile_type": "web",
+			"ptype": "web",
             "owner": "test",
             "updated": "2014-01-01T00:00:00UTC"
         }
@@ -78,7 +78,7 @@ func TestDomainsListLimit(t *testing.T) {
             "app": "foo",
             "created": "2014-01-01T00:00:00UTC",
             "domain": "example.example.com",
-			"procfile_type": "web",
+			"ptype": "web",
             "owner": "test",
             "updated": "2014-01-01T00:00:00UTC"
         }
@@ -105,7 +105,7 @@ func TestDomainsAdd(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/domains/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.DomainCreateRequest{Domain: "example.example.com", ProcfileType: "web"}, r)
+		testutil.AssertBody(t, api.DomainCreateRequest{Domain: "example.example.com", Ptype: "web"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.

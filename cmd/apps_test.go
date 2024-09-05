@@ -197,7 +197,7 @@ Processes:
               Name:                                   lorem-ipsum-cmd-1911796442-48b58    
               Release:                                v2                                  
               State:                                  up                                  
-              Type:                                   cmd                                 
+              Ptype:                                  cmd                                 
               Started:                                2016-08-22T17:42:16Z                
 Domains:      
               Domain:                                 lorem-ipsum                         
