@@ -384,11 +384,10 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 			return err
 		}
 		if dirs, _, err := volumes.ListDir(s.Client, appID, volumeID, volumePath, 3000); err == nil {
-			if len(dirs) == 1 && dirs[0].Type == "file" {
+			names := strings.Split(strings.Trim(src, "/"), "/")
+			if len(dirs) == 1 && dirs[0].Type == "file" && strings.HasSuffix(strings.Trim(volumePath, "/"), names[len(names)-1]) {
 				return fmt.Errorf("the volume path cannot be an existing file")
 			}
-		} else if strings.Contains(fmt.Sprint(err), "no such file or directory") {
-			return err
 		}
 		if file, err := os.Stat(src); err == nil && file.IsDir() {
 			volumePath = mergeDestDir(volumePath, src)
