@@ -126,23 +126,23 @@ func TestConfigList(t *testing.T) {
 	err = cmdr.ConfigList("foo", "")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME     VALUE   
-FLOAT    12.34      
-NCC      1701       
-TEST     testing    
-TRUE     false      
+	assert.Equal(t, b.String(), `PTYPE    NAME     VALUE   
+N/A      FLOAT    12.34      
+N/A      NCC      1701       
+N/A      TEST     testing    
+N/A      TRUE     false      
+web      PORT     9000       
 `, "output")
 
 	b.Reset()
 	err = cmdr.ConfigList("foo", "web")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `NAME                  VALUE   
-PORT                  9000       
---- Common Config:    
-FLOAT                 12.34      
-NCC                   1701       
-TEST                  testing    
-TRUE                  false      
+	assert.Equal(t, b.String(), `PTYPE    NAME     VALUE   
+N/A      FLOAT    12.34      
+N/A      NCC      1701       
+N/A      TEST     testing    
+N/A      TRUE     false      
+web      PORT     9000       
 `, "output")
 
 }
@@ -194,12 +194,12 @@ func TestConfigSet(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
 
-NAME       VALUE                                            
-FLOAT      12.34                                               
-NCC        1701                                                
-SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
-TEST       testing                                             
-TRUE       false                                               
+PTYPE    NAME       VALUE                                            
+N/A      FLOAT      12.34                                               
+N/A      NCC        1701                                                
+N/A      SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
+N/A      TEST       testing                                             
+N/A      TRUE       false                                               
 `, "output")
 }
 
@@ -248,11 +248,11 @@ func TestConfigUnset(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 
-NAME     VALUE   
-FLOAT    12.34      
-NCC      1701       
-TEST     testing    
-TRUE     false      
+PTYPE    NAME     VALUE   
+N/A      FLOAT    12.34      
+N/A      NCC      1701       
+N/A      TEST     testing    
+N/A      TRUE     false      
 `, "output")
 }
 
@@ -308,12 +308,11 @@ func TestConfigUnsetTypedValues(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 
-NAME                  VALUE   
-FLOAT                 12.34      
-NCC                   1701       
-TEST                  testing    
-TRUE                  false      
---- Common Config:    
-RELEASE_VERSION       v1         
+PTYPE    NAME               VALUE   
+N/A      RELEASE_VERSION    v1         
+web      FLOAT              12.34      
+web      NCC                1701       
+web      TEST               testing    
+web      TRUE               false      
 `, "output")
 }

@@ -27,31 +27,15 @@ func (d *DryccCmd) ConfigList(appID string, ptype string) error {
 		return err
 	}
 
-	configValues := config.Values
-	if ptype != "" {
-		configValues = config.TypedValues[ptype]
+	table := d.getDefaultFormatTable([]string{"PTYPE", "NAME", "VALUE"})
+	for _, key := range *sortKeys(config.Values) {
+		table.Append([]string{"N/A", key, fmt.Sprintf("%v", config.Values[key])})
 	}
-
-	keys := *sortKeys(configValues)
-	table := d.getDefaultFormatTable([]string{"NAME", "VALUE"})
-
-	for _, key := range keys {
-		table.Append([]string{
-			key,
-			fmt.Sprintf("%v", configValues[key]),
-		})
-	}
-
-	// common config
-	if ptype != "" {
-		table.Append([]string{"--- Common Config:"})
-		configValues = config.Values
-		keys = *sortKeys(configValues)
-		for _, key := range keys {
-			table.Append([]string{
-				key,
-				fmt.Sprintf("%v", configValues[key]),
-			})
+	for key, values := range config.TypedValues {
+		if ptype == "" || ptype == key {
+			for _, key2 := range *sortKeys(values) {
+				table.Append([]string{key, key2, fmt.Sprintf("%v", values[key2])})
+			}
 		}
 	}
 	table.Render()
