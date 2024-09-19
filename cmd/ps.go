@@ -150,7 +150,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 						innerValue = "<none>"
 					}
 				}
-				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strings.Trim(innerValue, `"`)})
+				table.Append([]string{d.indentString(innerKey, 2), strings.Trim(innerValue, `"`)})
 			}
 		}
 		// LastState
@@ -166,7 +166,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 						innerValue = "<none>"
 					}
 				}
-				table.Append([]string{fmt.Sprintf("  %s:", innerKey), strings.Trim(innerValue, `"`)})
+				table.Append([]string{d.indentString(innerKey, 2), strings.Trim(innerValue, `"`)})
 			}
 		}
 		table.Append([]string{"Ready:", fmt.Sprintf("%v", containerState.Ready)})
@@ -183,10 +183,10 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 		// table event
 		te := d.getDefaultFormatTable([]string{})
 		te.Append([]string{"Events:"})
-		te.Append([]string{"  REASON", "MESSAGE", "CREATED"})
+		te.Append([]string{d.indentString("REASON", 2), "MESSAGE", "CREATED"})
 		for _, ev := range events {
 			te.Append([]string{
-				fmt.Sprintf("  %s", ev.Reason),
+				d.indentString(ev.Reason, 2),
 				ev.Message,
 				d.formatTime(ev.Created),
 			})

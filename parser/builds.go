@@ -10,15 +10,15 @@ func Builds(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for builds:
 
-builds:list        list build history for an application
+builds:info        Print information about a specific build.
 builds:create      imports an image and deploys as a new release
 
 Use 'drycc help [command]' to learn more.
 `
 
 	switch argv[0] {
-	case "builds:list":
-		return buildsList(argv, cmdr)
+	case "builds:info":
+		return buildsInfo(argv, cmdr)
 	case "builds:create":
 		return buildsCreate(argv, cmdr)
 	default:
@@ -27,8 +27,8 @@ Use 'drycc help [command]' to learn more.
 		}
 
 		if argv[0] == "builds" {
-			argv[0] = "builds:list"
-			return buildsList(argv, cmdr)
+			argv[0] = "builds:info"
+			return buildsInfo(argv, cmdr)
 		}
 
 		PrintUsage(cmdr)
@@ -36,17 +36,17 @@ Use 'drycc help [command]' to learn more.
 	}
 }
 
-func buildsList(argv []string, cmdr cmd.Commander) error {
+func buildsInfo(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists build history for an application.
+Print information about a specific build.
 
-Usage: drycc builds:list [options]
+Usage: drycc builds:info [options]
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+  --version=<version>
+    the version for which the build info needs to be displayed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -55,13 +55,14 @@ Options:
 		return err
 	}
 
-	results, err := responseLimit(safeGetString(args, "--limit"))
-
-	if err != nil {
-		return err
+	var version int
+	if safeGetString(args, "--version") != "" {
+		if version, err = versionFromString(safeGetString(args, "--version")); err != nil {
+			return err
+		}
 	}
 
-	return cmdr.BuildsList(safeGetString(args, "--app"), results)
+	return cmdr.BuildsInfo(safeGetString(args, "--app"), version)
 }
 
 func buildsCreate(argv []string, cmdr cmd.Commander) error {

@@ -34,7 +34,7 @@ type Commander interface {
 	TokensList(int) error
 	TokensAdd(*drycc.Client, string, string, string, string, bool) (*api.AuthTokenResponse, error)
 	TokensRemove(string, string) error
-	BuildsList(string, int) error
+	BuildsInfo(string, int) error
 	BuildsCreate(string, string, string, string, string) error
 	CertsList(string, int) error
 	CertAdd(string, string, string, string) error

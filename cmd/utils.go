@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -12,6 +14,7 @@ import (
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/settings"
 	"github.com/olekukonko/tablewriter"
+	yaml "gopkg.in/yaml.v3"
 )
 
 var defaultLimit = -1
@@ -131,6 +134,26 @@ func (d *DryccCmd) formatTime(timeStr string) string {
 func (d *DryccCmd) wrapString(s string) string {
 	sa, _ := tablewriter.WrapString(s, defaultLines)
 	return strings.Join(sa, "\n")
+}
+
+// indentString indent s into a paragraph of lines of length lim, with minimal raggedness.
+func (d *DryccCmd) indentString(s string, indent int) string {
+	var lines []string
+	for _, line := range strings.Split(s, "\n") {
+		line = strings.TrimRight(line, "\r")
+		padding := indent + len(line)
+		lines = append(lines, fmt.Sprintf("% "+strconv.Itoa(padding)+"s", line))
+	}
+	return strings.Join(lines, "\n")
+}
+
+// toYamlString convert object to yaml string
+func (d *DryccCmd) toYamlString(v interface{}, indent int) string {
+	buf := bytes.Buffer{}
+	encode := yaml.NewEncoder(&buf)
+	encode.SetIndent(indent)
+	encode.Encode(v)
+	return buf.String()
 }
 
 func sortKeys(data map[string]interface{}) *[]string {

@@ -193,10 +193,10 @@ func printProcessTypeDetail(d *DryccCmd, ptypeStates api.PtypeStates, events api
 		// table event
 		te := d.getDefaultFormatTable([]string{})
 		te.Append([]string{"Events:"})
-		te.Append([]string{"  REASON", "MESSAGE", "CREATED"})
+		te.Append([]string{d.indentString("REASON", 2), "MESSAGE", "CREATED"})
 		for _, ev := range events {
 			te.Append([]string{
-				fmt.Sprintf("  %s", ev.Reason),
+				d.indentString(ev.Reason, 2),
 				ev.Message,
 				d.formatTime(ev.Created),
 			})

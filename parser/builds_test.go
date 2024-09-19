@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (d FakeDryccCmd) BuildsList(string, int) error {
-	return errors.New("builds:list")
+func (d FakeDryccCmd) BuildsInfo(string, int) error {
+	return errors.New("builds:info")
 }
 
 func (d FakeDryccCmd) BuildsCreate(string, string, string, string, string) error {
@@ -35,7 +35,7 @@ func TestBuilds(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"builds:list"},
+			args:     []string{"builds:info"},
 			expected: "",
 		},
 		{
@@ -44,7 +44,7 @@ func TestBuilds(t *testing.T) {
 		},
 		{
 			args:     []string{"builds"},
-			expected: "builds:list",
+			expected: "builds:info",
 		},
 	}
 

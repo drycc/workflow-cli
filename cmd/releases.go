@@ -81,12 +81,11 @@ func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 			if c.Exception != "" {
 				exception = c.Exception
 			}
-
-			te.Append([]string{"  - created:", d.formatTime(c.Created)})
-			te.Append([]string{"    state:", c.State})
-			te.Append([]string{"    action:", c.Action})
-			te.Append([]string{"    ptypes:", d.wrapString(ptypes)})
-			te.Append([]string{"    exception:", d.wrapString(exception)})
+			te.Append([]string{d.indentString("- created:", 2), d.formatTime(c.Created)})
+			te.Append([]string{d.indentString("state:", 4), c.State})
+			te.Append([]string{d.indentString("action:", 4), c.Action})
+			te.Append([]string{d.indentString("ptypes:", 4), d.wrapString(ptypes)})
+			te.Append([]string{d.indentString("exception:", 4), d.wrapString(exception)})
 		}
 		te.Render()
 	}

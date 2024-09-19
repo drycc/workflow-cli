@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	yaml "gopkg.in/yaml.v3"
@@ -9,34 +8,47 @@ import (
 	"github.com/drycc/controller-sdk-go/builds"
 )
 
-// BuildsList lists an app's builds.
-func (d *DryccCmd) BuildsList(appID string, results int) error {
+// BuildsInfo lists an app's builds.
+func (d *DryccCmd) BuildsInfo(appID string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
-
 	if err != nil {
 		return err
 	}
 
-	if results == defaultLimit {
-		results = s.Limit
-	}
-
-	builds, count, err := builds.List(s.Client, appID, results)
+	build, err := builds.Get(s.Client, appID, version)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
-	if count > 0 {
-		table := d.getDefaultFormatTable([]string{"OWNER", "SHA", "CREATED"})
-		for _, build := range builds {
-			table.Append([]string{
-				safeGetString(build.Owner),
-				safeGetString(build.Sha),
-				d.formatTime(build.Created),
-			})
-		}
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"App:", build.App})
+	table.Append([]string{"Sha:", build.Sha})
+	table.Append([]string{"UUID:", build.UUID})
+	table.Append([]string{"Owner:", build.Owner})
+	table.Append([]string{"Image:", build.Image})
+	table.Append([]string{"Stack:", build.Stack})
+	table.Append([]string{"Created:", build.Created})
+	table.Append([]string{"Updated:", build.Updated})
+	table.Render()
+
+	if len(build.Dockerfile) != 0 {
+		table = d.getDefaultFormatTable([]string{})
+		table.Append([]string{"Dockerfile:"})
+		table.Append([]string{d.indentString(build.Dockerfile, 2)})
 		table.Render()
-	} else {
-		d.Println(fmt.Sprintf("No builds found in %s app.", appID))
+	}
+
+	if len(build.Procfile) != 0 {
+		table = d.getDefaultFormatTable([]string{})
+		table.Append([]string{"Procfile:"})
+		table.Append([]string{d.indentString(d.toYamlString(build.Procfile, 2), 2)})
+		table.Render()
+	}
+
+	if len(build.Dryccfile) != 0 {
+		table = d.getDefaultFormatTable([]string{})
+		table.Append([]string{"Dryccfile:"})
+		table.Append([]string{d.indentString(d.toYamlString(build.Dryccfile, 2), 2)})
+		table.Render()
 	}
 	return nil
 }

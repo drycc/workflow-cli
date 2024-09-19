@@ -27,7 +27,7 @@ foo
 	assert.NotEqual(t, err, nil, "yaml")
 }
 
-func TestBuildsList(t *testing.T) {
+func TestBuildsInfo(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -37,83 +37,32 @@ func TestBuildsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/builds/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/build/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `{
-			"count": 2,
-			"next": null,
-			"previous": null,
-			"results": [
-				{
-					"app": "",
-					"created": "2014-01-01T00:00:00UTC",
-					"dockerfile": "",
-					"image": "",
-					"owner": "",
-					"procfile": {},
-					"sha": "",
-					"updated": "",
-					"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
-				},
-				{
-					"app": "",
-					"created": "2014-01-05T00:00:00UTC",
-					"dockerfile": "",
-					"image": "",
-					"owner": "",
-					"procfile": {},
-					"sha": "",
-					"updated": "",
-					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3"
-				}
-			]
-		}`)
+				"app": "",
+				"created": "2014-01-01T00:00:00UTC",
+				"dockerfile": "",
+				"image": "",
+				"owner": "",
+				"procfile": {},
+				"sha": "",
+				"updated": "",
+				"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
+			}
+		`)
 	})
 
-	err = cmdr.BuildsList("foo", -1)
+	err = cmdr.BuildsInfo("foo", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `OWNER     SHA       CREATED                
-<none>    <none>    2014-01-01T00:00:00UTC    
-<none>    <none>    2014-01-05T00:00:00UTC    
-`, "output")
-}
-
-func TestBuildsListLimit(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/apps/foo/builds/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `{
-            "count": 2,
-            "next": null,
-            "previous": null,
-            "results": [
-                {
-                    "app": "foo",
-                    "created": "2014-01-01T00:00:00UTC",
-                    "dockerfile": "",
-                    "image": "",
-                    "owner": "",
-                    "procfile": {},
-                    "sha": "",
-                    "updated": "",
-                    "uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
-                }
-            ]
-        }`)
-	})
-
-	err = cmdr.BuildsList("foo", 1)
-	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `OWNER     SHA       CREATED                
-<none>    <none>    2014-01-01T00:00:00UTC    
+	assert.Equal(t, b.String(), `App:                                                
+Sha:                                                
+UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    
+Owner:                                              
+Image:                                              
+Stack:                                              
+Created:    2014-01-01T00:00:00UTC                  
+Updated:                                            
 `, "output")
 }
 
@@ -133,7 +82,7 @@ func TestBuildsCreate(t *testing.T) {
 	err = os.Chdir(name)
 	assert.NoError(t, err)
 
-	server.Mux.HandleFunc("/v2/apps/enterprise/builds/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/enterprise/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CreateBuildRequest{
 			Image: "ncc/1701:A",
@@ -147,7 +96,7 @@ func TestBuildsCreate(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
-	server.Mux.HandleFunc("/v2/apps/bradbury/builds/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/bradbury/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CreateBuildRequest{
 			Image: "nx/72307:latest",
@@ -182,7 +131,7 @@ warp: ./warp 8`
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
-	server.Mux.HandleFunc("/v2/apps/franklin/builds/", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/franklin/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		testutil.AssertBody(t, api.CreateBuildRequest{
 			Image: "nx/326:latest",
