@@ -9,14 +9,14 @@ import (
 )
 
 // TimeoutsList lists an app's timeouts.
-func (d *DryccCmd) TimeoutsList(appID string) error {
+func (d *DryccCmd) TimeoutsList(appID string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	config, err := config.List(s.Client, appID)
+	config, err := config.List(s.Client, appID, version)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (d *DryccCmd) TimeoutsSet(appID string, timeouts []string) error {
 
 	d.Print("done\n\n")
 
-	return d.TimeoutsList(appID)
+	return d.TimeoutsList(appID, -1)
 }
 
 // TimeoutsUnset removes an app's timeouts.
@@ -100,7 +100,7 @@ func (d *DryccCmd) TimeoutsUnset(appID string, timeouts []string) error {
 
 	d.Print("done\n\n")
 
-	return d.TimeoutsList(appID)
+	return d.TimeoutsList(appID, -1)
 }
 
 func parseTimeouts(timeouts []string) (map[string]interface{}, error) {

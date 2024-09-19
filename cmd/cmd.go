@@ -42,7 +42,7 @@ type Commander interface {
 	CertInfo(string, string) error
 	CertAttach(string, string, string) error
 	CertDetach(string, string, string) error
-	ConfigList(string, string) error
+	ConfigList(string, string, int) error
 	ConfigSet(string, string, []string, string) error
 	ConfigUnset(string, string, []string, string) error
 	ConfigPull(string, string, string, bool, bool) error
@@ -65,7 +65,7 @@ type Commander interface {
 	RoutesRemove(string, string) error
 	GitRemote(string, string, bool) error
 	GitRemove(string) error
-	HealthchecksList(string, string) error
+	HealthchecksList(string, string, int) error
 	HealthchecksSet(string, string, string, *api.Healthcheck) error
 	HealthchecksUnset(string, string, []string) error
 	KeysList(int) error
@@ -74,12 +74,12 @@ type Commander interface {
 	LabelsList(string) error
 	LabelsSet(string, []string) error
 	LabelsUnset(string, []string) error
-	LimitsList(string) error
+	LimitsList(string, int) error
 	LimitsSet(string, []string) error
 	LimitsUnset(string, []string) error
 	LimitsSpecs(string, int) error
 	LimitsPlans(string, int, int, int) error
-	TimeoutsList(string) error
+	TimeoutsList(string, int) error
 	TimeoutsSet(string, []string) error
 	TimeoutsUnset(string, []string) error
 	PermList(string, int) error
@@ -95,7 +95,7 @@ type Commander interface {
 	PtsDescribe(string, string) error
 	PtsScale(string, []string) error
 	PtsRestart(string, []string, string) error
-	RegistryList(string) error
+	RegistryList(string, int) error
 	RegistrySet(string, []string) error
 	RegistryUnset(string, []string) error
 	ReleasesList(string, int) error
@@ -106,7 +106,7 @@ type Commander interface {
 	RoutingEnable(string) error
 	RoutingDisable(string) error
 	ShortcutsList() error
-	TagsList(string, string) error
+	TagsList(string, string, int) error
 	TagsSet(string, string, []string) error
 	TagsUnset(string, string, []string) error
 	TLSInfo(string) error

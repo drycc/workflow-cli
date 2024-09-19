@@ -17,12 +17,12 @@ import (
 )
 
 // ConfigList lists an app's config.
-func (d *DryccCmd) ConfigList(appID string, ptype string) error {
+func (d *DryccCmd) ConfigList(appID string, ptype string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
-	config, err := config.List(s.Client, appID)
+	config, err := config.List(s.Client, appID, version)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ to set up healthchecks. This functionality has been deprecated. In the future, p
 		d.Print("done\n\n")
 	}
 
-	return d.ConfigList(appID, ptype)
+	return d.ConfigList(appID, ptype, -1)
 }
 
 // ConfigUnset removes a config variable from an app.
@@ -148,7 +148,7 @@ func (d *DryccCmd) ConfigUnset(appID string, ptype string, configVars []string, 
 		d.Print("done\n\n")
 	}
 
-	return d.ConfigList(appID, ptype)
+	return d.ConfigList(appID, ptype, -1)
 }
 
 // ConfigPull pulls an app's config to a file.
@@ -159,7 +159,7 @@ func (d *DryccCmd) ConfigPull(appID, ptype, fileName string, interactive bool, o
 		return err
 	}
 
-	configVars, err := config.List(s.Client, appID)
+	configVars, err := config.List(s.Client, appID, -1)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}

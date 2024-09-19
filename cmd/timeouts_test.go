@@ -103,7 +103,7 @@ func TestTimeoutsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.TimeoutsList("enterprise")
+	err = cmdr.TimeoutsList("enterprise", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `PTYPE     TIMEOUT 
 web       10         
@@ -127,7 +127,7 @@ worker    20
 	})
 	b.Reset()
 
-	err = cmdr.TimeoutsList("franklin")
+	err = cmdr.TimeoutsList("franklin", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `Default (30 sec) or controlled by drycc controller.
 `, "output")

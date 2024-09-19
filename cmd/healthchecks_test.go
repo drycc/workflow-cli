@@ -52,7 +52,7 @@ func TestHealthchecksList(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksList("foo", "web")
+	err = cmdr.HealthchecksList("foo", "web", -1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `App:             foo                                                                                                            
@@ -92,7 +92,7 @@ func TestHealthchecksListNoHealthCheck(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksList("foo", "")
+	err = cmdr.HealthchecksList("foo", "", -1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `No health checks configured.
@@ -153,7 +153,7 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksList("foo", "")
+	err = cmdr.HealthchecksList("foo", "", -1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `App:             foo                                                                                                               

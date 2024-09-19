@@ -62,6 +62,8 @@ Options:
     the uniquely identifiable name of the application.
   --ptype=<ptype>
     the ptype for which the health check needs to be listed.
+  --version=<version>
+    the version for which the health check needs to be listed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -72,8 +74,13 @@ Options:
 
 	app := safeGetString(args, "--app")
 	ptype := safeGetString(args, "--ptype")
-
-	return cmdr.HealthchecksList(app, ptype)
+	var version int
+	if safeGetString(args, "--version") != "" {
+		if version, err = versionFromString(safeGetString(args, "--version")); err != nil {
+			return err
+		}
+	}
+	return cmdr.HealthchecksList(app, ptype, version)
 }
 
 func healthchecksSet(argv []string, cmdr cmd.Commander) error {

@@ -123,7 +123,7 @@ func TestConfigList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigList("foo", "")
+	err = cmdr.ConfigList("foo", "", -1)
 	assert.NoError(t, err)
 
 	assert.Equal(t, b.String(), `PTYPE    NAME     VALUE   
@@ -135,7 +135,7 @@ web      PORT     9000
 `, "output")
 
 	b.Reset()
-	err = cmdr.ConfigList("foo", "web")
+	err = cmdr.ConfigList("foo", "web", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `PTYPE    NAME     VALUE   
 N/A      FLOAT    12.34      

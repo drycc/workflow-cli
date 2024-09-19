@@ -52,6 +52,8 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
+  --version=<version>
+    the version for which the tag needs to be listed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -62,8 +64,13 @@ Options:
 
 	ptype := safeGetString(args, "<ptype>")
 	appName := safeGetString(args, "--app")
-
-	return cmdr.TagsList(appName, ptype)
+	var version int
+	if safeGetString(args, "--version") != "" {
+		if version, err = versionFromString(safeGetString(args, "--version")); err != nil {
+			return err
+		}
+	}
+	return cmdr.TagsList(appName, ptype, version)
 }
 
 func tagsSet(argv []string, cmdr cmd.Commander) error {

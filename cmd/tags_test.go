@@ -106,7 +106,7 @@ func TestTagsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.TagsList("enterprise", "web")
+	err = cmdr.TagsList("enterprise", "web", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `KEY     VALUE 
 ncc     1701     

@@ -11,14 +11,14 @@ import (
 )
 
 // LimitsList lists an app's limits.
-func (d *DryccCmd) LimitsList(appID string) error {
+func (d *DryccCmd) LimitsList(appID string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	config, err := config.List(s.Client, appID)
+	config, err := config.List(s.Client, appID, version)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func (d *DryccCmd) LimitsSet(appID string, limits []string) error {
 
 	d.Print("done\n\n")
 
-	return d.LimitsList(appID)
+	return d.LimitsList(appID, -1)
 }
 
 // LimitsUnset removes an app's limits.
@@ -118,7 +118,7 @@ func (d *DryccCmd) LimitsUnset(appID string, limits []string) error {
 
 	d.Print("done\n\n")
 
-	return d.LimitsList(appID)
+	return d.LimitsList(appID, -1)
 }
 
 // LimitsSpecs list limit spec

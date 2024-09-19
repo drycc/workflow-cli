@@ -54,6 +54,8 @@ Usage: drycc limits:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
+  --version=<version>
+    the version for which the limit needs to be listed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -62,7 +64,14 @@ Options:
 		return err
 	}
 
-	return cmdr.LimitsList(safeGetString(args, "--app"))
+	var version int
+	if safeGetString(args, "--version") != "" {
+		if version, err = versionFromString(safeGetString(args, "--version")); err != nil {
+			return err
+		}
+	}
+
+	return cmdr.LimitsList(safeGetString(args, "--app"), version)
 }
 
 func limitSet(argv []string, cmdr cmd.Commander) error {

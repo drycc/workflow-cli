@@ -12,7 +12,7 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) LimitsList(string) error {
+func (d FakeDryccCmd) LimitsList(string, int) error {
 	return errors.New("limits:list")
 }
 

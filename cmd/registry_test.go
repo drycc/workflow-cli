@@ -103,7 +103,7 @@ func TestRegistryList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.RegistryList("enterprise")
+	err = cmdr.RegistryList("enterprise", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `KEY         VALUE   
 password    ncc1701    

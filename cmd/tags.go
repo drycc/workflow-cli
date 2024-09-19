@@ -9,14 +9,14 @@ import (
 )
 
 // TagsList lists an app's tags.
-func (d *DryccCmd) TagsList(appID, ptype string) error {
+func (d *DryccCmd) TagsList(appID, ptype string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	config, err := config.List(s.Client, appID)
+	config, err := config.List(s.Client, appID, version)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func (d *DryccCmd) TagsSet(appID, ptype string, tags []string) error {
 
 	d.Print("done\n\n")
 
-	return d.TagsList(appID, ptype)
+	return d.TagsList(appID, ptype, -1)
 }
 
 // TagsUnset removes an app's tags.
@@ -96,7 +96,7 @@ func (d *DryccCmd) TagsUnset(appID, ptype string, tags []string) error {
 
 	d.Print("done\n\n")
 
-	return d.TagsList(appID, ptype)
+	return d.TagsList(appID, ptype, -1)
 }
 
 func parseTags(tags []string) (map[string]interface{}, error) {

@@ -9,14 +9,14 @@ import (
 )
 
 // RegistryList lists an app's registry information.
-func (d *DryccCmd) RegistryList(appID string) error {
+func (d *DryccCmd) RegistryList(appID string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
 		return err
 	}
 
-	config, err := config.List(s.Client, appID)
+	config, err := config.List(s.Client, appID, version)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (d *DryccCmd) RegistrySet(appID string, item []string) error {
 
 	d.Print("done\n\n")
 
-	return d.RegistryList(appID)
+	return d.RegistryList(appID, -1)
 }
 
 // RegistryUnset removes an app's registry information.
@@ -97,7 +97,7 @@ func (d *DryccCmd) RegistryUnset(appID string, items []string) error {
 
 	d.Print("done\n\n")
 
-	return d.RegistryList(appID)
+	return d.RegistryList(appID, -1)
 }
 
 func parseInfos(items []string) (map[string]interface{}, error) {

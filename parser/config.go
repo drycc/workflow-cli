@@ -56,6 +56,8 @@ Options:
     the application that you wish to listed.
   --ptype=<ptype>
     the ptype for which the config needs to be listed.
+  --version=<version>
+    the version for which the config needs to be listed.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -65,7 +67,14 @@ Options:
 	}
 	app := safeGetString(args, "--app")
 	ptype := safeGetString(args, "--ptype")
-	return cmdr.ConfigList(app, ptype)
+	var version int
+	if safeGetString(args, "--version") != "" {
+		if version, err = versionFromString(safeGetString(args, "--version")); err != nil {
+			return err
+		}
+	}
+
+	return cmdr.ConfigList(app, ptype, version)
 }
 
 func configSet(argv []string, cmdr cmd.Commander) error {

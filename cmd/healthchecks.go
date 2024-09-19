@@ -45,13 +45,13 @@ func getHealthchecksStrings(ptype string, healthchecks *api.Healthchecks) []stri
 }
 
 // HealthchecksList lists an app's healthchecks.
-func (d *DryccCmd) HealthchecksList(appID, ptype string) error {
+func (d *DryccCmd) HealthchecksList(appID, ptype string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	config, err := config.List(s.Client, appID)
+	config, err := config.List(s.Client, appID, version)
 
 	if err != nil {
 		return err
@@ -132,7 +132,7 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *
 
 	d.Print("done\n\n")
 
-	return d.HealthchecksList(appID, ptype)
+	return d.HealthchecksList(appID, ptype, -1)
 }
 
 // HealthchecksUnset removes an app's healthchecks.
@@ -169,5 +169,5 @@ func (d *DryccCmd) HealthchecksUnset(appID, ptype string, healthchecks []string)
 
 	d.Print("done\n\n")
 
-	return d.HealthchecksList(appID, ptype)
+	return d.HealthchecksList(appID, ptype, -1)
 }

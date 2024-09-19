@@ -297,7 +297,7 @@ func TestLimitsList(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err := cmdr.LimitsList("enterprise")
+	err := cmdr.LimitsList("enterprise", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `PTYPE     PLAN               VCPUS    MEMORY    FEATURES                          
 db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
@@ -321,7 +321,7 @@ worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 
 	})
 	b.Reset()
 
-	err = cmdr.LimitsList("franklin")
+	err = cmdr.LimitsList("franklin", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `No limits found in franklin app.
 `, "output")
