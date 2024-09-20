@@ -453,11 +453,22 @@ func printVolumes(d *DryccCmd, volumes api.Volumes) {
 	table.Render()
 }
 
-func (d *DryccCmd) newProgressbar(maxBytes int64, icon, description string) *progressbar.ProgressBar {
-	description = fmt.Sprintf("%-32s", description)
-	if len(description) > 32 {
-		description = fmt.Sprintf("...%s", description[len(description)-29:])
+// fixateBarDescription - fancify bar description based on the terminal width.
+func (d *DryccCmd) fixateBarDescription(description string, width int) string {
+	switch {
+	case len(description) > width:
+		// Trim caption to fit within the screen
+		trimSize := len(description) - width + 3
+		if trimSize < len(description) {
+			description = "..." + description[trimSize:]
+		}
+	case len(description) < width:
+		description += strings.Repeat(" ", width-len(description))
 	}
+	return description
+}
+
+func (d *DryccCmd) newProgressbar(maxBytes int64, icon, description string) *progressbar.ProgressBar {
 	return progressbar.NewOptions64(
 		maxBytes,
 		progressbar.OptionSetDescription(description),
@@ -471,7 +482,7 @@ func (d *DryccCmd) newProgressbar(maxBytes int64, icon, description string) *pro
 		progressbar.OptionSpinnerType(14),
 		progressbar.OptionFullWidth(),
 		progressbar.OptionSetRenderBlankState(true),
-		progressbar.OptionSetDescription(fmt.Sprintf("[cyan][%s][reset] %s", icon, description)),
+		progressbar.OptionSetDescription(fmt.Sprintf("[cyan][%s][reset] %s", icon, d.fixateBarDescription(description, 32))),
 		progressbar.OptionSetTheme(progressbar.Theme{
 			Saucer:        "[green]=[reset]",
 			SaucerHead:    "[green]>[reset]",
