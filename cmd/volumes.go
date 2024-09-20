@@ -8,7 +8,6 @@ import (
 	"os"
 	"path"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -259,25 +258,10 @@ func (d *DryccCmd) volumesClientLs(appID, vol string) error {
 
 	table := d.getDefaultFormatTable([]string{})
 	for _, dir := range dirs {
-		var size string
-		s, err := strconv.ParseInt(dir.Size, 10, 64)
-		if err != nil {
-			return err
-		}
 		if dir.Type == "dir" {
-			s = 4096
 			dir.Name = fmt.Sprintf("%s/", dir.Name)
 		}
-		if s > 1024 {
-			size = fmt.Sprintf("%dKiB", s/1024)
-		} else if s > 1024*1024 {
-			size = fmt.Sprintf("%dMiB", s/(1024*1024))
-		} else if s > 1024*1024*1024 {
-			size = fmt.Sprintf("%dGiB", s/(1024*1024*1024))
-		} else {
-			size = fmt.Sprintf("%d", s)
-		}
-		table.Append([]string{fmt.Sprintf("[%s]", d.formatTime(dir.Timestamp)), size, dir.Name})
+		table.Append([]string{fmt.Sprintf("[%s]", d.formatTime(dir.Timestamp)), dir.Size, dir.Name})
 	}
 	table.Render()
 	return nil
