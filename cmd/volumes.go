@@ -316,9 +316,13 @@ func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, v
 		if err != nil {
 			return err
 		}
-		reader := progressbar.NewReader(file, d.newProgressbar(stat.Size(), "↑", localPath))
-		if _, err := volumes.PostFile(client, appID, volumeID, volumePath, file.Name(), stat.Size(), &reader); err != nil {
-			return err
+		if stat.Size() > 0 { //ignore empty file
+			reader := progressbar.NewReader(file, d.newProgressbar(stat.Size(), "↑", localPath))
+			if _, err := volumes.PostFile(client, appID, volumeID, volumePath, file.Name(), stat.Size(), &reader); err != nil {
+				return err
+			}
+		} else {
+			d.newProgressbar(1, "?", localPath).Finish()
 		}
 		return nil
 	}
@@ -453,21 +457,6 @@ func printVolumes(d *DryccCmd, volumes api.Volumes) {
 	table.Render()
 }
 
-// fixateBarDescription - fancify bar description based on the terminal width.
-func (d *DryccCmd) fixateBarDescription(description string, width int) string {
-	switch {
-	case len(description) > width:
-		// Trim caption to fit within the screen
-		trimSize := len(description) - width + 3
-		if trimSize < len(description) {
-			description = "..." + description[trimSize:]
-		}
-	case len(description) < width:
-		description += strings.Repeat(" ", width-len(description))
-	}
-	return description
-}
-
 func (d *DryccCmd) newProgressbar(maxBytes int64, icon, description string) *progressbar.ProgressBar {
 	return progressbar.NewOptions64(
 		maxBytes,
@@ -482,7 +471,7 @@ func (d *DryccCmd) newProgressbar(maxBytes int64, icon, description string) *pro
 		progressbar.OptionSpinnerType(14),
 		progressbar.OptionFullWidth(),
 		progressbar.OptionSetRenderBlankState(true),
-		progressbar.OptionSetDescription(fmt.Sprintf("[cyan][%s][reset] %s", icon, d.fixateBarDescription(description, 32))),
+		progressbar.OptionSetDescription(fmt.Sprintf("[cyan][%s][reset] %s", icon, d.fixateString(description, 32))),
 		progressbar.OptionSetTheme(progressbar.Theme{
 			Saucer:        "[green]=[reset]",
 			SaucerHead:    "[green]>[reset]",

@@ -136,6 +136,20 @@ func (d *DryccCmd) wrapString(s string) string {
 	return strings.Join(sa, "\n")
 }
 
+// fixateString  fix s width.
+func (d *DryccCmd) fixateString(s string, width int) string {
+	switch {
+	case len(s) > width:
+		trimSize := len(s) - width + 3
+		if trimSize < len(s) {
+			s = "..." + s[trimSize:]
+		}
+	case len(s) < width:
+		s += strings.Repeat(" ", width-len(s))
+	}
+	return s
+}
+
 // indentString indent s into a paragraph of lines of length lim, with minimal raggedness.
 func (d *DryccCmd) indentString(s string, indent int) string {
 	var lines []string
