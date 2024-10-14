@@ -72,7 +72,6 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 				strings.Join(services, "\n"),
 				strings.Join(gateways, "\n"),
 			})
-			fmt.Println("==============================", services, services)
 		}
 		table.Render()
 	}
