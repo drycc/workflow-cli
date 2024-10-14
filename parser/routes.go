@@ -82,7 +82,7 @@ Options:
 	}
 	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
-	kind := safeGetString(args, "--kind")
+	kind := safeGetString(args, "<kind>")
 	var backendRefs []api.BackendRefRequest
 	if backends, ok := args["<backend>"].([]string); ok && len(backends) > 0 {
 		for _, backendRef := range backends {
