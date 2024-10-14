@@ -15,7 +15,7 @@ func Routes(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for routes:
 
-routes:add        create a route for an application
+routes:add           create a route for an application
 routes:list          list application routes
 routes:get           get rule of route
 routes:set           set rule of route
