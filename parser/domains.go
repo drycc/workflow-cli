@@ -63,7 +63,7 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	ptype := safeGetString(args, "--ptype")
+	ptype := safeGetValue(args, "--ptype", "web")
 	domain := safeGetString(args, "<domain>")
 
 	return cmdr.DomainsAdd(app, domain, ptype)
