@@ -1,7 +1,12 @@
 package parser
 
 import (
+	"errors"
+	"regexp"
+	"strconv"
+
 	docopt "github.com/docopt/docopt-go"
+	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/cmd"
 )
 
@@ -55,17 +60,15 @@ func routesCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Creates routes for an application, provides a way to route requests
 
-Usage: drycc routes:add <name> --ptype=<ptype> --kind=<kind> --port=<port> [options]
+Usage: drycc routes:add <name> <kind> [<backend>...] [options]
 
 Arguments:
   <name>
-    the route name.
-  <ptype>
-    the process type needs to create route.
+    the unique name of the route.
   <kind>
     the route kind. Supports HTTPRoute, TCPRoute, UDPRoute, GRPCRoute, and TLSRoute.
-  <port>
-    the port that should be exposed by this service.
+  <backend>
+    the route's backend, pattern: <service>:<port>,<weight>.
 
 Options:
   -a --app=<app>
@@ -77,14 +80,32 @@ Options:
 	if err != nil {
 		return err
 	}
-
 	app := safeGetString(args, "--app")
 	name := safeGetString(args, "<name>")
-	ptype := safeGetString(args, "--ptype")
 	kind := safeGetString(args, "--kind")
-	port := safeGetInt(args, "--port")
-
-	return cmdr.RoutesCreate(app, name, ptype, kind, port)
+	var backendRefs []api.BackendRefRequest
+	if backends, ok := args["<backend>"].([]string); ok && len(backends) > 0 {
+		for _, backendRef := range backends {
+			params := regexp.MustCompile("[:,]").Split(backendRef, -1)
+			if len(params) != 3 {
+				return errors.New("backend params format error")
+			}
+			port, err := strconv.ParseInt(params[1], 10, 32)
+			if err != nil {
+				return err
+			}
+			weight, err := strconv.ParseInt(params[2], 10, 32)
+			if err != nil {
+				return err
+			}
+			backendRefs = append(backendRefs, api.BackendRefRequest{
+				Kind: "Service", Name: params[0], Port: int32(port), Weight: int32(weight),
+			})
+		}
+	} else {
+		return errors.New("backend is required")
+	}
+	return cmdr.RoutesCreate(app, name, kind, backendRefs...)
 }
 
 func routesList(argv []string, cmdr cmd.Commander) error {
@@ -97,7 +118,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -123,7 +144,7 @@ Usage: drycc routes:get <name> [options]
 
 Arguments:
   <name>
-    the route name.
+    the unique name of the route.
 
 Options:
   -a --app=<app>
@@ -150,7 +171,7 @@ Usage: drycc routes:set <name> --rules-file=<rules-file> [options]
 
 Arguments:
   <name>
-    the route name.
+    the unique name of the route.
   <rules-file>
     rules-file is the file name of rule to apply.
 
@@ -180,9 +201,9 @@ Usage: drycc routes:attach <name> --gateway=<gateway> --port=<port> [options]
 
 Arguments:
   <name>
-    the route name.
+    the unique name of the route.
   <gateway>
-    the gateway name.
+    the unique name of the gaetway.
   <port>
     port is the network port, the gateway listener expects to receive.
 
@@ -213,9 +234,9 @@ Usage: drycc routes:detach <name> --gateway=<gateway> --port=<port> [options]
 
 Arguments:
   <name>
-    the route name.
+    the unique name of the route.
   <gateway>
-    the gateway name.
+    the unique name of the gaetway.
   <port>
     port is the network port, the gateway listener expects to receive.
 
@@ -246,7 +267,7 @@ Usage: drycc routes:remove <name> [options]
 
 Arguments:
   <name>
-    the route name.
+    the unique name of the route.
 
 Options:
   -a --app=<app>

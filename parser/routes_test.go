@@ -5,13 +5,14 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
-func (d FakeDryccCmd) RoutesCreate(string, string, string, string, int) error {
+func (d FakeDryccCmd) RoutesCreate(string, string, string, ...api.BackendRefRequest) error {
 	return errors.New("routes:add")
 }
 
@@ -57,7 +58,7 @@ func TestRoutes(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"routes:add", "example", "--ptype=web", "--kind=http", "--port=80"},
+			args:     []string{"routes:add", "example", "http", "example:80,100"},
 			expected: "",
 		},
 		{

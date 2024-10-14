@@ -3,13 +3,15 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
+	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/routes"
 	"sigs.k8s.io/yaml"
 )
 
 // RoutesCreate create a route to an app.
-func (d *DryccCmd) RoutesCreate(appID, name string, ptype string, kind string, port int) error {
+func (d *DryccCmd) RoutesCreate(appID, name string, kind string, backendRefs ...api.BackendRefRequest) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -18,7 +20,7 @@ func (d *DryccCmd) RoutesCreate(appID, name string, ptype string, kind string, p
 	d.Printf("Adding route %s to %s... ", name, appID)
 
 	quit := progress(d.WOut)
-	err = routes.New(s.Client, appID, name, ptype, kind, port)
+	err = routes.New(s.Client, appID, name, kind, backendRefs...)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -47,31 +49,30 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 	if count == 0 {
 		d.Println(fmt.Sprintf("No routes found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "PTYPE", "KIND", "SERVICE-PORT", "GATEWAY", "LISTENER-PORT"})
+		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "KIND", "SERVICE", "GATEWAY"})
 		for _, route := range routes {
-			if len(route.ParentRefs) > 0 {
-				for _, gateway := range route.ParentRefs {
-					table.Append([]string{
-						route.Name,
-						route.Owner,
-						route.Ptype,
-						route.Kind,
-						fmt.Sprint(route.Port),
-						gateway.Name,
-						fmt.Sprint(gateway.Port),
-					})
+			var services []string
+			for _, rule := range route.Rules {
+				if backends, ok := rule["backendRefs"].([]interface{}); ok {
+					for _, backend := range backends {
+						if service, ok := backend.(map[string]interface{}); ok {
+							services = append(services, fmt.Sprintf("%v:%v", service["name"], service["port"]))
+						}
+					}
 				}
-			} else {
-				table.Append([]string{
-					route.Name,
-					route.Owner,
-					route.Ptype,
-					route.Kind,
-					fmt.Sprint(route.Port),
-					"",
-					"",
-				})
 			}
+			var gateways []string
+			for _, gateway := range route.ParentRefs {
+				gateways = append(gateways, fmt.Sprintf("%s:%d", gateway.Name, gateway.Port))
+			}
+			table.Append([]string{
+				route.Name,
+				route.Owner,
+				route.Kind,
+				strings.Join(services, "\n"),
+				strings.Join(gateways, "\n"),
+			})
+			fmt.Println("==============================", services, services)
 		}
 		table.Render()
 	}

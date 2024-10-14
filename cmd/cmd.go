@@ -56,7 +56,7 @@ type Commander interface {
 	GatewaysAdd(string, string, int, string) error
 	GatewaysList(string, int) error
 	GatewaysRemove(string, string, int, string) error
-	RoutesCreate(string, string, string, string, int) error
+	RoutesCreate(string, string, string, ...api.BackendRefRequest) error
 	RoutesList(string, int) error
 	RoutesGet(string, string) error
 	RoutesSet(string, string, string) error

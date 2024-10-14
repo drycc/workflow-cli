@@ -23,14 +23,21 @@ func TestRoutesCreate(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/routes/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.RouteCreateRequest{Name: "example-go", Ptype: "web", Port: 443, Kind: "HTTPRoute"}, r)
+		request := api.RouteCreateRequest{
+			Name: "example-go",
+			Kind: "HTTPRoute",
+			Rules: []api.RequestRouteRule{{
+				BackendRefs: []api.BackendRefRequest{{Name: "example-go", Port: 443}},
+			}},
+		}
+		testutil.AssertBody(t, request, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.RoutesCreate("foo", "example-go", "web", "HTTPRoute", 443)
+	err = cmdr.RoutesCreate("foo", "example-go", "HTTPRoute", api.BackendRefRequest{Name: "example-go", Port: 443})
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Adding route example-go to foo... done\n", "output")
@@ -66,8 +73,28 @@ func TestRoutesList(t *testing.T) {
                 {
                     "name": "example-go",
                     "port": 80
+                },
+                {
+                    "name": "example-go",
+                    "port": 8080
                 }
-            ]
+            ],
+			"rules": [{
+				"backendRefs": [
+					{
+						"kind": "Service",
+						"name": "yygl-nextcloud",
+						"port": 80,
+						"weight": 100
+					},
+					{
+						"kind": "Service",
+						"name": "yygl-nextcloud",
+						"port": 8080,
+						"weight": 100
+					}
+				]
+			}]
         }
     ]
 }`)
@@ -76,8 +103,9 @@ func TestRoutesList(t *testing.T) {
 	err = cmdr.RoutesList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME          OWNER    PTYPE    KIND         SERVICE-PORT    GATEWAY       LISTENER-PORT 
-example-go    test     web      HTTPRoute    80              example-go    80               
+	assert.Equal(t, b.String(), `NAME          OWNER    KIND         SERVICE                GATEWAY         
+example-go    test     HTTPRoute    yygl-nextcloud:80      example-go:80      
+                                    yygl-nextcloud:8080    example-go:8080    
 `, "output")
 }
 
@@ -92,7 +120,7 @@ func TestRoutesAttach(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/attach/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.RouteAttackRequest{Port: 4443, Gateway: "example-go"}, r)
+		testutil.AssertBody(t, api.RouteAttachRequest{Port: 4443, Gateway: "example-go"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.
@@ -115,7 +143,7 @@ func TestRoutesDetach(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/detach/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.RouteDetackRequest{Port: 4443, Gateway: "example-go"}, r)
+		testutil.AssertBody(t, api.RouteDetachRequest{Port: 4443, Gateway: "example-go"}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusCreated)
 		// Body isn't used by CLI, so it isn't set.
@@ -140,36 +168,33 @@ func TestRouteGet(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `{
-  "stable": [
-    {
-      "backendRefs": [
-        {
-          "group": "",
-          "kind": "Service",
-          "name": "example-go",
-          "port": 1234,
-          "weight": 1
-        }
-      ],
-      "matches": [
-        {
-          "path": {
-            "type": "PathPrefix",
-            "value": "/get"
-          }
-        }
-      ]
-    }
-  ]
-}`)
+		fmt.Fprintf(w, `
+[{
+	"backendRefs": [
+		{
+			"group": "",
+			"kind": "Service",
+			"name": "example-go",
+			"port": 1234,
+			"weight": 1
+		}
+		],
+		"matches": [
+		{
+			"path": {
+			"type": "PathPrefix",
+			"value": "/get"
+			}
+		}
+		]
+	}
+]`)
 	})
 
 	err = cmdr.RoutesGet("foo", "example-go")
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `stable:
-- backendRefs:
+	assert.Equal(t, b.String(), `- backendRefs:
   - group: ""
     kind: Service
     name: example-go
@@ -200,7 +225,6 @@ func TestRoutesSet(t *testing.T) {
 	})
 	ruleFile, err := os.CreateTemp("", "rules.yaml")
 	rules := `
-stable:
 - backendRefs:
   - group: ""
     kind: Service
