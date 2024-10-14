@@ -17,8 +17,8 @@ Valid commands for routes:
 
 routes:add           create a route for an application
 routes:list          list application routes
-routes:get           get rule of route
-routes:set           set rule of route
+routes:get           get route rules
+routes:set           set route rules
 routes:attach        attach to gateway
 routes:detach        detach to gateway
 routes:remove        remove routes from an application
@@ -66,7 +66,7 @@ Arguments:
   <name>
     the unique name of the route.
   <kind>
-    the route kind. Supports HTTPRoute, TCPRoute, UDPRoute, GRPCRoute, and TLSRoute.
+    the route kind, range: HTTPRoute,TCPRoute,UDPRoute,GRPCRoute,TLSRoute.
   <backend>
     the route's backend, pattern: <service>:<port>,<weight>.
 
@@ -138,7 +138,7 @@ Options:
 
 func routesGet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Get a route for an application
+Get route rules for an application
 
 Usage: drycc routes:get <name> [options]
 
@@ -165,7 +165,7 @@ Options:
 
 func routesSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Set route for an application
+Set route rules for an application
 
 Usage: drycc routes:set <name> --rules-file=<rules-file> [options]
 

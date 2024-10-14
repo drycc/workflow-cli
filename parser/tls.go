@@ -11,11 +11,11 @@ func TLS(argv []string, cmdr cmd.Commander) error {
 Valid commands for tls:
 
 tls:info              view info about an application's TLS settings
-tls:force:enable      enables the router to enforce https-only requests to an application
-tls:force:disable     disables the router to enforce https-only requests to an application
-tls:auto:enable       enables the router to automatic generation of certificates to an application
-tls:auto:disable      disables the router to automatic generation of certificates to an application
-tls:auto:issuer       add a issuer to an application
+tls:auto:issuer       set automatic certificate management environment issuer
+tls:auto:enable       enable automatic certificate management environment
+tls:auto:disable      disable automatic certificate management environment
+tls:force:enable      enable https redirects all your visitor requests from http to https
+tls:force:disable     disable https redirects all your visitor requests from http to https
 
 Use 'drycc help [command]' to learn more.
 `
@@ -23,16 +23,16 @@ Use 'drycc help [command]' to learn more.
 	switch argv[0] {
 	case "tls:info":
 		return tlsInfo(argv, cmdr)
-	case "tls:force:enable":
-		return tlsForceEnable(argv, cmdr)
-	case "tls:force:disable":
-		return tlsForceDisable(argv, cmdr)
+	case "tls:auto:issuer":
+		return tlsAutoIssuer(argv, cmdr)
 	case "tls:auto:enable":
 		return tlsAutoEnable(argv, cmdr)
 	case "tls:auto:disable":
 		return tlsAutoDisable(argv, cmdr)
-	case "tls:auto:issuer":
-		return tlsAutoIssuer(argv, cmdr)
+	case "tls:force:enable":
+		return tlsForceEnable(argv, cmdr)
+	case "tls:force:disable":
+		return tlsForceDisable(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
