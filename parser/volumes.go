@@ -69,7 +69,7 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  -t --ptype=<ptype>
+  -t --type=<type>
     the volume type, such as csi, nfs, default is 'csi'.
   --nfs-server=<nfs-server>
     the hostname or ip address of the nfs server.
