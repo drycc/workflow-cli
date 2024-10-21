@@ -54,6 +54,8 @@ Usage: drycc releases:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  --ptypes=<ptypes>
+    the processes name as defined in your Procfile, comma separated.
   -l --limit=<num>
     the maximum number of results to display, defaults to config setting
 `
@@ -69,8 +71,9 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
+	ptypes := safeGetString(args, "--ptypes")
 
-	return cmdr.ReleasesList(app, results)
+	return cmdr.ReleasesList(app, ptypes, results)
 }
 
 func releasesInfo(argv []string, cmdr cmd.Commander) error {

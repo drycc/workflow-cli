@@ -57,7 +57,7 @@ func TestReleasesList(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.ReleasesList("numenor", -1)
+	err = cmdr.ReleasesList("numenor", "", -1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `OWNER     STATE      VERSION    CREATED                   SUMMARY                        
 nazgul    succeed    v2         2016-08-22T17:40:16Z      khamul added ANGMAR               
@@ -98,7 +98,7 @@ func TestReleasesListLimit(t *testing.T) {
 		}`)
 	})
 
-	err = cmdr.ReleasesList("numenor", 1)
+	err = cmdr.ReleasesList("numenor", "", 1)
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `OWNER     STATE      VERSION    CREATED                 SUMMARY             
 nazgul    succeed    v2         2016-08-22T17:40:16Z    khamul added ANGMAR    

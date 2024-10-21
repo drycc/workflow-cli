@@ -9,7 +9,7 @@ import (
 )
 
 // ReleasesList lists an app's releases.
-func (d *DryccCmd) ReleasesList(appID string, results int) error {
+func (d *DryccCmd) ReleasesList(appID, ptypes string, results int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -20,7 +20,7 @@ func (d *DryccCmd) ReleasesList(appID string, results int) error {
 		results = s.Limit
 	}
 
-	releases, count, err := releases.List(s.Client, appID, results)
+	releases, count, err := releases.List(s.Client, appID, ptypes, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
