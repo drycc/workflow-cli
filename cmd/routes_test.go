@@ -103,9 +103,8 @@ func TestRoutesList(t *testing.T) {
 	err = cmdr.RoutesList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME          OWNER    KIND         GATEWAY            SERVICE             
-example-go    test     HTTPRoute    example-go:80      yygl-nextcloud:80      
-                                    example-go:8080    yygl-nextcloud:8080    
+	assert.Equal(t, b.String(), `NAME          OWNER    KIND         GATEWAYS                               SERVICES                                    
+example-go    test     HTTPRoute    ["example-go:80","example-go:8080"]    ["yygl-nextcloud:80","yygl-nextcloud:8080"]    
 `, "output")
 }
 

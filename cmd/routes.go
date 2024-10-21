@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/routes"
@@ -49,7 +49,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 	if count == 0 {
 		d.Println(fmt.Sprintf("No routes found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "KIND", "GATEWAY", "SERVICE"})
+		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "KIND", "GATEWAYS", "SERVICES"})
 		for _, route := range routes {
 			var services []string
 			for _, rule := range route.Rules {
@@ -65,13 +65,15 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 			for _, gateway := range route.ParentRefs {
 				gateways = append(gateways, fmt.Sprintf("%s:%d", gateway.Name, gateway.Port))
 			}
-			table.Append([]string{
-				route.Name,
-				route.Owner,
-				route.Kind,
-				safeGetString(strings.Join(gateways, "\n")),
-				safeGetString(strings.Join(services, "\n")),
-			})
+			gatewaysBytes, err := json.Marshal(gateways)
+			if err != nil {
+				return err
+			}
+			servicesBytes, err := json.Marshal(services)
+			if err != nil {
+				return err
+			}
+			table.Append([]string{route.Name, route.Owner, route.Kind, string(gatewaysBytes), string(servicesBytes)})
 		}
 		table.Render()
 	}
