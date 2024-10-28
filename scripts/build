@@ -7,7 +7,9 @@ go-build(){
     go build \
     -o _dist/drycc-$1-$GOOS-$GOARCH \
     drycc.go
-  upx --lzma --best _dist/drycc-$1-$GOOS-$GOARCH
+  if [[ "$GOOS" != "darwin" ]]; then
+    upx --lzma --best _dist/drycc-$1-$GOOS-$GOARCH
+  fi
 }
 
 GOOS_LIST=("linux" "windows" "darwin")

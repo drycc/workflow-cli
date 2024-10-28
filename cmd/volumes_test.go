@@ -162,18 +162,17 @@ func TestVolumesClientCp(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	server.Mux.HandleFunc("/v2/apps/example-go/volumes/*", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		if r.URL.Path == "/v2/apps/example-go/volumes/myvolume/client/" {
-			if r.URL.RawQuery == "path=etc" {
-				fmt.Fprintf(w, `{"results":[],"count":0}`)
-			} else if r.Method == http.MethodGet {
-				fmt.Fprintf(w, `{"results":[{"name":"hello.txt","size":"4159","timestamp":"2024-06-25T22:55:16+08:00","type":"file","path":"/hello.txt"}], "count": 1}`)
-			}
-		} else if r.URL.Path == "/v2/apps/example-go/volumes/myvolume/client/hello.txt" {
-			testutil.SetHeaders(w)
-			fmt.Fprintf(w, `hello word`)
+		if r.URL.RawQuery == "path=etc" {
+			fmt.Fprintf(w, `{"results":[],"count":0}`)
+		} else if r.Method == http.MethodGet {
+			fmt.Fprintf(w, `{"results":[{"name":"hello.txt","size":"4159","timestamp":"2024-06-25T22:55:16+08:00","type":"file","path":"/hello.txt"}], "count": 1}`)
 		}
+	})
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/hello.txt", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `hello word`)
 	})
 	defer server.Close()
 
