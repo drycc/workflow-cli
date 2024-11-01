@@ -80,7 +80,7 @@ Arguments:
   <username>
     the name of the user.
   <permissions>
-	comma-delimited list of permissions (view,change,delete).
+    comma-delimited list of permissions (view,change,delete).
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
