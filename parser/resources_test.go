@@ -28,7 +28,7 @@ func (d FakeDryccCmd) ResourcesList(string, int) error {
 	return errors.New("resources:list")
 }
 
-func (d FakeDryccCmd) ResourceGet(string, string) error {
+func (d FakeDryccCmd) ResourceGet(string, string, bool) error {
 	return errors.New("resources:describe")
 }
 

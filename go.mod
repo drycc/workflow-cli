@@ -5,7 +5,7 @@ go 1.23
 require (
 	github.com/containerd/console v1.0.4
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/drycc/controller-sdk-go v0.0.0-20241028091950-441681c47292
+	github.com/drycc/controller-sdk-go v0.0.0-20241122013249-f1d6fea5bf81
 	github.com/drycc/pkg v0.0.0-20241028091700-8caca001c932
 	github.com/minio/selfupdate v0.6.0
 	github.com/olekukonko/tablewriter v0.0.5

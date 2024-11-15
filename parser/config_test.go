@@ -12,24 +12,32 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) ConfigList(string, string, int) error {
-	return errors.New("config:list")
+func (d FakeDryccCmd) ConfigInfo(string, string, string, int) error {
+	return errors.New("config:info")
 }
 
-func (d FakeDryccCmd) ConfigSet(string, string, []string, string) error {
+func (d FakeDryccCmd) ConfigSet(string, string, string, []string, string) error {
 	return errors.New("config:set")
 }
 
-func (d FakeDryccCmd) ConfigUnset(string, string, []string, string) error {
+func (d FakeDryccCmd) ConfigUnset(string, string, string, []string, string) error {
 	return errors.New("config:unset")
 }
 
-func (d FakeDryccCmd) ConfigPull(string, string, string, bool, bool) error {
+func (d FakeDryccCmd) ConfigPull(string, string, string, string, bool, bool) error {
 	return errors.New("config:pull")
 }
 
-func (d FakeDryccCmd) ConfigPush(string, string, string, string) error {
+func (d FakeDryccCmd) ConfigPush(string, string, string, string, string) error {
 	return errors.New("config:push")
+}
+
+func (d FakeDryccCmd) ConfigAttach(string, string, string) error {
+	return errors.New("config:attach")
+}
+
+func (d FakeDryccCmd) ConfigDetach(string, string, string) error {
+	return errors.New("config:detach")
 }
 
 func TestConfig(t *testing.T) {
@@ -50,7 +58,7 @@ func TestConfig(t *testing.T) {
 		expected string
 	}{
 		{
-			args:     []string{"config:list"},
+			args:     []string{"config:info"},
 			expected: "",
 		},
 		{
@@ -70,8 +78,16 @@ func TestConfig(t *testing.T) {
 			expected: "",
 		},
 		{
+			args:     []string{"config:attach", "web", "g1"},
+			expected: "",
+		},
+		{
+			args:     []string{"config:detach", "web", "g1"},
+			expected: "",
+		},
+		{
 			args:     []string{"config"},
-			expected: "config:list",
+			expected: "config:info",
 		},
 	}
 

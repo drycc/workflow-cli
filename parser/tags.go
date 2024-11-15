@@ -52,7 +52,7 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
-  --version=<version>
+  -v --version=<version>
     the version for which the tag needs to be listed.
 `
 

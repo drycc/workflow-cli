@@ -194,8 +194,8 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+  --details
+    show extra details provided to resource
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -205,9 +205,10 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
+	details := safeGetBool(args, "--details")
 	name := safeGetString(args, "<name>")
 
-	return cmdr.ResourceGet(app, name)
+	return cmdr.ResourceGet(app, name, details)
 }
 
 func resourcePut(argv []string, cmdr cmd.Commander) error {

@@ -85,7 +85,7 @@ func TestTimeoutsList(t *testing.T) {
 		fmt.Fprintf(w, `{
       "owner": "jkirk",
       "app": "enterprise",
-      "values": {},
+      "values": [],
       "memory": {},
       "cpu": {},
       "tags": {},
@@ -115,7 +115,7 @@ worker    20
 		fmt.Fprintf(w, `{
       "owner": "bedison",
       "app": "franklin",
-      "values": {},
+      "values": [],
       "memory": {},
       "cpu": {},
       "tags": {},
@@ -154,7 +154,7 @@ func TestTimeoutsSet(t *testing.T) {
 		fmt.Fprintf(w, `{
       "owner": "jkirk",
       "app": "foo",
-      "values": {},
+      "values": [],
       "memory": {},
       "cpu": {},
       "termination_grace_period": {
@@ -193,7 +193,7 @@ web      10
 		fmt.Fprintf(w, `{
       "owner": "bedison",
       "app": "franklin",
-      "values": {},
+      "values": [],
       "memory": {},
       "cpu": {},
       "termination_grace_period": {
@@ -233,7 +233,7 @@ web      10
 		fmt.Fprintf(w, `{
       "owner": "foo",
       "app": "jim",
-      "values": {},
+      "values": [],
       "memory": {},
       "cpu": {},
       "termination_grace_period": {
@@ -284,7 +284,7 @@ func TestTimeoutsUnset(t *testing.T) {
 		fmt.Fprintf(w, `{
       "owner": "jkirk",
       "app": "foo",
-      "values": {},
+      "values": [],
       "memory": {},
       "cpu": {},
       "termination_grace_period": {
@@ -323,7 +323,7 @@ web      10
 		fmt.Fprintf(w, `{
       "owner": "bedison",
       "app": "franklin",
-      "values": {},
+      "values": [],
       "memory": {},
       "cpu": {},
       "termination_grace_period": {

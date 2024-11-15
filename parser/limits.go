@@ -54,7 +54,7 @@ Usage: drycc limits:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
-  --version=<version>
+  -v --version=<version>
     the version for which the limit needs to be listed.
 `
 
@@ -168,9 +168,9 @@ List all available limit plans.
 Usage: drycc limits:plans [options]
 
 Options:
-  --cpu=<cpu>
+  -c --cpu=<cpu>
     query plans that meet the specified number of cpu cores.
-  --memory=<memory>
+  -m --memory=<memory>
     query plans that meet the specified memory capacity, unit GiB.
   --spec-id=<spec-id>
     query plans that meet the specified spec id, see [specs] subcommand.

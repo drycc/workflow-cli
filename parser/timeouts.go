@@ -48,7 +48,7 @@ Usage: drycc timeouts:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
-  --version=<version>
+  -v --version=<version>
     the version for which the timeout needs to be listed.
 `
 

@@ -28,6 +28,10 @@ func (d FakeDryccCmd) PtsRestart(string, []string, string) error {
 	return errors.New("pts:restart")
 }
 
+func (d FakeDryccCmd) PtsClean(string, []string) error {
+	return errors.New("pts:clean")
+}
+
 func TestPts(t *testing.T) {
 	t.Parallel()
 
@@ -59,6 +63,10 @@ func TestPts(t *testing.T) {
 		},
 		{
 			args:     []string{"pts:scale", "web", "5"},
+			expected: "",
+		},
+		{
+			args:     []string{"pts:clean", "task"},
 			expected: "",
 		},
 		{

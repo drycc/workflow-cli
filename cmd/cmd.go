@@ -42,11 +42,13 @@ type Commander interface {
 	CertInfo(string, string) error
 	CertAttach(string, string, string) error
 	CertDetach(string, string, string) error
-	ConfigList(string, string, int) error
-	ConfigSet(string, string, []string, string) error
-	ConfigUnset(string, string, []string, string) error
-	ConfigPull(string, string, string, bool, bool) error
-	ConfigPush(string, string, string, string) error
+	ConfigInfo(string, string, string, int) error
+	ConfigSet(string, string, string, []string, string) error
+	ConfigUnset(string, string, string, []string, string) error
+	ConfigPull(string, string, string, string, bool, bool) error
+	ConfigPush(string, string, string, string, string) error
+	ConfigAttach(string, string, string) error
+	ConfigDetach(string, string, string) error
 	DomainsList(string, int) error
 	DomainsAdd(string, string, string) error
 	DomainsRemove(string, string) error
@@ -95,9 +97,10 @@ type Commander interface {
 	PtsDescribe(string, string) error
 	PtsScale(string, []string) error
 	PtsRestart(string, []string, string) error
-	RegistryList(string, int) error
-	RegistrySet(string, []string) error
-	RegistryUnset(string, []string) error
+	PtsClean(string, []string) error
+	RegistryList(string, string, int) error
+	RegistrySet(string, string, string, string) error
+	RegistryUnset(string, string) error
 	ReleasesList(string, string, int) error
 	ReleasesInfo(string, int) error
 	ReleasesDeploy(string, []string, bool, string) error
@@ -139,7 +142,7 @@ type Commander interface {
 	ResourcesCreate(string, string, string, []string, string) error
 	ResourcesList(string, int) error
 	ResourceDelete(string, string, string) error
-	ResourceGet(string, string) error
+	ResourceGet(string, string, bool) error
 	ResourcePut(string, string, string, []string, string) error
 	ResourceBind(string, string) error
 	ResourceUnbind(string, string) error

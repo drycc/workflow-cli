@@ -54,7 +54,7 @@ Usage: drycc releases:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  --ptypes=<ptypes>
+  -p --ptypes=<ptypes>
     the processes name as defined in your Procfile, comma separated.
   -l --limit=<num>
     the maximum number of results to display, defaults to config setting

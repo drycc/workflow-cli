@@ -280,7 +280,7 @@ func TestLimitsList(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
 			"app": "enterprise",
-			"values": {},
+			"values": [],
 			"limits": {
 				"web": "std1.large.c1m1",
 				"worker": "std1.large.c1m1",
@@ -345,7 +345,7 @@ func TestLimitsSet(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
 			"app": "foo",
-			"values": {},
+			"values": [],
 			"limits": {"web": "std1.large.c1m1"},
 			"tags": {},
 			"registry": {},
@@ -380,7 +380,7 @@ web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
 		fmt.Fprintf(w, `{
 			"owner": "bedison",
 			"app": "franklin",
-			"values": {},
+			"values": [],
 			"limits": {
 				"web": "std1.large.c1m1"
 			},
@@ -418,7 +418,7 @@ web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
 		fmt.Fprintf(w, `{
 			"owner": "foo",
 			"app": "jim",
-			"values": {},
+			"values": [],
 			"limits": {
 				"web": "std1.large.c1m1",
 				"worker": "std1.large.c1m1",
@@ -460,7 +460,7 @@ worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 
 		fmt.Fprintf(w, `{
 			"owner": "foo",
 			"app": "jim",
-			"values": {},
+			"values": [],
 			"limits": {
 				"web": "std1.large.c1m1",
 				"worker": "std1.large.c1m1",
@@ -505,7 +505,7 @@ func TestLimitsUnset(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
 			"app": "foo",
-			"values": {},
+			"values": [],
 			"limits": {
 				"web": "std1.large.c1m1"
 			},
@@ -542,7 +542,7 @@ web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
 		fmt.Fprintf(w, `{
 			"owner": "bedison",
 			"app": "franklin",
-			"values": {},
+			"values": [],
 			"limits": {},
 			"tags": {},
 			"registry": {},

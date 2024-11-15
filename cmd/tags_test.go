@@ -87,7 +87,7 @@ func TestTagsList(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
 			"app": "enterprise",
-			"values": {},
+			"values": [],
 			"memory": {},
 			"cpu": {},
 			"tags": {
@@ -135,7 +135,7 @@ func TestTagsSet(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
 			"app": "foo",
-			"values": {},
+			"values": [],
 			"memory": {},
 			"cpu": {},
 			"tags": {
@@ -184,7 +184,7 @@ func TestTagsUnset(t *testing.T) {
 		fmt.Fprintf(w, `{
 			"owner": "jkirk",
 			"app": "foo",
-			"values": {},
+			"values": [],
 			"memory": {},
 			"cpu": {},
 			"tags": {
