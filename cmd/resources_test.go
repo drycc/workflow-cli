@@ -167,7 +167,7 @@ func TestResourceGet(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.ResourceGet("example-go", "mysql")
+	err = cmdr.ResourceGet("example-go", "mysql", true)
 	assert.NoError(t, err)
 	// todo format data json to yaml
 	assert.Equal(t, b.String(), `App:        example-go                              

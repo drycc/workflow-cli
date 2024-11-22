@@ -45,7 +45,7 @@ Usage: drycc builds:info [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  --version=<version>
+  -v --version=<version>
     the version for which the build info needs to be displayed.
 `
 

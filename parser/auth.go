@@ -46,9 +46,9 @@ Arguments:
     a fully-qualified controller URI, e.g. "http://drycc.local3.dryccapp.com/".
 
 Options:
-  --username=<username>
+  -u --username=<username>
     provide a username for the account.
-  --password=<password>
+  -p --password=<password>
     provide a password for the account.
   --ssl-verify=true
     enables/disables SSL certificate verification for API requests

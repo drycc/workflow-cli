@@ -50,10 +50,10 @@ Arguments:
     the domain name to be bound to the application, such as 'domain.dryccapp.com'.
 
 Options:
-  --ptype=<ptype>
-    the ptype type for domain, default[web].
   -a --app=<app>
     the uniquely identifiable name for the application.
+  -p --ptype=<ptype>
+    the ptype type for domain, default[web].
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")

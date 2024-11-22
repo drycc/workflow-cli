@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
@@ -15,56 +14,51 @@ import (
 func TestParseConfig(t *testing.T) {
 	t.Parallel()
 
-	_, err := parseConfig([]string{"FOO=bar", "CAR star"})
+	_, err := parseConfig("", "", []string{"FOO=bar", "CAR star"})
 	assert.NotEqual(t, err, nil, "config")
 
-	actual, err := parseConfig([]string{"FOO=bar"})
+	actual, err := parseConfig("", "", []string{"FOO=bar"})
 	assert.NoError(t, err)
-	assert.Equal(t, actual, api.ConfigValues{"FOO": "bar"}, "map")
+	assert.Equal(t, actual, []api.ConfigValue{{KV: api.KV{Name: "FOO", Value: "bar"}}}, "map")
 
-	actual, err = parseConfig([]string{"FOO="})
+	actual, err = parseConfig("", "", []string{"FOO="})
 	assert.NoError(t, err)
-	assert.Equal(t, actual, api.ConfigValues{"FOO": ""}, "map")
-}
-
-func TestParseSSHKey(t *testing.T) {
-	t.Parallel()
-
-	_, err := parseSSHKey("foobar")
-	assert.NotEqual(t, err, "bogus key")
-
-	validSSHKey := "-----BEGIN OPENSSH PRIVATE KEY-----"
-
-	actual, err := parseSSHKey(validSSHKey)
-	assert.NoError(t, err)
-	assert.Equal(t, actual, validSSHKey, "plain key")
-
-	encodedSSHKey := "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0="
-
-	actual, err = parseSSHKey(encodedSSHKey)
-	assert.NoError(t, err)
-	assert.Equal(t, actual, validSSHKey, "base64 key")
-
-	keyFile, err := os.CreateTemp("", "drycc-cli-unit-test-sshkey")
-	assert.NoError(t, err)
-	defer os.Remove(keyFile.Name())
-	_, err = keyFile.Write([]byte(validSSHKey))
-	assert.NoError(t, err)
-	keyFile.Close()
-
-	actual, err = parseSSHKey(keyFile.Name())
-	assert.NoError(t, err)
-	assert.Equal(t, actual, validSSHKey, "key path")
+	assert.Equal(t, actual, []api.ConfigValue{{KV: api.KV{Name: "FOO", Value: ""}}}, "map")
 }
 
 func TestFormatConfig(t *testing.T) {
 	t.Parallel()
 
-	testMap := map[string]interface{}{
-		"TEST":  "testing",
-		"NCC":   1701,
-		"TRUE":  false,
-		"FLOAT": 12.34,
+	testMap := []api.ConfigValue{
+		{
+			Ptype: "web",
+			Group: "",
+			KV: api.KV{
+				Name:  "TEST",
+				Value: "testing",
+			},
+		}, {
+			Ptype: "web",
+			Group: "",
+			KV: api.KV{
+				Name:  "NCC",
+				Value: "1701",
+			},
+		}, {
+			Ptype: "web",
+			Group: "",
+			KV: api.KV{
+				Name:  "TRUE",
+				Value: false,
+			},
+		}, {
+			Ptype: "web",
+			Group: "",
+			KV: api.KV{
+				Name:  "FLOAT",
+				Value: 12.34,
+			},
+		},
 	}
 
 	testOut := formatConfig(testMap)
@@ -86,67 +80,6 @@ func TestSortKeys(t *testing.T) {
 	assert.Equal(t, *sortKeys(test), []string{"a", "b", "c", "d"}, "map")
 }
 
-func TestConfigList(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-
-	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `{
-    "owner": "jkirk",
-    "app": "foo",
-    "values": {
-        "TEST":  "testing",
-        "NCC":   "1701",
-        "TRUE":  "false",
-        "FLOAT": "12.34"
-    },
-    "typed_values": {
-		"web": {
-            "PORT":  "9000"
-		}
-    },
-    "memory": {},
-    "cpu": {},
-    "tags": {},
-    "registry": {},
-    "created": "2014-01-01T00:00:00UTC",
-    "updated": "2014-01-01T00:00:00UTC",
-    "uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
-}`)
-	})
-
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	err = cmdr.ConfigList("foo", "", -1)
-	assert.NoError(t, err)
-
-	assert.Equal(t, b.String(), `PTYPE    NAME     VALUE   
-N/A      FLOAT    12.34      
-N/A      NCC      1701       
-N/A      TEST     testing    
-N/A      TRUE     false      
-web      PORT     9000       
-`, "output")
-
-	b.Reset()
-	err = cmdr.ConfigList("foo", "web", -1)
-	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `PTYPE    NAME     VALUE   
-N/A      FLOAT    12.34      
-N/A      NCC      1701       
-N/A      TEST     testing    
-N/A      TRUE     false      
-web      PORT     9000       
-`, "output")
-
-}
-
 func TestConfigSet(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -159,9 +92,21 @@ func TestConfigSet(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Values: map[string]interface{}{
-					"TRUE":    "false",
-					"SSH_KEY": "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=",
+				Values: []api.ConfigValue{
+					{
+						Ptype: "web",
+						KV: api.KV{
+							Name:  "TRUE",
+							Value: "false",
+						},
+					},
+					{
+						Ptype: "web",
+						KV: api.KV{
+							Name:  "DEBUG",
+							Value: "true",
+						},
+					},
 				},
 			}, r)
 		}
@@ -169,13 +114,18 @@ func TestConfigSet(t *testing.T) {
 		fmt.Fprintf(w, `{
 	"owner": "jkirk",
 	"app": "foo",
-	"values": {
-			"TEST":  "testing",
-			"NCC":   "1701",
-			"TRUE":  "false",
-			"SSH_KEY": "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=",
-			"FLOAT": "12.34"
-	},
+	"values": [
+	  {
+	    "ptype": "web",
+	    "name": "TRUE",
+		"value": "false"
+	  },
+	  {
+	    "ptype": "web",
+	    "name": "DEBUG",
+		"value": "true"
+	  }
+	],
 	"memory": {},
 	"cpu": {},
 	"tags": {},
@@ -189,17 +139,11 @@ func TestConfigSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigSet("foo", "", []string{"TRUE=false", "SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----"}, "yes")
+	err = cmdr.ConfigSet("foo", "web", "", []string{"TRUE=false", "DEBUG=true"}, "yes")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done
 
-PTYPE    NAME       VALUE                                            
-N/A      FLOAT      12.34                                               
-N/A      NCC        1701                                                
-N/A      SSH_KEY    LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0=    
-N/A      TEST       testing                                             
-N/A      TRUE       false                                               
 `, "output")
 }
 
@@ -215,62 +159,13 @@ func TestConfigUnset(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Values: map[string]interface{}{
-					"FOO": nil,
-				},
-			}, r)
-		}
-
-		fmt.Fprintf(w, `{
-	"owner": "jkirk",
-	"app": "foo",
-	"values": {
-			"TEST":  "testing",
-			"NCC":   "1701",
-			"TRUE":  "false",
-			"FLOAT": "12.34"
-	},
-	"memory": {},
-	"cpu": {},
-	"tags": {},
-	"registry": {},
-	"created": "2014-01-01T00:00:00UTC",
-	"updated": "2014-01-01T00:00:00UTC",
-	"uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
-}`)
-	})
-
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	err = cmdr.ConfigUnset("foo", "", []string{"FOO"}, "yes")
-	assert.NoError(t, err)
-
-	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
-
-PTYPE    NAME     VALUE   
-N/A      FLOAT    12.34      
-N/A      NCC      1701       
-N/A      TEST     testing    
-N/A      TRUE     false      
-`, "output")
-}
-
-func TestConfigUnsetTypedValues(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-
-	server.Mux.HandleFunc("/v2/apps/foo/config/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.SetHeaders(w)
-		if r.Method == "POST" {
-			testutil.AssertBody(t, api.Config{
-				TypedValues: map[string]api.ConfigValues{
-					"web": {
-						"FOO": nil,
+				Values: []api.ConfigValue{
+					{
+						Ptype: "web",
+						KV: api.KV{
+							Name:  "FOO",
+							Value: "",
+						},
 					},
 				},
 			}, r)
@@ -279,17 +174,18 @@ func TestConfigUnsetTypedValues(t *testing.T) {
 		fmt.Fprintf(w, `{
 	"owner": "jkirk",
 	"app": "foo",
-	"values": {
-		"RELEASE_VERSION": "v1"
-	},
-	"typed_values": {
-		"web": {
-			"TEST":  "testing",
-			"NCC":   "1701",
-			"TRUE":  "false",
-			"FLOAT": "12.34"
-		}
-	},
+	"values": [
+	  {
+	    "ptype": "web",
+	    "name": "FLOAT",
+		"value": "12.34"
+	  },
+	  {
+	    "ptype": "web",
+	    "name": "NCC",
+		"value": "1701"
+	  }
+	],
 	"memory": {},
 	"cpu": {},
 	"tags": {},
@@ -303,16 +199,10 @@ func TestConfigUnsetTypedValues(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigUnset("foo", "web", []string{"FOO"}, "")
+	err = cmdr.ConfigUnset("foo", "web", "", []string{"FOO"}, "yes")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing config... done
 
-PTYPE    NAME               VALUE   
-N/A      RELEASE_VERSION    v1         
-web      FLOAT              12.34      
-web      NCC                1701       
-web      TEST               testing    
-web      TRUE               false      
 `, "output")
 }

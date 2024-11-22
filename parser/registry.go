@@ -48,7 +48,9 @@ Usage: drycc registry:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
-  --version=<version>
+  -p --ptype=<ptype>
+    the ptype for registry.
+  -v --version=<version>
     the version for which the registry needs to be listed.
 `
 
@@ -62,7 +64,8 @@ Options:
 			return err
 		}
 	}
-	return cmdr.RegistryList(safeGetString(args, "--app"), version)
+	ptype := safeGetValue(args, "--ptype", "")
+	return cmdr.RegistryList(safeGetString(args, "--app"), ptype, version)
 }
 
 func registrySet(argv []string, cmdr cmd.Commander) error {
@@ -70,18 +73,19 @@ func registrySet(argv []string, cmdr cmd.Commander) error {
 Sets registry information for an application. These credentials are the same as those used for
 'podmain login' to the private registry.
 
-Usage: drycc registry:set <key>=<value>... [options]
+Usage: drycc registry:set <username> <password> [options]
 
 Arguments:
-  <key>
-    the uniquely identifiable name for logging into the registry. Valid keys are "username" or
-    "password"
-  <value>
-    the value of said environment variable. For example, "bob" or "mysecretpassword"
+  <username>
+    the username of the registry.
+  <password>
+    the password of the registry.
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  -p --ptype=<ptype>
+    the ptype for registry, default[web].
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -91,23 +95,23 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	info := args["<key>=<value>"].([]string)
-
-	return cmdr.RegistrySet(app, info)
+	u := safeGetString(args, "<username>")
+	p := safeGetString(args, "<password>")
+	ptype := safeGetValue(args, "--ptype", "web")
+	return cmdr.RegistrySet(app, ptype, u, p)
 }
 
 func registryUnset(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Unsets registry information for an application.
 
-Usage: drycc registry:unset <key>... [options]
-
-Arguments:
-  <key> the registry key to unset, for example: "username" or "password"
+Usage: drycc registry:unset [options]
 
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
+  -p --ptype=<ptype>
+    the ptype for registry, default[web].
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -117,7 +121,6 @@ Options:
 	}
 
 	app := safeGetString(args, "--app")
-	key := args["<key>"].([]string)
-
-	return cmdr.RegistryUnset(app, key)
+	ptype := safeGetValue(args, "--ptype", "web")
+	return cmdr.RegistryUnset(app, ptype)
 }

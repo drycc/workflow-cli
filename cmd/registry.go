@@ -2,14 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
 )
 
 // RegistryList lists an app's registry information.
-func (d *DryccCmd) RegistryList(appID string, version int) error {
+func (d *DryccCmd) RegistryList(appID, ptype string, version int) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -22,28 +21,38 @@ func (d *DryccCmd) RegistryList(appID string, version int) error {
 	}
 	if len(config.Registry) == 0 {
 		d.Println(fmt.Sprintf("No registrys found in %s app.", appID))
+		return nil
+	}
+	ptypes := []string{}
+	if ptype != "" {
+		ptypes = append(ptypes, ptype)
+
 	} else {
-		table := d.getDefaultFormatTable([]string{"KEY", "VALUE"})
-		for _, key := range *sortKeys(config.Registry) {
+		for ptype := range config.Registry {
+			ptypes = append(ptypes, ptype)
+		}
+	}
+
+	table := d.getDefaultFormatTable([]string{"PTYPE", "USERNAME", "PASSWORD"})
+	for _, ptype := range sortPtypes(ptypes) {
+		if config.Registry[ptype]["username"] != nil {
 			table.Append([]string{
-				key,
-				fmt.Sprintf("%v", config.Registry[key]),
+				ptype,
+				fmt.Sprintf("%v", config.Registry[ptype]["username"]),
+				fmt.Sprintf("%v", config.Registry[ptype]["password"]),
 			})
 		}
-		table.Render()
 	}
+
+	table.Render()
+
 	return nil
 }
 
 // RegistrySet sets an app's registry information.
-func (d *DryccCmd) RegistrySet(appID string, item []string) error {
+func (d *DryccCmd) RegistrySet(appID, ptype, username, password string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
-	if err != nil {
-		return err
-	}
-
-	registryMap, err := parseInfos(item)
 	if err != nil {
 		return err
 	}
@@ -51,8 +60,14 @@ func (d *DryccCmd) RegistrySet(appID string, item []string) error {
 	d.Print("Applying registry information... ")
 
 	quit := progress(d.WOut)
+
 	configObj := api.Config{}
-	configObj.Registry = registryMap
+	registry := make(map[string]map[string]interface{})
+	registry[ptype] = map[string]interface{}{
+		"username": username,
+		"password": password,
+	}
+	configObj.Registry = registry
 
 	_, err = config.Set(s.Client, appID, configObj)
 	quit <- true
@@ -63,11 +78,11 @@ func (d *DryccCmd) RegistrySet(appID string, item []string) error {
 
 	d.Print("done\n\n")
 
-	return d.RegistryList(appID, -1)
+	return d.RegistryList(appID, ptype, -1)
 }
 
 // RegistryUnset removes an app's registry information.
-func (d *DryccCmd) RegistryUnset(appID string, items []string) error {
+func (d *DryccCmd) RegistryUnset(appID, ptype string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -79,15 +94,12 @@ func (d *DryccCmd) RegistryUnset(appID string, items []string) error {
 	quit := progress(d.WOut)
 
 	configObj := api.Config{}
-
-	registryMap := make(map[string]interface{})
-
-	for _, key := range items {
-		registryMap[key] = nil
+	registry := make(map[string]map[string]interface{})
+	registry[ptype] = map[string]interface{}{
+		"username": nil,
+		"password": nil,
 	}
-
-	configObj.Registry = registryMap
-
+	configObj.Registry = registry
 	_, err = config.Set(s.Client, appID, configObj)
 	quit <- true
 	<-quit
@@ -97,36 +109,5 @@ func (d *DryccCmd) RegistryUnset(appID string, items []string) error {
 
 	d.Print("done\n\n")
 
-	return d.RegistryList(appID, -1)
-}
-
-func parseInfos(items []string) (map[string]interface{}, error) {
-	registryMap := make(map[string]interface{})
-
-	for _, item := range items {
-		key, value, err := parseInfo(item)
-
-		if err != nil {
-			return nil, err
-		}
-
-		registryMap[key] = value
-	}
-
-	return registryMap, nil
-}
-
-func parseInfo(item string) (string, string, error) {
-	parts := strings.SplitN(item, "=", 2)
-
-	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
-		return "", "", fmt.Errorf(`%s is invalid. Must be in format key=value
-Examples: username=bob password=s3cur3pw1`, item)
-	}
-
-	if parts[0] != "username" && parts[0] != "password" {
-		return "", "", fmt.Errorf(`%s is invalid. Valid keys are "username" or "password"`, parts[0])
-	}
-
-	return parts[0], parts[1], nil
+	return nil
 }

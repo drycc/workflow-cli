@@ -11,6 +11,7 @@ import (
 	"time"
 
 	drycc "github.com/drycc/controller-sdk-go"
+	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/settings"
 	"github.com/olekukonko/tablewriter"
@@ -177,6 +178,26 @@ func sortKeys(data map[string]interface{}) *[]string {
 	}
 	sort.Strings(keys)
 	return &keys
+}
+
+func sortConfigValues(data []api.ConfigValue) []api.ConfigValue {
+	sort.Slice(data, func(i, j int) bool {
+		return strings.ToLower(data[i].Name) < strings.ToLower(data[j].Name)
+	})
+	return data
+}
+
+func sortPtypes(ptypes []string) []string {
+	sort.Slice(ptypes, func(i, j int) bool {
+		if ptypes[i] == "web" {
+			return true
+		}
+		if ptypes[j] == "web" {
+			return false
+		}
+		return ptypes[i] < ptypes[j]
+	})
+	return ptypes
 }
 
 func safeGetString(data string) string {

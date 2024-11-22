@@ -14,6 +14,7 @@ pts:list        list application process types
 pts:describe    print a detailed description of the selected process type
 pts:restart     restart an application or process types
 pts:scale       scale process types of replicas (e.g. web=4 worker=2)
+pts:clean       clean process types of not used
 
 Use 'drycc help [command]' to learn more.
 `
@@ -27,6 +28,8 @@ Use 'drycc help [command]' to learn more.
 		return ptsRestart(argv, cmdr)
 	case "pts:scale":
 		return ptsScale(argv, cmdr)
+	case "pts:clean":
+		return ptsClean(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -140,4 +143,29 @@ Options:
 
 	apps := safeGetString(args, "--app")
 	return cmdr.PtsScale(apps, args["<ptype>=<num>"].([]string))
+}
+
+func ptsClean(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Clean process types of not used.
+
+Usage: drycc pts:clean <ptype>... [options]
+
+Arguments:
+  <ptype>
+    the process name as defined in your Procfile, such as 'web' or 'worker'.
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	apps := safeGetString(args, "--app")
+	return cmdr.PtsScale(apps, args["<ptype>"].([]string))
 }

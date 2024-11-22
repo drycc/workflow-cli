@@ -12,15 +12,15 @@ import (
 // Create fake implementations of each method that return the argument
 // we expect to have called the function (as an error to satisfy the interface).
 
-func (d FakeDryccCmd) RegistryList(string, int) error {
+func (d FakeDryccCmd) RegistryList(string, string, int) error {
 	return errors.New("registry:list")
 }
 
-func (d FakeDryccCmd) RegistrySet(string, []string) error {
+func (d FakeDryccCmd) RegistrySet(string, string, string, string) error {
 	return errors.New("registry:set")
 }
 
-func (d FakeDryccCmd) RegistryUnset(string, []string) error {
+func (d FakeDryccCmd) RegistryUnset(string, string) error {
 	return errors.New("registry:unset")
 }
 
@@ -46,11 +46,11 @@ func TestRegistry(t *testing.T) {
 			expected: "",
 		},
 		{
-			args:     []string{"registry:set", "username", "value"},
+			args:     []string{"registry:set", "username", "password"},
 			expected: "",
 		},
 		{
-			args:     []string{"registry:unset", "username"},
+			args:     []string{"registry:unset"},
 			expected: "",
 		},
 		{

@@ -60,9 +60,9 @@ Usage: drycc healthchecks:list [options]
 Options:
   -a --app=<app>
     the uniquely identifiable name of the application.
-  --ptype=<ptype>
+  -p --ptype=<ptype>
     the ptype for which the health check needs to be listed.
-  --version=<version>
+  -v --version=<version>
     the version for which the health check needs to be listed.
 `
 
@@ -131,10 +131,10 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  -p --path=<path>
-    the relative URL path for 'httpGet' probes. [default: /]
-  --ptype=<ptype>
+  -p --ptype=<ptype>
     the ptype for which the health check needs to be applied.
+  --path=<path>
+    the relative URL path for 'httpGet' probes. [default: /]
   --headers=<headers>...
     the HTTP headers to send for 'httpGet' probes, separated by commas.
   --initial-delay-timeout=<initial-delay-timeout>
@@ -234,7 +234,7 @@ Arguments:
 Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
-  --ptype=<ptype>
+  -p --ptype=<ptype>
     the ptype for which the health check needs to be removed.
 `
 

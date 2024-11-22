@@ -164,7 +164,7 @@ func (d *DryccCmd) ResourcesList(appID string, results int) error {
 }
 
 // ResourceGet describe a resource from the application
-func (d *DryccCmd) ResourceGet(appID, name string) error {
+func (d *DryccCmd) ResourceGet(appID, name string, details bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -189,11 +189,13 @@ func (d *DryccCmd) ResourceGet(appID, name string) error {
 	for _, key := range *sortKeys(resource.Data) {
 		table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Data[key])})
 	}
-	table.Append([]string{"Options:"})
-	for _, key := range *sortKeys(resource.Options) {
-		table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Options[key])})
+	if details {
+		table.Append([]string{"Options:"})
+		for _, key := range *sortKeys(resource.Options) {
+			table.Append([]string{"", fmt.Sprintf("%s:", key), fmt.Sprintf("%s", resource.Options[key])})
+		}
+		table.Append([]string{"Message:", d.wrapString(safeGetString(resource.Message))})
 	}
-	table.Append([]string{"Message:", d.wrapString(safeGetString(resource.Message))})
 	table.Append([]string{"Created:", d.formatTime(resource.Created)})
 	table.Append([]string{"Updated:", d.formatTime(resource.Updated)})
 	table.Render()

@@ -21,6 +21,7 @@ func TestPrintProcessTypes(t *testing.T) {
 			UpToDate:          1,
 			AvailableReplicas: 1,
 			Started:           "2024-07-04T14:33:00CST",
+			Garbage:           false,
 		},
 		{
 			Name:              "worker",
@@ -29,6 +30,7 @@ func TestPrintProcessTypes(t *testing.T) {
 			UpToDate:          1,
 			AvailableReplicas: 1,
 			Started:           "2024-07-04T14:33:00CST",
+			Garbage:           false,
 		},
 	}
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -39,9 +41,9 @@ func TestPrintProcessTypes(t *testing.T) {
 
 	printProcessTypes(&DryccCmd{WOut: &b, ConfigFile: cf}, "appname", ptypes)
 
-	assert.Equal(t, b.String(), `NAME      RELEASE    READY    UP-TO-DATE    AVAILABLE    STARTED                
-web       v1         1/1      1             1            2024-07-04T14:33:00CST    
-worker    v1         1/1      1             1            2024-07-04T14:33:00CST    
+	assert.Equal(t, b.String(), `NAME      RELEASE    READY    UP-TO-DATE    AVAILABLE    STARTED                   GARBAGE 
+web       v1         1/1      1             1            2024-07-04T14:33:00CST    false      
+worker    v1         1/1      1             1            2024-07-04T14:33:00CST    false      
 `, "output")
 }
 
@@ -68,7 +70,8 @@ func TestPtsList(t *testing.T) {
 					"ready": "1/1",
 					"up_to_date": 1,
 					"available_replicas": 1,
-					"started": "2016-02-13T00:47:52"
+					"started": "2016-02-13T00:47:52",
+					"garbage": false
 				}
 			]
 		}`)
@@ -77,8 +80,8 @@ func TestPtsList(t *testing.T) {
 	err = cmdr.PtsList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME    RELEASE    READY    UP-TO-DATE    AVAILABLE    STARTED             
-web     v1         1/1      1             1            2016-02-13T00:47:52    
+	assert.Equal(t, b.String(), `NAME    RELEASE    READY    UP-TO-DATE    AVAILABLE    STARTED                GARBAGE 
+web     v1         1/1      1             1            2016-02-13T00:47:52    false      
 `, "output")
 }
 
@@ -239,5 +242,27 @@ func TestPtsDescribe(t *testing.T) {
         }`)
 	})
 	err = cmdr.PtsDescribe("foo", "web")
+	assert.NoError(t, err)
+}
+
+func TestPtsClean(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/testapp/ptypes/clean/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.AssertBody(t, map[string]string{"ptypes": "worker"}, r)
+		testutil.SetHeaders(w)
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	b.Reset()
+
+	err = cmdr.PtsClean("testapp", []string{"worker"})
 	assert.NoError(t, err)
 }

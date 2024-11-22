@@ -170,7 +170,7 @@ func TestVolumesClientCp(t *testing.T) {
 			fmt.Fprintf(w, `{"results":[{"name":"hello.txt","size":"4159","timestamp":"2024-06-25T22:55:16+08:00","type":"file","path":"/hello.txt"}], "count": 1}`)
 		}
 	})
-	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/hello.txt", func(w http.ResponseWriter, r *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/hello.txt", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		fmt.Fprintf(w, `hello word`)
 	})

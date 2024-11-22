@@ -116,13 +116,37 @@ func (d *DryccCmd) PtsRestart(appID string, targets []string, confirm string) er
 	return nil
 }
 
+// PtsRestart restarts an app's processes.
+func (d *DryccCmd) PtsClean(appID string, targets []string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+	d.Printf("Cleaning process types... but first, %s!\n", drinkOfChoice())
+	startTime := time.Now()
+	quit := progress(d.WOut)
+	ptypes := strings.Join(targets, ",")
+	targetMap := map[string]string{
+		"ptypes": ptypes,
+	}
+	err = pts.Clean(s.Client, appID, targetMap)
+	quit <- true
+	<-quit
+	if err != nil {
+		return err
+	}
+
+	d.Printf("done in %ds\n", int(time.Since(startTime).Seconds()))
+	return nil
+}
+
 func printProcessTypes(d *DryccCmd, appID string, ptypes api.Ptypes) {
 	pts := pts.ByType(ptypes)
 
 	if len(pts) == 0 {
 		d.Println(fmt.Sprintf("No processes found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "RELEASE", "READY", "UP-TO-DATE", "AVAILABLE", "STARTED"})
+		table := d.getDefaultFormatTable([]string{"NAME", "RELEASE", "READY", "UP-TO-DATE", "AVAILABLE", "STARTED", "GARBAGE"})
 		for _, pt := range pts {
 			table.Append([]string{
 				pt.Name,
@@ -131,6 +155,7 @@ func printProcessTypes(d *DryccCmd, appID string, ptypes api.Ptypes) {
 				fmt.Sprintf("%v", pt.UpToDate),
 				fmt.Sprintf("%v", pt.AvailableReplicas),
 				d.formatTime(pt.Started),
+				fmt.Sprintf("%t", pt.Garbage),
 			})
 		}
 		table.Render()

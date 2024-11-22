@@ -75,9 +75,9 @@ Arguments:
   provide a alias for controller authentication token.
 
 Options:
-  --username=<username>
+  -u --username=<username>
     provide a username for the account.
-  --password=<password>
+  -p --password=<password>
     provide a password for the account.
 `
 
