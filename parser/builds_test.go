@@ -13,7 +13,7 @@ func (d FakeDryccCmd) BuildsInfo(string, int) error {
 	return errors.New("builds:info")
 }
 
-func (d FakeDryccCmd) BuildsCreate(string, string, string, string, string) error {
+func (d FakeDryccCmd) BuildsCreate(string, string, string, string, string, string) error {
 	return errors.New("builds:create")
 }
 
