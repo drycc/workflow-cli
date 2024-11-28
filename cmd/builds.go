@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	yaml "gopkg.in/yaml.v3"
 
+	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/builds"
 )
 
@@ -54,7 +56,7 @@ func (d *DryccCmd) BuildsInfo(appID string, version int) error {
 }
 
 // BuildsCreate creates a build for an app.
-func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string, dryccfile string) error {
+func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccfile, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -84,7 +86,11 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile string, dryccfile 
 			return err
 		}
 	}
-
+	// check procfileMap dryccfileMap stack is exist
+	err = buildConfirmAction(s.Client, appID, procfileMap, dryccfileMap, confirm)
+	if err != nil {
+		return err
+	}
 	d.Print("Creating build... ")
 	quit := progress(d.WOut)
 	_, err = builds.New(s.Client, appID, image, stack, procfileMap, dryccfileMap)
@@ -107,4 +113,25 @@ func parseProcfile(procfile []byte) (map[string]string, error) {
 func parseDryccfile(dryccfile []byte) (map[string]interface{}, error) {
 	dryccfileMap := make(map[string]interface{})
 	return dryccfileMap, yaml.Unmarshal(dryccfile, &dryccfileMap)
+}
+
+func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]string,
+	dryccfileMap map[string]interface{}, confirm string) error {
+
+	build, _ := builds.Get(c, appID, 0)
+
+	if ((len(build.Procfile) != 0 && len(procfileMap) == 0) || (len(build.Dryccfile) != 0 && len(dryccfileMap) == 0)) && (confirm == "" || confirm != "yes") {
+		// hint
+		fmt.Printf(` !    WARNING: Potentially Build Create Action
+ !    The Procfile or drycc.yaml is empty, not last time
+ !    To proceed, type "yes" !
+
+> `)
+
+		fmt.Scanln(&confirm)
+		if confirm != "yes" {
+			return fmt.Errorf("cancel the build create action")
+		}
+	}
+	return nil
 }

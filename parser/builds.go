@@ -88,6 +88,8 @@ Options:
     A YAML file used to supply a Procfile to the application.
   -d --dryccfile=<dryccfile>
     A YAML file used to supply a drycc.yaml to the application.
+  --confirm=yes
+    To proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -99,11 +101,12 @@ Options:
 	app := safeGetString(args, "--app")
 	image := safeGetString(args, "<image>")
 	stack := safeGetString(args, "--stack")
+	confirm := safeGetString(args, "--confirm")
 	if stack == "" {
 		stack = "container"
 	}
 	procfile := safeGetValue(args, "--procfile", "Procfile")
 	dryccfile := safeGetValue(args, "--dryccfile", "drycc.yaml")
 
-	return cmdr.BuildsCreate(app, image, stack, procfile, dryccfile)
+	return cmdr.BuildsCreate(app, image, stack, procfile, dryccfile, confirm)
 }

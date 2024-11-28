@@ -16,7 +16,7 @@ func (d FakeDryccCmd) PsList(string, int) error {
 	return errors.New("ps:list")
 }
 
-func (d FakeDryccCmd) PsLogs(string, string, int, bool, string) error {
+func (d FakeDryccCmd) PsLogs(string, string, int, bool, string, bool) error {
 	return errors.New("ps:logs")
 }
 

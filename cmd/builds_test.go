@@ -84,28 +84,32 @@ func TestBuildsCreate(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/enterprise/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.CreateBuildRequest{
-			Image: "ncc/1701:A",
-			Stack: "container",
-		}, r)
-		w.WriteHeader(http.StatusCreated)
-		fmt.Fprintf(w, "{}")
+		if r.Method == "POST" {
+			testutil.AssertBody(t, api.CreateBuildRequest{
+				Image: "ncc/1701:A",
+				Stack: "container",
+			}, r)
+			w.WriteHeader(http.StatusCreated)
+			fmt.Fprintf(w, "{}")
+		}
 	})
 
-	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "container", "", "")
+	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "container", "", "", "yes")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/bradbury/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.CreateBuildRequest{
-			Image: "nx/72307:latest",
-			Stack: "container",
-			Procfile: map[string]string{
-				"web":  "./drive",
-				"warp": "./warp 8",
-			},
-		}, r)
+		if r.Method == "POST" {
+			testutil.AssertBody(t, api.CreateBuildRequest{
+				Image: "nx/72307:latest",
+				Stack: "container",
+				Procfile: map[string]string{
+					"web":  "./drive",
+					"warp": "./warp 8",
+				},
+			}, r)
+		}
 
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, "{}")
@@ -127,28 +131,30 @@ warp: ./warp 8`
 		}
 	}()
 
-	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", "container", tmpDir+"/Procfile", "")
+	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", "container", tmpDir+"/Procfile", "", "yes")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/franklin/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.CreateBuildRequest{
-			Image: "nx/326:latest",
-			Stack: "container",
-			Procfile: map[string]string{
-				"web":  "./drive",
-				"warp": "./warp 8",
-			},
-			Dryccfile: map[string]interface{}{
-				"deploy": map[string]interface{}{
-					"web": map[string]interface{}{
-						"command": []string{"bash", "-c"},
-						"args":    []string{"bundle exec puma -C config/puma.rb"},
+		if r.Method == "POST" {
+			testutil.AssertBody(t, api.CreateBuildRequest{
+				Image: "nx/326:latest",
+				Stack: "container",
+				Procfile: map[string]string{
+					"web":  "./drive",
+					"warp": "./warp 8",
+				},
+				Dryccfile: map[string]interface{}{
+					"deploy": map[string]interface{}{
+						"web": map[string]interface{}{
+							"command": []string{"bash", "-c"},
+							"args":    []string{"bundle exec puma -C config/puma.rb"},
+						},
 					},
 				},
-			},
-		}, r)
+			}, r)
+		}
 
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, "{}")
@@ -171,7 +177,7 @@ deploy:
 `), os.ModePerm)
 	assert.NoError(t, err)
 
-	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "Procfile", "drycc.yaml")
+	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "Procfile", "drycc.yaml", "yes")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 

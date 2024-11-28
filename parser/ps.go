@@ -86,6 +86,8 @@ Options:
     specify if the logs should be streamed.
   -c --container=<container>
     print the logs of this container.
+  --previous
+    print the logs for the previous instance of the container in a pod if it exists.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -104,8 +106,9 @@ Options:
 	follow := safeGetBool(args, "--follow")
 	podID := safeGetString(args, "<pod>")
 	container := safeGetString(args, "--container")
+	previous := args["--previous"].(bool)
 
-	return cmdr.PsLogs(app, podID, lines, follow, container)
+	return cmdr.PsLogs(app, podID, lines, follow, container, previous)
 }
 
 func psExec(argv []string, cmdr cmd.Commander) error {

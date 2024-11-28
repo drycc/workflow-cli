@@ -50,7 +50,7 @@ func (d *DryccCmd) PsList(appID string, results int) error {
 }
 
 // PodLogs returns the logs from an pod.
-func (d *DryccCmd) PsLogs(appID, podID string, lines int, follow bool, container string) error {
+func (d *DryccCmd) PsLogs(appID, podID string, lines int, follow bool, container string, previous bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -60,6 +60,7 @@ func (d *DryccCmd) PsLogs(appID, podID string, lines int, follow bool, container
 		Lines:     lines,
 		Follow:    follow,
 		Container: container,
+		Previous:  previous,
 	}
 	conn, err := ps.Logs(s.Client, appID, podID, request)
 	if err != nil {

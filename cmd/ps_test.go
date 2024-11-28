@@ -121,7 +121,7 @@ func TestPsLogs(t *testing.T) {
 			conn.WriteClose(100)
 		}),
 	)
-	err = cmdr.PsLogs("foo", "foo-web-111", 300, true, "runner")
+	err = cmdr.PsLogs("foo", "foo-web-111", 300, true, "runner", false)
 	assert.NoError(t, err)
 }
 
