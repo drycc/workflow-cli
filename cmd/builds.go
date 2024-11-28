@@ -132,7 +132,6 @@ func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]st
 		if confirm != "yes" {
 			return fmt.Errorf("cancel the build create action")
 		}
-		return nil
 	}
 	return nil
 }

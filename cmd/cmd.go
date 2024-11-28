@@ -89,7 +89,7 @@ type Commander interface {
 	PermUpdate(string, string, string) error
 	PermDelete(string, string) error
 	PsList(string, int) error
-	PsLogs(string, string, int, bool, string) error
+	PsLogs(string, string, int, bool, string, bool) error
 	PsExec(string, string, bool, bool, []string) error
 	PsDescribe(string, string) error
 	PsDelete(string, []string) error

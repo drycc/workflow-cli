@@ -167,5 +167,5 @@ Options:
 	}
 
 	apps := safeGetString(args, "--app")
-	return cmdr.PtsScale(apps, args["<ptype>"].([]string))
+	return cmdr.PtsClean(apps, args["<ptype>"].([]string))
 }
