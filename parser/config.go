@@ -243,7 +243,7 @@ Arguments:
   <ptype>
     the ptype that requires attach configurations.
   <groups>
-    the config groups.
+    comma separated list of config groups.
 
 Options:
   -a --app=<app>
@@ -272,7 +272,7 @@ Arguments:
   <ptype>
     the ptype that requires detach configurations.
   <groups>
-    the config groups.
+    comma separated list of config groups.
 
 Options:
   -a --app=<app>
