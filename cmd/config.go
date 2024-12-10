@@ -29,7 +29,7 @@ func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version 
 	}
 	// init output struct
 	cv := api.ConfigInfo{
-		Group: make(map[string][]api.KV),
+		Group: make(map[string][]api.ConfigVar),
 		Ptype: make(map[string]api.PtypeValue),
 	}
 	for _, value := range sortConfigValues(config.Values) {
@@ -38,10 +38,10 @@ func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version 
 			(group != "" && value.Group == group) ||
 			(ptype == "" && group == "") {
 			if value.Group != "" {
-				cv.Group[value.Group] = append(cv.Group[value.Group], api.KV{Name: value.Name, Value: value.Value})
+				cv.Group[value.Group] = append(cv.Group[value.Group], api.ConfigVar{Name: value.Name, Value: value.Value})
 			} else if value.Ptype != "" {
 				temp := cv.Ptype[value.Ptype]
-				temp.Env = append(temp.Env, api.KV{Name: value.Name, Value: value.Value})
+				temp.Env = append(temp.Env, api.ConfigVar{Name: value.Name, Value: value.Value})
 				cv.Ptype[value.Ptype] = temp
 
 				if len(config.ValuesRefs[value.Ptype]) != 0 {
@@ -122,9 +122,9 @@ func (d *DryccCmd) ConfigUnset(appID string, ptype string, group string, configV
 		valuesMap := api.ConfigValue{
 			Ptype: ptype,
 			Group: group,
-			KV: api.KV{
+			ConfigVar: api.ConfigVar{
 				Name:  configVar,
-				Value: "",
+				Value: nil,
 			},
 		}
 		valuesMaps = append(valuesMaps, valuesMap)
@@ -341,7 +341,7 @@ func parseConfig(ptype, group string, configVars []string) ([]api.ConfigValue, e
 			value := api.ConfigValue{
 				Ptype: ptype,
 				Group: group,
-				KV: api.KV{
+				ConfigVar: api.ConfigVar{
 					Name:  captures[1],
 					Value: captures[2],
 				},

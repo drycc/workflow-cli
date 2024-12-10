@@ -19,11 +19,11 @@ func TestParseConfig(t *testing.T) {
 
 	actual, err := parseConfig("", "", []string{"FOO=bar"})
 	assert.NoError(t, err)
-	assert.Equal(t, actual, []api.ConfigValue{{KV: api.KV{Name: "FOO", Value: "bar"}}}, "map")
+	assert.Equal(t, actual, []api.ConfigValue{{ConfigVar: api.ConfigVar{Name: "FOO", Value: "bar"}}}, "map")
 
 	actual, err = parseConfig("", "", []string{"FOO="})
 	assert.NoError(t, err)
-	assert.Equal(t, actual, []api.ConfigValue{{KV: api.KV{Name: "FOO", Value: ""}}}, "map")
+	assert.Equal(t, actual, []api.ConfigValue{{ConfigVar: api.ConfigVar{Name: "FOO", Value: ""}}}, "map")
 }
 
 func TestFormatConfig(t *testing.T) {
@@ -33,28 +33,28 @@ func TestFormatConfig(t *testing.T) {
 		{
 			Ptype: "web",
 			Group: "",
-			KV: api.KV{
+			ConfigVar: api.ConfigVar{
 				Name:  "TEST",
 				Value: "testing",
 			},
 		}, {
 			Ptype: "web",
 			Group: "",
-			KV: api.KV{
+			ConfigVar: api.ConfigVar{
 				Name:  "NCC",
 				Value: "1701",
 			},
 		}, {
 			Ptype: "web",
 			Group: "",
-			KV: api.KV{
+			ConfigVar: api.ConfigVar{
 				Name:  "TRUE",
 				Value: false,
 			},
 		}, {
 			Ptype: "web",
 			Group: "",
-			KV: api.KV{
+			ConfigVar: api.ConfigVar{
 				Name:  "FLOAT",
 				Value: 12.34,
 			},
@@ -95,14 +95,14 @@ func TestConfigSet(t *testing.T) {
 				Values: []api.ConfigValue{
 					{
 						Ptype: "web",
-						KV: api.KV{
+						ConfigVar: api.ConfigVar{
 							Name:  "TRUE",
 							Value: "false",
 						},
 					},
 					{
 						Ptype: "web",
-						KV: api.KV{
+						ConfigVar: api.ConfigVar{
 							Name:  "DEBUG",
 							Value: "true",
 						},
@@ -162,9 +162,9 @@ func TestConfigUnset(t *testing.T) {
 				Values: []api.ConfigValue{
 					{
 						Ptype: "web",
-						KV: api.KV{
+						ConfigVar: api.ConfigVar{
 							Name:  "FOO",
-							Value: "",
+							Value: nil,
 						},
 					},
 				},
