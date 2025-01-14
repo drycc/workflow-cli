@@ -18,10 +18,6 @@ pull -> builds:create
 rollback -> releases:rollback
 run -> apps:run
 scale -> pts:scale
-sharing -> perms:list
-sharing:add -> perms:add
-sharing:list -> perms:list
-sharing:remove -> perms:remove
 whoami -> auth:whoami
 `
 	actual := sortShortcuts()
