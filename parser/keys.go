@@ -47,7 +47,7 @@ Usage: drycc keys:list [options]
 
 Options:
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -71,11 +71,11 @@ Adds SSH keys for the logged in user.
 
 Usage: drycc keys:add [<name>] [<key>]
 
-<name> and <key> can be used in either order and are both optional
+<name> and <key> can be used in either order and are both optional.
 
 Arguments:
   <name>
-    name of the SSH key
+    name of the SSH key.
   <key>
     a local file path to an SSH public key used to push application code.
 `

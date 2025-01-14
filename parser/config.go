@@ -198,7 +198,7 @@ Options:
 
 func configPush(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Sets environment variables for an application or config group..
+Sets environment variables for an application or config group.
 
 This file can be read by foreman
 to load the local environment for your app. The file should be piped via

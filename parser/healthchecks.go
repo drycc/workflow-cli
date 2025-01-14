@@ -138,15 +138,15 @@ Options:
   --headers=<headers>...
     the HTTP headers to send for 'httpGet' probes, separated by commas.
   --initial-delay-timeout=<initial-delay-timeout>
-    the initial delay timeout for the probe [default: 50]
+    the initial delay timeout for the probe [default: 50].
   --timeout-seconds=<timeout-seconds>
     the number of seconds after which the probe times out [default: 50]
   --period-seconds=<period-seconds>
-    how often (in seconds) to perform the probe [default: 10]
+    how often (in seconds) to perform the probe [default: 10].
   --success-threshold=<success-threshold>
-    minimum consecutive successes for the probe to be considered successful after having failed [default: 1]
+    minimum consecutive successes for the probe to be considered successful after having failed [default: 1].
   --failure-threshold=<failure-threshold>
-    minimum consecutive successes for the probe to be considered failed after having succeeded [default: 3]
+    minimum consecutive successes for the probe to be considered failed after having succeeded [default: 3].
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")

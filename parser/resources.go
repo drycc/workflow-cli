@@ -65,7 +65,7 @@ Usage: drycc resources:services [options]
 
 Options:
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -95,7 +95,7 @@ Arguments:
 
 Options:
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -162,7 +162,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -195,7 +195,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   --details
-    show extra details provided to resource
+    show extra details provided to resource.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -214,7 +214,7 @@ Options:
 func resourcePut(argv []string, cmdr cmd.Commander) error {
 
 	usage := `
-update a resource from the application
+Update a resource from the application.
 
 Usage: drycc resources:update <plan> <name> [<param>=<value>...] [options]
 

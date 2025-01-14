@@ -48,7 +48,7 @@ Usage: drycc users:list [options]
 
 Options:
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -74,7 +74,7 @@ Usage: drycc users:enable <username>
 
 Arguments:
   <username>
-  the username you want to enable.
+    the username you want to enable.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -95,7 +95,7 @@ Usage: drycc users:disable <username>
 
 Arguments:
   <username>
-  the username you want to disable.
+    the username you want to disable.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")

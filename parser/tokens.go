@@ -10,9 +10,9 @@ func Tokens(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for tokens:
 
-tokens:list          lists tokens visible to the current controller.
-tokens:add           add a token for controller authentication.
-tokens:remove        remove a token for controller authentication.
+tokens:list          lists tokens visible to the current controller
+tokens:add           add a token for controller authentication
+tokens:remove        remove a token for controller authentication
 
 Use 'drycc help [command]' to learn more.
 `
@@ -49,7 +49,7 @@ Usage: drycc tokens:list [options]
 
 Options:
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -72,7 +72,7 @@ Usage: drycc tokens:add <alias> [options]
 
 Arguments:
   <alias>
-  provide a alias for controller authentication token.
+    provide a alias for controller authentication token.
 
 Options:
   -u --username=<username>
@@ -101,7 +101,7 @@ Usage: drycc tokens:remove <id>
 
 Arguments:
   <id>
-  the id of the token for controller authentication.
+    the id of the token for controller authentication.
 
 `
 

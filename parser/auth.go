@@ -51,7 +51,7 @@ Options:
   -p --password=<password>
     provide a password for the account.
   --ssl-verify=true
-    enables/disables SSL certificate verification for API requests
+    enables/disables SSL certificate verification for API requests.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -76,8 +76,6 @@ func authLogout(argv []string, cmdr cmd.Commander) error {
 Logs out from a controller and clears the user session.
 
 Usage: drycc auth:logout
-
-Options:
 `
 
 	if _, err := docopt.ParseArgs(usage, argv, ""); err != nil {

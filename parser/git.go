@@ -34,7 +34,7 @@ Use 'drycc help [command]' to learn more.
 
 func gitRemote(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Adds git remote of application to repository
+Adds git remote of application to repository.
 
 Usage: drycc git:remote [options]
 

@@ -42,14 +42,14 @@ Use 'drycc help [command]' to learn more.
 
 func servicesAdd(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Creates extra service for an application and binds it to specific route of the main app domain
+Creates extra service for an application and binds it to specific route of the main app domain.
 
 Usage: drycc services:add <ptype> <port>:<target> [options]
 
 Arguments:
   <ptype>
-    procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
-    only single extra service per Porcfile type could be created
+    procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT)
+    only single extra service per Porcfile type could be created.
   <port>
     the port that will be exposed by this service.
   <target>
@@ -77,7 +77,7 @@ Options:
 
 func servicesList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists extra services for an application
+Lists extra services for an application.
 
 Usage: drycc services:list [options]
 
@@ -99,14 +99,14 @@ Options:
 
 func servicesRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Deletes specific extra service for application
+Deletes specific extra service for application.
 
 Usage: drycc services:remove <ptype> <port> [options]
 
 Arguments:
   <ptype>
     procfile type which should handle the request, e.g. webhooks (should be bind to the port PORT).
-    Only single extra service per Porcfile type could be created
+    Only single extra service per Porcfile type could be created.
   <port>
     the port exposed by this service.
 

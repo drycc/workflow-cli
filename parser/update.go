@@ -14,7 +14,7 @@ Usage: drycc update [options]
 
 Options:
   -d --dry-run
-    simulate an update, only print the version info
+    simulate an update, only print the version info.
 `
 	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {

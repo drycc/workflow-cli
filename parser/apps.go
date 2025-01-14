@@ -73,7 +73,7 @@ Options:
   --no-remote
     do not create a 'drycc' git remote.
   -r --remote REMOTE
-    name of remote to create. [default: drycc]
+    name of remote to create. [default: drycc].
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -97,7 +97,7 @@ Usage: drycc apps:list [options]
 
 Options:
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -204,7 +204,7 @@ Usage: drycc apps:run [--mount=<volume>:<path>...] [options] [--] <command>...
 
 Arguments:
   <volume>
-    the volume name
+    the volume name.
   <path>
     the filesystem path.
   <command>

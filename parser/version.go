@@ -14,7 +14,7 @@ Usage: drycc version [options]
 
 Options:
   -a --all
-    list api and controller versions
+    list api and controller versions.
 `
 	args, err := docopt.ParseArgs(usage, argv, "")
 	if err != nil {

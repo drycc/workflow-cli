@@ -57,7 +57,7 @@ Options:
   -p --ptypes=<ptypes>
     the processes name as defined in your Procfile, comma separated.
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")

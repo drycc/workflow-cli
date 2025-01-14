@@ -87,9 +87,9 @@ Arguments:
   <ptype>
     the process name as defined in your Procfile, such as 'web' or 'web worker'.
   <key>
-    the tag key, for example: "environ" or "rack"
+    the tag key, for example: "environ" or "rack".
   <value>
-    the tag value, for example: "prod" or "1"
+    the tag value, for example: "prod" or "1".
 
 Options:
   -a --app=<app>
@@ -117,7 +117,7 @@ Arguments:
   <ptype>
     the process name as defined in your Procfile, such as 'web' or 'web worker'.
   <key>
-    the tag key to unset, for example: "environ" or "rack"
+    the tag key to unset, for example: "environ" or "rack".
 
 Options:
   -a --app=<app>

@@ -107,7 +107,7 @@ Options:
 
 func certRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
-removes a certificate/key pair from the application.
+Remove a certificate/key pair from the application.
 
 Usage: drycc certs:remove <name> [options]
 
@@ -131,13 +131,13 @@ Options:
 
 func certInfo(argv []string, cmdr cmd.Commander) error {
 	usage := `
-fetch more detailed information about a certificate
+Fetch more detailed information about a certificate.
 
 Usage: drycc certs:info <name> [options]
 
 Arguments:
   <name>
-    the name of the cert to get information from
+    the name of the cert to get information from.
 
 Options:
   -a --app=<app>
@@ -155,15 +155,15 @@ Options:
 
 func certAttach(argv []string, cmdr cmd.Commander) error {
 	usage := `
-attach a certificate to a domain.
+Attach a certificate to a domain.
 
 Usage: drycc certs:attach <name> <domain> [options]
 
 Arguments:
   <name>
-    name of the certificate to attach domain to
+    name of the certificate to attach domain to.
   <domain>
-    common name of the domain to attach to (needs to already be in the system)
+    common name of the domain to attach to (needs to already be in the system).
 
 Options:
   -a --app=<app>
@@ -182,7 +182,7 @@ Options:
 
 func certDetach(argv []string, cmdr cmd.Commander) error {
 	usage := `
-detach a certificate from a domain.
+Detach a certificate from a domain.
 
 Usage: drycc certs:detach <name> <domain> [options]
 

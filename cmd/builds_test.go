@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
@@ -146,10 +147,19 @@ warp: ./warp 8`
 					"warp": "./warp 8",
 				},
 				Dryccfile: map[string]interface{}{
-					"deploy": map[string]interface{}{
-						"web": map[string]interface{}{
-							"command": []string{"bash", "-c"},
-							"args":    []string{"bundle exec puma -C config/puma.rb"},
+					"pipeline": map[string]interface{}{
+						"web.yaml": map[string]interface{}{
+							"kind":  "pipeline",
+							"ptype": "web",
+							"deploy": map[string]interface{}{
+								"command": []string{
+									"bash",
+									"-c",
+								},
+								"args": []string{
+									"bundle exec puma -C config/puma.rb",
+								},
+							},
 						},
 					},
 				},
@@ -166,18 +176,22 @@ warp: ./warp 8
 `), os.ModePerm)
 	assert.NoError(t, err)
 
-	err = os.WriteFile("drycc.yaml", []byte(`
+	dryccpath := ".drycc"
+	os.MkdirAll(dryccpath, 0700)
+	defer os.RemoveAll(dryccpath)
+	err = os.WriteFile(filepath.Join(dryccpath, "web.yaml"), []byte(`
+kind: pipeline
+ptype: web
 deploy:
-  web:
-    command:
-    - bash
-    - -c
-    args:
-    - bundle exec puma -C config/puma.rb
+  command:
+  - bash
+  - -c
+  args:
+  - bundle exec puma -C config/puma.rb
 `), os.ModePerm)
 	assert.NoError(t, err)
 
-	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "Procfile", "drycc.yaml", "yes")
+	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "Procfile", dryccpath, "yes")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 

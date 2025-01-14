@@ -10,7 +10,7 @@ func Builds(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for builds:
 
-builds:info        Print information about a specific build.
+builds:info        Print information about a specific build
 builds:create      imports an image and deploys as a new release
 
 Use 'drycc help [command]' to learn more.
@@ -86,8 +86,8 @@ Options:
     The stack name for the application, defaults to container.
   -p --procfile=<procfile>
     A YAML file used to supply a Procfile to the application.
-  -d --dryccfile=<dryccfile>
-    A YAML file used to supply a drycc.yaml to the application.
+  -d --dryccpath=<dryccpath>
+    Drycc config path to the application, default is '.drycc'.
   --confirm=yes
     To proceed, type "yes".
 `
@@ -100,13 +100,11 @@ Options:
 
 	app := safeGetString(args, "--app")
 	image := safeGetString(args, "<image>")
-	stack := safeGetString(args, "--stack")
 	confirm := safeGetString(args, "--confirm")
-	if stack == "" {
-		stack = "container"
-	}
-	procfile := safeGetValue(args, "--procfile", "Procfile")
-	dryccfile := safeGetValue(args, "--dryccfile", "drycc.yaml")
 
-	return cmdr.BuildsCreate(app, image, stack, procfile, dryccfile, confirm)
+	stack := safeGetValue(args, "--stack", "container")
+	procfile := safeGetValue(args, "--procfile", "Procfile")
+	dryccpath := safeGetValue(args, "--dryccpath", ".")
+
+	return cmdr.BuildsCreate(app, image, stack, procfile, dryccpath, confirm)
 }

@@ -56,7 +56,7 @@ func (d *DryccCmd) BuildsInfo(appID string, version int) error {
 }
 
 // BuildsCreate creates a build for an app.
-func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccfile, confirm string) error {
+func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccpath, confirm string) error {
 	s, appID, err := load(d.ConfigFile, appID)
 
 	if err != nil {
@@ -76,13 +76,8 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccfile, confir
 	}
 
 	dryccfileMap := make(map[string]interface{})
-	if _, err := os.Stat(dryccfile); err == nil {
-		contents, err := os.ReadFile(dryccfile)
-		if err != nil {
-			return err
-		}
-
-		if dryccfileMap, err = parseDryccfile(contents); err != nil {
+	if info, err := os.Stat(dryccpath); err == nil && info.IsDir() {
+		if dryccfileMap, err = drycc.ParseDryccfile(dryccpath); err != nil {
 			return err
 		}
 	}
@@ -110,11 +105,6 @@ func parseProcfile(procfile []byte) (map[string]string, error) {
 	return procfileMap, yaml.Unmarshal(procfile, &procfileMap)
 }
 
-func parseDryccfile(dryccfile []byte) (map[string]interface{}, error) {
-	dryccfileMap := make(map[string]interface{})
-	return dryccfileMap, yaml.Unmarshal(dryccfile, &dryccfileMap)
-}
-
 func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]string,
 	dryccfileMap map[string]interface{}, confirm string) error {
 
@@ -123,7 +113,7 @@ func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]st
 	if ((len(build.Procfile) != 0 && len(procfileMap) == 0) || (len(build.Dryccfile) != 0 && len(dryccfileMap) == 0)) && (confirm == "" || confirm != "yes") {
 		// hint
 		fmt.Printf(` !    WARNING: Potentially Build Create Action
- !    The Procfile or drycc.yaml is empty, not last time
+ !    The Procfile or drycc file is empty, not last time
  !    To proceed, type "yes" !
 
 > `)

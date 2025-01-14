@@ -69,11 +69,11 @@ Arguments:
   <ptype>
     the process type to add to the application's autoscale settings.
   --min=<min>
-	minimum replicas to keep around
+	minimum replicas to keep around.
   --max=<max>
-	max replicas to scale up to
+	max replicas to scale up to.
   --cpu-percent=<cpu-percent>
-	target CPU utilization
+	target CPU utilization.
 
 Options:
   -a --app=<app>

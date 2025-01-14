@@ -189,12 +189,7 @@ func (d *DryccCmd) ConfigPull(appID, ptype, group, fileName string, interactive 
 	}
 
 	if interactive {
-		contents, err := os.ReadFile(fileName)
-		if err != nil {
-			return err
-		}
-		localConfigVars := strings.Split(string(contents), "\n")
-		configMap, err := parseEnv(localConfigVars[:len(localConfigVars)-1])
+		configMap, err := drycc.ParseEnv(fileName)
 		if err != nil {
 			return err
 		}
@@ -348,27 +343,6 @@ func parseConfig(ptype, group string, configVars []string) ([]api.ConfigValue, e
 			}
 			configMap = append(configMap, value)
 
-		} else {
-			return nil, fmt.Errorf("'%s' does not match the pattern 'key=var', ex: MODE=test", config)
-		}
-	}
-
-	return configMap, nil
-}
-
-func parseEnv(configVars []string) (map[string]interface{}, error) {
-	configMap := make(map[string]interface{})
-
-	regex := regexp.MustCompile(`^([A-z0-9_\-\.]+)=([\s\S]*)$`)
-	for _, config := range configVars {
-		// Skip config that starts with an comment
-		if config[0] == '#' {
-			continue
-		}
-
-		if regex.MatchString(config) {
-			captures := regex.FindStringSubmatch(config)
-			configMap[captures[1]] = captures[2]
 		} else {
 			return nil, fmt.Errorf("'%s' does not match the pattern 'key=var', ex: MODE=test", config)
 		}

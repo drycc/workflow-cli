@@ -58,7 +58,7 @@ Use 'drycc help [command]' to learn more.
 
 func routesCreate(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Creates routes for an application, provides a way to route requests
+Creates routes for an application, provides a way to route requests.
 
 Usage: drycc routes:add <name> <kind> [<backend>...] [options]
 
@@ -110,7 +110,7 @@ Options:
 
 func routesList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-List routes for an application
+List routes for an application.
 
 Usage: drycc routes:list [options]
 
@@ -138,7 +138,7 @@ Options:
 
 func routesGet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Get route rules for an application
+Get route rules for an application.
 
 Usage: drycc routes:get <name> [options]
 
@@ -165,7 +165,7 @@ Options:
 
 func routesSet(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Set route rules for an application
+Set route rules for an application.
 
 Usage: drycc routes:set <name> --rules-file=<rules-file> [options]
 
@@ -195,7 +195,7 @@ Options:
 
 func routesAttach(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Attach a route for an application
+Attach a route for an application.
 
 Usage: drycc routes:attach <name> --gateway=<gateway> --port=<port> [options]
 
@@ -228,7 +228,7 @@ Options:
 
 func routesDetach(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Detach a route for an application
+Detach a route for an application.
 
 Usage: drycc routes:detach <name> --gateway=<gateway> --port=<port> [options]
 

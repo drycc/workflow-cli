@@ -35,7 +35,7 @@ Use 'drycc help [command]' to learn more.
 
 func shortcutsList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists all relevant shortcuts for the CLI
+Lists all relevant shortcuts for the CLI.
 
 Usage: drycc shortcuts:list
 `

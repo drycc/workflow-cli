@@ -95,7 +95,7 @@ Unsets labels for an application.
 Usage: drycc labels:unset <key>... [options]
 
 Arguments:
-  <key> the label key to unset, for example: "git_repo" or "team"
+  <key> the label key to unset, for example: "git_repo" or "team".
 
 Options:
   -a --app=<app>

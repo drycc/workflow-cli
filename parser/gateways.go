@@ -42,7 +42,7 @@ Use 'drycc help [command]' to learn more.
 
 func gatewaysAdd(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Creates gateways for an application and binds it to allow listener of the main app domain
+Creates gateways for an application and binds it to allow listener of the main app domain.
 
 Usage: drycc gateways:add <name> --port=<port> --protocol=<protocol> [options]
 
@@ -75,7 +75,7 @@ Options:
 
 func gatewaysList(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Lists gateways for an application
+Lists gateways for an application.
 
 Usage: drycc gateways:list [options]
 
@@ -83,7 +83,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -103,7 +103,7 @@ Options:
 
 func gatewaysRemove(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Deletes specific gateway for application
+Deletes specific gateway for application.
 
 Usage: drycc gateways:remove <name> --port=<port> --protocol=<protocol> [options]
 

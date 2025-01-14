@@ -79,7 +79,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -l --limit=<num>
-    the maximum number of results to display, defaults to config setting
+    the maximum number of results to display, defaults to config setting.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
