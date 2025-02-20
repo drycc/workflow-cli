@@ -104,7 +104,7 @@ Options:
 
 	stack := safeGetValue(args, "--stack", "container")
 	procfile := safeGetValue(args, "--procfile", "Procfile")
-	dryccpath := safeGetValue(args, "--dryccpath", ".")
+	dryccpath := safeGetValue(args, "--dryccpath", ".drycc")
 
 	return cmdr.BuildsCreate(app, image, stack, procfile, dryccpath, confirm)
 }
