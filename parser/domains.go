@@ -53,7 +53,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   -p --ptype=<ptype>
-    the ptype type for domain, default[web].
+    the ptype for domain, default[web].
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")

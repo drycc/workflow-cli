@@ -51,6 +51,20 @@ func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version 
 			}
 		}
 	}
+
+	for k, v := range config.ValuesRefs {
+		if (ptype != "" && k == ptype) ||
+			(ptype == "" && group == "") {
+			if k != "" {
+				if len(v) != 0 {
+					temp := cv.Ptype[k]
+					temp.Ref = v
+					cv.Ptype[k] = temp
+				}
+			}
+		}
+	}
+
 	if len(cv.Ptype) == 0 && len(cv.Group) == 0 {
 		d.Println()
 		return nil
