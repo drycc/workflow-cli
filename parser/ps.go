@@ -84,7 +84,7 @@ Options:
     the number of lines to display, default to 300 lines, -1 showing all log lines.
   -f --follow
     specify if the logs should be streamed.
-  -c --container=<container>
+  --container=<container>
     print the logs of this container.
   --previous
     print the logs for the previous instance of the container in a pod if it exists.

@@ -88,7 +88,7 @@ Shortcut commands, use 'drycc shortcuts' to see all:
   open          open a URL to the app in a browser
   pull          imports an image and deploys as a new release
   run           run a command in an ephemeral app container
-  scale         scale processes by type (web=2, worker=1)
+  scale         scale processes by type (web=2 worker=1)
 
 Use 'git push drycc main' to deploy to an application.
 `
