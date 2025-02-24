@@ -8,9 +8,12 @@ import (
 	"path/filepath"
 	"testing"
 
+	"reflect"
+
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/yaml.v3"
 )
 
 func TestParseProcfile(t *testing.T) {
@@ -195,4 +198,141 @@ deploy:
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
+}
+
+func TestBuildsFetch(t *testing.T) {
+	t.Parallel()
+
+	// Mock server setup
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+
+	cmdr := DryccCmd{WOut: new(bytes.Buffer), ConfigFile: cf}
+
+	// Mock build data
+	server.Mux.HandleFunc("/v2/apps/testapp/build/", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+			"app": "testapp",
+			"procfile": {"web": "node server.js"},
+			"dryccfile": {
+				"pipeline": {
+					"web.yaml": {
+						"kind": "pipeline",
+						"ptype": "web",
+						"deploy": {
+							"command": ["bash", "-c"],
+							"args": ["echo hello"]
+						}
+					}
+				},
+				"config": {
+					"env1.env": {"KEY1": "VALUE1"},
+					"env2.env": {"KEY2": "VALUE2"}
+				}
+			}
+		}`)
+	})
+
+	// Helper function to compare YAML content ignoring field order
+	isEqualYAML := func(actual, expected string) bool {
+		var actualMap, expectedMap map[string]interface{}
+		err := yaml.Unmarshal([]byte(actual), &actualMap)
+		if err != nil {
+			return false
+		}
+		err = yaml.Unmarshal([]byte(expected), &expectedMap)
+		if err != nil {
+			return false
+		}
+		return reflect.DeepEqual(actualMap, expectedMap)
+	}
+
+	// Test case 1: Successful fetch with valid confirm
+	t.Run("Successful Fetch", func(t *testing.T) {
+		tmpDir := t.TempDir() // Create a unique temporary directory for this test
+		procfilePath := filepath.Join(tmpDir, "Procfile")
+		dryccpath := filepath.Join(tmpDir, ".drycc")
+
+		// Mock user input for confirmation
+		restoreStdin := os.Stdin
+		r, w, _ := os.Pipe()
+		os.Stdin = r
+		go func() {
+			defer w.Close() // Ensure the pipe is closed after writing
+			w.Write([]byte("yes\n"))
+		}()
+
+		err := cmdr.BuildsFetch("testapp", 0, procfilePath, dryccpath, "")
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
+
+		// Verify Procfile content
+		content, err := os.ReadFile(procfilePath)
+		if err != nil {
+			t.Fatalf("failed to read Procfile: %v", err)
+		}
+		expectedProcfile := "web: node server.js\n"
+		if string(content) != expectedProcfile {
+			t.Errorf("expected Procfile content %q, got %q", expectedProcfile, string(content))
+		}
+
+		// Verify .drycc/config/env1.env content
+		env1Content, err := os.ReadFile(filepath.Join(dryccpath, "config", "env1.env"))
+		if err != nil {
+			t.Fatalf("failed to read env1.env: %v", err)
+		}
+		expectedEnv1 := "KEY1=VALUE1\n"
+		if string(env1Content) != expectedEnv1 {
+			t.Errorf("expected env1.env content %q, got %q", expectedEnv1, string(env1Content))
+		}
+
+		// Verify .drycc/web.yaml content
+		webYamlContent, err := os.ReadFile(filepath.Join(dryccpath, "web.yaml"))
+		if err != nil {
+			t.Fatalf("failed to read web.yaml: %v", err)
+		}
+		expectedWebYaml := "kind: pipeline\nptype: web\ndeploy:\n  command:\n  - bash\n  - -c\n  args:\n  - echo hello\n"
+		if !isEqualYAML(string(webYamlContent), expectedWebYaml) {
+			t.Errorf("expected web.yaml content %q, got %q", expectedWebYaml, string(webYamlContent))
+		}
+
+		os.Stdin = restoreStdin
+	})
+
+	// Test case 2: User cancels the operation
+	t.Run("User Cancels Operation", func(t *testing.T) {
+		tmpDir := t.TempDir() // Create a unique temporary directory for this test
+		procfilePath := filepath.Join(tmpDir, "Procfile")
+		dryccpath := filepath.Join(tmpDir, ".drycc")
+
+		// Mock user input for cancellation
+		restoreStdin := os.Stdin
+		r, w, _ := os.Pipe()
+		os.Stdin = r
+		go func() {
+			defer w.Close() // Ensure the pipe is closed after writing
+			w.Write([]byte("no\n"))
+		}()
+
+		err := cmdr.BuildsFetch("testapp", 0, procfilePath, dryccpath, "")
+		if err == nil || err.Error() != "cancel the build create fetch" {
+			t.Fatalf("expected cancellation error, got %v", err)
+		}
+
+		// Verify files were not created
+		if _, err := os.Stat(procfilePath); !os.IsNotExist(err) {
+			t.Errorf("expected Procfile to not exist, but it does")
+		}
+
+		if _, err := os.Stat(dryccpath); !os.IsNotExist(err) {
+			t.Errorf("expected .drycc directory to not exist, but it does")
+		}
+
+		os.Stdin = restoreStdin
+	})
 }

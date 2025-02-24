@@ -104,7 +104,7 @@ Options:
   -a --app=<app>
     the uniquely identifiable name for the application.
   --confirm=yes
-    To proceed, type "yes".
+    to proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
