@@ -266,7 +266,7 @@ func TestBuildsFetch(t *testing.T) {
 			w.Write([]byte("yes\n"))
 		}()
 
-		err := cmdr.BuildsFetch("testapp", 0, procfilePath, dryccpath, "")
+		err := cmdr.BuildsFetch("testapp", 0, procfilePath, dryccpath, "", true)
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)
 		}
@@ -319,7 +319,7 @@ func TestBuildsFetch(t *testing.T) {
 			w.Write([]byte("no\n"))
 		}()
 
-		err := cmdr.BuildsFetch("testapp", 0, procfilePath, dryccpath, "")
+		err := cmdr.BuildsFetch("testapp", 0, procfilePath, dryccpath, "", true)
 		if err == nil || err.Error() != "cancel the build create fetch" {
 			t.Fatalf("expected cancellation error, got %v", err)
 		}

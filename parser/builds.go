@@ -114,7 +114,7 @@ Options:
 
 func buildsFetch(argv []string, cmdr cmd.Commander) error {
 	usage := `
-Print information about a specific build.
+Print process info about a specific build.
 
 Usage: drycc builds:fetch [options]
 
@@ -124,11 +124,13 @@ Options:
   -v --version=<version>
     the version for which the build info needs to be fetched.
   -p --procfile=<procfile>
-    a YAML file used to supply a Procfile to the application.
+    the filename of the procfile saved locally, default is 'Procfile'.
   -d --dryccpath=<dryccpath>
-    drycc config path to the application, default is '.drycc'.
+    the folder name of the dryccfile saved locally, default is '.drycc'.
   --confirm=yes
     to proceed, type "yes".
+  --save
+    save process info to the local.
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -147,7 +149,8 @@ Options:
 
 	procfile := safeGetValue(args, "--procfile", "Procfile")
 	dryccpath := safeGetValue(args, "--dryccpath", ".drycc")
+	save := args["--save"].(bool)
 	confirm := safeGetString(args, "--confirm")
 
-	return cmdr.BuildsFetch(app, version, procfile, dryccpath, confirm)
+	return cmdr.BuildsFetch(app, version, procfile, dryccpath, confirm, save)
 }

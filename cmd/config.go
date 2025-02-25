@@ -224,9 +224,9 @@ func (d *DryccCmd) ConfigPull(appID, ptype, group, fileName string, interactive 
 				configMap[value.Name] = value.Value
 			}
 		}
-		return os.WriteFile(fileName, []byte(formatEnv(configMap)), 0755)
+		return os.WriteFile(fileName, []byte(formatEnv(configMap)), 0664)
 	}
-	return os.WriteFile(fileName, []byte(formatConfig(configValues)), 0755)
+	return os.WriteFile(fileName, []byte(formatConfig(configValues)), 0664)
 }
 
 // ConfigPush pushes an app's config from a file.

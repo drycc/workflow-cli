@@ -36,7 +36,7 @@ type Commander interface {
 	TokensRemove(string, string) error
 	BuildsInfo(string, int) error
 	BuildsCreate(string, string, string, string, string, string) error
-	BuildsFetch(string, int, string, string, string) error
+	BuildsFetch(string, int, string, string, string, bool) error
 	CertsList(string, int) error
 	CertAdd(string, string, string, string) error
 	CertRemove(string, string) error
