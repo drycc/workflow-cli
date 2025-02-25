@@ -10,8 +10,9 @@ func Builds(argv []string, cmdr cmd.Commander) error {
 	usage := `
 Valid commands for builds:
 
-builds:info        Print information about a specific build
+builds:info        print information about a specific build
 builds:create      imports an image and deploys as a new release
+builds:fetch       fetch the Procfile and dryccfile to the local
 
 Use 'drycc help [command]' to learn more.
 `
@@ -21,6 +22,8 @@ Use 'drycc help [command]' to learn more.
 		return buildsInfo(argv, cmdr)
 	case "builds:create":
 		return buildsCreate(argv, cmdr)
+	case "builds:fetch":
+		return buildsFetch(argv, cmdr)
 	default:
 		if printHelp(argv, usage) {
 			return nil
@@ -81,15 +84,15 @@ Arguments:
 
 Options:
   -a --app=<app>
-    The uniquely identifiable name for the application.
+    the uniquely identifiable name for the application.
   -s --stack=<stack>
-    The stack name for the application, defaults to container.
+    the stack name for the application, defaults to container.
   -p --procfile=<procfile>
-    A YAML file used to supply a Procfile to the application.
+    a YAML file used to supply a Procfile to the application.
   -d --dryccpath=<dryccpath>
-    Drycc config path to the application, default is '.drycc'.
+    drycc config path to the application, default is '.drycc'.
   --confirm=yes
-    To proceed, type "yes".
+    to proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -107,4 +110,44 @@ Options:
 	dryccpath := safeGetValue(args, "--dryccpath", ".drycc")
 
 	return cmdr.BuildsCreate(app, image, stack, procfile, dryccpath, confirm)
+}
+
+func buildsFetch(argv []string, cmdr cmd.Commander) error {
+	usage := `
+Print information about a specific build.
+
+Usage: drycc builds:fetch [options]
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
+  -v --version=<version>
+    the version for which the build info needs to be fetched.
+  -p --procfile=<procfile>
+    a YAML file used to supply a Procfile to the application.
+  -d --dryccpath=<dryccpath>
+    drycc config path to the application, default is '.drycc'.
+  --confirm=yes
+    to proceed, type "yes".
+`
+
+	args, err := docopt.ParseArgs(usage, argv, "")
+
+	if err != nil {
+		return err
+	}
+
+	app := safeGetString(args, "--app")
+	var version int
+	if safeGetString(args, "--version") != "" {
+		if version, err = versionFromString(safeGetString(args, "--version")); err != nil {
+			return err
+		}
+	}
+
+	procfile := safeGetValue(args, "--procfile", "Procfile")
+	dryccpath := safeGetValue(args, "--dryccpath", ".drycc")
+	confirm := safeGetString(args, "--confirm")
+
+	return cmdr.BuildsFetch(app, version, procfile, dryccpath, confirm)
 }

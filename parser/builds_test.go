@@ -17,6 +17,10 @@ func (d FakeDryccCmd) BuildsCreate(string, string, string, string, string, strin
 	return errors.New("builds:create")
 }
 
+func (d FakeDryccCmd) BuildsFetch(string, int, string, string, string) error {
+	return errors.New("builds:fetch")
+}
+
 func TestBuilds(t *testing.T) {
 	t.Parallel()
 
@@ -40,6 +44,10 @@ func TestBuilds(t *testing.T) {
 		},
 		{
 			args:     []string{"builds:create", "drycc/example-go:latest"},
+			expected: "",
+		},
+		{
+			args:     []string{"builds:fetch"},
 			expected: "",
 		},
 		{

@@ -123,7 +123,7 @@ Options:
   -f --force
     force deploy.
   --confirm=yes
-    To proceed, type "yes".
+    to proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")

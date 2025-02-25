@@ -106,7 +106,7 @@ Options:
   -g --group=<group>
     the group for which the config needs to be set.
   --confirm=yes
-    To proceed, type "yes".
+    to proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -140,7 +140,7 @@ Options:
   -g --group=<group>
     the group for which the config needs to be unset.
   --confirm=yes
-    To proceed, type "yes".
+    to proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")
@@ -216,7 +216,7 @@ Options:
   --path=<path>
     a path leading to an environment file [default: .env]
   --confirm=yes
-    To proceed, type "yes".
+    to proceed, type "yes".
 `
 
 	args, err := docopt.ParseArgs(usage, argv, "")

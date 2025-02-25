@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	yaml "gopkg.in/yaml.v3"
 
@@ -100,6 +102,93 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccpath, confir
 	return nil
 }
 
+func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, confirm string) error {
+	s, appID, err := load(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	build, err := builds.Get(s.Client, appID, version)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+	// Confirm again
+	err = buildFetchConfirmAction(confirm, procfile, dryccpath)
+	if err != nil {
+		return err
+	}
+	os.Remove(procfile)
+	os.ReadDir(dryccpath)
+	if len(build.Procfile) != 0 {
+		err := os.WriteFile(procfile, []byte(d.toYamlString(build.Procfile, 2)), 0755)
+		if err != nil {
+			return fmt.Errorf("failed to write Procfile: %w", err)
+		}
+	}
+
+	if len(build.Dryccfile) != 0 {
+		err := writeDryccfileToPath(dryccpath, build.Dryccfile)
+		if err != nil {
+			return fmt.Errorf("failed to write Dryccfile: %w", err)
+		}
+	}
+	d.Println("done")
+
+	return nil
+
+}
+
+func writeDryccfileToPath(dryccpath string, dryccfile map[string]interface{}) error {
+	// Create the directory if it doesn't exist
+	err := os.MkdirAll(dryccpath, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("failed to create directory: %w", err)
+	}
+
+	// Write config section
+	if config, ok := dryccfile["config"].(map[string]interface{}); ok {
+		configDir := filepath.Join(dryccpath, "config")
+		err := os.MkdirAll(configDir, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("failed to create config directory: %w", err)
+		}
+
+		for key, values := range config {
+			envFilePath := filepath.Join(configDir, key)
+			var content string
+			for k, v := range values.(map[string]interface{}) {
+				// Append each key-value pair with newline
+				content += fmt.Sprintf("%s=%v\n", k, v)
+			}
+			// Write accumulated content once
+			err := os.WriteFile(envFilePath, []byte(content), 0755)
+			if err != nil {
+				return fmt.Errorf("failed to write env file: %w", err)
+			}
+		}
+	}
+
+	// Write pipeline section
+	if pipeline, ok := dryccfile["pipeline"].(map[string]interface{}); ok {
+		for fileName, pipelineConfig := range pipeline {
+			filePath := filepath.Join(dryccpath, fileName)
+			var buf bytes.Buffer
+			encoder := yaml.NewEncoder(&buf)
+			encoder.SetIndent(2)
+			if err := encoder.Encode(pipelineConfig); err != nil {
+				return fmt.Errorf("failed to marshal pipeline config: %w", err)
+			}
+			yamlContent := buf.Bytes()
+			err = os.WriteFile(filePath, yamlContent, 0755)
+			if err != nil {
+				return fmt.Errorf("failed to write pipeline file: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
 func parseProcfile(procfile []byte) (map[string]string, error) {
 	procfileMap := make(map[string]string)
 	return procfileMap, yaml.Unmarshal(procfile, &procfileMap)
@@ -121,6 +210,23 @@ func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]st
 		fmt.Scanln(&confirm)
 		if confirm != "yes" {
 			return fmt.Errorf("cancel the build create action")
+		}
+	}
+	return nil
+}
+
+func buildFetchConfirmAction(confirm, procfile, dryccpath string) error {
+
+	if confirm == "" || confirm != "yes" {
+		// hint
+		msg := fmt.Sprintf(" !    WARNING: Potentially Build Fetch Action\n"+
+			" !    This operation will first rm the current \x1b[1m%s\x1b[0m and \x1b[1m%s\x1b[0m locally\n"+
+			" !    To proceed, type \"yes\" !\n\n> ", procfile, dryccpath)
+
+		fmt.Print(msg)
+		fmt.Scanln(&confirm)
+		if confirm != "yes" {
+			return fmt.Errorf("cancel the build create fetch")
 		}
 	}
 	return nil
