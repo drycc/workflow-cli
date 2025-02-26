@@ -88,7 +88,7 @@ func TestListKeys(t *testing.T) {
 
 	folder := filepath.Join(name, ".ssh")
 
-	err = os.Mkdir(folder, 0755)
+	err = os.Mkdir(folder, 0600)
 	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc test@example.com")
@@ -302,7 +302,7 @@ func TestKeyAdd(t *testing.T) {
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
-	err = os.Mkdir(folder, 0755)
+	err = os.Mkdir(folder, 0600)
 	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -348,7 +348,7 @@ func TestKeyAddName(t *testing.T) {
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
-	err = os.Mkdir(folder, 0755)
+	err = os.Mkdir(folder, 0600)
 	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()

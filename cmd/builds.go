@@ -34,26 +34,6 @@ func (d *DryccCmd) BuildsInfo(appID string, version int) error {
 	table.Append([]string{"Updated:", build.Updated})
 	table.Render()
 
-	if len(build.Dockerfile) != 0 {
-		table = d.getDefaultFormatTable([]string{})
-		table.Append([]string{"Dockerfile:"})
-		table.Append([]string{d.indentString(build.Dockerfile, 2)})
-		table.Render()
-	}
-
-	if len(build.Procfile) != 0 {
-		table = d.getDefaultFormatTable([]string{})
-		table.Append([]string{"Procfile:"})
-		table.Append([]string{d.indentString(d.toYamlString(build.Procfile, 2), 2)})
-		table.Render()
-	}
-
-	if len(build.Dryccfile) != 0 {
-		table = d.getDefaultFormatTable([]string{})
-		table.Append([]string{"Dryccfile:"})
-		table.Append([]string{d.indentString(d.toYamlString(build.Dryccfile, 2), 2)})
-		table.Render()
-	}
 	return nil
 }
 
@@ -102,7 +82,7 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccpath, confir
 	return nil
 }
 
-func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, confirm string) error {
+func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, confirm string, save bool) error {
 	s, appID, err := load(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -113,33 +93,66 @@ func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, c
 		return err
 	}
 	// Confirm again
-	err = buildFetchConfirmAction(confirm, procfile, dryccpath)
+	dockerfile := "Dockerfile"
+	err = buildFetchConfirmAction(confirm, dockerfile, procfile, dryccpath, save)
 	if err != nil {
 		return err
 	}
-	os.Remove(procfile)
-	os.ReadDir(dryccpath)
+	if len(build.Dockerfile) != 0 {
+		err := writeDockerfileToPath(d, dockerfile, build.Dockerfile, save)
+		if err != nil {
+			return fmt.Errorf("failed to write Dockerfile: %w", err)
+		}
+	}
+
 	if len(build.Procfile) != 0 {
-		err := os.WriteFile(procfile, []byte(d.toYamlString(build.Procfile, 2)), 0755)
+		err := writeProcfileToPath(d, procfile, build.Procfile, save)
 		if err != nil {
 			return fmt.Errorf("failed to write Procfile: %w", err)
 		}
 	}
 
 	if len(build.Dryccfile) != 0 {
-		err := writeDryccfileToPath(dryccpath, build.Dryccfile)
+		err := writeDryccfileToPath(d, dryccpath, build.Dryccfile, save)
 		if err != nil {
 			return fmt.Errorf("failed to write Dryccfile: %w", err)
 		}
 	}
-	d.Println("done")
+	if save {
+		d.Println("done")
+	}
+	return nil
+}
 
+func writeDockerfileToPath(d *DryccCmd, dockerfile string, dockerinfo string, save bool) error {
+	if save {
+		os.Remove(dockerfile)
+		err := os.WriteFile(dockerfile, []byte(dockerinfo), 0664)
+		return err
+	}
+	d.Println("# Source:", dockerfile)
+	d.Println(dockerinfo)
 	return nil
 
 }
 
-func writeDryccfileToPath(dryccpath string, dryccfile map[string]interface{}) error {
+func writeProcfileToPath(d *DryccCmd, procfile string, Procinfo map[string]string, save bool) error {
+	if save {
+		os.Remove(procfile)
+		err := os.WriteFile(procfile, []byte(d.toYamlString(Procinfo, 2)), 0664)
+		return err
+	}
+	d.Println("# Source:", procfile)
+	d.Println(d.toYamlString(Procinfo, 2))
+	return nil
+}
+
+func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]interface{}, save bool) error {
 	// Create the directory if it doesn't exist
+	if save {
+		os.Remove(dryccpath)
+	}
+	os.ReadDir(dryccpath)
 	err := os.MkdirAll(dryccpath, os.ModePerm)
 	if err != nil {
 		return fmt.Errorf("failed to create directory: %w", err)
@@ -161,9 +174,14 @@ func writeDryccfileToPath(dryccpath string, dryccfile map[string]interface{}) er
 				content += fmt.Sprintf("%s=%v\n", k, v)
 			}
 			// Write accumulated content once
-			err := os.WriteFile(envFilePath, []byte(content), 0755)
-			if err != nil {
-				return fmt.Errorf("failed to write env file: %w", err)
+			if save {
+				err := os.WriteFile(envFilePath, []byte(content), 0664)
+				if err != nil {
+					return fmt.Errorf("failed to write env file: %w", err)
+				}
+			} else {
+				d.Println("# Source:", envFilePath)
+				d.Println(content)
 			}
 		}
 	}
@@ -179,9 +197,14 @@ func writeDryccfileToPath(dryccpath string, dryccfile map[string]interface{}) er
 				return fmt.Errorf("failed to marshal pipeline config: %w", err)
 			}
 			yamlContent := buf.Bytes()
-			err = os.WriteFile(filePath, yamlContent, 0755)
-			if err != nil {
-				return fmt.Errorf("failed to write pipeline file: %w", err)
+			if save {
+				err = os.WriteFile(filePath, yamlContent, 0664)
+				if err != nil {
+					return fmt.Errorf("failed to write pipeline file: %w", err)
+				}
+			} else {
+				d.Println("# Source:", filePath)
+				d.Println(string(yamlContent))
 			}
 		}
 	}
@@ -215,13 +238,13 @@ func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]st
 	return nil
 }
 
-func buildFetchConfirmAction(confirm, procfile, dryccpath string) error {
+func buildFetchConfirmAction(confirm, dockerfile, procfile, dryccpath string, save bool) error {
 
-	if confirm == "" || confirm != "yes" {
+	if save && (confirm == "" || confirm != "yes") {
 		// hint
 		msg := fmt.Sprintf(" !    WARNING: Potentially Build Fetch Action\n"+
-			" !    This operation will first rm the current \x1b[1m%s\x1b[0m and \x1b[1m%s\x1b[0m locally\n"+
-			" !    To proceed, type \"yes\" !\n\n> ", procfile, dryccpath)
+			" !    This operation will overwrite the current \x1b[1m%s\x1b[0m, \x1b[1m%s\x1b[0m or \x1b[1m%s\x1b[0m locally\n"+
+			" !    To proceed, type \"yes\" !\n\n> ", dockerfile, procfile, dryccpath)
 
 		fmt.Print(msg)
 		fmt.Scanln(&confirm)

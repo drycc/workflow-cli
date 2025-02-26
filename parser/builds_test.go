@@ -17,7 +17,7 @@ func (d FakeDryccCmd) BuildsCreate(string, string, string, string, string, strin
 	return errors.New("builds:create")
 }
 
-func (d FakeDryccCmd) BuildsFetch(string, int, string, string, string) error {
+func (d FakeDryccCmd) BuildsFetch(string, int, string, string, string, bool) error {
 	return errors.New("builds:fetch")
 }
 
