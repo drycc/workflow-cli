@@ -93,16 +93,9 @@ func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, c
 		return err
 	}
 	// Confirm again
-	dockerfile := "Dockerfile"
-	err = buildFetchConfirmAction(confirm, dockerfile, procfile, dryccpath, save)
+	err = buildFetchConfirmAction(confirm, procfile, dryccpath, save)
 	if err != nil {
 		return err
-	}
-	if len(build.Dockerfile) != 0 {
-		err := writeDockerfileToPath(d, dockerfile, build.Dockerfile, save)
-		if err != nil {
-			return fmt.Errorf("failed to write Dockerfile: %w", err)
-		}
 	}
 
 	if len(build.Procfile) != 0 {
@@ -124,25 +117,13 @@ func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, c
 	return nil
 }
 
-func writeDockerfileToPath(d *DryccCmd, dockerfile string, dockerinfo string, save bool) error {
-	if save {
-		os.Remove(dockerfile)
-		err := os.WriteFile(dockerfile, []byte(dockerinfo), 0664)
-		return err
-	}
-	d.Println("# Source:", dockerfile)
-	d.Println(dockerinfo)
-	return nil
-
-}
-
 func writeProcfileToPath(d *DryccCmd, procfile string, Procinfo map[string]string, save bool) error {
 	if save {
 		os.Remove(procfile)
 		err := os.WriteFile(procfile, []byte(d.toYamlString(Procinfo, 2)), 0664)
 		return err
 	}
-	d.Println("# Source:", procfile)
+	d.Println("---\n# Source:", procfile)
 	d.Println(d.toYamlString(Procinfo, 2))
 	return nil
 }
@@ -180,7 +161,7 @@ func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]in
 					return fmt.Errorf("failed to write env file: %w", err)
 				}
 			} else {
-				d.Println("# Source:", envFilePath)
+				d.Println("---\n# Source:", envFilePath)
 				d.Println(content)
 			}
 		}
@@ -203,7 +184,7 @@ func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]in
 					return fmt.Errorf("failed to write pipeline file: %w", err)
 				}
 			} else {
-				d.Println("# Source:", filePath)
+				d.Println("---\n# Source:", filePath)
 				d.Println(string(yamlContent))
 			}
 		}
@@ -238,13 +219,13 @@ func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]st
 	return nil
 }
 
-func buildFetchConfirmAction(confirm, dockerfile, procfile, dryccpath string, save bool) error {
+func buildFetchConfirmAction(confirm, procfile, dryccpath string, save bool) error {
 
 	if save && (confirm == "" || confirm != "yes") {
 		// hint
 		msg := fmt.Sprintf(" !    WARNING: Potentially Build Fetch Action\n"+
-			" !    This operation will overwrite the current \x1b[1m%s\x1b[0m, \x1b[1m%s\x1b[0m or \x1b[1m%s\x1b[0m locally\n"+
-			" !    To proceed, type \"yes\" !\n\n> ", dockerfile, procfile, dryccpath)
+			" !    This operation will overwrite the current \x1b[1m%s\x1b[0m or \x1b[1m%s\x1b[0m locally\n"+
+			" !    To proceed, type \"yes\" !\n\n> ", procfile, dryccpath)
 
 		fmt.Print(msg)
 		fmt.Scanln(&confirm)

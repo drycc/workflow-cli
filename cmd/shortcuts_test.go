@@ -12,7 +12,7 @@ destroy -> apps:destroy
 info -> apps:info
 login -> auth:login
 logout -> auth:logout
-logs -> apps:logs
+logs -> ps:logs
 open -> apps:open
 pull -> builds:create
 rollback -> releases:rollback
