@@ -7,7 +7,7 @@ var Shortcuts = map[string]string{
 	"info":     "apps:info",
 	"login":    "auth:login",
 	"logout":   "auth:logout",
-	"logs":     "apps:logs",
+	"logs":     "ps:logs",
 	"open":     "apps:open",
 	"pull":     "builds:create",
 	"rollback": "releases:rollback",

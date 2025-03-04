@@ -13,7 +13,6 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/config"
-	"sigs.k8s.io/yaml"
 )
 
 // ConfigInfo for an app
@@ -32,7 +31,12 @@ func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version 
 		Group: make(map[string][]api.ConfigVar),
 		Ptype: make(map[string]api.PtypeValue),
 	}
+	hasGlobalGroup := false
 	for _, value := range sortConfigValues(config.Values) {
+		if value.Group == "global" {
+			hasGlobalGroup = true
+		}
+
 		// display the selected or all
 		if (ptype != "" && value.Ptype == ptype) ||
 			(group != "" && value.Group == group) ||
@@ -70,11 +74,43 @@ func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version 
 		return nil
 	}
 
-	c, err := yaml.Marshal(cv)
-	if err != nil {
-		return err
+	// Format and print the output
+
+	// print group
+	for group, configVars := range cv.Group {
+		d.Println("---\n# Group:", group)
+		var content string
+		for _, configVar := range configVars {
+			content += fmt.Sprintf("%s=%v\n", configVar.Name, configVar.Value)
+		}
+		d.Println(content)
 	}
-	d.Println(string(c))
+	// print ptype
+	for ptype, ptypeValue := range cv.Ptype {
+		d.Printf("---\n# Ptype %s config\n", ptype)
+
+		if len(ptypeValue.Env) > 0 {
+			d.Println("## env")
+			var content string
+			for _, configVar := range ptypeValue.Env {
+				content += fmt.Sprintf("%s=%v\n", configVar.Name, configVar.Value)
+			}
+			d.Println(content)
+		}
+
+		if len(ptypeValue.Ref) > 0 {
+			d.Println("## ref")
+			var content string
+			for _, ref := range ptypeValue.Ref {
+				content += fmt.Sprintf("- %s\n", ref)
+			}
+			if hasGlobalGroup {
+				content += fmt.Sprintf("- %s\n", "global")
+			}
+			d.Println(content)
+		}
+	}
+
 	return nil
 }
 

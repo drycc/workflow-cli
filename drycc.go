@@ -83,8 +83,9 @@ Shortcut commands, use 'drycc shortcuts' to see all:
 
   create        create a new application
   destroy       destroy an application
+  exec          execute a command in a container
   info          view information about the current app
-  logs          view aggregated log info for the app
+  logs          print the logs for a container
   open          open a URL to the app in a browser
   pull          imports an image and deploys as a new release
   run           run a command in an ephemeral app container
