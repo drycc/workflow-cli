@@ -4,6 +4,7 @@ package cli
 var Shortcuts = map[string]string{
 	"create":   "apps:create",
 	"destroy":  "apps:destroy",
+	"exec":     "ps:exec",
 	"info":     "apps:info",
 	"login":    "auth:login",
 	"logout":   "auth:logout",
