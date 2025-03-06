@@ -9,6 +9,7 @@ func TestShortcutsList(t *testing.T) {
 
 	expected := `create -> apps:create
 destroy -> apps:destroy
+exec -> ps:exec
 info -> apps:info
 login -> auth:login
 logout -> auth:logout

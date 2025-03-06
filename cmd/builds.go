@@ -230,7 +230,7 @@ func buildFetchConfirmAction(confirm, procfile, dryccpath string, save bool) err
 		fmt.Print(msg)
 		fmt.Scanln(&confirm)
 		if confirm != "yes" {
-			return fmt.Errorf("cancel the build create fetch")
+			return fmt.Errorf("cancel the build fetch action")
 		}
 	}
 	return nil

@@ -320,7 +320,7 @@ func TestBuildsFetch(t *testing.T) {
 		}()
 
 		err := cmdr.BuildsFetch("testapp", 0, procfilePath, dryccpath, "", true)
-		if err == nil || err.Error() != "cancel the build create fetch" {
+		if err == nil || err.Error() != "cancel the build fetch action" {
 			t.Fatalf("expected cancellation error, got %v", err)
 		}
 
