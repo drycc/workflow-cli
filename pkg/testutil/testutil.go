@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	drycc "github.com/drycc/controller-sdk-go"
-	"github.com/drycc/workflow-cli/settings"
+	"github.com/drycc/workflow-cli/pkg/settings"
 )
 
 // TestServer represents a test HTTP server along with a path to a config file
