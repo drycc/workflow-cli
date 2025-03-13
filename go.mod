@@ -1,7 +1,6 @@
 module github.com/drycc/workflow-cli
 
 go 1.23
-
 require (
 	github.com/containerd/console v1.0.4
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
@@ -12,7 +11,7 @@ require (
 	github.com/schollz/progressbar/v3 v3.17.0
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c
-	golang.org/x/net v0.33.0
+	golang.org/x/net v0.36.0
 	gopkg.in/yaml.v3 v3.0.1
 	sigs.k8s.io/yaml v1.4.0
 )
@@ -25,7 +24,7 @@ require (
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/term v0.29.0 // indirect
 )
