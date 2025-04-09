@@ -11,7 +11,7 @@ func NewRoutingCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routing",
 		Short: i18n.T("Manage routability of an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.RoutingInfo(app)
 		},
 	}
@@ -31,7 +31,7 @@ func routingInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "info",
 		Short: i18n.T("View application's routability information"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.RoutingInfo(app)
 		},
 	}
@@ -43,7 +43,7 @@ func routingEnableCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "enable",
 		Short: i18n.T("Enable routing for an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.RoutingEnable(app)
 		},
 	}
@@ -55,7 +55,7 @@ func routingDisableCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "disable",
 		Short: i18n.T("Disable routing for an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.RoutingDisable(app)
 		},
 	}

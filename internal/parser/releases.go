@@ -23,7 +23,7 @@ func NewReleasesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Example:           "drycc releases ptype1 ptype2",
 		Short:             i18n.T("Manage releases of an application"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.ReleasesList(app, args, results)
 		},
@@ -53,7 +53,7 @@ func releasesListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("List an application's release history"),
 		Long:              i18n.T("Lists release history for an application"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.ReleasesList(app, args, results)
 		},
@@ -80,7 +80,7 @@ func releasesInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Print information about a specific release"),
 		Long:              i18n.T("Prints info about a particular release"),
 		ValidArgsFunction: releaseCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			versionStr := args[0]
 			version, err := strconv.Atoi(strings.TrimPrefix(versionStr, "v"))
 			if err != nil {
@@ -108,7 +108,7 @@ func releasesDeployCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:               "deploy [<ptype>...]",
 		Short:             i18n.T("Deploy the latest release by process types"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			ptypes := args
 			return cmdr.ReleasesDeploy(app, ptypes, flags.force, flags.confirm)
 		},
@@ -134,7 +134,7 @@ func releasesRollbackCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short: i18n.T("Return to a previous release"),
 		Long:  i18n.T("Rolls back to a previous application release"),
 		Args:  cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			// Handle arguments safely
 			var ptypes []string
 			var versionStr string

@@ -21,7 +21,7 @@ func NewHealthchecksCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "healthchecks",
 		Short: i18n.T("Manage application healthchecks"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.HealthchecksList(app, healthchecksFlags.ptype, version)
 		},
 	}
@@ -48,7 +48,7 @@ func healthchecksList(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List healthchecks for an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.HealthchecksList(app, healthchecksFlags.ptype, version)
 		},
 	}
@@ -123,7 +123,7 @@ considered healthy if the check can establish a connection. 'tcpSocket' probes a
 port number to perform the socket connection on the Container.
 `),
 		ValidArgsFunction: healthChecksCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			healthType := args[0]
 			probeType := args[1]
 
@@ -208,7 +208,7 @@ func healthchecksUnset(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Unset healthchecks for an application"),
 		ValidArgsFunction: healthTypeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.healths = args
 			for healthcheck := range flags.healths {
 				if err := checkProbeType(flags.healths[healthcheck]); err != nil {

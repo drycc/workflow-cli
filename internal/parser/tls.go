@@ -15,7 +15,7 @@ func NewTLSCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tls",
 		Short: i18n.T("Manage TLS/SSL settings for applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.TLSInfo(app)
 		},
 	}
@@ -37,7 +37,7 @@ func tlsInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:     "info",
 		Example: "drycc tls info",
 		Short:   i18n.T("View TLS settings information"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.TLSInfo(app)
 		},
 	}
@@ -46,7 +46,7 @@ func tlsInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func tlsForceCommand(cmdr *commands.DryccCmd) *cobra.Command {
-	tlsActionCompletion := completion.TlsActionCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	TLSActionCompletion := completion.TLSActionCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use: "force <action>",
 		Example: template.CustomExample(
@@ -58,8 +58,8 @@ func tlsForceCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:              cobra.ExactArgs(1),
 		ValidArgs:         []string{"enable", "disable"},
 		Short:             i18n.T("Force TLS settings to HTTPS-only redirection"),
-		ValidArgsFunction: tlsActionCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		ValidArgsFunction: TLSActionCompletion.CompletionFunc,
+		RunE: func(_ *cobra.Command, args []string) error {
 			action := args[0]
 			if action == "enable" {
 				return cmdr.TLSForceEnable(app)
@@ -74,7 +74,7 @@ func tlsForceCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func tlsAutoCommand(cmdr *commands.DryccCmd) *cobra.Command {
-	tlsActionCompletion := completion.TlsActionCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	TLSActionCompletion := completion.TLSActionCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use: "auto <action>",
 		Example: template.CustomExample(
@@ -86,8 +86,8 @@ func tlsAutoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:              cobra.ExactArgs(1),
 		ValidArgs:         []string{"enable", "disable"},
 		Short:             i18n.T("Automatic certificate management"),
-		ValidArgsFunction: tlsActionCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		ValidArgsFunction: TLSActionCompletion.CompletionFunc,
+		RunE: func(_ *cobra.Command, args []string) error {
 			action := args[0]
 			if action == "enable" {
 				return cmdr.TLSAutoEnable(app)
@@ -113,7 +113,7 @@ func tlsIssuerCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "issuer",
 		Short: i18n.T("Configure automatic certificate management issuer details"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.TLSAutoIssuer(app, flags.email, flags.server, flags.keyID, flags.keySecret)
 		},
 	}
@@ -123,9 +123,9 @@ func tlsIssuerCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVar(&flags.keyID, "key-id", "", i18n.T("CA key ID"))
 	cmd.Flags().StringVar(&flags.keySecret, "key-secret", "", i18n.T("CA key secret"))
 
-	must_flags := []string{"email", "server", "key-id", "key-secret"}
-	for _, must_flag := range must_flags {
-		cmd.MarkFlagRequired(must_flag)
+	mustFlags := []string{"email", "server", "key-id", "key-secret"}
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	return cmd

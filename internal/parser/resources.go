@@ -14,7 +14,7 @@ func NewResourcesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "resources",
 		Short: i18n.T("Manage resources for your applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.ResourcesList(app, results)
 		},
@@ -42,7 +42,7 @@ func resourcesServicesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "services",
 		Short: i18n.T("List all available resource services"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.ResourcesServices(results)
 		},
@@ -66,7 +66,7 @@ func resourcesPlansCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("List all available plans for a resource service"),
 		ValidArgsFunction: resourceServiceCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			service := args[0]
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.ResourcesPlans(service, results)
@@ -100,7 +100,7 @@ func resourcesCreateCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Create a resource for the application"),
 		ValidArgsFunction: resourceCreateCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			plan := fmt.Sprintf("%s:%s", args[1], args[2])
 			params := args[3:]
@@ -121,7 +121,7 @@ func resourcesListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List resources in the application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.ResourcesList(app, results)
 		},
@@ -150,7 +150,7 @@ func resourcesDescribeCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Get a resource's detail in the application"),
 		ValidArgsFunction: resourceCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.ResourceGet(app, name, flags.details)
 		},
@@ -183,7 +183,7 @@ func resourcesUpdateCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Update a resource from the application"),
 		ValidArgsFunction: resourceUpdateCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			plan := fmt.Sprintf("%s:%s", args[1], args[2])
 			params := args[2:]
@@ -219,7 +219,7 @@ func resourcesDestroyCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Delete a resource from the application"),
 		ValidArgsFunction: resourceCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.ResourceDelete(app, name, flags.confirm)
 		},
@@ -244,7 +244,7 @@ func resourcesBindCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Bind a resource for an application"),
 		ValidArgsFunction: resourceCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.ResourceBind(app, name)
 		},
@@ -266,7 +266,7 @@ func resourcesUnbindCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("unbind a resources for an application"),
 		ValidArgsFunction: resourceCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.ResourceUnbind(app, name)
 		},

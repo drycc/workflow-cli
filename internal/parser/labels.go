@@ -12,7 +12,7 @@ func NewLabelsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "labels",
 		Short: i18n.T("Manage labels of application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.LabelsList(app)
 		},
 	}
@@ -32,7 +32,7 @@ func labelsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "list",
 		Short: i18n.T("List application's labels"),
 		Long:  i18n.T("Prints a list of labels of the application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.LabelsList(app)
 		},
 	}
@@ -61,7 +61,7 @@ func labelsSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 
 A label is a key/value pair used to label an application. This label is a general information for drycc user.
 Mostly used for administration/maintenance information, note for application. This information isn't send to scheduler.`),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.tags = args
 			return cmdr.LabelsSet(app, flags.tags)
 		},
@@ -89,7 +89,7 @@ func labelsUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Remove application's label"),
 		Long:              i18n.T("Unsets labels for an application"),
 		ValidArgsFunction: labelCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.keys = args
 			return cmdr.LabelsUnset(app, flags.keys)
 		},

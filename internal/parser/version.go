@@ -11,14 +11,14 @@ func NewVersionCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	var flags struct {
 		all bool
 	}
-	DryccCmd := &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "version",
 		Short: i18n.T("Display client version"),
 		Long:  i18n.T("Displays the client version"),
-		Run: func(DryccCmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			cmdr.Version(flags.all)
 		},
 	}
-	DryccCmd.Flags().BoolVarP(&flags.all, "all", "a", false, i18n.T("list api and controller versions."))
-	return DryccCmd
+	cmd.Flags().BoolVarP(&flags.all, "all", "a", false, i18n.T("list api and controller versions."))
+	return cmd
 }

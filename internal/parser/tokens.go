@@ -13,7 +13,7 @@ func NewTokensCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tokens",
 		Short: i18n.T("Manage user tokens"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.TokensList(results)
 		},
@@ -31,7 +31,7 @@ func tokensListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("Lists tokens visible to the current controller"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.TokensList(results)
 		},
@@ -57,7 +57,7 @@ func tokensAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short: i18n.T("Add a token for controller authentication"),
 		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			alias := args[0]
 			_, err := cmdr.TokensAdd(nil, flags.username, flags.password, alias, "", true)
 			return err
@@ -67,9 +67,9 @@ func tokensAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVarP(&flags.username, "username", "u", "", i18n.T("Provide a username for the account"))
 	cmd.Flags().StringVarP(&flags.password, "password", "p", "", i18n.T("Provide a password for the account"))
 
-	must_flags := []string{"username", "password"}
-	for _, must_flag := range must_flags {
-		cmd.MarkFlagRequired(must_flag)
+	mustFlags := []string{"username", "password"}
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	return cmd
@@ -94,7 +94,7 @@ func tokensRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Remove a token for controller authentication"),
 		Args:              cobra.ExactArgs(1),
 		ValidArgsFunction: tokenCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.id = args[0]
 			return cmdr.TokensRemove(flags.id, flags.confirm)
 		},

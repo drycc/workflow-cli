@@ -11,7 +11,7 @@ func NewBuildsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "builds",
 		Short: i18n.T("Manage builds created using 'git push'"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.BuildsInfo(app, version)
 		},
 	}
@@ -45,7 +45,7 @@ func buildsCreate(cmdr *commands.DryccCmd) *cobra.Command {
 		Long: i18n.T(`Creates a new build of an application. Imports an <image> and deploys it to Drycc
 as a new release. If a Procfile or drycc.yaml is present in the current directory,
 it will be used as the default for this application.`),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			image := args[0]
 			err := cmdr.BuildsCreate(app, image, flags.stack, flags.procfile, flags.dryccPath, flags.confirm)
 			return err
@@ -72,7 +72,7 @@ func buildsInfo(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:     "info",
 		Example: "drycc builds info",
 		Short:   i18n.T("Print information about a specific build"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.BuildsInfo(app, version)
 		},
 	}
@@ -97,7 +97,7 @@ func buildsFetch(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:     "fetch",
 		Example: "drycc builds fetch",
 		Short:   i18n.T("Print process info about a specific build"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.BuildsFetch(app, version, flags.procfile, flags.dryccPath, flags.confirm, flags.save)
 		},
 	}

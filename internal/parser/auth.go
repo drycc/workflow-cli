@@ -33,7 +33,7 @@ func authLogin(cmdr *commands.DryccCmd) *cobra.Command {
 		Example: "drycc auth login http://drycc.local3.dryccapp.com/",
 		Short:   i18n.T("Authenticate against a controller"),
 		Long:    i18n.T("Logs in by authenticating against a controller"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			controller := args[0]
 			return cmdr.Login(controller, flags.sslVerify, flags.username, flags.password)
 		},
@@ -52,7 +52,7 @@ func authLogout(cmdr *commands.DryccCmd) *cobra.Command {
 		Example: "drycc auth logout",
 		Short:   i18n.T("Clear the current user session"),
 		Long:    i18n.T("Logs out from a controller and clears the user session"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.Logout()
 		},
 	}
@@ -70,7 +70,7 @@ func authWhoami(cmdr *commands.DryccCmd) *cobra.Command {
 		Example: "drycc auth whoami",
 		Short:   i18n.T("Display the current user"),
 		Long:    i18n.T("Displays the currently logged in user"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.Whoami(flags.all)
 		},
 	}

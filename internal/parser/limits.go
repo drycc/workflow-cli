@@ -12,7 +12,7 @@ func NewLimitsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "limits",
 		Short: i18n.T("Manage resource limits for your application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.LimitsList(app, version)
 		},
 	}
@@ -38,7 +38,7 @@ func limitsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:     "list",
 		Example: "drycc limits list",
 		Short:   i18n.T("List resource limits for an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.LimitsList(app, version)
 		},
 	}
@@ -72,7 +72,7 @@ func limitSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 A resource limit is a finite resource within a pod which we can apply
 restrictions through Kubernetes.`),
 		ValidArgsFunction: limitSetPlanCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.limits = args
 			return cmdr.LimitsSet(app, flags.limits)
 		},
@@ -97,7 +97,7 @@ func limitUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Unset resource limits for an app"),
 		ValidArgsFunction: ptsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.limits = args
 			return cmdr.LimitsUnset(app, flags.limits)
 		},
@@ -116,7 +116,7 @@ func limitSpecsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "specs",
 		Short: i18n.T("List specification information of the server"),
 		Long:  i18n.T("List all available limit specs"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.LimitsSpecs(flags.keywords, results)
 		},
@@ -138,7 +138,7 @@ func limitPlansCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plans",
 		Short: i18n.T("List all available limit plans"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.LimitsPlans(flags.specID, flags.cpu, flags.memory, results)
 		},

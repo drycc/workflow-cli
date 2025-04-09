@@ -12,7 +12,7 @@ func NewUsersCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "users",
 		Short: i18n.T("Manage registered users"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.UsersList(results)
 		},
@@ -30,7 +30,7 @@ func usersListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List all registered users"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.UsersList(results)
 		},
@@ -57,7 +57,7 @@ func usersEnableCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Long: i18n.T(`Enable a user when his status is disabled.
 Requires admin privileges.`),
 		Args: cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.username = args[0]
 			return cmdr.UsersEnable(flags.username)
 		},
@@ -82,7 +82,7 @@ func usersDisableCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Long: i18n.T(`Disable a user when his status is disabled.
 Requires admin privileges.`),
 		Args: cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.username = args[0]
 			return cmdr.UsersDisable(flags.username)
 		},

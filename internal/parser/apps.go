@@ -15,7 +15,7 @@ func NewAppsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "apps",
 		Short: i18n.T("Manage applications used to provide services"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppsList(limit)
 		},
 	}
@@ -43,7 +43,7 @@ func appsCreate(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:  cobra.MaximumNArgs(1),
 		Short: i18n.T("Create a new application"),
 		Long:  i18n.T(`Creates a new application. If no <id> is provided, one will be generated automatically`),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			id := ""
 			if len(args) > 0 {
 				id = args[0]
@@ -64,7 +64,7 @@ func appsList(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "list",
 		Short: i18n.T("List accessible applications"),
 		Long:  i18n.T("Lists applications visible to the current user"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppsList(limit)
 		},
 	}
@@ -80,7 +80,7 @@ func appsInfo(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "info",
 		Short: i18n.T("View info about an application"),
 		Long:  i18n.T("Prints info about the current application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppInfo(app)
 		},
 	}
@@ -99,7 +99,7 @@ func appsOpen(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "open",
 		Short: i18n.T("Open the application in a browser"),
 		Long:  i18n.T("Opens a URL to the application in the default browser"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppOpen(app)
 		},
 	}
@@ -124,7 +124,7 @@ func appsLogs(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "logs",
 		Short: i18n.T("Retrieve application log events"),
 		Long:  i18n.T("Retrieves the most recent log events"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppLogs(app, flags.lines, flags.follow, flags.timeout)
 		},
 	}
@@ -161,7 +161,7 @@ func appsRun(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short: i18n.T("Run a command in an ephemeral app container"),
 		Long:  i18n.T("Runs a command inside an ephemeral app container"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			command := strings.Join(args, " ")
 			return cmdr.AppRun(app, command, flags.mounts, flags.timeout, flags.expires)
 		},
@@ -188,7 +188,7 @@ func appsDestroy(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:     "destroy",
 		Example: "drycc apps destroy -a <app> --confirm <app>",
 		Short:   i18n.T("Destroy an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppDestroy(app, flags.confirm)
 		},
 	}
@@ -208,7 +208,7 @@ func appsTransfer(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Short: i18n.T("Transfer app ownership to another user"),
 		Long:  i18n.T("Transfer application ownership to another user."),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			user := args[0]
 			return cmdr.AppTransfer(app, user)
 		},

@@ -12,7 +12,7 @@ func NewPsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ps",
 		Short: i18n.T("Manage processes inside an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.PsList(app, 1000)
 		},
 	}
@@ -37,7 +37,7 @@ func psListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short: i18n.T("List application pods"),
 		Long:  i18n.T("Lists processes servicing an application"),
 		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.PsList(app, 1000)
 		},
 	}
@@ -63,7 +63,7 @@ func psLogsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Print the logs for a container"),
 		Long:              i18n.T("Print the logs for a container in a pod or specified resource"),
 		ValidArgsFunction: psCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			podID := args[0]
 			if flags.lines < 0 {
 				flags.lines = -1
@@ -101,7 +101,7 @@ func psExecCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Execute a command in a container"),
 		ValidArgsFunction: psCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.pod = args[0]
 			flags.command = args[1:]
 			return cmdr.PsExec(app, flags.pod, flags.tty, flags.stdin, flags.command)
@@ -132,7 +132,7 @@ func psDescribeCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Print a detailed description of the selected process"),
 		ValidArgsFunction: psCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			podID := args[0]
 			return cmdr.PsDescribe(app, podID)
 		},
@@ -154,7 +154,7 @@ func psDeleteCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Delete the selected processes"),
 		ValidArgsFunction: psCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.PsDelete(app, args)
 		},
 	}

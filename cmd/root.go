@@ -25,7 +25,7 @@ func NewDryccCommand() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "drycc",
 		Short: i18n.T("The Drycc command-line client issues API calls to a Drycc controller"),
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRun: func(_ *cobra.Command, _ []string) {
 			cmdr = commands.DryccCmd{ConfigFile: flags.config, WOut: os.Stdout, WErr: os.Stderr, WIn: os.Stdin, Location: time.Local}
 		},
 	}
