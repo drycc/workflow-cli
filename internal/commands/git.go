@@ -54,7 +54,7 @@ func (d *DryccCmd) GitRemote(appID, remote string, force bool) error {
 		return nil
 	}
 
-	msg := "Remote %s already exists, please run 'drycc git:remote -f' to overwrite\n"
+	msg := "Remote %s already exists, please run 'drycc git remote -f' to overwrite\n"
 	msg += "Existing remote URL: %s\n"
 	msg += "When forced, will overwrite with: %s"
 

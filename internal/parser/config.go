@@ -144,7 +144,7 @@ func configPullCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short: i18n.T("Pull environment variables to the path"),
 		Long: i18n.T(`Extract all environment variables from an application or config group. for local use.
 
-The environmental variables can be piped into a file, 'drycc config:pull > file',
+The environmental variables can be piped into a file, 'drycc config pull > file',
 or stored locally in a file named .env. This file can be
 read by foreman to load the local environment for your app.`),
 		RunE: func(_ *cobra.Command, _ []string) error {
@@ -184,7 +184,7 @@ func configPushCommand(cmdr *commands.DryccCmd) *cobra.Command {
 
 This file can be read by foreman
 to load the local environment for your app. The file should be piped via
-stdin, 'drycc config:push < .env', or using the --path option.`),
+stdin, 'drycc config push < .env', or using the --path option.`),
 		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.ConfigPush(app, configFlags.ptype, configFlags.group, flags.path, flags.confirm)
 		},

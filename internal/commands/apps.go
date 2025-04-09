@@ -46,7 +46,7 @@ func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
 		if err = git.CreateRemote(git.DefaultCmd, s.Client.ControllerURL.Host, remote, app.ID); err != nil {
 			if strings.Contains(err.Error(), fmt.Sprintf("error: remote %s already exists.", remote)) {
 				msg := "A git remote with the name %s already exists. To overwrite this remote run:\n"
-				msg += "drycc git:remote --force --remote %s --app %s"
+				msg += "drycc git remote --force --remote %s --app %s"
 				return fmt.Errorf(msg, remote, remote, app.ID)
 			}
 			return err
@@ -56,7 +56,7 @@ func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
 	}
 
 	if noRemote {
-		d.Printf("If you want to add a git remote for this app later, use `drycc git:remote -a %s`\n", app.ID)
+		d.Printf("If you want to add a git remote for this app later, use `drycc git remote -a %s`\n", app.ID)
 	}
 
 	return nil
