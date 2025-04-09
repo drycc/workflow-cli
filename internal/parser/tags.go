@@ -17,7 +17,7 @@ func NewTagsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tags",
 		Short: i18n.T("Manage tags for application containers"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.TagsList(app, flags.ptype, version)
 		},
 	}

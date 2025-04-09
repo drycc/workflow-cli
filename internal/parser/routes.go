@@ -187,8 +187,8 @@ func routesAttachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVar(&flags.gateway, "gateway", "", i18n.T("The unique name of the gaetway"))
 	cmd.Flags().IntVarP(&flags.port, "port", "", 0, i18n.T("Port is the network port, the gateway listener expects to receive"))
 
-	must_flags := []string{"gateway", "port"}
-	for _, must_flag := range must_flags {
+	mustFlags := []string{"gateway", "port"}
+	for _, must_flag := range mustFlags {
 		cmd.MarkFlagRequired(must_flag)
 	}
 
@@ -223,8 +223,8 @@ func routesDetachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVar(&flags.gateway, "gateway", "", i18n.T("The unique name of the gaetway"))
 	cmd.Flags().IntVarP(&flags.port, "port", "", 0, i18n.T("Port is the network port, the gateway listener expects to receive"))
 
-	must_flags := []string{"port", "protocol"}
-	for _, must_flag := range must_flags {
+	mustFlags := []string{"port", "protocol"}
+	for _, must_flag := range mustFlags {
 		cmd.MarkFlagRequired(must_flag)
 	}
 
