@@ -83,10 +83,9 @@ func (c *CertDomainTachCompletion) CompletionFunc(cmd *cobra.Command, args []str
 	if len(args) == 0 {
 		certCompletion := CertCompletion{AppID: c.AppID, ConfigFile: c.ConfigFile}
 		return certCompletion.CompletionFunc(cmd, args, toComplete)
-	} else {
-		domainCompletion := DomainCompletion{AppID: c.AppID, ArgsLen: 1, ConfigFile: c.ConfigFile}
-		return domainCompletion.CompletionFunc(cmd, args, toComplete)
 	}
+	domainCompletion := DomainCompletion{AppID: c.AppID, ArgsLen: 1, ConfigFile: c.ConfigFile}
+	return domainCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
 type ConfigPtsGroupArgsCompletion struct {
@@ -98,20 +97,19 @@ func (c *ConfigPtsGroupArgsCompletion) CompletionFunc(cmd *cobra.Command, args [
 	if len(args) == 0 {
 		ptsCompletion := PtsCompletion{AppID: c.AppID, ConfigFile: c.ConfigFile}
 		return ptsCompletion.CompletionFunc(cmd, args, toComplete)
-	} else {
-		groups := args[1:]
-		if appID, s, err := utils.LoadAppSettings(*c.ConfigFile, *c.AppID); err == nil {
-			if config, err := config.List(s.Client, appID, -1); err == nil {
-				var results []string
-				for _, value := range config.Values {
-					if value.Group != "" && strings.HasPrefix(value.Group, toComplete) {
-						if !slices.Contains(groups, value.Group) && !slices.Contains(results, value.Group) {
-							results = append(results, value.Group)
-						}
+	}
+	groups := args[1:]
+	if appID, s, err := utils.LoadAppSettings(*c.ConfigFile, *c.AppID); err == nil {
+		if config, err := config.List(s.Client, appID, -1); err == nil {
+			var results []string
+			for _, value := range config.Values {
+				if value.Group != "" && strings.HasPrefix(value.Group, toComplete) {
+					if !slices.Contains(groups, value.Group) && !slices.Contains(results, value.Group) {
+						results = append(results, value.Group)
 					}
 				}
-				return results, cobra.ShellCompDirectiveNoFileComp
 			}
+			return results, cobra.ShellCompDirectiveNoFileComp
 		}
 	}
 	return nil, cobra.ShellCompDirectiveNoFileComp
@@ -123,8 +121,7 @@ type ConfigGroupCompletion struct {
 	ArgsLen    int
 }
 
-func (c *ConfigGroupCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-
+func (c *ConfigGroupCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if appID, s, err := utils.LoadAppSettings(*c.ConfigFile, *c.AppID); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
 		if config, err := config.List(s.Client, appID, -1); err == nil {
 			var results []string
@@ -253,10 +250,9 @@ func (c *HealthChecksCompletion) CompletionFunc(cmd *cobra.Command, args []strin
 	if len(args) == 0 {
 		healthTypeCompletion := HealthTypeCompletion{ArgsLen: 0, ConfigFile: c.ConfigFile}
 		return healthTypeCompletion.CompletionFunc(cmd, args, toComplete)
-	} else {
-		probeTypeCompletion := ProbeTypeCompletion{ArgsLen: 1, ConfigFile: c.ConfigFile}
-		return probeTypeCompletion.CompletionFunc(cmd, args, toComplete)
 	}
+	probeTypeCompletion := ProbeTypeCompletion{ArgsLen: 1, ConfigFile: c.ConfigFile}
+	return probeTypeCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
 type ServiceProtocolCompletion struct {
@@ -555,7 +551,7 @@ type ResourcePlanCompletion struct {
 	ConfigFile *string
 }
 
-func (c *ResourcePlanCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+func (c *ResourcePlanCompletion) CompletionFunc(_ *cobra.Command, args []string, _ string) ([]string, cobra.ShellCompDirective) {
 	if s, err := settings.Load(*c.ConfigFile); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
 		var results []string
 		if services, _, err := resources.Plans(s.Client, c.Service, -1); err == nil {
@@ -735,15 +731,14 @@ func (c *TagCompletion) CompletionFunc(_ *cobra.Command, args []string, toComple
 	return nil, cobra.ShellCompDirectiveNoFileComp
 }
 
-type TlsActionCompletion struct {
+type TLSActionCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
 }
 
-func (c *TlsActionCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+func (c *TLSActionCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	actions := []string{"enable", "disable"}
 	if c.ArgsLen < 0 || len(args) == c.ArgsLen {
-
 		var results []string
 		for _, action := range actions {
 			if strings.HasPrefix(action, toComplete) {

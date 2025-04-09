@@ -67,9 +67,9 @@ func tokensAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVarP(&flags.username, "username", "u", "", i18n.T("Provide a username for the account"))
 	cmd.Flags().StringVarP(&flags.password, "password", "p", "", i18n.T("Provide a password for the account"))
 
-	must_flags := []string{"username", "password"}
-	for _, must_flag := range must_flags {
-		cmd.MarkFlagRequired(must_flag)
+	mustFlags := []string{"username", "password"}
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	return cmd

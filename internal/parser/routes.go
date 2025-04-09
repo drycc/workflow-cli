@@ -187,9 +187,9 @@ func routesAttachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVar(&flags.gateway, "gateway", "", i18n.T("The unique name of the gaetway"))
 	cmd.Flags().IntVarP(&flags.port, "port", "", 0, i18n.T("Port is the network port, the gateway listener expects to receive"))
 
-	must_flags := []string{"gateway", "port"}
-	for _, must_flag := range must_flags {
-		cmd.MarkFlagRequired(must_flag)
+	mustFlags := []string{"gateway", "port"}
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	gatewayNameCompletion := completion.GatewayNameCompletion{AppID: &app, ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
@@ -223,9 +223,9 @@ func routesDetachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVar(&flags.gateway, "gateway", "", i18n.T("The unique name of the gaetway"))
 	cmd.Flags().IntVarP(&flags.port, "port", "", 0, i18n.T("Port is the network port, the gateway listener expects to receive"))
 
-	must_flags := []string{"port", "protocol"}
-	for _, must_flag := range must_flags {
-		cmd.MarkFlagRequired(must_flag)
+	mustFlags := []string{"port", "protocol"}
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	gatewayNameCompletion := completion.GatewayNameCompletion{AppID: &app, ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}

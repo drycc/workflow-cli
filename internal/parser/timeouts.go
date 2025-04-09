@@ -13,7 +13,7 @@ func NewTimeoutsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "timeouts",
 		Short: i18n.T("Manage pods termination grace period"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.TimeoutsList(app, version)
 		},
 	}

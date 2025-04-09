@@ -74,9 +74,9 @@ func autoscaleSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().IntVarP(&flags.cpuPercent, "cpu-percent", "", 0, i18n.T("Target CPU utilization percentage"))
 	cmd.Flags().SortFlags = false
 
-	must_flags := []string{"min", "max", "cpu-percent"}
-	for _, must_flag := range must_flags {
-		cmd.MarkFlagRequired(must_flag)
+	mustFlags := []string{"min", "max", "cpu-percent"}
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
