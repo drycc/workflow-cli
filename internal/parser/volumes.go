@@ -1,0 +1,273 @@
+package parser
+
+import (
+	"github.com/drycc/workflow-cli/internal/commands"
+	"github.com/drycc/workflow-cli/internal/completion"
+	"github.com/drycc/workflow-cli/internal/template"
+	"github.com/drycc/workflow-cli/pkg/i18n"
+	"github.com/spf13/cobra"
+)
+
+// NewVolumesCommand creates the volumes command
+func NewVolumesCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "volumes",
+		Short: i18n.T("Manage volumes for your applications"),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			results, _ := commands.ResponseLimit(limit)
+			return cmdr.VolumesList(app, results)
+		},
+	}
+
+	cmd.PersistentFlags().StringVarP(&app, "app", "a", "", i18n.T("The uniquely identifiable name for the application"))
+	cmd.Flags().IntVarP(&limit, "limit", "l", 0, i18n.T("The maximum number of results to display"))
+
+	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	cmd.RegisterFlagCompletionFunc("app", appCompletion.CompletionFunc)
+
+	cmd.AddCommand(volumesListCommand(cmdr))
+	cmd.AddCommand(volumesAddCommand(cmdr))
+	cmd.AddCommand(volumesExpandCommand(cmdr))
+	cmd.AddCommand(volumesInfoCommand(cmdr))
+	cmd.AddCommand(volumesRemoveCommand(cmdr))
+	cmd.AddCommand(volumesClientCommand(cmdr))
+	cmd.AddCommand(volumesMountCommand(cmdr))
+	cmd.AddCommand(volumesUnmountCommand(cmdr))
+	return cmd
+}
+
+func volumesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	var flags struct {
+		vtype        string
+		name         string
+		size         string
+		nfsServer    string
+		nfsPath      string
+		ossServer    string
+		ossBucket    string
+		ossAccessKey string
+		ossSecretKey string
+	}
+
+	cmd := &cobra.Command{
+		Use: "add <name> <size>",
+		Example: template.CustomExample(
+			"drycc volumes add myvolume 1G",
+			map[string]string{
+				"<name>": i18n.T("The volume name"),
+				"<size>": i18n.T("The volume size, such as '500G'"),
+			},
+		),
+		Short: i18n.T("Create a volume for the application"),
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			flags.name = args[0]
+			flags.size = args[1]
+			parameters := make(map[string]interface{})
+			if flags.vtype == "nfs" {
+				parameters["nfs"] = map[string]interface{}{
+					"server": flags.nfsServer,
+					"path":   flags.nfsPath,
+				}
+			} else if flags.vtype == "oss" {
+				parameters["oss"] = map[string]interface{}{
+					"server":     flags.ossServer,
+					"bucket":     flags.ossBucket,
+					"access_key": flags.ossAccessKey,
+					"secret_key": flags.ossSecretKey,
+				}
+			}
+			return cmdr.VolumesCreate(app, flags.name, flags.vtype, flags.size, parameters)
+		},
+	}
+
+	cmd.Flags().StringVarP(&flags.vtype, "type", "t", "csi", i18n.T("The volume type, such as csi, nfs, oss"))
+	cmd.Flags().StringVar(&flags.nfsServer, "nfs-server", "", i18n.T("The hostname or ip address of the nfs server"))
+	cmd.Flags().StringVar(&flags.nfsPath, "nfs-path", "", i18n.T("Path that is exported by the nfs server"))
+
+	cmd.Flags().StringVar(&flags.ossServer, "oss-server", "", i18n.T("Endpoint url for object storage service"))
+	cmd.Flags().StringVar(&flags.ossBucket, "oss-bucket", "", i18n.T("Bucket name in object storage"))
+	cmd.Flags().StringVar(&flags.ossAccessKey, "oss-access-key", "", i18n.T("Access key id for authentication"))
+	cmd.Flags().StringVar(&flags.ossSecretKey, "oss-secret-key", "", i18n.T("secret access key for authentication"))
+
+	cmd.Flags().SortFlags = false
+	cmd.MarkFlagsRequiredTogether("nfs-server", "nfs-path")
+	cmd.MarkFlagsRequiredTogether("oss-server", "oss-bucket", "oss-access-key", "oss-secret-key")
+
+	volumeTypeCompletion := completion.VolumeTypeCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	cmd.RegisterFlagCompletionFunc("type", volumeTypeCompletion.CompletionFunc)
+	return cmd
+}
+
+func volumesExpandCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	var flags struct {
+		name string
+		size string
+	}
+
+	volumeCompletion := completion.VolumeCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	cmd := &cobra.Command{
+		Use: "expand <name> <size>",
+		Example: template.CustomExample(
+			"drycc volumes expand myvolume 2G",
+			map[string]string{
+				"<name>": i18n.T("The volume name"),
+				"<size>": i18n.T("The volume size, such as '500G'"),
+			},
+		),
+		Short:             i18n.T("Expand a volume capacity for the application"),
+		Args:              cobra.ExactArgs(2),
+		ValidArgsFunction: volumeCompletion.CompletionFunc,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			flags.name = args[0]
+			flags.size = args[1]
+			return cmdr.VolumesExpand(app, flags.name, flags.size)
+		},
+	}
+
+	return cmd
+}
+
+func volumesListCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list",
+		Short: i18n.T("List volumes in the application"),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			results, _ := commands.ResponseLimit(limit)
+			return cmdr.VolumesList(app, results)
+		},
+	}
+
+	cmd.Flags().IntVarP(&limit, "limit", "l", 0, i18n.T("The maximum number of results to display"))
+
+	return cmd
+}
+
+func volumesInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	var flags struct {
+		name string
+	}
+
+	volumeCompletion := completion.VolumeCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	cmd := &cobra.Command{
+		Use: "info <name>",
+		Example: template.CustomExample(
+			"drycc volumes info myvolume",
+			map[string]string{
+				"<name>": i18n.T("The volume name to be info"),
+			},
+		),
+		Short:             i18n.T("Print information about a volume"),
+		Args:              cobra.ExactArgs(1),
+		ValidArgsFunction: volumeCompletion.CompletionFunc,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			flags.name = args[0]
+			return cmdr.VolumesInfo(app, flags.name)
+		},
+	}
+
+	return cmd
+}
+
+func volumesRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	var flags struct {
+		name string
+	}
+
+	volumeCompletion := completion.VolumeCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	cmd := &cobra.Command{
+		Use: "remove <name>",
+		Example: template.CustomExample(
+			"drycc volumes remove myvolume",
+			map[string]string{
+				"<name>": i18n.T("The volume name to be removed"),
+			},
+		),
+		Short:             i18n.T("Delete a volume from the application"),
+		Args:              cobra.ExactArgs(1),
+		ValidArgsFunction: volumeCompletion.CompletionFunc,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			flags.name = args[0]
+			return cmdr.VolumesDelete(app, flags.name)
+		},
+	}
+
+	return cmd
+}
+
+func volumesClientCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	volumesCmdCompletion := completion.VolumesCmdCompletion{ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	cmd := &cobra.Command{
+		Use: "client <cmd> <args>...",
+		Example: template.CustomExample(
+			"drycc volumes client ls vol://myvolume/",
+			map[string]string{
+				"<cmd>": i18n.T(`ls         list volume files
+           cp         copy volume files
+           rm         remove volume files`),
+				"<args>": i18n.T(`arguments for running commands, when cmd is 'cp', args should be '[source] [dest]'.
+           volume path format 'vol://volumename/', '/' is equivalent to the mount path.`),
+			},
+		),
+
+		Short:             i18n.T("The client used to manage volume files"),
+		Args:              cobra.MinimumNArgs(2),
+		ValidArgsFunction: volumesCmdCompletion.CompletionFunc,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cmdType := args[0]
+			cmdArgs := args[1:]
+			return cmdr.VolumesClient(app, cmdType, cmdArgs...)
+		},
+	}
+
+	return cmd
+}
+
+func volumesMountCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	volumesMountCompletion := completion.VolumesMountCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	cmd := &cobra.Command{
+		Use: "mount <name> <ptype>=<path>...",
+		Example: template.CustomExample(
+			"drycc volumes mount myvolume web=/data",
+			map[string]string{
+				"<name>":  i18n.T("The volume name"),
+				"<ptype>": i18n.T("The process name as defined in your Procfile"),
+				"<path>":  i18n.T("The filesystem path"),
+			},
+		),
+		Short:             i18n.T("Mount a volume to process of the application"),
+		Args:              cobra.MinimumNArgs(2),
+		ValidArgsFunction: volumesMountCompletion.CompletionFunc,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			name := args[0]
+			mountSpecs := args[1:]
+			return cmdr.VolumesMount(app, name, mountSpecs)
+		},
+	}
+
+	return cmd
+}
+
+func volumesUnmountCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	volumesUnmountCompletion := completion.VolumesUnmountCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	cmd := &cobra.Command{
+		Use: "unmount <name> <ptype>...",
+		Example: template.CustomExample(
+			"drycc volumes unmount myvolume web worker",
+			map[string]string{
+				"<name>":  i18n.T("The volume name"),
+				"<ptype>": i18n.T("The process name as defined in your Procfile"),
+			},
+		),
+		Short:             i18n.T("Unmount a volume from process of the application"),
+		Args:              cobra.MinimumNArgs(2),
+		ValidArgsFunction: volumesUnmountCompletion.CompletionFunc,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			name := args[0]
+			ptypes := args[1:]
+			return cmdr.VolumesUnmount(app, name, ptypes)
+		},
+	}
+
+	return cmd
+}

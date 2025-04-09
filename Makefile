@@ -13,6 +13,7 @@ bootstrap:
 
 # This is supposed to be run within a container
 build:
+	${DEV_ENV_CMD} scripts/update-translations.sh -g
 	${DEV_ENV_CMD} scripts/build ${VERSION}
 
 test-style:
