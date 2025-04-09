@@ -15,6 +15,8 @@ type confgCases struct {
 
 func TestSelectSettings(t *testing.T) {
 	t.Parallel()
+	homeDir := "/a/b/c"
+	SetHome(homeDir)
 	cases := []confgCases{
 		{"test", filepath.Join(FindHome(), ".drycc", "test.json")},
 		{"", filepath.Join(FindHome(), ".drycc", "client.json")},
