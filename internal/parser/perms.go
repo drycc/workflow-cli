@@ -12,7 +12,7 @@ func NewPermsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "perms",
 		Short: i18n.T("Manage permissions for applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.PermList(app, results)
 		},
@@ -35,7 +35,7 @@ func permsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List all user permissions"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.PermList(app, results)
 		},
@@ -68,7 +68,7 @@ func permAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Add a user permissions"),
 		ValidArgsFunction: userPermsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.username = args[0]
 			flags.permissions = args[1]
 			return cmdr.PermCreate(app, flags.username, flags.permissions)
@@ -98,7 +98,7 @@ func permUpdateCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Update a user permission"),
 		ValidArgsFunction: permUpdateCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.username = args[0]
 			flags.permissions = args[1]
 			return cmdr.PermUpdate(app, flags.username, flags.permissions)
@@ -125,7 +125,7 @@ func permRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Remove a user permissions"),
 		ValidArgsFunction: permUsernameCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 
 			flags.username = args[0]
 			return cmdr.PermDelete(app, flags.username)

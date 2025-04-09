@@ -13,7 +13,7 @@ func NewAutoscaleCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "autoscale",
 		Short: i18n.T("Manage autoscale for applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AutoscaleList(app)
 		},
 	}
@@ -33,7 +33,7 @@ func autoscaleListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "list",
 		Short: i18n.T("List autoscale options for an application"),
 		Long:  i18n.T("Prints a list of autoscale options for the application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AutoscaleList(app)
 		},
 	}
@@ -63,7 +63,7 @@ func autoscaleSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Turn on autoscale for an app"),
 		Long:              i18n.T("Set autoscale option per process type for an app"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			ptype := args[0]
 			return cmdr.AutoscaleSet(app, ptype, flags.min, flags.max, flags.cpuPercent)
 		},
@@ -75,8 +75,8 @@ func autoscaleSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().SortFlags = false
 
 	mustFlags := []string{"min", "max", "cpu-percent"}
-	for _, must_flag := range mustFlags {
-		cmd.MarkFlagRequired(must_flag)
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
@@ -100,7 +100,7 @@ func autoscaleUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Turn off autoscale for an app"),
 		Long:              i18n.T("Unset autoscale per process type for an app"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			ptype := args[0]
 			return cmdr.AutoscaleUnset(app, ptype)
 		},

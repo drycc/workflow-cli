@@ -21,7 +21,7 @@ func NewConfigCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "config",
 		Short: i18n.T("Manage environment variables that define app config"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.ConfigInfo(app, configFlags.ptype, configFlags.group, version)
 		},
 	}
@@ -55,7 +55,7 @@ func configInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "info",
 		Short: i18n.T("An app config info"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.ConfigInfo(app, configFlags.ptype, configFlags.group, version)
 		},
 	}
@@ -84,7 +84,7 @@ func configSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		Short: i18n.T("Set environment variables for an app"),
 		Long:  i18n.T("Sets environment variables for an application or config group"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.ConfigSet(app, configFlags.ptype, configFlags.group, args, flags.confirm)
 		},
 	}
@@ -113,7 +113,7 @@ func configUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		Short: i18n.T("Unset environment variables for an app"),
 		Long:  i18n.T("Unsets an environment variable for an application or config group"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.ConfigUnset(app, configFlags.ptype, configFlags.group, args, flags.confirm)
 		},
 	}
@@ -147,7 +147,7 @@ func configPullCommand(cmdr *commands.DryccCmd) *cobra.Command {
 The environmental variables can be piped into a file, 'drycc config:pull > file',
 or stored locally in a file named .env. This file can be
 read by foreman to load the local environment for your app.`),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.ConfigPull(app, configFlags.ptype, configFlags.group, flags.path, flags.interactive, flags.overwrite)
 		},
 	}
@@ -185,7 +185,7 @@ func configPushCommand(cmdr *commands.DryccCmd) *cobra.Command {
 This file can be read by foreman
 to load the local environment for your app. The file should be piped via
 stdin, 'drycc config:push < .env', or using the --path option.`),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.ConfigPush(app, configFlags.ptype, configFlags.group, flags.path, flags.confirm)
 		},
 	}
@@ -221,7 +221,7 @@ func configAttachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:              cobra.MinimumNArgs(2),
 		ValidArgsFunction: configPtsGroupArgsCompletion.CompletionFunc,
 		Short:             i18n.T("Selects environment groups to attach an app ptype"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			configFlags.ptype = args[0]
 			return cmdr.ConfigAttach(app, configFlags.ptype, strings.Join(args[1:], ","))
 		},
@@ -247,7 +247,7 @@ func configDetachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Selects environment groups to detach an app ptype"),
 		ValidArgsFunction: configPtsGroupArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			configFlags.ptype = args[0]
 			return cmdr.ConfigDetach(app, configFlags.ptype, strings.Join(args[1:], ","))
 		},

@@ -13,7 +13,7 @@ func NewVolumesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "volumes",
 		Short: i18n.T("Manage volumes for your applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.VolumesList(app, results)
 		},
@@ -60,7 +60,7 @@ func volumesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short: i18n.T("Create a volume for the application"),
 		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.name = args[0]
 			flags.size = args[1]
 			parameters := make(map[string]interface{})
@@ -118,7 +118,7 @@ func volumesExpandCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Expand a volume capacity for the application"),
 		Args:              cobra.ExactArgs(2),
 		ValidArgsFunction: volumeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.name = args[0]
 			flags.size = args[1]
 			return cmdr.VolumesExpand(app, flags.name, flags.size)
@@ -132,7 +132,7 @@ func volumesListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List volumes in the application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.VolumesList(app, results)
 		},
@@ -160,7 +160,7 @@ func volumesInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Print information about a volume"),
 		Args:              cobra.ExactArgs(1),
 		ValidArgsFunction: volumeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.name = args[0]
 			return cmdr.VolumesInfo(app, flags.name)
 		},
@@ -186,7 +186,7 @@ func volumesRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Delete a volume from the application"),
 		Args:              cobra.ExactArgs(1),
 		ValidArgsFunction: volumeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.name = args[0]
 			return cmdr.VolumesDelete(app, flags.name)
 		},
@@ -213,7 +213,7 @@ func volumesClientCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("The client used to manage volume files"),
 		Args:              cobra.MinimumNArgs(2),
 		ValidArgsFunction: volumesCmdCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			cmdType := args[0]
 			cmdArgs := args[1:]
 			return cmdr.VolumesClient(app, cmdType, cmdArgs...)
@@ -238,7 +238,7 @@ func volumesMountCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Mount a volume to process of the application"),
 		Args:              cobra.MinimumNArgs(2),
 		ValidArgsFunction: volumesMountCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			mountSpecs := args[1:]
 			return cmdr.VolumesMount(app, name, mountSpecs)
@@ -262,7 +262,7 @@ func volumesUnmountCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Unmount a volume from process of the application"),
 		Args:              cobra.MinimumNArgs(2),
 		ValidArgsFunction: volumesUnmountCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			ptypes := args[1:]
 			return cmdr.VolumesUnmount(app, name, ptypes)

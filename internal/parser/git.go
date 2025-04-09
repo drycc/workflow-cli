@@ -33,7 +33,7 @@ func gitRemote(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remote",
 		Short: i18n.T("Adds git remote of application to repository"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.GitRemote(app, flags.remote, flags.force)
 		},
 	}
@@ -49,7 +49,7 @@ func gitRemove(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove",
 		Short: i18n.T("Removes git remote of application from repository"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.GitRemove(app)
 		},
 	}

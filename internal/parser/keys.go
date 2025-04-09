@@ -12,7 +12,7 @@ func NewKeysCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "keys",
 		Short: i18n.T("Manage ssh keys used for 'git push' deployments"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.KeysList(results)
 		},
@@ -28,7 +28,7 @@ func keysListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "list",
 		Short: i18n.T("List SSH keys for the logged in user"),
 
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.KeysList(results)
 		},
@@ -55,7 +55,7 @@ func keyAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:  cobra.MaximumNArgs(2),
 		Short: i18n.T("Add an SSH key"),
 		Long:  i18n.T("Adds SSH keys for the logged in user"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			if len(args) == 1 {
 				flags.key = args[0]
 			} else if len(args) == 2 {
@@ -80,7 +80,7 @@ func keyRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Remove an SSH key"),
 		Long:              i18n.T("Removes an SSH key for the logged in user"),
 		ValidArgsFunction: keyCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.key = args[0]
 			return cmdr.KeyRemove(flags.key)
 		},

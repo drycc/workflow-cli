@@ -17,7 +17,7 @@ func NewRoutesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes",
 		Short: i18n.T("Manage routes for your applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.RoutesList(app, results)
 		},
@@ -56,7 +56,7 @@ func routesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Create a route for an application"),
 		Long:              i18n.T("Creates routes for an application, provides a way to route requests"),
 		ValidArgsFunction: routeKindCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			kind := args[1]
 			backends := args[2:]
@@ -98,7 +98,7 @@ func routesListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List application routes"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.RoutesList(app, results)
 		},
@@ -123,7 +123,7 @@ func routesGetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Get route rules"),
 		Long:              i18n.T("Get route rules for an application"),
 		ValidArgsFunction: routeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.RoutesGet(app, name)
 		},
@@ -149,7 +149,7 @@ func routesSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Set route rules"),
 		Long:              i18n.T("Set route rules for an application"),
 		ValidArgsFunction: routeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.RoutesSet(app, name, flags.rulesFile)
 		},
@@ -178,7 +178,7 @@ func routesAttachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Attach to gateway"),
 		ValidArgsFunction: routeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.RoutesAttach(app, name, flags.port, flags.gateway)
 		},
@@ -188,8 +188,8 @@ func routesAttachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().IntVarP(&flags.port, "port", "", 0, i18n.T("Port is the network port, the gateway listener expects to receive"))
 
 	mustFlags := []string{"gateway", "port"}
-	for _, must_flag := range mustFlags {
-		cmd.MarkFlagRequired(must_flag)
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	gatewayNameCompletion := completion.GatewayNameCompletion{AppID: &app, ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
@@ -214,7 +214,7 @@ func routesDetachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Dettach to gateway"),
 		ValidArgsFunction: routeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.RoutesDetach(app, name, flags.port, flags.gateway)
 		},
@@ -224,8 +224,8 @@ func routesDetachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().IntVarP(&flags.port, "port", "", 0, i18n.T("Port is the network port, the gateway listener expects to receive"))
 
 	mustFlags := []string{"port", "protocol"}
-	for _, must_flag := range mustFlags {
-		cmd.MarkFlagRequired(must_flag)
+	for _, mustFlag := range mustFlags {
+		cmd.MarkFlagRequired(mustFlag)
 	}
 
 	gatewayNameCompletion := completion.GatewayNameCompletion{AppID: &app, ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
@@ -247,7 +247,7 @@ func routesRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Remove a route from an application"),
 		ValidArgsFunction: routeCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.RoutesRemove(app, name)
 		},

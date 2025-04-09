@@ -12,7 +12,7 @@ func NewDomainsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "domains",
 		Short: i18n.T("Manage and assign domain names to your applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.DomainsList(app, results)
 		},
@@ -34,7 +34,7 @@ func domainsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List domains bound to an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.DomainsList(app, results)
 		},
@@ -53,7 +53,7 @@ func domainsAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "add <domain>",
 		Args:  cobra.ExactArgs(1),
 		Short: i18n.T("Bind a domain to an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			domain := args[0]
 			return cmdr.DomainsAdd(app, domain, flags.ptype)
 		},
@@ -73,7 +73,7 @@ func domainsRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:              cobra.ExactArgs(1),
 		Short:             i18n.T("Unbinds a domain for an application"),
 		ValidArgsFunction: domainCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			domain := args[0]
 			return cmdr.DomainsRemove(app, domain)
 		},

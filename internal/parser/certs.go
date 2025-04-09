@@ -13,7 +13,7 @@ func NewCertsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "certs",
 		Short: i18n.T("Manage SSL endpoints for an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.CertsList(app, results)
 		},
@@ -39,7 +39,7 @@ func certsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "list",
 		Short: i18n.T("List SSL certificates for an application"),
 		Long:  i18n.T("Show certificate information for an SSL application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.CertsList(app, results)
 		},
@@ -63,7 +63,7 @@ func certAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Args:  cobra.ExactArgs(3),
 		Short: i18n.T("Add an SSL certificate to an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			cert := args[1]
 			key := args[2]
@@ -88,7 +88,7 @@ func certRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:              cobra.ExactArgs(1),
 		Short:             i18n.T("Remove an SSL certificate from an app"),
 		ValidArgsFunction: certCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.CertRemove(app, name)
 		},
@@ -111,7 +111,7 @@ func certInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Get detailed informaton about the certificate"),
 		Long:              i18n.T("Fetch more detailed information about a certificate"),
 		ValidArgsFunction: certCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			return cmdr.CertInfo(app, name)
 		},
@@ -135,7 +135,7 @@ func certAttachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Attach an SSL certificate to a domain"),
 		Long:              i18n.T("Attach a certificate to a domain"),
 		ValidArgsFunction: certTachCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			domain := args[1]
 			return cmdr.CertAttach(app, name, domain)
@@ -160,7 +160,7 @@ func certDetachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Detach an SSL certificate from a domain"),
 		Long:              i18n.T("Detach certificate from a domain"),
 		ValidArgsFunction: certTachCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 			domain := args[1]
 			return cmdr.CertDetach(app, name, domain)

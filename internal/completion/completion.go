@@ -841,12 +841,11 @@ func (c *VolumesUnmountCompletion) CompletionFunc(cmd *cobra.Command, args []str
 	if len(args) == 0 {
 		volumeCompletion := VolumeCompletion{AppID: c.AppID, ArgsLen: 0, ConfigFile: c.ConfigFile}
 		return volumeCompletion.CompletionFunc(cmd, args, toComplete)
-	} else {
-		ptsArgCompletion := PtsArgsCompletion{
-			PtsCompletion: &PtsCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile},
-		}
-		return ptsArgCompletion.CompletionFunc(cmd, args, toComplete)
 	}
+	ptsArgCompletion := PtsArgsCompletion{
+		PtsCompletion: &PtsCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile},
+	}
+	return ptsArgCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
 type VolumesCmdCompletion struct {

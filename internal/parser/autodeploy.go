@@ -13,7 +13,7 @@ func NewAutodeployCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "autodeploy",
 		Short: i18n.T("Manage autodeploy if or not for applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AutodeployInfo(app)
 		},
 	}
@@ -33,7 +33,7 @@ func autodeployInfo(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "info",
 		Short: i18n.T("Prints info about the current application's autodeploy if or not"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AutodeployInfo(app)
 		},
 	}
@@ -45,7 +45,7 @@ func autodeployEnable(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "enable",
 		Short: i18n.T("Enables autodeploy for an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AutodeployEnable(app)
 		},
 	}
@@ -57,7 +57,7 @@ func autodeployDisable(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "disable",
 		Short: i18n.T("Disables autodeploy for an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AutodeployDisable(app)
 		},
 	}

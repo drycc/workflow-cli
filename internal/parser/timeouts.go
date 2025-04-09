@@ -36,7 +36,7 @@ func timeoutListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List resource timeouts for an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.TimeoutsList(app, version)
 		},
 	}
@@ -65,7 +65,7 @@ func timeoutSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Long:              i18n.T("Sets termination grace period for an application"),
 		Args:              cobra.MinimumNArgs(1),
 		ValidArgsFunction: ptsSetArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			timeouts := args
 			return cmdr.TimeoutsSet(app, timeouts)
 		},
@@ -90,7 +90,7 @@ func timeoutUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Long:              i18n.T("Unsets timeouts for an application. Default value (30s) or set by drycc controller"),
 		Args:              cobra.MinimumNArgs(1),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			ptypes := args
 			return cmdr.TimeoutsUnset(app, ptypes)
 		},

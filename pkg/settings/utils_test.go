@@ -14,7 +14,6 @@ type confgCases struct {
 }
 
 func TestSelectSettings(t *testing.T) {
-	t.Parallel()
 	homeDir := "/a/b/c"
 	SetHome(homeDir)
 	cases := []confgCases{

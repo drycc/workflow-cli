@@ -15,7 +15,7 @@ func NewServicesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "services",
 		Short: i18n.T("Manage services for your applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.ServicesList(app)
 		},
 	}
@@ -55,7 +55,7 @@ func servicesAdd(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Create service for an application"),
 		Long:              i18n.T("Creates extra service for an application and binds it to specific route of the main app domain"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			ptype := args[0]
 			portTarget := args[1]
 			return cmdr.ServicesAdd(app, ptype, portTarget, flags.protocol)
@@ -74,7 +74,7 @@ func servicesList(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:     "list",
 		Example: "drycc services list",
 		Short:   i18n.T("List application services"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.ServicesList(app)
 		},
 	}
@@ -102,7 +102,7 @@ func servicesRemove(cmdr *commands.DryccCmd) *cobra.Command {
 		),
 		Short:             i18n.T("Remove service from an application"),
 		ValidArgsFunction: ServiceCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			ptype := args[0]
 			port, err := strconv.Atoi(args[1])
 			if err != nil {

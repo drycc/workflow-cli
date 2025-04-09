@@ -17,7 +17,7 @@ func NewTagsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tags",
 		Short: i18n.T("Manage tags for application containers"),
-		RunE: func(_ *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.TagsList(app, flags.ptype, version)
 		},
 	}
@@ -52,7 +52,7 @@ func tagsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("List tags for an application"),
 		Args:              cobra.MaximumNArgs(1),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.TagsList(app, flags.ptype, version)
 		},
 	}
@@ -91,7 +91,7 @@ scheduler. This is often used to restrict workloads to specific hosts matching t
 scheduler-configured metadata.`),
 		Args:              cobra.MinimumNArgs(1),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			tags := args[0:]
 			return cmdr.TagsSet(app, flags.ptype, tags)
 		},
@@ -121,7 +121,7 @@ func tagsUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Unset tags for an application"),
 		Args:              cobra.MinimumNArgs(1),
 		ValidArgsFunction: tagCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			keys := args[0:]
 			return cmdr.TagsUnset(app, flags.ptype, keys)
 		},

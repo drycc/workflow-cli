@@ -13,7 +13,7 @@ func NewUpdateCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Args:  cobra.NoArgs,
 		Short: i18n.T("Update workflow cli to latest release"),
 		Long:  i18n.T("Update workflow cli to latest release"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.Update(dryRun)
 		},
 	}

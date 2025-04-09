@@ -12,7 +12,7 @@ func NewPtsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pts",
 		Short: i18n.T("Manage process types inside an app"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.PtsList(app, 1000)
 		},
 	}
@@ -36,7 +36,7 @@ func ptsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "list",
 		Short: i18n.T("List application process types"),
 		Long:  i18n.T("Lists process types servicing an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.PtsList(app, 1000)
 		},
 	}
@@ -64,7 +64,7 @@ func ptsDescribeCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Describe a process type"),
 		Long:              i18n.T("Print a detailed description of the selected process type"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.ptype = args[0]
 			return cmdr.PtsDescribe(app, flags.ptype)
 		},
@@ -89,7 +89,7 @@ func ptsRestartCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Restart application process types"),
 		Long:              i18n.T("Restart an application or process types"),
 		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.ptypes = args
 			return cmdr.PtsRestart(app, flags.ptypes, flags.confirm)
 		},
@@ -123,7 +123,7 @@ func ptsScaleCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Scale process types of replicas"),
 		Long:              i18n.T("Scales an application's processes by type"),
 		ValidArgsFunction: ptsSetArgsCompletion.CompletionFunc,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.scale = args
 			return cmdr.PtsScale(app, flags.scale)
 		},
@@ -154,7 +154,7 @@ func ptsCleanCommand(cmdr *commands.DryccCmd) *cobra.Command {
 			},
 		),
 		Short: i18n.T("Clean process types of not used"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			flags.ptypes = args
 			return cmdr.PtsClean(app, flags.ptypes)
 		},

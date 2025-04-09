@@ -17,7 +17,7 @@ func NewRegistryCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "registry",
 		Short: i18n.T("Manage private registry information for your application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.RegistryList(app, registryFlags.ptype, version)
 		},
 	}
@@ -42,7 +42,7 @@ func registryListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "list",
 		Short: i18n.T("List registry info for an app"),
 		Long:  i18n.T("Lists registry information for an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.RegistryList(app, registryFlags.ptype, version)
 		},
 	}
@@ -75,7 +75,7 @@ func registrySetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short: i18n.T("Set registry info for an app"),
 		Long: i18n.T(`Sets registry information for an application. These credentials are the same as those used for
 'podmain login' to the private registry.`),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			username := args[0]
 			password := args[1]
 			return cmdr.RegistrySet(app, flags.ptype, username, password)
@@ -98,7 +98,7 @@ func registryUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "unset",
 		Short: i18n.T("Unset registry info for an app"),
 		Long:  i18n.T("Unsets registry information for an application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.RegistryUnset(app, flags.ptype)
 		},
 	}
