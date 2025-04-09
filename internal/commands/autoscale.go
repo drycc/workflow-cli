@@ -39,7 +39,7 @@ func (d *DryccCmd) AutoscaleList(appID string) error {
 }
 
 // AutoscaleSet sets autoscale options for the app.
-func (d *DryccCmd) AutoscaleSet(appID string, ptype string, min int, max int, CPUPercent int) error {
+func (d *DryccCmd) AutoscaleSet(appID string, ptype string, minCPU int, maxCPU int, CPUPercent int) error {
 	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
 
 	if err != nil {
@@ -51,8 +51,8 @@ func (d *DryccCmd) AutoscaleSet(appID string, ptype string, min int, max int, CP
 	quit := progress(d.WOut)
 	data := map[string]*api.Autoscale{
 		ptype: {
-			Min:        min,
-			Max:        max,
+			Min:        minCPU,
+			Max:        maxCPU,
 			CPUPercent: CPUPercent,
 		},
 	}
