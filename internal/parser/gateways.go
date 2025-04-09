@@ -12,7 +12,7 @@ func NewGatewaysCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "gateways",
 		Short: i18n.T("Manage gateways for your applications"),
-		RunE: func(_ *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			results, _ := commands.ResponseLimit(limit)
 			return cmdr.GatewaysList(app, results)
 		},

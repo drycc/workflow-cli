@@ -15,7 +15,7 @@ func NewVersionCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "version",
 		Short: i18n.T("Display client version"),
 		Long:  i18n.T("Displays the client version"),
-		Run: func(_ *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			cmdr.Version(flags.all)
 		},
 	}

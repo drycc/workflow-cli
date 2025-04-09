@@ -357,12 +357,12 @@ func (c *LimitSetPlanCompletion) CompletionFunc(cmd *cobra.Command, args []strin
 			}
 		}
 		return results, cobra.ShellCompDirectiveNoFileComp
-	} else {
-		ptsSetArgsCompletion := PtsSetArgsCompletion{
-			PtsCompletion: &PtsCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile},
-		}
-		return ptsSetArgsCompletion.CompletionFunc(cmd, args, toComplete)
 	}
+	ptsSetArgsCompletion := PtsSetArgsCompletion{
+		PtsCompletion: &PtsCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile},
+	}
+	return ptsSetArgsCompletion.CompletionFunc(cmd, args, toComplete)
+
 }
 
 type UserPermsCompletion struct {
@@ -435,12 +435,11 @@ func (c *PermUpdateCompletion) CompletionFunc(cmd *cobra.Command, args []string,
 	if len(args) == 0 {
 		permUsernameCompletion := PermUsernameCompletion{AppID: c.AppID, ArgsLen: 0, ConfigFile: c.ConfigFile}
 		return permUsernameCompletion.CompletionFunc(cmd, args, toComplete)
-	} else {
-		userPermsArgsCompletion := UserPermsArgsCompletion{
-			UserPermsCompletion: &UserPermsCompletion{ConfigFile: c.ConfigFile},
-		}
-		return userPermsArgsCompletion.CompletionFunc(cmd, args, toComplete)
 	}
+	userPermsArgsCompletion := UserPermsArgsCompletion{
+		UserPermsCompletion: &UserPermsCompletion{ConfigFile: c.ConfigFile},
+	}
+	return userPermsArgsCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
 type PsCompletion struct {
@@ -823,12 +822,11 @@ func (c *VolumesMountCompletion) CompletionFunc(cmd *cobra.Command, args []strin
 	if len(args) == 0 {
 		volumeCompletion := VolumeCompletion{AppID: c.AppID, ArgsLen: 0, ConfigFile: c.ConfigFile}
 		return volumeCompletion.CompletionFunc(cmd, args, toComplete)
-	} else {
-		ptsSetArgsCompletion := PtsSetArgsCompletion{
-			PtsCompletion: &PtsCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile},
-		}
-		return ptsSetArgsCompletion.CompletionFunc(cmd, args, toComplete)
 	}
+	ptsSetArgsCompletion := PtsSetArgsCompletion{
+		PtsCompletion: &PtsCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile},
+	}
+	return ptsSetArgsCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
 type VolumesUnmountCompletion struct {

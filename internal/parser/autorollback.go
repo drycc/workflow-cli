@@ -12,7 +12,7 @@ func NewAutorollbackCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "autorollback",
 		Short: i18n.T("Manage autorollback if or not for application"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.AutorollbackInfo(app)
 		},
 	}

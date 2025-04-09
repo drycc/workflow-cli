@@ -15,7 +15,7 @@ func NewTLSCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tls",
 		Short: i18n.T("Manage TLS/SSL settings for applications"),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.TLSInfo(app)
 		},
 	}
