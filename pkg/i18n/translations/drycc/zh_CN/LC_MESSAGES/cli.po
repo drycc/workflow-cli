@@ -1418,6 +1418,14 @@ msgid "The ptype for which the config needs to be unset"
 msgstr "要清除配置的进程类型"
 
 #: internal/parser/healthchecks.go:30
+msgid "The ptype for which the health check needs to be listed"
+msgstr "要列出健康检查的进程类型"
+
+#: internal/parser/healthchecks.go:180
+msgid "The ptype for which the health check needs to be applied"
+msgstr "要应用健康检查的进程类型"
+
+#: internal/parser/healthchecks.go:225
 msgid "The ptype for which the health check needs to be removed"
 msgstr "要移除健康检查的进程类型"
 

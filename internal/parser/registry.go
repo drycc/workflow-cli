@@ -82,7 +82,8 @@ func registrySetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "web", i18n.T("The ptype for registry"))
+	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The ptype for registry"))
+	cmd.MarkFlagRequired("ptype")
 
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
@@ -103,7 +104,8 @@ func registryUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "web", i18n.T("The ptype for registry"))
+	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The ptype for registry"))
+	cmd.MarkFlagRequired("ptype")
 
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)

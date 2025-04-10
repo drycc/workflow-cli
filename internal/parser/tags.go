@@ -57,7 +57,7 @@ func tagsListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "web", i18n.T("The process name as defined in your Procfile"))
+	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The process name as defined in your Procfile"))
 	cmd.Flags().IntVarP(&version, "version", "v", 0, i18n.T("The version for which the tag needs to be listed"))
 
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
@@ -97,7 +97,8 @@ scheduler-configured metadata.`),
 		},
 	}
 
-	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "web", i18n.T("The process name as defined in your Procfile"))
+	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The process name as defined in your Procfile"))
+	cmd.MarkFlagRequired("ptype")
 
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
@@ -127,7 +128,8 @@ func tagsUnsetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "web", i18n.T("The process name as defined in your Procfile"))
+	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The process name as defined in your Procfile"))
+	cmd.MarkFlagRequired("ptype")
 
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)

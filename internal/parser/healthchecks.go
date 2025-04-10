@@ -27,7 +27,7 @@ func NewHealthchecksCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	}
 
 	cmd.PersistentFlags().StringVarP(&app, "app", "a", "", i18n.T("The uniquely identifiable name of the application"))
-	cmd.PersistentFlags().StringVarP(&healthchecksFlags.ptype, "ptype", "p", "web", i18n.T("The ptype for which the health check needs to be removed"))
+	cmd.PersistentFlags().StringVarP(&healthchecksFlags.ptype, "ptype", "p", "", i18n.T("The ptype for which the health check needs to be listed"))
 	cmd.Flags().IntVarP(&version, "version", "v", 0, i18n.T("The version for which the health check needs to be listed"))
 
 	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
@@ -78,7 +78,7 @@ func healthchecksSet(cmdr *commands.DryccCmd) *cobra.Command {
 
 	healthChecksCompletion := completion.HealthChecksCompletion{ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
-		Use:  "set <health-type> <probe-type> [--] <args>...",
+		Use:  "set <health-type> <probe-type> [flags] [--] <args>...",
 		Args: cobra.MinimumNArgs(2),
 		Example: template.CustomExample(
 			"drycc healthchecks set readinessProbe httpGet --path=/health -- 8000",
@@ -177,6 +177,10 @@ port number to perform the socket connection on the Container.
 		},
 	}
 
+	cmd.Flags().StringVarP(&healthchecksFlags.ptype, "ptype", "p", "", i18n.T("The ptype for which the health check needs to be applied"))
+	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
+	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
+
 	cmd.Flags().StringVar(&flags.path, "path", "/", i18n.T("The relative URL path for 'httpGet' probes"))
 	cmd.Flags().StringVar(&flags.headers, "headers", "", i18n.T("The HTTP headers to send for 'httpGet' probes, separated by commas"))
 	cmd.Flags().IntVar(&flags.initialDelay, "initial-delay-timeout", 50, i18n.T("The initial delay timeout for the probe"))
@@ -218,6 +222,10 @@ func healthchecksUnset(cmdr *commands.DryccCmd) *cobra.Command {
 			return cmdr.HealthchecksUnset(app, healthchecksFlags.ptype, flags.healths)
 		},
 	}
+	cmd.Flags().StringVarP(&healthchecksFlags.ptype, "ptype", "p", "", i18n.T("The ptype for which the health check needs to be removed"))
+	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
+	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
+
 	return cmd
 }
 

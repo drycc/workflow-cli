@@ -142,7 +142,7 @@ func psDescribeCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func psDeleteCommand(cmdr *commands.DryccCmd) *cobra.Command {
-	psCompletion := completion.PsCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	psCompletion := completion.PsCompletion{AppID: &app, ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use:  "delete <pod>...",
 		Args: cobra.MinimumNArgs(1),
