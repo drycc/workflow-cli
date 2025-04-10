@@ -59,7 +59,8 @@ func domainsAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "web", i18n.T("The ptype for domain"))
+	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The ptype for domain"))
+	cmd.MarkFlagRequired("ptype")
 
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)

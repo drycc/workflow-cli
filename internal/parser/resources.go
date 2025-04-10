@@ -48,8 +48,6 @@ func resourcesServicesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().IntVarP(&limit, "limit", "l", 0, i18n.T("The maximum number of results to display"))
-
 	return cmd
 }
 
@@ -72,8 +70,6 @@ func resourcesPlansCommand(cmdr *commands.DryccCmd) *cobra.Command {
 			return cmdr.ResourcesPlans(service, results)
 		},
 	}
-
-	cmd.Flags().IntVarP(&limit, "limit", "l", 0, i18n.T("The maximum number of results to display"))
 
 	return cmd
 }

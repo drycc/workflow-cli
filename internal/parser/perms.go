@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"strings"
+
 	"github.com/drycc/workflow-cli/internal/commands"
 	"github.com/drycc/workflow-cli/internal/completion"
 	"github.com/drycc/workflow-cli/internal/template"
@@ -70,7 +72,7 @@ func permAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		ValidArgsFunction: userPermsArgsCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			flags.username = args[0]
-			flags.permissions = args[1]
+			flags.permissions = strings.Join(args[1:], ",")
 			return cmdr.PermCreate(app, flags.username, flags.permissions)
 		},
 	}
@@ -100,7 +102,7 @@ func permUpdateCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		ValidArgsFunction: permUpdateCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			flags.username = args[0]
-			flags.permissions = args[1]
+			flags.permissions = strings.Join(args[1:], ",")
 			return cmdr.PermUpdate(app, flags.username, flags.permissions)
 		},
 	}
