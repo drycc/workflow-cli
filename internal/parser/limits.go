@@ -62,7 +62,7 @@ func limitSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Example: template.CustomExample(
 			"drycc limits set web=std1.large.c1m2",
 			map[string]string{
-				"<ptype>": i18n.T("The process type as defined in your Procfile, such as 'web' or 'worker'."),
+				"<ptype>": i18n.T("The process type as defined in your Procfile, such as 'web' or 'worker'"),
 				"<value>": i18n.T("The limit plan id to apply to the process type"),
 			},
 		),

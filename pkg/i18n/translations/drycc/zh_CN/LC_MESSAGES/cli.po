@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL\n"
-"POT-Creation-Date: 2025-03-31 14:12+0800\n"
+"POT-Creation-Date: 2025-04-14 15:39+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr "要执行的操作，'enable' 或 'disable'"
 msgid "Add a token for controller authentication"
 msgstr "添加用于控制器身份验证的令牌"
 
-#: internal/parser/perms.go:69
+#: internal/parser/perms.go:71
 msgid "Add a user permissions"
 msgstr "添加用户权限"
 
@@ -110,7 +110,7 @@ msgstr "自动证书管理"
 msgid "Bind a domain to an application"
 msgstr "将域名绑定到应用程序"
 
-#: internal/parser/resources.go:245
+#: internal/parser/resources.go:241
 msgid "Bind a resource for an application"
 msgstr "为应用程序绑定资源"
 
@@ -151,11 +151,15 @@ msgstr "要解绑的域名通用名称"
 msgid "Configure automatic certificate management issuer details"
 msgstr "配置自动证书管理颁发者详情"
 
+#: internal/parser/volumes.go:227
+msgid "Copy volume objects"
+msgstr "复制卷对象"
+
 #: internal/parser/apps.go:44
 msgid "Create a new application"
 msgstr "创建新应用"
 
-#: internal/parser/resources.go:101
+#: internal/parser/resources.go:97
 msgid "Create a resource for the application"
 msgstr "为应用创建资源"
 
@@ -209,11 +213,11 @@ msgstr "为应用创建网关并绑定以监听主域名流量"
 msgid "Creates routes for an application, provides a way to route requests"
 msgstr "创建应用路由规则，实现请求分发"
 
-#: internal/parser/resources.go:220
+#: internal/parser/resources.go:216
 msgid "Delete a resource from the application"
 msgstr "从应用中删除资源"
 
-#: internal/parser/volumes.go:184
+#: internal/parser/volumes.go:186
 msgid "Delete a volume from the application"
 msgstr "从应用中删除卷"
 
@@ -221,7 +225,7 @@ msgstr "从应用中删除卷"
 msgid "Delete the selected processes"
 msgstr "删除选定进程"
 
-#: internal/parser/gateways.go:88
+#: internal/parser/gateways.go:92
 msgid "Deletes specific gateway for application"
 msgstr "删除应用指定网关"
 
@@ -245,7 +249,7 @@ msgstr "从域名解绑SSL证书"
 msgid "Detach certificate from a domain"
 msgstr "从域名解绑证书"
 
-#: internal/parser/routes.go:211
+#: internal/parser/routes.go:215
 msgid "Dettach to gateway"
 msgstr "从网关解绑"
 
@@ -273,11 +277,11 @@ msgstr "禁用应用路由功能"
 msgid "Disables autodeploy for an app"
 msgstr "禁用应用自动部署"
 
-#: cmd/root.go:34 internal/parser/version.go:16
+#: internal/parser/version.go:16
 msgid "Display client version"
 msgstr "显示客户端版本"
 
-#: cmd/root.go:35
+#: cmd/root.go:34
 msgid "Display help information"
 msgstr "显示帮助信息"
 
@@ -337,7 +341,7 @@ msgstr "对象存储服务端点URL"
 msgid "Execute a command in a container"
 msgstr "在容器中执行命令"
 
-#: internal/parser/volumes.go:116
+#: internal/parser/volumes.go:118
 msgid "Expand a volume capacity for the application"
 msgstr "扩展应用卷容量"
 
@@ -346,16 +350,16 @@ msgid ""
 "Extract all environment variables from an application or config group. for "
 "local use.\n"
 "\n"
-"The environmental variables can be piped into a file, 'drycc config:pull > "
+"The environmental variables can be piped into a file, 'drycc config pull > "
 "file',\n"
 "or stored locally in a file named .env. This file can be\n"
 "read by foreman to load the local environment for your app."
 msgstr ""
-"导出应用或配置组的环境变量（用于本地使用）\n"
+"从应用或配置组提取所有环境变量（用于本地使用）。\n"
 "\n"
-"可通过管道输出到文件：drycc config:pull > 文件名，\n"
-"或保存到本地.env文件。该文件可\n"
-"被Foreman读取以加载本地应用环境"
+"环境变量可通过管道输出到文件：'drycc config pull > 文件名'，\n"
+"或存储在本地名为.env的文件中。该文件可被foreman读取\n"
+"以加载应用的本地环境。"
 
 #: internal/parser/auth.go:78
 msgid "Fetch detailed user information"
@@ -373,7 +377,7 @@ msgstr "强制TLS设置为HTTPS重定向"
 msgid "Force deploy"
 msgstr "强制部署"
 
-#: internal/parser/resources.go:151
+#: internal/parser/resources.go:147
 msgid "Get a resource's detail in the application"
 msgstr "获取应用资源详情"
 
@@ -389,7 +393,7 @@ msgstr "获取路由规则"
 msgid "Get route rules for an application"
 msgstr "获取应用路由规则"
 
-#: internal/parser/healthchecks.go:184
+#: internal/parser/healthchecks.go:188
 msgid "How often (in seconds) to perform the probe"
 msgstr "探测执行频率（秒）"
 
@@ -413,7 +417,7 @@ msgstr "列出所有可用配额方案"
 msgid "List all available limit specs"
 msgstr "列出所有可用配额规格"
 
-#: internal/parser/resources.go:67
+#: internal/parser/resources.go:65
 msgid "List all available plans for a resource service"
 msgstr "列出资源服务所有可用方案"
 
@@ -425,7 +429,7 @@ msgstr "列出所有资源服务"
 msgid "List all registered users"
 msgstr "列出所有注册用户"
 
-#: internal/parser/perms.go:37
+#: internal/parser/perms.go:39
 msgid "List all user permissions"
 msgstr "列出所有用户权限"
 
@@ -481,7 +485,7 @@ msgstr "列出应用资源配额"
 msgid "List resource timeouts for an app"
 msgstr "列出应用资源超时设置"
 
-#: internal/parser/resources.go:123
+#: internal/parser/resources.go:119
 msgid "List resources in the application"
 msgstr "列出应用资源"
 
@@ -493,7 +497,11 @@ msgstr "列出服务器规格信息"
 msgid "List tags for an application"
 msgstr "列出应用标签"
 
-#: internal/parser/volumes.go:132
+#: internal/parser/volumes.go:211
+msgid "List volume objects"
+msgstr "列出卷对象"
+
+#: internal/parser/volumes.go:134
 msgid "List volumes in the application"
 msgstr "列出应用卷"
 
@@ -589,7 +597,7 @@ msgstr "管理应用Git配置"
 msgid "Manage labels of application"
 msgstr "管理应用标签"
 
-#: internal/parser/perms.go:14
+#: internal/parser/perms.go:16
 msgid "Manage permissions for applications"
 msgstr "管理应用权限"
 
@@ -661,19 +669,19 @@ msgstr "可扩展的最大副本数"
 msgid "Maximum number of results to display"
 msgstr "最多显示结果数量"
 
-#: internal/parser/healthchecks.go:186
+#: internal/parser/healthchecks.go:190
 msgid ""
 "Minimum consecutive successes for the probe to be considered failed after "
 "having succeeded"
 msgstr "探测成功后需连续失败的最小次数（判定为失败）"
 
-#: internal/parser/healthchecks.go:185
+#: internal/parser/healthchecks.go:189
 msgid ""
 "Minimum consecutive successes for the probe to be considered successful "
 "after having failed"
 msgstr "探测失败后需连续成功的最小次数（判定为成功）"
 
-#: internal/parser/volumes.go:236
+#: internal/parser/volumes.go:264
 msgid "Mount a volume to process of the application"
 msgstr "将卷挂载到应用进程"
 
@@ -726,7 +734,7 @@ msgstr "NFS服务器导出的路径"
 msgid "Path to configuration file"
 msgstr "配置文件的路径"
 
-#: internal/parser/routes.go:188 internal/parser/routes.go:220
+#: internal/parser/routes.go:188 internal/parser/routes.go:224
 msgid "Port is the network port, the gateway listener expects to receive"
 msgstr "网关监听器期望接收的网络端口"
 
@@ -734,7 +742,7 @@ msgstr "网关监听器期望接收的网络端口"
 msgid "Port is the network port, the listener expects to receive"
 msgstr "网关监听器期望接收的网络端口"
 
-#: internal/parser/gateways.go:96
+#: internal/parser/gateways.go:100
 msgid "Port is the network port, the listener received"
 msgstr "网关监听器接收的网络端口"
 
@@ -754,7 +762,7 @@ msgstr "显示特定构建版本信息"
 msgid "Print information about a specific release"
 msgstr "显示特定版本信息"
 
-#: internal/parser/volumes.go:158
+#: internal/parser/volumes.go:160
 msgid "Print information about a volume"
 msgstr "显示卷信息"
 
@@ -814,7 +822,7 @@ msgid ""
 "Supports TCP, UDP, TLS, HTTP, and HTTPS"
 msgstr "网关监听器期望接收的网络协议（支持TCP/UDP/TLS/HTTP/HTTPS）"
 
-#: internal/parser/gateways.go:97
+#: internal/parser/gateways.go:101
 msgid "Protocol specifies the network protocol this listener received"
 msgstr "网关监听器接收的网络协议"
 
@@ -822,11 +830,11 @@ msgstr "网关监听器接收的网络协议"
 msgid "Provide a alias for controller authentication token"
 msgstr "提供控制器认证令牌别名"
 
-#: internal/parser/tokens.go:68 internal/parser/auth.go:42
+#: internal/parser/auth.go:42 internal/parser/tokens.go:68
 msgid "Provide a password for the account"
 msgstr "提供账户密码"
 
-#: internal/parser/tokens.go:67 internal/parser/auth.go:41
+#: internal/parser/auth.go:41 internal/parser/tokens.go:67
 msgid "Provide a username for the account"
 msgstr "提供账户用户名"
 
@@ -850,15 +858,15 @@ msgstr "查询符合指定CPU核心数的配额方案"
 msgid "Query plans that meet the specified spec id, see [specs] subcommand."
 msgstr "查询符合指定规格ID的配额方案，使用[specs]子命令查看可用规格"
 
-#: internal/parser/routes.go:240
+#: internal/parser/routes.go:248
 msgid "Remove a route from an application"
 msgstr "从应用移除路由"
 
-#: internal/parser/tokens.go:89
+#: internal/parser/tokens.go:94
 msgid "Remove a token for controller authentication"
 msgstr "移除控制器认证令牌"
 
-#: internal/parser/perms.go:126
+#: internal/parser/perms.go:128
 msgid "Remove a user permissions"
 msgstr "移除用户权限"
 
@@ -874,13 +882,17 @@ msgstr "从应用移除SSL证书"
 msgid "Remove application's label"
 msgstr "移除应用标签"
 
-#: internal/parser/gateways.go:87
+#: internal/parser/gateways.go:91
 msgid "Remove gateways from an application"
 msgstr "从应用移除网关"
 
 #: internal/parser/services.go:103
 msgid "Remove service from an application"
 msgstr "从应用移除服务"
+
+#: internal/parser/volumes.go:242
+msgid "Remove volume objects"
+msgstr "删除卷对象"
 
 #: internal/parser/keys.go:81
 msgid "Removes an SSH key for the logged in user"
@@ -1002,12 +1014,13 @@ msgid ""
 "\n"
 "This file can be read by foreman\n"
 "to load the local environment for your app. The file should be piped via\n"
-"stdin, 'drycc config:push < .env', or using the --path option."
+"stdin, 'drycc config push < .env', or using the--path option."
 msgstr ""
-"设置应用或配置组的环境变量。\n"
+"为应用程序或配置组设置环境变量。\n"
 "\n"
-"该文件可被Foreman读取以加载本地环境。可通过管道输入：\n"
-"drycc config:push < .env，或使用--path选项指定路径"
+"该文件可由 foreman 读取\n"
+"以加载应用程序的本地环境。文件应通过\n"
+"标准输入（'drycc config push < .env'）或使用 --path 选项进行管道传输。"
 
 #: internal/parser/healthchecks.go:93
 msgid ""
@@ -1165,7 +1178,7 @@ msgstr ""
 msgid "Sets termination grace period for an application"
 msgstr "设置应用终止宽限期"
 
-#: cmd/root.go:70
+#: cmd/root.go:69
 msgid "Shortcut Commands:"
 msgstr "Shortcut Commands:"
 
@@ -1173,7 +1186,7 @@ msgstr "Shortcut Commands:"
 msgid "Show certificate information for an SSL application"
 msgstr "显示SSL应用证书信息"
 
-#: internal/parser/resources.go:159
+#: internal/parser/resources.go:155
 msgid "Show extra details provided to resource"
 msgstr "显示资源附加详情"
 
@@ -1193,7 +1206,7 @@ msgstr ""
 msgid "Specify if the logs should be streamed"
 msgstr "指定是否实时流式输出日志"
 
-#: internal/parser/resources.go:115 internal/parser/resources.go:199
+#: internal/parser/resources.go:111 internal/parser/resources.go:195
 msgid "Specify values in a YAML file. If set, params will be discard"
 msgstr "通过YAML文件指定参数值，若设置则忽略命令行参数"
 
@@ -1209,7 +1222,7 @@ msgstr "目标CPU使用率百分比"
 msgid "The Drycc command-line client issues API calls to a Drycc controller"
 msgstr "Drycc命令行客户端向Drycc控制器发出API调用"
 
-#: internal/parser/healthchecks.go:181
+#: internal/parser/healthchecks.go:185
 msgid "The HTTP headers to send for 'httpGet' probes, separated by commas"
 msgstr "HTTP探测时发送的HTTP头部字段（逗号分隔）"
 
@@ -1226,11 +1239,11 @@ msgstr ""
 "健康检查探测所需的参数：\n"
 "                  exec探测接受参数列表，httpGet和tcpSocket探测需指定端口号"
 
-#: internal/parser/volumes.go:211
+#: internal/parser/volumes.go:201
 msgid "The client used to manage volume files"
 msgstr "用于管理卷文件的客户端"
 
-#: internal/parser/volumes.go:233 internal/parser/apps.go:158
+#: internal/parser/volumes.go:261 internal/parser/apps.go:158
 #: internal/parser/shortcuts.go:44
 msgid "The filesystem path"
 msgstr "文件系统路径"
@@ -1273,11 +1286,11 @@ msgstr "健康检查类型，如 'startupProbe'、'livenessProbe' 或 'readiness
 msgid "The hostname or ip address of the nfs server"
 msgstr "NFS服务器的主机名或IP地址"
 
-#: internal/parser/tokens.go:86
+#: internal/parser/tokens.go:91
 msgid "The id of the token for controller authentication"
 msgstr "控制器认证的令牌ID"
 
-#: internal/parser/healthchecks.go:182
+#: internal/parser/healthchecks.go:186
 msgid "The initial delay timeout for the probe"
 msgstr "探测初始延迟超时时间"
 
@@ -1289,18 +1302,17 @@ msgstr "要应用到进程类型的配额方案ID"
 msgid "The max seconds of followz the log stream"
 msgstr "日志流实时追踪的最大秒数"
 
+#: internal/parser/resources.go:24 internal/parser/resources.go:126
 #: internal/parser/certs.go:23 internal/parser/certs.go:48
-#: internal/parser/tokens.go:22 internal/parser/tokens.go:40
-#: internal/parser/users.go:21 internal/parser/users.go:39
-#: internal/parser/volumes.go:23 internal/parser/volumes.go:139
-#: internal/parser/perms.go:22 internal/parser/perms.go:44
-#: internal/parser/releases.go:33 internal/parser/releases.go:62
+#: internal/parser/volumes.go:23 internal/parser/volumes.go:141
 #: internal/parser/routes.go:27 internal/parser/routes.go:107
 #: internal/parser/domains.go:22 internal/parser/domains.go:43
+#: internal/parser/users.go:21 internal/parser/users.go:39
+#: internal/parser/releases.go:33 internal/parser/releases.go:62
+#: internal/parser/tokens.go:22 internal/parser/tokens.go:40
 #: internal/parser/gateways.go:22 internal/parser/gateways.go:44
 #: internal/parser/limits.go:126 internal/parser/limits.go:150
-#: internal/parser/resources.go:24 internal/parser/resources.go:51
-#: internal/parser/resources.go:76 internal/parser/resources.go:130
+#: internal/parser/perms.go:24 internal/parser/perms.go:46
 msgid "The maximum number of results to display"
 msgstr "最多显示结果数量"
 
@@ -1312,8 +1324,8 @@ msgstr "要查询信息的证书名称"
 msgid "The name of the cert to remove from the app"
 msgstr "要从应用移除的证书名称"
 
-#: internal/parser/perms.go:65 internal/parser/perms.go:95
-#: internal/parser/perms.go:123
+#: internal/parser/perms.go:67 internal/parser/perms.go:97
+#: internal/parser/perms.go:125
 msgid "The name of the user"
 msgstr "用户名称"
 
@@ -1325,11 +1337,11 @@ msgstr "显示行数"
 msgid "The number of lines to display, -1 showing all log lines"
 msgstr "要显示的日志行数（-1 表示显示全部）"
 
-#: internal/parser/pts.go:120 internal/parser/shortcuts.go:83
+#: internal/parser/shortcuts.go:83 internal/parser/pts.go:120
 msgid "The number of processes"
 msgstr "进程数量"
 
-#: internal/parser/healthchecks.go:183
+#: internal/parser/healthchecks.go:187
 msgid "The number of seconds after which the probe times out"
 msgstr "探测超时秒数"
 
@@ -1337,8 +1349,8 @@ msgstr "探测超时秒数"
 msgid "The password of the registry"
 msgstr "镜像仓库密码"
 
-#: internal/parser/ps.go:99 internal/parser/ps.go:130 internal/parser/ps.go:152
-#: internal/parser/shortcuts.go:58
+#: internal/parser/shortcuts.go:58 internal/parser/ps.go:99
+#: internal/parser/ps.go:130 internal/parser/ps.go:152
 msgid "The pod name for the application"
 msgstr "应用Pod名称"
 
@@ -1354,11 +1366,11 @@ msgstr "服务将暴露的端口"
 msgid "The private key of the SSL certificate"
 msgstr "SSL证书私钥"
 
-#: internal/parser/volumes.go:232 internal/parser/volumes.go:257
-#: internal/parser/pts.go:61 internal/parser/pts.go:119
-#: internal/parser/pts.go:153 internal/parser/shortcuts.go:82
+#: internal/parser/volumes.go:260 internal/parser/volumes.go:285
+#: internal/parser/shortcuts.go:82 internal/parser/pts.go:61
+#: internal/parser/pts.go:119 internal/parser/pts.go:153
 #: internal/parser/tags.go:26 internal/parser/tags.go:60
-#: internal/parser/tags.go:100 internal/parser/tags.go:130
+#: internal/parser/tags.go:100 internal/parser/tags.go:131
 msgid "The process name as defined in your Procfile"
 msgstr "Procfile中定义的进程名称"
 
@@ -1370,21 +1382,15 @@ msgstr "Procfile中定义的进程名称（如 'web'）"
 msgid "The process type as defined in your Procfile"
 msgstr "Procfile中定义的进程类型"
 
-#: internal/parser/limits.go:95
+#: internal/parser/limits.go:65 internal/parser/limits.go:95
 msgid "The process type as defined in your Procfile, such as 'web' or 'worker'"
-msgstr ""
-"The process type as defined in your Procfile, such as 'web' or 'worker'"
-
-#: internal/parser/limits.go:65
-msgid ""
-"The process type as defined in your Procfile, such as 'web' or 'worker'."
 msgstr "Procfile中定义的进程类型（如 'web' 或 'worker'）"
 
 #: internal/parser/autoscale.go:59
 msgid "The process type to add to the application's autoscale settings"
 msgstr "要添加到应用自动扩缩容设置的进程类型"
 
-#: internal/parser/autoscale.go:91
+#: internal/parser/autoscale.go:96
 msgid "The process type to remove from the application's autoscale settings"
 msgstr "要从应用自动扩缩容设置移除的进程类型"
 
@@ -1393,7 +1399,7 @@ msgid "The ptype for domain"
 msgstr "域名对应的配置进程类型"
 
 #: internal/parser/registry.go:26 internal/parser/registry.go:50
-#: internal/parser/registry.go:85 internal/parser/registry.go:106
+#: internal/parser/registry.go:85 internal/parser/registry.go:107
 msgid "The ptype for registry"
 msgstr "镜像仓库对应的配置进程类型"
 
@@ -1417,13 +1423,13 @@ msgstr "要设置配置的进程类型"
 msgid "The ptype for which the config needs to be unset"
 msgstr "要清除配置的进程类型"
 
-#: internal/parser/healthchecks.go:30
-msgid "The ptype for which the health check needs to be listed"
-msgstr "要列出健康检查的进程类型"
-
 #: internal/parser/healthchecks.go:180
 msgid "The ptype for which the health check needs to be applied"
 msgstr "要应用健康检查的进程类型"
+
+#: internal/parser/healthchecks.go:30
+msgid "The ptype for which the health check needs to be listed"
+msgstr "要列出健康检查的进程类型"
 
 #: internal/parser/healthchecks.go:225
 msgid "The ptype for which the health check needs to be removed"
@@ -1441,7 +1447,7 @@ msgstr "需分离配置的进程类型"
 msgid "The public key of the SSL certificate"
 msgstr "SSL证书公钥"
 
-#: internal/parser/healthchecks.go:180
+#: internal/parser/healthchecks.go:184
 msgid "The relative URL path for 'httpGet' probes"
 msgstr "HTTP探测的相对URL路径"
 
@@ -1449,20 +1455,20 @@ msgstr "HTTP探测的相对URL路径"
 msgid "The release of the application, such as '1'"
 msgstr "应用版本（如 '1'）"
 
-#: internal/parser/resources.go:217 internal/parser/resources.go:242
-#: internal/parser/resources.go:264
+#: internal/parser/resources.go:213 internal/parser/resources.go:238
+#: internal/parser/resources.go:260
 msgid "The resource instance alias name"
 msgstr "资源实例别名"
 
-#: internal/parser/resources.go:97 internal/parser/resources.go:180
+#: internal/parser/resources.go:93 internal/parser/resources.go:176
 msgid "The resource instance parameters key"
 msgstr "资源实例参数键"
 
-#: internal/parser/resources.go:98 internal/parser/resources.go:181
+#: internal/parser/resources.go:94 internal/parser/resources.go:177
 msgid "The resource instance parameters value"
 msgstr "资源实例参数值"
 
-#: internal/parser/resources.go:95 internal/parser/resources.go:178
+#: internal/parser/resources.go:91 internal/parser/resources.go:174
 msgid "The resource's service"
 msgstr "资源所属服务"
 
@@ -1474,11 +1480,11 @@ msgstr "路由类型（可选：HTTPRoute、TCPRoute、UDPRoute、GRPCRoute、TL
 msgid "The route's backend, pattern: <service>:<port>,<weight>"
 msgstr "路由后端配置，格式：<service>:<port>,<weight>"
 
-#: internal/parser/resources.go:64
+#: internal/parser/resources.go:62
 msgid "The service name for plans"
 msgstr "服务名称"
 
-#: internal/parser/resources.go:96 internal/parser/resources.go:179
+#: internal/parser/resources.go:92 internal/parser/resources.go:175
 msgid "The service's plan"
 msgstr "服务配额方案"
 
@@ -1494,7 +1500,7 @@ msgstr "应用堆栈名称"
 msgid "The tag key"
 msgstr "标签键"
 
-#: internal/parser/tags.go:118
+#: internal/parser/tags.go:119
 msgid "The tag key to unset"
 msgstr "要清除的标签键"
 
@@ -1502,32 +1508,36 @@ msgstr "要清除的标签键"
 msgid "The tag value"
 msgstr "标签值"
 
-#: internal/parser/routes.go:187 internal/parser/routes.go:219
+#: internal/parser/volumes.go:208 internal/parser/volumes.go:239
+msgid "The target path of volume"
+msgstr "卷的目标路径"
+
+#: internal/parser/routes.go:187 internal/parser/routes.go:223
 msgid "The unique name of the gaetway"
 msgstr "网关唯一名称"
 
 #: internal/parser/routes.go:51 internal/parser/routes.go:120
 #: internal/parser/routes.go:146 internal/parser/routes.go:176
-#: internal/parser/routes.go:208 internal/parser/routes.go:237
+#: internal/parser/routes.go:212 internal/parser/routes.go:245
 msgid "The unique name of the route"
 msgstr "路由唯一名称"
 
-#: internal/parser/certs.go:22 internal/parser/routing.go:19
-#: internal/parser/services.go:23 internal/parser/timeouts.go:21
-#: internal/parser/volumes.go:22 internal/parser/apps.go:88
+#: internal/parser/resources.go:23 internal/parser/certs.go:22
+#: internal/parser/autodeploy.go:21 internal/parser/volumes.go:22
+#: internal/parser/routes.go:26 internal/parser/services.go:23
+#: internal/parser/autoscale.go:21 internal/parser/apps.go:88
 #: internal/parser/apps.go:107 internal/parser/apps.go:132
 #: internal/parser/apps.go:170 internal/parser/apps.go:196
-#: internal/parser/apps.go:217 internal/parser/builds.go:19
-#: internal/parser/builds.go:56 internal/parser/ps.go:20
-#: internal/parser/ps.go:112 internal/parser/pts.go:20
-#: internal/parser/pts.go:133 internal/parser/perms.go:21
-#: internal/parser/releases.go:32 internal/parser/routes.go:26
-#: internal/parser/git.go:17 internal/parser/autodeploy.go:21
-#: internal/parser/autorollback.go:19 internal/parser/autoscale.go:21
-#: internal/parser/config.go:29 internal/parser/domains.go:21
-#: internal/parser/gateways.go:21 internal/parser/labels.go:20
-#: internal/parser/limits.go:20 internal/parser/registry.go:25
-#: internal/parser/resources.go:23 internal/parser/tags.go:25
+#: internal/parser/apps.go:217 internal/parser/domains.go:21
+#: internal/parser/releases.go:32 internal/parser/registry.go:25
+#: internal/parser/labels.go:20 internal/parser/routing.go:19
+#: internal/parser/gateways.go:21 internal/parser/builds.go:19
+#: internal/parser/builds.go:56 internal/parser/autorollback.go:19
+#: internal/parser/limits.go:20 internal/parser/git.go:17
+#: internal/parser/timeouts.go:21 internal/parser/config.go:29
+#: internal/parser/pts.go:20 internal/parser/pts.go:133
+#: internal/parser/ps.go:20 internal/parser/ps.go:112
+#: internal/parser/tags.go:25 internal/parser/perms.go:23
 msgid "The uniquely identifiable name for the application"
 msgstr "应用唯一标识名称"
 
@@ -1535,11 +1545,11 @@ msgstr "应用唯一标识名称"
 msgid "The uniquely identifiable name of the application"
 msgstr "应用唯一名称"
 
-#: internal/parser/perms.go:66
+#: internal/parser/perms.go:68
 msgid "The user permissions (view,change,delete)"
 msgstr "用户权限（view、change、delete）"
 
-#: internal/parser/perms.go:96
+#: internal/parser/perms.go:98
 msgid "The user's permissions (view,change,delete)"
 msgstr "用户的权限（view、change、delete）"
 
@@ -1592,21 +1602,29 @@ msgstr "要查询对应版本的标签"
 msgid "The version for which the timeout needs to be listed"
 msgstr "要查询对应版本的超时设置"
 
-#: internal/parser/volumes.go:57 internal/parser/volumes.go:112
-#: internal/parser/volumes.go:231 internal/parser/volumes.go:256
+#: internal/parser/volumes.go:57 internal/parser/volumes.go:114
+#: internal/parser/volumes.go:259 internal/parser/volumes.go:284
 #: internal/parser/apps.go:157 internal/parser/shortcuts.go:43
 msgid "The volume name"
 msgstr "卷名称"
 
-#: internal/parser/volumes.go:155
+#: internal/parser/volumes.go:157
 msgid "The volume name to be info"
 msgstr "要查询信息的卷名称"
 
-#: internal/parser/volumes.go:181
+#: internal/parser/volumes.go:183
 msgid "The volume name to be removed"
 msgstr "要移除的卷名称"
 
-#: internal/parser/volumes.go:58 internal/parser/volumes.go:113
+#: internal/parser/volumes.go:223
+msgid "The volume or local source path"
+msgstr "The volume or local source path"
+
+#: internal/parser/volumes.go:224
+msgid "The volume or local target path"
+msgstr "卷或本地目标路径"
+
+#: internal/parser/volumes.go:58 internal/parser/volumes.go:115
 msgid "The volume size, such as '500G'"
 msgstr "卷容量（如 '500G'）"
 
@@ -1614,14 +1632,14 @@ msgstr "卷容量（如 '500G'）"
 msgid "The volume type, such as csi, nfs, oss"
 msgstr "卷类型（如 csi, nfs, oss）"
 
-#: internal/parser/resources.go:94 internal/parser/resources.go:148
-#: internal/parser/resources.go:177
+#: internal/parser/resources.go:90 internal/parser/resources.go:144
+#: internal/parser/resources.go:173
 msgid "This resource instance alias"
 msgstr "该资源实例别名"
 
-#: internal/parser/tokens.go:98 internal/parser/builds.go:60
-#: internal/parser/builds.go:107 internal/parser/pts.go:98
-#: internal/parser/releases.go:118
+#: internal/parser/releases.go:118 internal/parser/tokens.go:103
+#: internal/parser/builds.go:60 internal/parser/builds.go:107
+#: internal/parser/pts.go:98
 msgid "To proceed, type \"yes\""
 msgstr "继续操作请输入 \"yes\""
 
@@ -1638,7 +1656,7 @@ msgstr "转移应用所有权给其他用户"
 msgid "Transfer application ownership to another user."
 msgstr "转移应用所有权给其他用户"
 
-#: internal/parser/autoscale.go:95
+#: internal/parser/autoscale.go:100
 msgid "Turn off autoscale for an app"
 msgstr "关闭应用自动扩缩容"
 
@@ -1646,15 +1664,15 @@ msgstr "关闭应用自动扩缩容"
 msgid "Turn on autoscale for an app"
 msgstr "开启应用自动扩缩容"
 
-#: internal/parser/domains.go:74
+#: internal/parser/domains.go:75
 msgid "Unbinds a domain for an application"
 msgstr "解除应用与域名的绑定"
 
-#: internal/parser/volumes.go:260
+#: internal/parser/volumes.go:288
 msgid "Unmount a volume from process of the application"
 msgstr "从应用进程卸载卷"
 
-#: internal/parser/autoscale.go:96
+#: internal/parser/autoscale.go:101
 msgid "Unset autoscale per process type for an app"
 msgstr "清除应用各进程类型的自动扩缩容设置"
 
@@ -1662,11 +1680,11 @@ msgstr "清除应用各进程类型的自动扩缩容设置"
 msgid "Unset environment variables for an app"
 msgstr "清除应用环境变量"
 
-#: internal/parser/healthchecks.go:209
+#: internal/parser/healthchecks.go:213
 msgid "Unset healthchecks for an application"
 msgstr "清除应用健康检查配置"
 
-#: internal/parser/registry.go:99
+#: internal/parser/registry.go:100
 msgid "Unset registry info for an app"
 msgstr "清除应用镜像仓库信息"
 
@@ -1678,7 +1696,7 @@ msgstr "清除应用资源配额"
 msgid "Unset resource timeouts for an app"
 msgstr "清除应用资源超时设置"
 
-#: internal/parser/tags.go:121
+#: internal/parser/tags.go:122
 msgid "Unset tags for an application"
 msgstr "清除应用标签"
 
@@ -1690,7 +1708,7 @@ msgstr "清除应用或配置组的环境变量"
 msgid "Unsets labels for an application"
 msgstr "清除应用标签"
 
-#: internal/parser/registry.go:100
+#: internal/parser/registry.go:101
 msgid "Unsets registry information for an application"
 msgstr "清除应用镜像仓库信息"
 
@@ -1700,11 +1718,11 @@ msgid ""
 "controller"
 msgstr "清除应用超时设置（将恢复默认值30秒或控制器设定值）"
 
-#: internal/parser/resources.go:184
+#: internal/parser/resources.go:180
 msgid "Update a resource from the application"
 msgstr "更新应用资源"
 
-#: internal/parser/perms.go:99
+#: internal/parser/perms.go:101
 msgid "Update a user permission"
 msgstr "更新用户权限"
 
@@ -1732,16 +1750,6 @@ msgstr "查看应用信息"
 msgid "Volume mounts in format 'volume:path'"
 msgstr "卷挂载格式 '卷名:挂载路径'"
 
-#: internal/parser/volumes.go:206
-msgid ""
-"arguments for running commands, when cmd is 'cp', args should be '[source] "
-"[dest]'.\n"
-"           volume path format 'vol://volumename/', '/' is equivalent to the "
-"mount path."
-msgstr ""
-"执行命令的参数，当命令为'cp'时，参数应为'[源路径] [目标路径]'\n"
-"           卷路径格式为'vol://卷名称/'，'/'等同于挂载路径"
-
 #: internal/parser/builds.go:44
 msgid "imports an image and deploys as a new release"
 msgstr "导入镜像并部署为新版本"
@@ -1749,16 +1757,6 @@ msgstr "导入镜像并部署为新版本"
 #: internal/parser/version.go:22
 msgid "list api and controller versions."
 msgstr "列出API和控制器版本"
-
-#: internal/parser/volumes.go:203
-msgid ""
-"ls         list volume files\n"
-"           cp         copy volume files\n"
-"           rm         remove volume files"
-msgstr ""
-"ls         列出卷文件\n"
-"           cp         复制卷文件\n"
-"           rm         删除卷文件"
 
 #: internal/parser/autoscale.go:72
 msgid "minimum replicas to keep around"
@@ -1781,7 +1779,7 @@ msgstr ""
 msgid "secret access key for authentication"
 msgstr "认证密钥（Secret Access Key）"
 
-#: internal/parser/resources.go:228
+#: internal/parser/resources.go:224
 msgid ""
 "skips the prompt for the resource name. <resource> is the uniquely "
 "identifiable\n"
@@ -1792,7 +1790,7 @@ msgstr "跳过资源名称提示，直接使用指定名称。<resource>是资�
 msgid "the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'"
 msgstr "健康检查探测类型（如 'httpGet'、'exec' 或 'tcpSocket'）"
 
-#: internal/parser/healthchecks.go:206
+#: internal/parser/healthchecks.go:210
 msgid ""
 "the healthcheck type, such as 'startupProbe' 'livenessProbe' or "
 "'readinessProbe'"
@@ -1812,15 +1810,6 @@ msgid ""
 "\"frontend\""
 msgstr "标签值（例如：\"https://github.com/drycc/workflow\" 或 \"frontend\"）"
 
-#: internal/parser/resources.go:267
+#: internal/parser/resources.go:263
 msgid "unbind a resources for an application"
 msgstr "解除应用与资源的绑定"
-
-#~ msgid ""
-#~ "Protocol specifies the network protocol this listener expects to receive"
-#~ msgstr "网关监听器期望接收的网络协议"
-
-#~ msgid ""
-#~ "procfile type which should handle the request, e.g. webhooks (should be "
-#~ "bind to the port PORT)\n"
-#~ msgstr "要处理请求的Procfile类型（如webhooks），需绑定到PORT端口"

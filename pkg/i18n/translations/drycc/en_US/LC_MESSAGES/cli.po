@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: EMAIL\n"
-"POT-Creation-Date: 2025-03-31 14:12+0800\n"
+"POT-Creation-Date: 2025-04-14 15:39+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Add a token for controller authentication"
 msgstr ""
 
-#: internal/parser/perms.go:69
+#: internal/parser/perms.go:71
 msgid "Add a user permissions"
 msgstr ""
 
@@ -109,7 +109,7 @@ msgstr ""
 msgid "Bind a domain to an application"
 msgstr ""
 
-#: internal/parser/resources.go:245
+#: internal/parser/resources.go:241
 msgid "Bind a resource for an application"
 msgstr ""
 
@@ -150,11 +150,15 @@ msgstr ""
 msgid "Configure automatic certificate management issuer details"
 msgstr ""
 
+#: internal/parser/volumes.go:227
+msgid "Copy volume objects"
+msgstr "Copy volume objects"
+
 #: internal/parser/apps.go:44
 msgid "Create a new application"
 msgstr ""
 
-#: internal/parser/resources.go:101
+#: internal/parser/resources.go:97
 msgid "Create a resource for the application"
 msgstr ""
 
@@ -205,11 +209,11 @@ msgstr ""
 msgid "Creates routes for an application, provides a way to route requests"
 msgstr ""
 
-#: internal/parser/resources.go:220
+#: internal/parser/resources.go:216
 msgid "Delete a resource from the application"
 msgstr ""
 
-#: internal/parser/volumes.go:184
+#: internal/parser/volumes.go:186
 msgid "Delete a volume from the application"
 msgstr ""
 
@@ -217,7 +221,7 @@ msgstr ""
 msgid "Delete the selected processes"
 msgstr ""
 
-#: internal/parser/gateways.go:88
+#: internal/parser/gateways.go:92
 msgid "Deletes specific gateway for application"
 msgstr ""
 
@@ -241,7 +245,7 @@ msgstr ""
 msgid "Detach certificate from a domain"
 msgstr ""
 
-#: internal/parser/routes.go:211
+#: internal/parser/routes.go:215
 msgid "Dettach to gateway"
 msgstr ""
 
@@ -267,11 +271,11 @@ msgstr ""
 msgid "Disables autodeploy for an app"
 msgstr ""
 
-#: cmd/root.go:34 internal/parser/version.go:16
+#: internal/parser/version.go:16
 msgid "Display client version"
 msgstr ""
 
-#: cmd/root.go:35
+#: cmd/root.go:34
 msgid "Display help information"
 msgstr "Display help information"
 
@@ -329,7 +333,7 @@ msgstr ""
 msgid "Execute a command in a container"
 msgstr ""
 
-#: internal/parser/volumes.go:116
+#: internal/parser/volumes.go:118
 msgid "Expand a volume capacity for the application"
 msgstr ""
 
@@ -338,11 +342,18 @@ msgid ""
 "Extract all environment variables from an application or config group. for "
 "local use.\n"
 "\n"
-"The environmental variables can be piped into a file, 'drycc config:pull > "
+"The environmental variables can be piped into a file, 'drycc config pull > "
 "file',\n"
 "or stored locally in a file named .env. This file can be\n"
 "read by foreman to load the local environment for your app."
 msgstr ""
+"Extract all environment variables from an application or config group. for "
+"local use.\n"
+"\n"
+"The environmental variables can be piped into a file, 'drycc config pull > "
+"file',\n"
+"or stored locally in a file named .env. This file can be\n"
+"read by foreman to load the local environment for your app."
 
 #: internal/parser/auth.go:78
 msgid "Fetch detailed user information"
@@ -360,7 +371,7 @@ msgstr ""
 msgid "Force deploy"
 msgstr ""
 
-#: internal/parser/resources.go:151
+#: internal/parser/resources.go:147
 msgid "Get a resource's detail in the application"
 msgstr ""
 
@@ -376,7 +387,7 @@ msgstr ""
 msgid "Get route rules for an application"
 msgstr ""
 
-#: internal/parser/healthchecks.go:184
+#: internal/parser/healthchecks.go:188
 msgid "How often (in seconds) to perform the probe"
 msgstr ""
 
@@ -400,7 +411,7 @@ msgstr ""
 msgid "List all available limit specs"
 msgstr ""
 
-#: internal/parser/resources.go:67
+#: internal/parser/resources.go:65
 msgid "List all available plans for a resource service"
 msgstr ""
 
@@ -412,7 +423,7 @@ msgstr ""
 msgid "List all registered users"
 msgstr ""
 
-#: internal/parser/perms.go:37
+#: internal/parser/perms.go:39
 msgid "List all user permissions"
 msgstr ""
 
@@ -468,7 +479,7 @@ msgstr ""
 msgid "List resource timeouts for an app"
 msgstr ""
 
-#: internal/parser/resources.go:123
+#: internal/parser/resources.go:119
 msgid "List resources in the application"
 msgstr ""
 
@@ -480,7 +491,11 @@ msgstr ""
 msgid "List tags for an application"
 msgstr ""
 
-#: internal/parser/volumes.go:132
+#: internal/parser/volumes.go:211
+msgid "List volume objects"
+msgstr "List volume objects"
+
+#: internal/parser/volumes.go:134
 msgid "List volumes in the application"
 msgstr ""
 
@@ -576,7 +591,7 @@ msgstr ""
 msgid "Manage labels of application"
 msgstr ""
 
-#: internal/parser/perms.go:14
+#: internal/parser/perms.go:16
 msgid "Manage permissions for applications"
 msgstr ""
 
@@ -648,19 +663,19 @@ msgstr ""
 msgid "Maximum number of results to display"
 msgstr ""
 
-#: internal/parser/healthchecks.go:186
+#: internal/parser/healthchecks.go:190
 msgid ""
 "Minimum consecutive successes for the probe to be considered failed after "
 "having succeeded"
 msgstr ""
 
-#: internal/parser/healthchecks.go:185
+#: internal/parser/healthchecks.go:189
 msgid ""
 "Minimum consecutive successes for the probe to be considered successful "
 "after having failed"
 msgstr ""
 
-#: internal/parser/volumes.go:236
+#: internal/parser/volumes.go:264
 msgid "Mount a volume to process of the application"
 msgstr ""
 
@@ -710,10 +725,10 @@ msgid "Path that is exported by the nfs server"
 msgstr ""
 
 #: cmd/root.go:33
-msgid "Path to configuration file."
-msgstr "Path to configuration file."
+msgid "Path to configuration file"
+msgstr "Path to configuration file"
 
-#: internal/parser/routes.go:188 internal/parser/routes.go:220
+#: internal/parser/routes.go:188 internal/parser/routes.go:224
 msgid "Port is the network port, the gateway listener expects to receive"
 msgstr ""
 
@@ -721,7 +736,7 @@ msgstr ""
 msgid "Port is the network port, the listener expects to receive"
 msgstr ""
 
-#: internal/parser/gateways.go:96
+#: internal/parser/gateways.go:100
 msgid "Port is the network port, the listener received"
 msgstr "Port is the network port, the listener received"
 
@@ -741,7 +756,7 @@ msgstr ""
 msgid "Print information about a specific release"
 msgstr ""
 
-#: internal/parser/volumes.go:158
+#: internal/parser/volumes.go:160
 msgid "Print information about a volume"
 msgstr ""
 
@@ -801,7 +816,7 @@ msgid ""
 "Supports TCP, UDP, TLS, HTTP, and HTTPS"
 msgstr ""
 
-#: internal/parser/gateways.go:97
+#: internal/parser/gateways.go:101
 msgid "Protocol specifies the network protocol this listener received"
 msgstr "Protocol specifies the network protocol this listener received"
 
@@ -809,11 +824,11 @@ msgstr "Protocol specifies the network protocol this listener received"
 msgid "Provide a alias for controller authentication token"
 msgstr ""
 
-#: internal/parser/tokens.go:68 internal/parser/auth.go:42
+#: internal/parser/auth.go:42 internal/parser/tokens.go:68
 msgid "Provide a password for the account"
 msgstr ""
 
-#: internal/parser/tokens.go:67 internal/parser/auth.go:41
+#: internal/parser/auth.go:41 internal/parser/tokens.go:67
 msgid "Provide a username for the account"
 msgstr ""
 
@@ -837,15 +852,15 @@ msgstr ""
 msgid "Query plans that meet the specified spec id, see [specs] subcommand."
 msgstr ""
 
-#: internal/parser/routes.go:240
+#: internal/parser/routes.go:248
 msgid "Remove a route from an application"
 msgstr ""
 
-#: internal/parser/tokens.go:89
+#: internal/parser/tokens.go:94
 msgid "Remove a token for controller authentication"
 msgstr ""
 
-#: internal/parser/perms.go:126
+#: internal/parser/perms.go:128
 msgid "Remove a user permissions"
 msgstr ""
 
@@ -861,13 +876,17 @@ msgstr ""
 msgid "Remove application's label"
 msgstr ""
 
-#: internal/parser/gateways.go:87
+#: internal/parser/gateways.go:91
 msgid "Remove gateways from an application"
 msgstr ""
 
 #: internal/parser/services.go:103
 msgid "Remove service from an application"
 msgstr ""
+
+#: internal/parser/volumes.go:242
+msgid "Remove volume objects"
+msgstr "Remove volume objects"
 
 #: internal/parser/keys.go:81
 msgid "Removes an SSH key for the logged in user"
@@ -989,8 +1008,13 @@ msgid ""
 "\n"
 "This file can be read by foreman\n"
 "to load the local environment for your app. The file should be piped via\n"
-"stdin, 'drycc config:push < .env', or using the --path option."
+"stdin, 'drycc config push < .env', or using the --path option."
 msgstr ""
+"Sets environment variables for an application or config group.\n"
+"\n"
+"This file can be read by foreman\n"
+"to load the local environment for your app. The file should be piped via\n"
+"stdin, 'drycc config push < .env', or using the --path option."
 
 #: internal/parser/healthchecks.go:93
 msgid ""
@@ -1085,7 +1109,7 @@ msgstr ""
 msgid "Sets termination grace period for an application"
 msgstr ""
 
-#: cmd/root.go:70
+#: cmd/root.go:69
 msgid "Shortcut Commands:"
 msgstr "Shortcut Commands:"
 
@@ -1093,7 +1117,7 @@ msgstr "Shortcut Commands:"
 msgid "Show certificate information for an SSL application"
 msgstr ""
 
-#: internal/parser/resources.go:159
+#: internal/parser/resources.go:155
 msgid "Show extra details provided to resource"
 msgstr ""
 
@@ -1111,7 +1135,7 @@ msgstr ""
 msgid "Specify if the logs should be streamed"
 msgstr ""
 
-#: internal/parser/resources.go:115 internal/parser/resources.go:199
+#: internal/parser/resources.go:111 internal/parser/resources.go:195
 msgid "Specify values in a YAML file. If set, params will be discard"
 msgstr ""
 
@@ -1127,7 +1151,7 @@ msgstr ""
 msgid "The Drycc command-line client issues API calls to a Drycc controller"
 msgstr "Drycc命令行客户端向Drycc控制器发出API调用"
 
-#: internal/parser/healthchecks.go:181
+#: internal/parser/healthchecks.go:185
 msgid "The HTTP headers to send for 'httpGet' probes, separated by commas"
 msgstr ""
 
@@ -1142,11 +1166,11 @@ msgid ""
 "                  'httpGet' and 'tcpSocket' accept a port number."
 msgstr ""
 
-#: internal/parser/volumes.go:211
+#: internal/parser/volumes.go:201
 msgid "The client used to manage volume files"
 msgstr ""
 
-#: internal/parser/volumes.go:233 internal/parser/apps.go:158
+#: internal/parser/volumes.go:261 internal/parser/apps.go:158
 #: internal/parser/shortcuts.go:44
 msgid "The filesystem path"
 msgstr ""
@@ -1189,11 +1213,11 @@ msgstr ""
 msgid "The hostname or ip address of the nfs server"
 msgstr ""
 
-#: internal/parser/tokens.go:86
+#: internal/parser/tokens.go:91
 msgid "The id of the token for controller authentication"
 msgstr ""
 
-#: internal/parser/healthchecks.go:182
+#: internal/parser/healthchecks.go:186
 msgid "The initial delay timeout for the probe"
 msgstr ""
 
@@ -1205,18 +1229,17 @@ msgstr ""
 msgid "The max seconds of followz the log stream"
 msgstr ""
 
+#: internal/parser/resources.go:24 internal/parser/resources.go:126
 #: internal/parser/certs.go:23 internal/parser/certs.go:48
-#: internal/parser/tokens.go:22 internal/parser/tokens.go:40
-#: internal/parser/users.go:21 internal/parser/users.go:39
-#: internal/parser/volumes.go:23 internal/parser/volumes.go:139
-#: internal/parser/perms.go:22 internal/parser/perms.go:44
-#: internal/parser/releases.go:33 internal/parser/releases.go:62
+#: internal/parser/volumes.go:23 internal/parser/volumes.go:141
 #: internal/parser/routes.go:27 internal/parser/routes.go:107
 #: internal/parser/domains.go:22 internal/parser/domains.go:43
+#: internal/parser/users.go:21 internal/parser/users.go:39
+#: internal/parser/releases.go:33 internal/parser/releases.go:62
+#: internal/parser/tokens.go:22 internal/parser/tokens.go:40
 #: internal/parser/gateways.go:22 internal/parser/gateways.go:44
 #: internal/parser/limits.go:126 internal/parser/limits.go:150
-#: internal/parser/resources.go:24 internal/parser/resources.go:51
-#: internal/parser/resources.go:76 internal/parser/resources.go:130
+#: internal/parser/perms.go:24 internal/parser/perms.go:46
 msgid "The maximum number of results to display"
 msgstr ""
 
@@ -1228,8 +1251,8 @@ msgstr ""
 msgid "The name of the cert to remove from the app"
 msgstr ""
 
-#: internal/parser/perms.go:65 internal/parser/perms.go:95
-#: internal/parser/perms.go:123
+#: internal/parser/perms.go:67 internal/parser/perms.go:97
+#: internal/parser/perms.go:125
 msgid "The name of the user"
 msgstr ""
 
@@ -1241,11 +1264,11 @@ msgstr ""
 msgid "The number of lines to display, -1 showing all log lines"
 msgstr ""
 
-#: internal/parser/pts.go:120 internal/parser/shortcuts.go:83
+#: internal/parser/shortcuts.go:83 internal/parser/pts.go:120
 msgid "The number of processes"
 msgstr ""
 
-#: internal/parser/healthchecks.go:183
+#: internal/parser/healthchecks.go:187
 msgid "The number of seconds after which the probe times out"
 msgstr ""
 
@@ -1253,8 +1276,8 @@ msgstr ""
 msgid "The password of the registry"
 msgstr ""
 
-#: internal/parser/ps.go:99 internal/parser/ps.go:130 internal/parser/ps.go:152
-#: internal/parser/shortcuts.go:58
+#: internal/parser/shortcuts.go:58 internal/parser/ps.go:99
+#: internal/parser/ps.go:130 internal/parser/ps.go:152
 msgid "The pod name for the application"
 msgstr ""
 
@@ -1270,11 +1293,11 @@ msgstr ""
 msgid "The private key of the SSL certificate"
 msgstr ""
 
-#: internal/parser/volumes.go:232 internal/parser/volumes.go:257
-#: internal/parser/pts.go:61 internal/parser/pts.go:119
-#: internal/parser/pts.go:153 internal/parser/shortcuts.go:82
+#: internal/parser/volumes.go:260 internal/parser/volumes.go:285
+#: internal/parser/shortcuts.go:82 internal/parser/pts.go:61
+#: internal/parser/pts.go:119 internal/parser/pts.go:153
 #: internal/parser/tags.go:26 internal/parser/tags.go:60
-#: internal/parser/tags.go:100 internal/parser/tags.go:130
+#: internal/parser/tags.go:100 internal/parser/tags.go:131
 msgid "The process name as defined in your Procfile"
 msgstr ""
 
@@ -1286,20 +1309,15 @@ msgstr ""
 msgid "The process type as defined in your Procfile"
 msgstr ""
 
-#: internal/parser/limits.go:95
+#: internal/parser/limits.go:65 internal/parser/limits.go:95
 msgid "The process type as defined in your Procfile, such as 'web' or 'worker'"
-msgstr ""
-
-#: internal/parser/limits.go:65
-msgid ""
-"The process type as defined in your Procfile, such as 'web' or 'worker'."
 msgstr ""
 
 #: internal/parser/autoscale.go:59
 msgid "The process type to add to the application's autoscale settings"
 msgstr ""
 
-#: internal/parser/autoscale.go:91
+#: internal/parser/autoscale.go:96
 msgid "The process type to remove from the application's autoscale settings"
 msgstr ""
 
@@ -1308,7 +1326,7 @@ msgid "The ptype for domain"
 msgstr ""
 
 #: internal/parser/registry.go:26 internal/parser/registry.go:50
-#: internal/parser/registry.go:85 internal/parser/registry.go:106
+#: internal/parser/registry.go:85 internal/parser/registry.go:107
 msgid "The ptype for registry"
 msgstr ""
 
@@ -1332,7 +1350,15 @@ msgstr ""
 msgid "The ptype for which the config needs to be unset"
 msgstr ""
 
+#: internal/parser/healthchecks.go:180
+msgid "The ptype for which the health check needs to be applied"
+msgstr "The ptype for which the health check needs to be applied"
+
 #: internal/parser/healthchecks.go:30
+msgid "The ptype for which the health check needs to be listed"
+msgstr "The ptype for which the health check needs to be listed"
+
+#: internal/parser/healthchecks.go:225
 msgid "The ptype for which the health check needs to be removed"
 msgstr ""
 
@@ -1348,7 +1374,7 @@ msgstr ""
 msgid "The public key of the SSL certificate"
 msgstr ""
 
-#: internal/parser/healthchecks.go:180
+#: internal/parser/healthchecks.go:184
 msgid "The relative URL path for 'httpGet' probes"
 msgstr ""
 
@@ -1356,20 +1382,20 @@ msgstr ""
 msgid "The release of the application, such as '1'"
 msgstr ""
 
-#: internal/parser/resources.go:217 internal/parser/resources.go:242
-#: internal/parser/resources.go:264
+#: internal/parser/resources.go:213 internal/parser/resources.go:238
+#: internal/parser/resources.go:260
 msgid "The resource instance alias name"
 msgstr ""
 
-#: internal/parser/resources.go:97 internal/parser/resources.go:180
+#: internal/parser/resources.go:93 internal/parser/resources.go:176
 msgid "The resource instance parameters key"
 msgstr ""
 
-#: internal/parser/resources.go:98 internal/parser/resources.go:181
+#: internal/parser/resources.go:94 internal/parser/resources.go:177
 msgid "The resource instance parameters value"
 msgstr ""
 
-#: internal/parser/resources.go:95 internal/parser/resources.go:178
+#: internal/parser/resources.go:91 internal/parser/resources.go:174
 msgid "The resource's service"
 msgstr ""
 
@@ -1381,11 +1407,11 @@ msgstr ""
 msgid "The route's backend, pattern: <service>:<port>,<weight>"
 msgstr ""
 
-#: internal/parser/resources.go:64
+#: internal/parser/resources.go:62
 msgid "The service name for plans"
 msgstr ""
 
-#: internal/parser/resources.go:96 internal/parser/resources.go:179
+#: internal/parser/resources.go:92 internal/parser/resources.go:175
 msgid "The service's plan"
 msgstr ""
 
@@ -1401,7 +1427,7 @@ msgstr ""
 msgid "The tag key"
 msgstr ""
 
-#: internal/parser/tags.go:118
+#: internal/parser/tags.go:119
 msgid "The tag key to unset"
 msgstr ""
 
@@ -1409,32 +1435,36 @@ msgstr ""
 msgid "The tag value"
 msgstr ""
 
-#: internal/parser/routes.go:187 internal/parser/routes.go:219
+#: internal/parser/volumes.go:208 internal/parser/volumes.go:239
+msgid "The target path of volume"
+msgstr "The target path of volume"
+
+#: internal/parser/routes.go:187 internal/parser/routes.go:223
 msgid "The unique name of the gaetway"
 msgstr ""
 
 #: internal/parser/routes.go:51 internal/parser/routes.go:120
 #: internal/parser/routes.go:146 internal/parser/routes.go:176
-#: internal/parser/routes.go:208 internal/parser/routes.go:237
+#: internal/parser/routes.go:212 internal/parser/routes.go:245
 msgid "The unique name of the route"
 msgstr ""
 
-#: internal/parser/certs.go:22 internal/parser/routing.go:19
-#: internal/parser/services.go:23 internal/parser/timeouts.go:21
-#: internal/parser/volumes.go:22 internal/parser/apps.go:88
+#: internal/parser/resources.go:23 internal/parser/certs.go:22
+#: internal/parser/autodeploy.go:21 internal/parser/volumes.go:22
+#: internal/parser/routes.go:26 internal/parser/services.go:23
+#: internal/parser/autoscale.go:21 internal/parser/apps.go:88
 #: internal/parser/apps.go:107 internal/parser/apps.go:132
 #: internal/parser/apps.go:170 internal/parser/apps.go:196
-#: internal/parser/apps.go:217 internal/parser/builds.go:19
-#: internal/parser/builds.go:56 internal/parser/ps.go:20
-#: internal/parser/ps.go:112 internal/parser/pts.go:20
-#: internal/parser/pts.go:133 internal/parser/perms.go:21
-#: internal/parser/releases.go:32 internal/parser/routes.go:26
-#: internal/parser/git.go:17 internal/parser/autodeploy.go:21
-#: internal/parser/autorollback.go:19 internal/parser/autoscale.go:21
-#: internal/parser/config.go:29 internal/parser/domains.go:21
-#: internal/parser/gateways.go:21 internal/parser/labels.go:20
-#: internal/parser/limits.go:20 internal/parser/registry.go:25
-#: internal/parser/resources.go:23 internal/parser/tags.go:25
+#: internal/parser/apps.go:217 internal/parser/domains.go:21
+#: internal/parser/releases.go:32 internal/parser/registry.go:25
+#: internal/parser/labels.go:20 internal/parser/routing.go:19
+#: internal/parser/gateways.go:21 internal/parser/builds.go:19
+#: internal/parser/builds.go:56 internal/parser/autorollback.go:19
+#: internal/parser/limits.go:20 internal/parser/git.go:17
+#: internal/parser/timeouts.go:21 internal/parser/config.go:29
+#: internal/parser/pts.go:20 internal/parser/pts.go:133
+#: internal/parser/ps.go:20 internal/parser/ps.go:112
+#: internal/parser/tags.go:25 internal/parser/perms.go:23
 msgid "The uniquely identifiable name for the application"
 msgstr ""
 
@@ -1442,11 +1472,11 @@ msgstr ""
 msgid "The uniquely identifiable name of the application"
 msgstr ""
 
-#: internal/parser/perms.go:66
+#: internal/parser/perms.go:68
 msgid "The user permissions (view,change,delete)"
 msgstr ""
 
-#: internal/parser/perms.go:96
+#: internal/parser/perms.go:98
 msgid "The user's permissions (view,change,delete)"
 msgstr ""
 
@@ -1499,21 +1529,29 @@ msgstr ""
 msgid "The version for which the timeout needs to be listed"
 msgstr ""
 
-#: internal/parser/volumes.go:57 internal/parser/volumes.go:112
-#: internal/parser/volumes.go:231 internal/parser/volumes.go:256
+#: internal/parser/volumes.go:57 internal/parser/volumes.go:114
+#: internal/parser/volumes.go:259 internal/parser/volumes.go:284
 #: internal/parser/apps.go:157 internal/parser/shortcuts.go:43
 msgid "The volume name"
 msgstr ""
 
-#: internal/parser/volumes.go:155
+#: internal/parser/volumes.go:157
 msgid "The volume name to be info"
 msgstr ""
 
-#: internal/parser/volumes.go:181
+#: internal/parser/volumes.go:183
 msgid "The volume name to be removed"
 msgstr ""
 
-#: internal/parser/volumes.go:58 internal/parser/volumes.go:113
+#: internal/parser/volumes.go:223
+msgid "The volume or local source path"
+msgstr "The volume or local source path"
+
+#: internal/parser/volumes.go:224
+msgid "The volume or local target path"
+msgstr "The volume or local target path"
+
+#: internal/parser/volumes.go:58 internal/parser/volumes.go:115
 msgid "The volume size, such as '500G'"
 msgstr ""
 
@@ -1521,14 +1559,14 @@ msgstr ""
 msgid "The volume type, such as csi, nfs, oss"
 msgstr ""
 
-#: internal/parser/resources.go:94 internal/parser/resources.go:148
-#: internal/parser/resources.go:177
+#: internal/parser/resources.go:90 internal/parser/resources.go:144
+#: internal/parser/resources.go:173
 msgid "This resource instance alias"
 msgstr ""
 
-#: internal/parser/tokens.go:98 internal/parser/builds.go:60
-#: internal/parser/builds.go:107 internal/parser/pts.go:98
-#: internal/parser/releases.go:118
+#: internal/parser/releases.go:118 internal/parser/tokens.go:103
+#: internal/parser/builds.go:60 internal/parser/builds.go:107
+#: internal/parser/pts.go:98
 msgid "To proceed, type \"yes\""
 msgstr ""
 
@@ -1545,7 +1583,7 @@ msgstr ""
 msgid "Transfer application ownership to another user."
 msgstr ""
 
-#: internal/parser/autoscale.go:95
+#: internal/parser/autoscale.go:100
 msgid "Turn off autoscale for an app"
 msgstr ""
 
@@ -1553,15 +1591,15 @@ msgstr ""
 msgid "Turn on autoscale for an app"
 msgstr ""
 
-#: internal/parser/domains.go:74
+#: internal/parser/domains.go:75
 msgid "Unbinds a domain for an application"
 msgstr ""
 
-#: internal/parser/volumes.go:260
+#: internal/parser/volumes.go:288
 msgid "Unmount a volume from process of the application"
 msgstr ""
 
-#: internal/parser/autoscale.go:96
+#: internal/parser/autoscale.go:101
 msgid "Unset autoscale per process type for an app"
 msgstr ""
 
@@ -1569,11 +1607,11 @@ msgstr ""
 msgid "Unset environment variables for an app"
 msgstr ""
 
-#: internal/parser/healthchecks.go:209
+#: internal/parser/healthchecks.go:213
 msgid "Unset healthchecks for an application"
 msgstr ""
 
-#: internal/parser/registry.go:99
+#: internal/parser/registry.go:100
 msgid "Unset registry info for an app"
 msgstr ""
 
@@ -1585,7 +1623,7 @@ msgstr ""
 msgid "Unset resource timeouts for an app"
 msgstr ""
 
-#: internal/parser/tags.go:121
+#: internal/parser/tags.go:122
 msgid "Unset tags for an application"
 msgstr ""
 
@@ -1597,7 +1635,7 @@ msgstr ""
 msgid "Unsets labels for an application"
 msgstr ""
 
-#: internal/parser/registry.go:100
+#: internal/parser/registry.go:101
 msgid "Unsets registry information for an application"
 msgstr ""
 
@@ -1607,11 +1645,11 @@ msgid ""
 "controller"
 msgstr ""
 
-#: internal/parser/resources.go:184
+#: internal/parser/resources.go:180
 msgid "Update a resource from the application"
 msgstr ""
 
-#: internal/parser/perms.go:99
+#: internal/parser/perms.go:101
 msgid "Update a user permission"
 msgstr ""
 
@@ -1639,27 +1677,12 @@ msgstr ""
 msgid "Volume mounts in format 'volume:path'"
 msgstr ""
 
-#: internal/parser/volumes.go:206
-msgid ""
-"arguments for running commands, when cmd is 'cp', args should be '[source] "
-"[dest]'.\n"
-"           volume path format 'vol://volumename/', '/' is equivalent to the "
-"mount path."
-msgstr ""
-
 #: internal/parser/builds.go:44
 msgid "imports an image and deploys as a new release"
 msgstr ""
 
 #: internal/parser/version.go:22
 msgid "list api and controller versions."
-msgstr ""
-
-#: internal/parser/volumes.go:203
-msgid ""
-"ls         list volume files\n"
-"           cp         copy volume files\n"
-"           rm         remove volume files"
 msgstr ""
 
 #: internal/parser/autoscale.go:72
@@ -1681,7 +1704,7 @@ msgstr ""
 msgid "secret access key for authentication"
 msgstr ""
 
-#: internal/parser/resources.go:228
+#: internal/parser/resources.go:224
 msgid ""
 "skips the prompt for the resource name. <resource> is the uniquely "
 "identifiable\n"
@@ -1692,7 +1715,7 @@ msgstr ""
 msgid "the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'"
 msgstr ""
 
-#: internal/parser/healthchecks.go:206
+#: internal/parser/healthchecks.go:210
 msgid ""
 "the healthcheck type, such as 'startupProbe' 'livenessProbe' or "
 "'readinessProbe'"
@@ -1712,9 +1735,15 @@ msgid ""
 "\"frontend\""
 msgstr ""
 
-#: internal/parser/resources.go:267
+#: internal/parser/resources.go:263
 msgid "unbind a resources for an application"
 msgstr ""
+
+#~ msgid "Path to configuration file."
+#~ msgstr "Path to configuration file."
+
+#~ msgid "Shortcut commands, use 'drycc shortcuts' to see all:"
+#~ msgstr "Shortcut commands, use 'drycc shortcuts' to see all:"
 
 #~ msgid ""
 #~ "procfile type which should handle the request, e.g. webhooks (should be "
@@ -1722,6 +1751,3 @@ msgstr ""
 #~ msgstr ""
 #~ "procfile type which should handle the request, e.g. webhooks (should be "
 #~ "bind to the port PORT)"
-
-#~ msgid "Shortcut commands, use 'drycc shortcuts' to see all:"
-#~ msgstr "Shortcut commands, use 'drycc shortcuts' to see all:"

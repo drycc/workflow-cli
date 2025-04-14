@@ -847,24 +847,3 @@ func (c *VolumesUnmountCompletion) CompletionFunc(cmd *cobra.Command, args []str
 	}
 	return ptsArgCompletion.CompletionFunc(cmd, args, toComplete)
 }
-
-type VolumesCmdCompletion struct {
-	ArgsLen    int
-	ConfigFile *string
-}
-
-func (c *VolumesCmdCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	cmds := []string{"ls", "cp", "rm"}
-	if c.ArgsLen < 0 || len(args) == c.ArgsLen {
-
-		var results []string
-		for _, cmd := range cmds {
-			if strings.HasPrefix(cmd, toComplete) {
-				results = append(results, cmd)
-			}
-		}
-		return results, cobra.ShellCompDirectiveNoFileComp
-
-	}
-	return nil, cobra.ShellCompDirectiveNoFileComp
-}
