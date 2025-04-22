@@ -1,0 +1,51 @@
+labels:
+  type: exec
+  platform: linux/amd64
+
+steps:
+- name: build-binary
+  image: bash
+  commands:
+  - sed -i "s#canary#$CI_COMMIT_TAG#g" version/version.go
+  - VERSION=$CI_COMMIT_TAG make build-binary
+  environment:
+    CODENAME:
+      from_secret: codename
+    DEV_REGISTRY:
+      from_secret: dev_registry
+    DRYCC_REGISTRY:
+      from_secret: drycc_registry
+    CONTAINER_USERNAME:
+      from_secret: container_username
+    CONTAINER_PASSWORD:
+      from_secret: container_password
+  when:
+    event:
+    - push
+    - tag
+
+- name: publish-binary
+  image: bash
+  commands:
+  - podman run --rm
+      -e DRONE_BUILD_EVENT=tag
+      -e DRONE_REPO_OWNER="$CI_REPO_OWNER"
+      -e DRONE_REPO_NAME="$CI_REPO_NAME"
+      -e PLUGIN_API_KEY="$GITHUB_TOKEN"
+      -e PLUGIN_BASE_URL="https://api.github.com/"
+      -e PLUGIN_UPLOAD_URL="https://uploads.github.com/"
+      -e DRONE_COMMIT_REF="refs/tags/$CI_COMMIT_TAG"
+      -e PLUGIN_OVERWRITE="true"
+      -e PLUGIN_FILES="_dist/*"
+      -v $(pwd):$(pwd)
+      -w $(pwd)
+      docker.io/plugins/github-release
+  environment:
+    GITHUB_TOKEN:
+      from_secret: github_token
+  when:
+    event:
+    - tag
+
+depends_on:
+- test-linux

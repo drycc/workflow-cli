@@ -1,4 +1,8 @@
-# the filepath to this repository, relative to $GOPATH/src
+SHORT_NAME ?= workflow-cli
+DRYCC_REGISTRY ?= ${DEV_REGISTRY}
+
+include versioning.mk
+
 VERSION ?= canary
 REPO_PATH := github.com/drycc/workflow-cli
 DEV_ENV_IMAGE := ${DEV_REGISTRY}/drycc/go-dev
@@ -12,9 +16,13 @@ bootstrap:
 	${DEV_ENV_CMD} go mod vendor
 
 # This is supposed to be run within a container
-build:
+build-binary:
 	${DEV_ENV_CMD} scripts/update-translations.sh -g
 	${DEV_ENV_CMD} scripts/build ${VERSION}
+
+podman-build:
+	podman build . --build-arg VERSION=${VERSION} --build-arg CODENAME=${CODENAME} -f docker/Dockerfile -t ${IMAGE}
+	podman tag ${IMAGE} ${MUTABLE_IMAGE}
 
 test-style:
 	${DEV_ENV_CMD} lint
@@ -22,5 +30,5 @@ test-style:
 test-cover:
 	${DEV_ENV_CMD} test-cover.sh
 
-test: build test-style test-cover
+test: build-binary test-style test-cover
 	${DEV_ENV_CMD} go test -race -cover -coverprofile=coverage.txt -covermode=atomic ./...

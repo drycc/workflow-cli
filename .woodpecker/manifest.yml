@@ -1,0 +1,43 @@
+labels:
+  type: exec
+  platform: linux/amd64
+
+steps:
+- name: generate-manifest
+  image: bash
+  commands:
+  - sed -i "s/{{project}}/$${CI_REPO_NAME}/g" .woodpecker/manifest.tmpl
+  - sed -i "s/registry.drycc.cc/$${DRYCC_REGISTRY}/g" .woodpecker/manifest.tmpl
+  environment:
+    DRYCC_REGISTRY:
+      from_secret: drycc_registry
+  when:
+    event:
+    - tag
+    - push
+    - cron
+
+- name: publish-manifest
+  image: bash
+  commands:
+  - podman run --rm
+    -e PLUGIN_SPEC=.woodpecker/manifest.tmpl
+    -e PLUGIN_USERNAME=$CONTAINER_USERNAME
+    -e PLUGIN_PASSWORD=$CONTAINER_PASSWORD
+    -e DRONE_TAG=$CI_COMMIT_TAG
+    -v $(pwd):$(pwd)
+    -w $(pwd)
+    docker.io/plugins/manifest
+  environment:
+    CONTAINER_USERNAME:
+      from_secret: container_username
+    CONTAINER_PASSWORD:
+      from_secret: container_password
+  when:
+    event:
+    - tag
+    - push
+    - cron
+
+depends_on:
+- build-linux
