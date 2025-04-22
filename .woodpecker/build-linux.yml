@@ -1,13 +1,19 @@
+matrix:
+  platform:
+    - linux/amd64
+    - linux/arm64
+
 labels:
   type: exec
-  platform: linux/amd64
+  platform: ${platform}
 
 steps:
-- name: build-linux
+- name: publish-linux
   image: bash
   commands:
-  - sed -i "s#canary#$CI_COMMIT_TAG#g" version/version.go
-  - VERSION=$CI_COMMIT_TAG make build
+  - export VERSION=$([ -z $CI_COMMIT_TAG ] && echo latest || echo $CI_COMMIT_TAG)-$(sed 's#/#-#g' <<< $CI_SYSTEM_PLATFORM)
+  - echo $CONTAINER_PASSWORD | podman login $DRYCC_REGISTRY --username $CONTAINER_USERNAME --password-stdin > /dev/null 2>&1
+  - make podman-build podman-immutable-push
   environment:
     CODENAME:
       from_secret: codename
@@ -23,29 +29,7 @@ steps:
     event:
     - push
     - tag
-
-- name: publish-linux
-  image: bash
-  commands:
-  - podman run --rm
-      -e DRONE_BUILD_EVENT=tag
-      -e DRONE_REPO_OWNER="$CI_REPO_OWNER"
-      -e DRONE_REPO_NAME="$CI_REPO_NAME"
-      -e PLUGIN_API_KEY="$GITHUB_TOKEN"
-      -e PLUGIN_BASE_URL="https://api.github.com/"
-      -e PLUGIN_UPLOAD_URL="https://uploads.github.com/"
-      -e DRONE_COMMIT_REF="refs/tags/$CI_COMMIT_TAG"
-      -e PLUGIN_OVERWRITE="true"
-      -e PLUGIN_FILES="_dist/*"
-      -v $(pwd):$(pwd)
-      -w $(pwd)
-      docker.io/plugins/github-release
-  environment:
-    GITHUB_TOKEN:
-      from_secret: github_token
-  when:
-    event:
-    - tag
+    - cron
 
 depends_on:
 - test-linux
