@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 
 if [ -n "$DRYCC_USER" ] && [ -n "$DRYCC_TOKEN" ] && [ -n "$DRYCC_ENDPOINT" ]; then
     mkdir -p ~/.drycc
@@ -19,6 +19,12 @@ _main() {
     if [ "$1" == 'bash' ]; then
         shift
         exec bash "$@"
+    elif [ "$1" == 'wait' ]; then
+        shift
+        /etc/bash_completion.d/timeout
+        while [ "$(date +%s)" -le "$(flock -x -w 10 /tmp/timeout.lock cat /etc/wait/timeout)" ]; do
+            sleep ${TIMEOUT:-30}
+        done
     else
         exec drycc "$@"
     fi

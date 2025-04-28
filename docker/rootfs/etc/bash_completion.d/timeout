@@ -1,0 +1,5 @@
+#!/usr/local/bin/bash
+
+flock -x -w 10 /tmp/timeout.lock cat << EOF > /etc/wait/timeout
+$(($(date +%s) + ${TIMEOUT:-30}))
+EOF

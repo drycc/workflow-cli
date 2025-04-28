@@ -16,26 +16,18 @@ ENV DRYCC_UID=1001 \
 
 COPY --from=build /usr/local/bin/drycc /usr/local/bin/drycc
 
-ADD docker/entrypoint.sh /entrypoint.sh
+ADD docker/rootfs /
 
-RUN install-packages bash-completion \
+RUN install-packages bash-completion git vim \
   && groupadd drycc --gid ${DRYCC_GID} \
   && useradd drycc -u ${DRYCC_UID} -g ${DRYCC_GID} -s /bin/bash -m -d ${DRYCC_HOME_DIR} \
-  && mkdir -p /etc/bash_completion.d \
-  && drycc completion bash > /etc/bash_completion.d/drycc \
-  && chown ${DRYCC_GID}:${DRYCC_UID} /usr/local/bin \
+  && mkdir -p /etc/wait \
+  && chown ${DRYCC_GID}:${DRYCC_UID} /etc/wait /usr/local/bin \
   && echo 'alias cd="echo \"cd: restricted\"; false"' > ${DRYCC_HOME_DIR}/.bash_aliases \
   && echo 'alias unalias="echo \"unalias: restricted\"; false"' >> ${DRYCC_HOME_DIR}/.bash_aliases \
-  && ln -s /usr/bin/ls /usr/local/bin/ls \
-  && ln -s /usr/bin/cat /usr/local/bin/cat \
-  && ln -s /usr/bin/sed /usr/local/bin/sed \
-  && ln -s /usr/bin/find /usr/local/bin/find \
-  && ln -s /usr/bin/bash /usr/local/bin/bash \
-  && ln -s /usr/bin/mkdir /usr/local/bin/mkdir \
-  && ln -s /usr/bin/sleep /usr/local/bin/sleep \
-  && ln -s /usr/bin/dircolors /usr/local/bin/dircolors \
-  && ln -s /usr/bin/tini /usr/local/bin/tini \
-  && ln -s /usr/bin/init-stack /usr/local/bin/init-stack
+  && ln /usr/bin/{ls,git,date,vim,cat,sed,find,flock,bash,mkdir,sleep,dircolors} /usr/local/bin/ \
+  && apt autoremove python3 -yq \
+  && rm -rf /var/lib/apt/lists/* /sbin /usr/sbin /usr/bin
 
 ENTRYPOINT [ "/entrypoint.sh" ] 
 

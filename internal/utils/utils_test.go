@@ -35,6 +35,12 @@ func TestLoadProject(t *testing.T) {
 
 	assert.NoError(t, os.Chdir(name))
 
+	os.Setenv("DRYCC_APP", "testapp")
+	appID, _, err = LoadAppSettings(filename, "")
+	assert.NoError(t, err)
+	assert.Equal(t, appID, "testapp", "app")
+	os.Unsetenv("DRYCC_APP")
+
 	appID, _, err = LoadAppSettings(filename, "")
 	assert.NoError(t, err)
 	assert.Equal(t, appID, filepath.Base(name), "app")
