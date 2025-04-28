@@ -108,6 +108,9 @@ func DetectAppName(cmd Cmd, host string) (string, error) {
 
 	// Don't return an error if remote can't be found, return directory name instead.
 	if err != nil {
+		if appName, ok := os.LookupEnv("DRYCC_APP"); ok {
+			return appName, nil
+		}
 		dir, err := os.Getwd()
 		return strings.ToLower(filepath.Base(dir)), err
 	}
