@@ -1670,6 +1670,10 @@ msgstr ""
 msgid "Volume mounts in format 'volume:path'"
 msgstr ""
 
+#: internal/parser/builds.go:42
+msgid "default container image"
+msgstr ""
+
 #: internal/parser/builds.go:44
 msgid "imports an image and deploys as a new release"
 msgstr ""

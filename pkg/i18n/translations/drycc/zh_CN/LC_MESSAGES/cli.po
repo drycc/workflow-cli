@@ -1750,6 +1750,10 @@ msgstr "查看应用信息"
 msgid "Volume mounts in format 'volume:path'"
 msgstr "卷挂载格式 '卷名:挂载路径'"
 
+#: internal/parser/builds.go:42
+msgid "default container image"
+msgstr "默认的容器镜像"
+
 #: internal/parser/builds.go:44
 msgid "imports an image and deploys as a new release"
 msgstr "导入镜像并部署为新版本"

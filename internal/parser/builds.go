@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/drycc/workflow-cli/internal/commands"
 	"github.com/drycc/workflow-cli/internal/completion"
+	"github.com/drycc/workflow-cli/internal/template"
 	"github.com/drycc/workflow-cli/pkg/i18n"
 	"github.com/spf13/cobra"
 )
@@ -39,8 +40,14 @@ func buildsCreate(cmdr *commands.DryccCmd) *cobra.Command {
 		confirm   string
 	}
 	cmd := &cobra.Command{
-		Use:   `create <image>`,
-		Args:  cobra.ExactArgs(1),
+		Use:  `create <image>`,
+		Args: cobra.ExactArgs(1),
+		Example: template.CustomExample(
+			`drycc create docker.io/library/nginx:latest`,
+			map[string]string{
+				"<image>": i18n.T("default container image"),
+			},
+		),
 		Short: i18n.T("imports an image and deploys as a new release"),
 		Long: i18n.T(`Creates a new build of an application. Imports an <image> and deploys it to Drycc
 as a new release. If a Procfile or drycc.yaml is present in the current directory,
