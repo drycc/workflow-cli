@@ -25,7 +25,6 @@ func NewAppsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.AddCommand(appsList(cmdr))
 	cmd.AddCommand(appsInfo(cmdr))
 	cmd.AddCommand(appsOpen(cmdr))
-	cmd.AddCommand(appsLogs(cmdr))
 	cmd.AddCommand(appsRun(cmdr))
 	cmd.AddCommand(appsDestroy(cmdr))
 	cmd.AddCommand(appsTransfer(cmdr))
@@ -105,34 +104,6 @@ func appsOpen(cmdr *commands.DryccCmd) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&app, "app", "a", "", i18n.T("The uniquely identifiable name for the application"))
-
-	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
-	cmd.RegisterFlagCompletionFunc("app", appCompletion.CompletionFunc)
-	return cmd
-}
-
-// AppsLogs creates the apps logs command
-func appsLogs(cmdr *commands.DryccCmd) *cobra.Command {
-	var flags struct {
-		app     string
-		lines   int
-		follow  bool
-		timeout int
-	}
-
-	cmd := &cobra.Command{
-		Use:   "logs",
-		Short: i18n.T("Retrieve application log events"),
-		Long:  i18n.T("Retrieves the most recent log events"),
-		RunE: func(_ *cobra.Command, _ []string) error {
-			return cmdr.AppLogs(app, flags.lines, flags.follow, flags.timeout)
-		},
-	}
-
-	cmd.Flags().StringVarP(&app, "app", "a", "", i18n.T("The uniquely identifiable name for the application"))
-	cmd.Flags().IntVarP(&flags.lines, "lines", "n", 300, i18n.T("The number of lines to display"))
-	cmd.Flags().BoolVarP(&flags.follow, "follow", "f", false, i18n.T("Specify if the logs should be streamed"))
-	cmd.Flags().IntVarP(&flags.timeout, "timeout", "t", 300, i18n.T("The max seconds of followz the log stream"))
 
 	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
 	cmd.RegisterFlagCompletionFunc("app", appCompletion.CompletionFunc)

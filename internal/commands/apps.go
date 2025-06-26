@@ -2,24 +2,18 @@ package commands
 
 import (
 	"fmt"
-	"io"
-	"log"
-	"os"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/apps"
 	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/domains"
 	"github.com/drycc/controller-sdk-go/ps"
 	"github.com/drycc/workflow-cli/internal/utils"
 	"github.com/drycc/workflow-cli/pkg/git"
-	"github.com/drycc/workflow-cli/pkg/logging"
 	"github.com/drycc/workflow-cli/pkg/settings"
 	"github.com/drycc/workflow-cli/pkg/webbrowser"
-	"golang.org/x/net/websocket"
 )
 
 // AppCreate creates an app.
@@ -203,37 +197,6 @@ func (d *DryccCmd) AppOpen(appID string) error {
 	}
 
 	return webbrowser.Webbrowser(u)
-}
-
-// AppLogs returns the logs from an app.
-func (d *DryccCmd) AppLogs(appID string, lines int, follow bool, timeout int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
-	if err != nil {
-		return err
-	}
-	request := api.AppLogsRequest{
-		Lines:   lines,
-		Follow:  follow,
-		Timeout: timeout,
-	}
-	conn, err := apps.Logs(s.Client, appID, request)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-	for {
-		var message string
-		err := websocket.Message.Receive(conn, &message)
-		if err != nil {
-			if err != io.EOF {
-				log.Printf("error: %v", err)
-			}
-			break
-		}
-		logging.PrintLog(os.Stdout, strings.TrimRight(string(message), "\n"))
-	}
-	return nil
 }
 
 // AppRun runs a one time command in the app.
