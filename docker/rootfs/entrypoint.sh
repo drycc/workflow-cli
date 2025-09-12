@@ -1,9 +1,8 @@
 #!/usr/local/bin/bash
 
 if [ -n "$DRYCC_USER" ] && [ -n "$DRYCC_TOKEN" ] && [ -n "$DRYCC_ENDPOINT" ]; then
-    mkdir -p ~/.drycc
-    if [ ! -f ~/.drycc/client.json ]; then
-        cat > ~/.drycc/client.json <<EOF
+    if [ ! -f "$DRYCC_PROFILE" ]; then
+        cat > "$DRYCC_PROFILE" <<EOF
 {
     "username": "${DRYCC_USER}",
     "ssl_verify": ${DRYCC_SSL_VERIFY:-true},

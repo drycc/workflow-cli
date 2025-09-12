@@ -1,6 +1,6 @@
 module github.com/drycc/workflow-cli
 
-go 1.24
+go 1.25
 
 require (
 	github.com/chai2010/gettext-go v1.0.3

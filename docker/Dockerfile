@@ -29,9 +29,10 @@ RUN install-packages bash-completion git vim \
   && apt autoremove python3 -yq \
   && rm -rf /var/lib/apt/lists/* /sbin /usr/sbin /usr/bin
 
-ENTRYPOINT [ "/entrypoint.sh" ] 
+ENTRYPOINT [ "/entrypoint.sh" ]
 
 ENV PATH=/usr/local/bin
+ENV DRYCC_PROFILE=/tmp/drycc.json
 
 USER ${DRYCC_UID}
 WORKDIR ${DRYCC_HOME_DIR}
