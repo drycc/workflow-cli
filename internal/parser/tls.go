@@ -61,9 +61,10 @@ func tlsForceCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		ValidArgsFunction: TLSActionCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			action := args[0]
-			if action == "enable" {
+			switch action {
+			case "enable":
 				return cmdr.TLSForceEnable(app)
-			} else if action == "disable" {
+			case "disable":
 				return cmdr.TLSForceDisable(app)
 			}
 			return fmt.Errorf("invalid action: %s, please use 'enable' or 'disable'", action)
@@ -89,9 +90,10 @@ func tlsAutoCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		ValidArgsFunction: TLSActionCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			action := args[0]
-			if action == "enable" {
+			switch action {
+			case "enable":
 				return cmdr.TLSAutoEnable(app)
-			} else if action == "disable" {
+			case "disable":
 				return cmdr.TLSAutoDisable(app)
 			}
 			return fmt.Errorf("invalid action: %s, please use 'enable' or 'disable'", action)

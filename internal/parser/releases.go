@@ -66,7 +66,6 @@ func releasesListCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func releasesInfoCommand(cmdr *commands.DryccCmd) *cobra.Command {
-
 	releaseCompletion := completion.ReleaseCompletion{AppID: &app, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use:  "info <version>",
@@ -146,7 +145,6 @@ func releasesRollbackCommand(cmdr *commands.DryccCmd) *cobra.Command {
 				versionStr = args[len(args)-1]
 			}
 			version, err := versionFromString(versionStr)
-
 			if err != nil {
 				return err
 			}

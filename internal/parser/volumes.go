@@ -63,14 +63,15 @@ func volumesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		RunE: func(_ *cobra.Command, args []string) error {
 			flags.name = args[0]
 			flags.size = args[1]
-			parameters := make(map[string]interface{})
-			if flags.vtype == "nfs" {
-				parameters["nfs"] = map[string]interface{}{
+			parameters := make(map[string]any)
+			switch flags.vtype {
+			case "nfs":
+				parameters["nfs"] = map[string]any{
 					"server": flags.nfsServer,
 					"path":   flags.nfsPath,
 				}
-			} else if flags.vtype == "oss" {
-				parameters["oss"] = map[string]interface{}{
+			case "oss":
+				parameters["oss"] = map[string]any{
 					"server":     flags.ossServer,
 					"bucket":     flags.ossBucket,
 					"access_key": flags.ossAccessKey,

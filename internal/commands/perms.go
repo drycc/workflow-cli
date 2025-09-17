@@ -4,12 +4,12 @@ import (
 	"strings"
 
 	"github.com/drycc/controller-sdk-go/perms"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // PermList prints which users have permissions.
 func (d *DryccCmd) PermList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -28,7 +28,7 @@ func (d *DryccCmd) PermList(appID string, results int) error {
 
 // PermCreate create user perms.
 func (d *DryccCmd) PermCreate(appID, username, permissions string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (d *DryccCmd) PermCreate(appID, username, permissions string) error {
 
 // PermUpdate update user perms.
 func (d *DryccCmd) PermUpdate(appID, username, permissions string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (d *DryccCmd) PermUpdate(appID, username, permissions string) error {
 
 // PermDelete removes a user from an app.
 func (d *DryccCmd) PermDelete(appID, username string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

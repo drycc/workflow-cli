@@ -5,13 +5,12 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // RegistryList lists an app's registry information.
 func (d *DryccCmd) RegistryList(appID, ptype string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -27,7 +26,6 @@ func (d *DryccCmd) RegistryList(appID, ptype string, version int) error {
 	ptypes := []string{}
 	if ptype != "" {
 		ptypes = append(ptypes, ptype)
-
 	} else {
 		for ptype := range config.Registry {
 			ptypes = append(ptypes, ptype)
@@ -52,8 +50,7 @@ func (d *DryccCmd) RegistryList(appID, ptype string, version int) error {
 
 // RegistrySet sets an app's registry information.
 func (d *DryccCmd) RegistrySet(appID, ptype, username, password string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -63,8 +60,8 @@ func (d *DryccCmd) RegistrySet(appID, ptype, username, password string) error {
 	quit := progress(d.WOut)
 
 	configObj := api.Config{}
-	registry := make(map[string]map[string]interface{})
-	registry[ptype] = map[string]interface{}{
+	registry := make(map[string]map[string]any)
+	registry[ptype] = map[string]any{
 		"username": username,
 		"password": password,
 	}
@@ -84,8 +81,7 @@ func (d *DryccCmd) RegistrySet(appID, ptype, username, password string) error {
 
 // RegistryUnset removes an app's registry information.
 func (d *DryccCmd) RegistryUnset(appID, ptype string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -95,8 +91,8 @@ func (d *DryccCmd) RegistryUnset(appID, ptype string) error {
 	quit := progress(d.WOut)
 
 	configObj := api.Config{}
-	registry := make(map[string]map[string]interface{})
-	registry[ptype] = map[string]interface{}{
+	registry := make(map[string]map[string]any)
+	registry[ptype] = map[string]any{
 		"username": nil,
 		"password": nil,
 	}

@@ -3,13 +3,12 @@ package commands
 import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // AutodeployInfo provides information about the status of app autodeploy.
 func (d *DryccCmd) AutodeployInfo(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -29,8 +28,7 @@ func (d *DryccCmd) AutodeployInfo(appID string) error {
 
 // AutodeployEnable enables an app when deploy failed
 func (d *DryccCmd) AutodeployEnable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -53,8 +51,7 @@ func (d *DryccCmd) AutodeployEnable(appID string) error {
 
 // AutodeployDisable disables an app when deploy failed
 func (d *DryccCmd) AutodeployDisable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

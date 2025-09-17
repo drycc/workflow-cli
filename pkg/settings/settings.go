@@ -56,7 +56,6 @@ Are you logged in? Use 'drycc login' or 'drycc register' to get started`, filena
 	}
 
 	c, err := drycc.New(sF.VerifySSL, sF.Controller, sF.Token)
-
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +79,10 @@ Are you logged in? Use 'drycc login' or 'drycc register' to get started`, filena
 
 // Save settings to a file
 func (s *Settings) Save(cf string) (string, error) {
-	settings := settingsFile{Username: s.Username, VerifySSL: s.Client.VerifySSL,
-		Controller: s.Client.ControllerURL.String(), Token: s.Client.Token, Limit: s.Limit}
+	settings := settingsFile{
+		Username: s.Username, VerifySSL: s.Client.VerifySSL,
+		Controller: s.Client.ControllerURL.String(), Token: s.Client.Token, Limit: s.Limit,
+	}
 
 	settingsContents, err := json.Marshal(settings)
 	if err != nil {
@@ -90,7 +91,7 @@ func (s *Settings) Save(cf string) (string, error) {
 
 	filename := locateSettingsFile(cf)
 
-	return filename, os.WriteFile(filename, settingsContents, 0600)
+	return filename, os.WriteFile(filename, settingsContents, 0o600)
 }
 
 // DryccHome returns the path to the user's settings path.
@@ -98,7 +99,7 @@ func DryccHome() string {
 	dryccHome := filepath.Join(FindHome(), "/.drycc/")
 	_, err := os.Stat(dryccHome)
 	if os.IsNotExist(err) {
-		if err := os.MkdirAll(dryccHome, 0700); err != nil {
+		if err := os.MkdirAll(dryccHome, 0o700); err != nil {
 			panic(err)
 		}
 		return dryccHome

@@ -6,13 +6,12 @@ import (
 	"strconv"
 
 	"github.com/drycc/controller-sdk-go/services"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // ServicesList lists extra services for the app
 func (d *DryccCmd) ServicesList(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -44,8 +43,7 @@ func (d *DryccCmd) ServicesList(appID string) error {
 
 // ServicesAdd adds a service to an app.
 func (d *DryccCmd) ServicesAdd(appID, ptype string, ports string, protocol string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -69,8 +67,7 @@ func (d *DryccCmd) ServicesAdd(appID, ptype string, ports string, protocol strin
 
 // ServicesRemove removes a service for Ptype registered with an app.
 func (d *DryccCmd) ServicesRemove(appID, ptype string, protocol string, port int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

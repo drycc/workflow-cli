@@ -92,7 +92,7 @@ func TestAutorollbackEnable(t *testing.T) {
 
 	err = cmdr.AutorollbackEnable("lothlorien")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), "Enabling autorollback for lothlorien... done\n", "output")
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), "Enabling autorollback for lothlorien... done\n")
 }
 
 func TestAutorollbackDisable(t *testing.T) {
@@ -114,5 +114,5 @@ func TestAutorollbackDisable(t *testing.T) {
 
 	err = cmdr.AutorollbackDisable("bree")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), "Disabling autorollback for bree... done\n", "output")
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), "Disabling autorollback for bree... done\n")
 }

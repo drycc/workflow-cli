@@ -47,10 +47,10 @@ func TestVolumesList(t *testing.T) {
 
 	err = cmdr.VolumesList("example-go", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `NAME        OWNER    TYPE    PTYPE     PATH            SIZE 
-myvolume    test     csi     cmd       /data/cmd1      500G    
-myvolume    test     csi     cmd123    /data/cmd123    500G    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `NAME        OWNER    TYPE    PTYPE     PATH            SIZE
+myvolume    test     csi     cmd       /data/cmd1      500G
+myvolume    test     csi     cmd123    /data/cmd123    500G
+`)
 }
 
 func TestVolumesCreate(t *testing.T) {
@@ -71,9 +71,9 @@ func TestVolumesCreate(t *testing.T) {
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.VolumesCreate("example-go", "myvolume", "csi", "500G", map[string]interface{}{})
+	err = cmdr.VolumesCreate("example-go", "myvolume", "csi", "500G", map[string]any{})
 	assert.NoError(t, err)
-	err = cmdr.VolumesCreate("example-go", "myvolume", "csi", "500K", map[string]interface{}{})
+	err = cmdr.VolumesCreate("example-go", "myvolume", "csi", "500K", map[string]any{})
 	expected := `500K doesn't fit format #unit
 Examples: 2G 2g`
 	assert.Equal(t, err.Error(), expected, "output")
@@ -115,23 +115,23 @@ func TestVolumesInfo(t *testing.T) {
 
 	err = cmdr.VolumesInfo("example-go", "myvolume")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `UUID:          de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    
-Name:          myvolume                                
-Owner:         test                                    
-Type:          nfs                                     
-Path:          
-               cmd: /data/cmd1                         
-               cmd123: /data/cmd123                    
-                                                       
-Parameters:    
-               nfs:                                    
-                 path: /mnt                            
-                 readOnly: true                        
-                 server: nfs.drycc.cc                  
-                                                       
-Created:       2020-08-26T00:00:00UTC                  
-Updated:       2020-08-26T00:00:00UTC                  
-`, "output")
+	testutil.AssertOutput(t, b.String(), `UUID:          de1bf5b5-4a72-4f94-a10c-d2a3741cdf75
+Name:          myvolume
+Owner:         test
+Type:          nfs
+Path:
+               cmd: /data/cmd1
+               cmd123: /data/cmd123
+
+Parameters:
+               nfs:
+                 path: /mnt
+                 readOnly: true
+                 server: nfs.drycc.cc
+
+Created:       2020-08-26T00:00:00UTC
+Updated:       2020-08-26T00:00:00UTC
+`)
 }
 
 func TestVolumesClientLs(t *testing.T) {
@@ -268,7 +268,7 @@ func TestVolumesMount(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "PATCH" {
 			testutil.AssertBody(t, api.Volume{
-				Path: map[string]interface{}{
+				Path: map[string]any{
 					"cmd": "/data/cmd1",
 				},
 			}, r)
@@ -310,7 +310,7 @@ func TestVolumesUnmount(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "PATCH" {
 			testutil.AssertBody(t, api.Volume{
-				Path: map[string]interface{}{
+				Path: map[string]any{
 					"cmd": nil,
 				},
 			}, r)

@@ -17,7 +17,6 @@ func (d *DryccCmd) Version(all bool) error {
 	d.Printf("Workflow CLI API Version:        %s\n", drycc.APIVersion)
 
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}

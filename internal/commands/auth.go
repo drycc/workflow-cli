@@ -9,7 +9,6 @@ import (
 // Login to a Drycc controller.
 func (d *DryccCmd) Login(controller string, sslVerify bool, username, password string) error {
 	c, err := drycc.New(sslVerify, controller, "")
-
 	if err != nil {
 		return err
 	}
@@ -52,7 +51,6 @@ func (d *DryccCmd) Logout() error {
 // more about the user.
 func (d *DryccCmd) Whoami(all bool) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}

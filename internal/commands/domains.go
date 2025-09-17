@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"github.com/drycc/controller-sdk-go/domains"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // DomainsList lists domains registered with an app.
 func (d *DryccCmd) DomainsList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -44,8 +43,7 @@ func (d *DryccCmd) DomainsList(appID string, results int) error {
 
 // DomainsAdd adds a domain to an app.
 func (d *DryccCmd) DomainsAdd(appID, domain, ptype string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -66,8 +64,7 @@ func (d *DryccCmd) DomainsAdd(appID, domain, ptype string) error {
 
 // DomainsRemove removes a domain registered with an app.
 func (d *DryccCmd) DomainsRemove(appID, domain string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

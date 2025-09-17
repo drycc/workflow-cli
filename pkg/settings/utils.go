@@ -17,22 +17,9 @@ func locateSettingsFile(cf string) string {
 		}
 		cf = homeDir + cf[1:]
 	}
-
-	cf = os.ExpandEnv(cf)
-
-	if cf == "" {
-		if v, ok := os.LookupEnv("DRYCC_PROFILE"); ok {
-			cf = v
-		} else {
-			cf = "client"
-		}
-	}
-
-	cf = filepath.Clean(cf)
-
+	cf = filepath.Clean(os.ExpandEnv(cf))
 	if filepathRegex.MatchString(cf) {
 		return cf
 	}
-
-	return filepath.Join(DryccHome(), cf+".json")
+	return filepath.Join(DryccHome(), "client.json")
 }

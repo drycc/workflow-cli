@@ -1,3 +1,4 @@
+// Package parser provides command parsers for the Drycc CLI.
 package parser
 
 import (
@@ -58,7 +59,6 @@ func appsCreate(cmdr *commands.DryccCmd) *cobra.Command {
 
 // AppsList creates the apps list command
 func appsList(cmdr *commands.DryccCmd) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List accessible applications"),
@@ -74,7 +74,6 @@ func appsList(cmdr *commands.DryccCmd) *cobra.Command {
 
 // AppsInfo creates the apps info command
 func appsInfo(cmdr *commands.DryccCmd) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "info",
 		Short: i18n.T("View info about an application"),
@@ -93,7 +92,6 @@ func appsInfo(cmdr *commands.DryccCmd) *cobra.Command {
 
 // AppsOpen creates the apps open command
 func appsOpen(cmdr *commands.DryccCmd) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "open",
 		Short: i18n.T("Open the application in a browser"),

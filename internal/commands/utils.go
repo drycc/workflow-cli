@@ -16,8 +16,10 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
-var defaultLimit = -1
-var defaultLines = 64
+var (
+	defaultLimit = -1
+	defaultLines = 64
+)
 
 func progress(wOut io.Writer) chan bool {
 	frames := []string{"...", "o..", ".o.", "..o"}
@@ -142,7 +144,7 @@ func (d *DryccCmd) indentString(s string, indent int) string {
 }
 
 // toYamlString convert object to yaml string
-func (d *DryccCmd) toYamlString(v interface{}, indent int) string {
+func (d *DryccCmd) toYamlString(v any, indent int) string {
 	buf := bytes.Buffer{}
 	encode := yaml.NewEncoder(&buf)
 	encode.SetIndent(indent)
@@ -150,7 +152,7 @@ func (d *DryccCmd) toYamlString(v interface{}, indent int) string {
 	return buf.String()
 }
 
-func sortKeys(data map[string]interface{}) *[]string {
+func sortKeys(data map[string]any) *[]string {
 	keys := make([]string, 0, len(data))
 	for k := range data {
 		keys = append(keys, k)
@@ -186,6 +188,8 @@ func safeGetString(data string) string {
 	return data
 }
 
+// ResponseLimit converts a limit value to the format expected by the API.
+// If limit is 0, it returns -1 to indicate no limit.
 func ResponseLimit(limit int) (int, error) {
 	if limit == 0 {
 		return -1, nil

@@ -35,10 +35,10 @@ func TestLabelsList(t *testing.T) {
 
 	err = cmdr.LabelsList("rivendell")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `OWNER    KEY         VALUE                                      
-jim      git_repo    https://github.com/drycc/controller-sdk-go    
-jim      team        drycc                                         
-`, "output")
+	testutil.AssertOutput(t, b.String(), `OWNER    KEY         VALUE
+jim      git_repo    https://github.com/drycc/controller-sdk-go
+jim      team        drycc
+`)
 
 	server.Mux.HandleFunc("/v2/apps/mordor/settings/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
@@ -69,7 +69,7 @@ func TestListsSet(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/lothlorien/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		data := map[string]interface{}{
+		data := map[string]any{
 			"git_repo": "https://github.com/drycc/controller-sdk-go",
 			"team":     "drycc",
 		}
@@ -97,7 +97,7 @@ func TestListsUnset(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/bree/settings/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
-		testutil.AssertBody(t, api.AppSettings{Label: map[string]interface{}{
+		testutil.AssertBody(t, api.AppSettings{Label: map[string]any{
 			"team":     nil,
 			"git_repo": nil,
 		}}, r)

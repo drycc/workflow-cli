@@ -1,3 +1,4 @@
+// Package git provides functions for interacting with git repositories.
 package git
 
 import (
@@ -11,9 +12,9 @@ import (
 
 var (
 	// ErrRemoteNotFound is returned when the remote cannot be found in git
-	ErrRemoteNotFound = errors.New("Could not find remote matching app in 'git remote -v'")
+	ErrRemoteNotFound = errors.New("could not find remote matching app in 'git remote -v'")
 	// ErrInvalidRepositoryList is an error returned if git returns unparsible output
-	ErrInvalidRepositoryList = errors.New("Invalid output in 'git remote -v'")
+	ErrInvalidRepositoryList = errors.New("invalid output in 'git remote -v'")
 )
 
 // Cmd is a method the exeutes the given git command and returns the output or the error.
@@ -60,7 +61,6 @@ func Init(cmd Cmd) error {
 // DeleteAppRemotes removes all git remotes corresponding to an app in the repository.
 func DeleteAppRemotes(cmd Cmd, host, appID string) error {
 	names, err := remoteNamesFromAppID(cmd, host, appID)
-
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,6 @@ func remoteNamesFromAppID(cmd Cmd, host, appID string) ([]string, error) {
 // DetectAppName detects if there is drycc remote in git.
 func DetectAppName(cmd Cmd, host string) (string, error) {
 	remote, err := findRemote(cmd, host)
-
 	// Don't return an error if remote can't be found, return directory name instead.
 	if err != nil {
 		if appName, ok := os.LookupEnv("DRYCC_APP"); ok {

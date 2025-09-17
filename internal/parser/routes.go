@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewRoutesCommand creates a command for managing application routes.
 func NewRoutesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes",
@@ -40,7 +41,6 @@ func NewRoutesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func routesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
-
 	routeKindCompletion := completion.RouteKindCompletion{ArgsLen: 1}
 	cmd := &cobra.Command{
 		Use:  "add <name> <kind> <backend>...",
@@ -234,7 +234,6 @@ func routesDetachCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func routesRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
-
 	routeCompletion := completion.RouteCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use:  "remove <name>",

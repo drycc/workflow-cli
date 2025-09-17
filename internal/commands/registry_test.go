@@ -44,9 +44,9 @@ func TestRegistryList(t *testing.T) {
 
 	err = cmdr.RegistryList("enterprise", "web", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `PTYPE    USERNAME    PASSWORD 
-web      jkirk       ncc1701     
-`, "output")
+	testutil.AssertOutput(t, b.String(), `PTYPE    USERNAME    PASSWORD
+web      jkirk       ncc1701
+`)
 }
 
 func TestRegistrySet(t *testing.T) {
@@ -61,7 +61,7 @@ func TestRegistrySet(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Registry: map[string]map[string]interface{}{
+				Registry: map[string]map[string]any{
 					"web": {
 						"username": "jkirk",
 						"password": "ncc1701",
@@ -95,11 +95,11 @@ func TestRegistrySet(t *testing.T) {
 	err = cmdr.RegistrySet("foo", "web", "jkirk", "ncc1701")
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying registry information... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying registry information... done
 
-PTYPE    USERNAME    PASSWORD 
-web      jkirk       ncc1701     
-`, "output")
+PTYPE    USERNAME    PASSWORD
+web      jkirk       ncc1701
+`)
 }
 
 func TestRegistryUnset(t *testing.T) {
@@ -114,7 +114,7 @@ func TestRegistryUnset(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Registry: map[string]map[string]interface{}{
+				Registry: map[string]map[string]any{
 					"web": {
 						"username": nil,
 						"password": nil,

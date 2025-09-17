@@ -3,24 +3,25 @@ package commands
 import (
 	"fmt"
 
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/git"
 )
 
-const remoteCreationMsg = "Git remote %s successfully created for app %s.\n"
-const remoteDeletionMsg = "Git remotes for app %s removed.\n"
+const (
+	remoteCreationMsg = "Git remote %s successfully created for app %s.\n"
+	remoteDeletionMsg = "Git remotes for app %s removed.\n"
+)
 
 // GitRemote creates a git remote for a drycc app.
 func (d *DryccCmd) GitRemote(appID, remote string, force bool) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
 	remoteURL, err := git.RemoteURL(git.DefaultCmd, remote)
-
 	if err != nil {
-		//If git remote doesn't exist, create it without issue
+		// If git remote doesn't exist, create it without issue
 		if err == git.ErrRemoteNotFound {
 			err := git.CreateRemote(git.DefaultCmd, s.Client.ControllerURL.Host, remote, appID)
 			if err != nil {
@@ -63,14 +64,12 @@ func (d *DryccCmd) GitRemote(appID, remote string, force bool) error {
 
 // GitRemove removes a application git remote from a repository
 func (d *DryccCmd) GitRemove(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
 	err = git.DeleteAppRemotes(git.DefaultCmd, s.Client.ControllerURL.Host, appID)
-
 	if err != nil {
 		return err
 	}

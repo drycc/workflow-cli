@@ -10,12 +10,12 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/events"
 	"github.com/drycc/controller-sdk-go/pts"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // PtsList lists an app's processes.
 func (d *DryccCmd) PtsList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func (d *DryccCmd) PtsList(appID string, results int) error {
 
 // PtsDescribe describe an app's processes.
 func (d *DryccCmd) PtsDescribe(appID, ptype string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (d *DryccCmd) PtsDescribe(appID, ptype string) error {
 
 // PtsScale scales an app's processes.
 func (d *DryccCmd) PtsScale(appID string, targets []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (d *DryccCmd) PtsScale(appID string, targets []string) error {
 
 // PtsRestart restarts an app's processes.
 func (d *DryccCmd) PtsRestart(appID string, targets []string, confirm string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -117,9 +117,9 @@ func (d *DryccCmd) PtsRestart(appID string, targets []string, confirm string) er
 	return nil
 }
 
-// PtsRestart restarts an app's processes.
+// PtsClean cleans process types that are not used.
 func (d *DryccCmd) PtsClean(appID string, targets []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -240,7 +240,6 @@ func parsePtsTargets(targets []string) (map[string]int, error) {
 		if regex.MatchString(target) {
 			captures := regex.FindStringSubmatch(target)
 			targetMap[captures[1]], err = strconv.Atoi(captures[2])
-
 			if err != nil {
 				return nil, err
 			}

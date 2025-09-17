@@ -6,13 +6,12 @@ import (
 	"time"
 
 	"github.com/drycc/controller-sdk-go/releases"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // ReleasesList lists an app's releases.
 func (d *DryccCmd) ReleasesList(appID string, targets []string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -43,8 +42,7 @@ func (d *DryccCmd) ReleasesList(appID string, targets []string, results int) err
 
 // ReleasesInfo prints info about a specific release.
 func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -95,7 +93,7 @@ func (d *DryccCmd) ReleasesInfo(appID string, version int) error {
 
 // ReleasesDeploy force deploy lastest release.
 func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, force bool, confirm string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -115,7 +113,7 @@ func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, force bool, co
 	startTime := time.Now()
 	quit := progress(d.WOut)
 	ptypes := strings.Join(targets, ",")
-	targetMap := map[string]interface{}{
+	targetMap := map[string]any{
 		"ptypes": ptypes,
 		"force":  force,
 	}
@@ -132,8 +130,7 @@ func (d *DryccCmd) ReleasesDeploy(appID string, targets []string, force bool, co
 
 // ReleasesRollback rolls an app back to a previous release.
 func (d *DryccCmd) ReleasesRollback(appID string, targets []string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

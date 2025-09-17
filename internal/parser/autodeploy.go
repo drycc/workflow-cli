@@ -9,7 +9,6 @@ import (
 
 // NewAutodeployCommand creates the autodeploy command
 func NewAutodeployCommand(cmdr *commands.DryccCmd) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "autodeploy",
 		Short: i18n.T("Manage autodeploy if or not for applications"),

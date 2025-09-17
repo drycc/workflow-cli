@@ -17,6 +17,7 @@ var healthchecksFlags struct {
 	ptype string
 }
 
+// NewHealthchecksCommand creates a command for managing application healthchecks.
 func NewHealthchecksCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "healthchecks",
@@ -44,7 +45,6 @@ func NewHealthchecksCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func healthchecksList(cmdr *commands.DryccCmd) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List healthchecks for an application"),

@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
-
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 )
@@ -39,9 +38,9 @@ func TestResourcesServices(t *testing.T) {
 	err = cmdr.ResourcesServices(100)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `ID                                      NAME     UPDATEABLE 
-332588e0-6c2c-4f56-a6af-a56fd01ec4b4    mysql    true          
-`, "output")
+	testutil.AssertOutput(t, b.String(), `ID                                      NAME     UPDATEABLE
+332588e0-6c2c-4f56-a6af-a56fd01ec4b4    mysql    true
+`)
 }
 
 func TestResourcesPlans(t *testing.T) {
@@ -69,9 +68,9 @@ func TestResourcesPlans(t *testing.T) {
 	err = cmdr.ResourcesPlans("mysql", 100)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `ID                                      NAME             DESCRIPTION                                                   
-4d1dbd33-201b-45bc-9abb-757584ef7ab8    standard-1600    mysql standard-1600 plan which limit persistence size 1600Gi.    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `ID                                      NAME             DESCRIPTION
+4d1dbd33-201b-45bc-9abb-757584ef7ab8    standard-1600    mysql standard-1600 plan which limit persistence size 1600Gi.
+`)
 }
 
 func TestResourcesCreate(t *testing.T) {
@@ -135,9 +134,9 @@ func TestResourcesList(t *testing.T) {
 	err = cmdr.ResourcesList("example-go", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME     OWNER    PLAN         UPDATED                
-mysql    test     mysql:5.6    2020-09-08T00:00:00UTC    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `NAME     OWNER    PLAN         UPDATED
+mysql    test     mysql:5.6    2020-09-08T00:00:00UTC
+`)
 }
 
 func TestResourceGet(t *testing.T) {
@@ -170,23 +169,23 @@ func TestResourceGet(t *testing.T) {
 	err = cmdr.ResourceGet("example-go", "mysql", true)
 	assert.NoError(t, err)
 	// todo format data json to yaml
-	assert.Equal(t, b.String(), `App:        example-go                              
-UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    
-Name:       mysql                                   
-Plan:       mysql:5.6                               
-Owner:      test                                    
-Status:     Ready                                   
-Binding:    Ready                                   
-Data:       
-            data12:                                 value1    
-            data3:                                  value1    
-Options:    
-            para122:                                value1    
-            para13451:                              value2    
-Message:    <none>                                  
-Created:    2020-09-08T00:00:00UTC                  
-Updated:    2020-09-08T00:00:00UTC                  
-`, "output")
+	testutil.AssertOutput(t, b.String(), `App:        example-go
+UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75
+Name:       mysql
+Plan:       mysql:5.6
+Owner:      test
+Status:     Ready
+Binding:    Ready
+Data:
+            data12:                                 value1
+            data3:                                  value1
+Options:
+            para122:                                value1
+            para13451:                              value2
+Message:    <none>
+Created:    2020-09-08T00:00:00UTC
+Updated:    2020-09-08T00:00:00UTC
+`)
 }
 
 func TestResourceDelete(t *testing.T) {
@@ -221,7 +220,7 @@ func TestResourcePut(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/example-go/resources/mysql/", func(w http.ResponseWriter, r *http.Request) {
-		paras := make(map[string]interface{}, 1)
+		paras := make(map[string]any, 1)
 		paras["para1.para2"] = "v1"
 		testutil.AssertBody(t, api.Resource{Plan: "mysql:5.7", Options: paras}, r)
 		testutil.SetHeaders(w)

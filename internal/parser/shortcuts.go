@@ -7,16 +7,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Shortcuts defines the interface for creating shortcut commands.
 type Shortcuts interface {
 	Create(cmdr *commands.DryccCmd) []*cobra.Command
 }
 
+// SupportedShortcuts is a list of all supported shortcut types.
 var SupportedShortcuts = []Shortcuts{
 	&AuthShortcuts{}, &AppsShortcuts{}, &PsShortcuts{}, &BuildsShortcuts{}, &PtsShortcuts{},
 }
 
+// AuthShortcuts provides authentication-related shortcut commands.
 type AuthShortcuts struct{}
 
+// AppsShortcuts provides application-related shortcut commands.
+type AppsShortcuts struct{}
+
+// PsShortcuts provides process-related shortcut commands.
+type PsShortcuts struct{}
+
+// Create returns a slice of authentication-related shortcut commands.
 func (a *AuthShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	login := authLogin(cmdr)
 	login.Example = "drycc login http://drycc.local3.dryccapp.com/"
@@ -30,8 +40,7 @@ func (a *AuthShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	return []*cobra.Command{login, logout, whoami}
 }
 
-type AppsShortcuts struct{}
-
+// Create returns a slice of application-related shortcut commands.
 func (a *AppsShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	destroy := appsDestroy(cmdr)
 	destroy.Example = "drycc destroy -a <app> --confirm <app>"
@@ -48,8 +57,7 @@ func (a *AppsShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	return []*cobra.Command{appsCreate(cmdr), destroy, appsInfo(cmdr), appsOpen(cmdr), run}
 }
 
-type PsShortcuts struct{}
-
+// Create returns a slice of process-related shortcut commands.
 func (p *PsShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	exec := psExecCommand(cmdr)
 	exec.Example = template.CustomExample(
@@ -64,16 +72,20 @@ func (p *PsShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	return []*cobra.Command{exec, logs}
 }
 
+// BuildsShortcuts provides build-related shortcut commands.
 type BuildsShortcuts struct{}
 
+// Create returns a slice of build-related shortcut commands.
 func (b *BuildsShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	create := buildsCreate(cmdr)
 	create.Use = `pull <image>`
 	return []*cobra.Command{create}
 }
 
+// PtsShortcuts provides process type-related shortcut commands.
 type PtsShortcuts struct{}
 
+// Create returns a slice of process type-related shortcut commands.
 func (p *PtsShortcuts) Create(cmdr *commands.DryccCmd) []*cobra.Command {
 	scale := ptsScaleCommand(cmdr)
 	scale.Example = template.CustomExample(

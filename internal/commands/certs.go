@@ -8,15 +8,14 @@ import (
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/certs"
 	dtime "github.com/drycc/controller-sdk-go/pkg/time"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 const dateFormat = "2 Jan 2006"
 
 // CertsList lists certs registered with the controller.
 func (d *DryccCmd) CertsList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -56,8 +55,7 @@ func (d *DryccCmd) CertsList(appID string, results int) error {
 
 // CertAdd adds a cert to the controller.
 func (d *DryccCmd) CertAdd(appID string, cert string, key string, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -93,7 +91,7 @@ func (d *DryccCmd) doCertAdd(c *drycc.Client, appID string, cert string, key str
 
 // CertRemove deletes a cert from the controller.
 func (d *DryccCmd) CertRemove(appID string, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -114,7 +112,7 @@ func (d *DryccCmd) CertRemove(appID string, name string) error {
 
 // CertInfo gets info about certficiate
 func (d *DryccCmd) CertInfo(appID string, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -143,8 +141,7 @@ func (d *DryccCmd) CertInfo(appID string, name string) error {
 
 // CertAttach attaches a certificate to a domain
 func (d *DryccCmd) CertAttach(appID string, name, domain string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -164,8 +161,7 @@ func (d *DryccCmd) CertAttach(appID string, name, domain string) error {
 
 // CertDetach detaches a certificate from a domain
 func (d *DryccCmd) CertDetach(appID, name, domain string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

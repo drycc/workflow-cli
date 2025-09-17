@@ -7,9 +7,8 @@ import (
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
-	"github.com/stretchr/testify/assert"
-
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGatewaysList(t *testing.T) {

@@ -7,14 +7,13 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
 	"github.com/drycc/controller-sdk-go/limits"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/settings"
 )
 
 // LimitsList lists an app's limits.
 func (d *DryccCmd) LimitsList(appID string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -38,8 +37,8 @@ func (d *DryccCmd) LimitsList(appID string, version int) error {
 			}
 			limitPlan := cached[limitPlanID]
 			gpuCount := limitPlan.Features["gpu"]
-			gpuName := limitPlan.Spec.Features["gpu"].(map[string]interface{})["name"]
-			gpuMemory := limitPlan.Spec.Features["gpu"].(map[string]interface{})["memory"].(map[string]interface{})["size"]
+			gpuName := limitPlan.Spec.Features["gpu"].(map[string]any)["name"]
+			gpuMemory := limitPlan.Spec.Features["gpu"].(map[string]any)["memory"].(map[string]any)["size"]
 			table.Append([]string{
 				ptype,
 				limitPlanID,
@@ -58,8 +57,7 @@ func (d *DryccCmd) LimitsList(appID string, version int) error {
 
 // LimitsSet sets an app's limits.
 func (d *DryccCmd) LimitsSet(appID string, limits []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -91,8 +89,7 @@ func (d *DryccCmd) LimitsSet(appID string, limits []string) error {
 
 // LimitsUnset removes an app's limits.
 func (d *DryccCmd) LimitsUnset(appID string, limits []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -103,7 +100,7 @@ func (d *DryccCmd) LimitsUnset(appID string, limits []string) error {
 
 	configObj := api.Config{}
 	if len(limits) > 0 {
-		limitsMap := make(map[string]interface{})
+		limitsMap := make(map[string]any)
 		for _, limit := range limits {
 			limitsMap[limit] = nil
 		}
@@ -125,7 +122,6 @@ func (d *DryccCmd) LimitsUnset(appID string, limits []string) error {
 // LimitsSpecs list limit spec
 func (d *DryccCmd) LimitsSpecs(keywords string, results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -142,8 +138,8 @@ func (d *DryccCmd) LimitsSpecs(keywords string, results int) error {
 	} else {
 		table := d.getDefaultFormatTable([]string{"ID", "CPU", "CLOCK", "BOOST", "CORES", "THREADS", "NETWORK", "FEATURES"})
 		for _, limitSpec := range limitSpecs {
-			gpuName := limitSpec.Features["gpu"].(map[string]interface{})["name"]
-			gpuMemory := limitSpec.Features["gpu"].(map[string]interface{})["memory"].(map[string]interface{})["size"]
+			gpuName := limitSpec.Features["gpu"].(map[string]any)["name"]
+			gpuMemory := limitSpec.Features["gpu"].(map[string]any)["memory"].(map[string]any)["size"]
 			table.Append([]string{
 				limitSpec.ID,
 				fmt.Sprintf("%v", limitSpec.CPU["name"]),
@@ -163,7 +159,6 @@ func (d *DryccCmd) LimitsSpecs(keywords string, results int) error {
 // LimitsPlans list limit plan
 func (d *DryccCmd) LimitsPlans(specID string, cpu, memory, results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -180,8 +175,8 @@ func (d *DryccCmd) LimitsPlans(specID string, cpu, memory, results int) error {
 	} else {
 		table := d.getDefaultFormatTable([]string{"ID", "SPEC", "CPU", "VCPUS", "MEMORY", "FEATURES"})
 		for _, limitPlan := range limitPlans {
-			gpuName := limitPlan.Spec.Features["gpu"].(map[string]interface{})["name"]
-			gpuMemory := limitPlan.Spec.Features["gpu"].(map[string]interface{})["memory"].(map[string]interface{})["size"]
+			gpuName := limitPlan.Spec.Features["gpu"].(map[string]any)["name"]
+			gpuMemory := limitPlan.Spec.Features["gpu"].(map[string]any)["memory"].(map[string]any)["size"]
 			table.Append([]string{
 				limitPlan.ID,
 				limitPlan.Spec.ID,
@@ -196,12 +191,11 @@ func (d *DryccCmd) LimitsPlans(specID string, cpu, memory, results int) error {
 	return nil
 }
 
-func parseLimits(limits []string) (map[string]interface{}, error) {
-	limitsMap := make(map[string]interface{})
+func parseLimits(limits []string) (map[string]any, error) {
+	limitsMap := make(map[string]any)
 
 	for _, limit := range limits {
 		key, value, err := parseLimit(limit)
-
 		if err != nil {
 			return nil, err
 		}

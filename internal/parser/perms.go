@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewPermsCommand creates a command for managing permissions.
 func NewPermsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "perms",
@@ -128,7 +129,6 @@ func permRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short:             i18n.T("Remove a user permissions"),
 		ValidArgsFunction: permUsernameCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
-
 			flags.username = args[0]
 			return cmdr.PermDelete(app, flags.username)
 		},

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTokensList(t *testing.T) {

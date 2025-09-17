@@ -75,7 +75,6 @@ func certAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func certRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
-
 	certCompletion := completion.CertCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use: "remove <name>",

@@ -13,6 +13,7 @@ var registryFlags struct {
 	ptype string
 }
 
+// NewRegistryCommand creates a command for managing registry information.
 func NewRegistryCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "registry",

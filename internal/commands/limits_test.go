@@ -57,6 +57,7 @@ const getPlanFixture string = `
 	"disabled": false
 }
 `
+
 const specsFixture string = `
 {
 	"results": [{
@@ -217,7 +218,7 @@ func newTestServer(t *testing.T) (string, *testutil.TestServer) {
 func TestParseLimit(t *testing.T) {
 	t.Parallel()
 
-	var errorHint = ` doesn't fit format type=#unit or type=#
+	errorHint := ` doesn't fit format type=#unit or type=#
 Examples: web=std1.large.c1m1`
 
 	cases := []parseLimitCase{
@@ -245,7 +246,7 @@ Examples: web=std1.large.c1m1`
 
 type parseLimitsCase struct {
 	Input         []string
-	ExpectedMap   map[string]interface{}
+	ExpectedMap   map[string]any
 	ExpectedError bool
 	ExpectedMsg   string
 }
@@ -254,7 +255,7 @@ func TestLimitTags(t *testing.T) {
 	t.Parallel()
 
 	cases := []parseLimitsCase{
-		{[]string{"web=std1.large.c1m1", "worker=std1.large.c1m2"}, map[string]interface{}{"web": "std1.large.c1m1", "worker": "std1.large.c1m2"}, false, ""},
+		{[]string{"web=std1.large.c1m1", "worker=std1.large.c1m2"}, map[string]any{"web": "std1.large.c1m1", "worker": "std1.large.c1m2"}, false, ""},
 		{[]string{"foo=", "web=std1.large.c1m1"}, nil, true, `foo= doesn't fit format type=#unit or type=#
 Examples: web=std1.large.c1m1`},
 	}
@@ -299,11 +300,11 @@ func TestLimitsList(t *testing.T) {
 
 	err := cmdr.LimitsList("enterprise", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `PTYPE     PLAN               VCPUS    MEMORY    FEATURES                          
-db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `PTYPE     PLAN               VCPUS    MEMORY    FEATURES
+db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+`)
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
@@ -336,7 +337,7 @@ func TestLimitsSet(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Limits: map[string]interface{}{
+				Limits: map[string]any{
 					"web": "std1.large.c1m1",
 				},
 			}, r)
@@ -361,17 +362,17 @@ func TestLimitsSet(t *testing.T) {
 	err := cmdr.LimitsSet("foo", []string{"web=std1.large.c1m1"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-PTYPE    PLAN               VCPUS    MEMORY    FEATURES                          
-web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-`, "output")
+PTYPE    PLAN               VCPUS    MEMORY    FEATURES
+web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+`)
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Limits: map[string]interface{}{
+				Limits: map[string]any{
 					"web": "std1.large.c1m1",
 				},
 			}, r)
@@ -396,18 +397,18 @@ web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
 	err = cmdr.LimitsSet("franklin", []string{"web=std1.large.c1m1"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-PTYPE    PLAN               VCPUS    MEMORY    FEATURES                          
-web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-`, "output")
+PTYPE    PLAN               VCPUS    MEMORY    FEATURES
+web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+`)
 
 	// with requests/limit parameter
 	server.Mux.HandleFunc("/v2/apps/jim/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Limits: map[string]interface{}{
+				Limits: map[string]any{
 					"web":    "std1.large.c1m1",
 					"worker": "std1.large.c1m1",
 					"db":     "std1.large.c1m1",
@@ -436,20 +437,20 @@ web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
 	err = cmdr.LimitsSet("jim", []string{"web=std1.large.c1m1", "worker=std1.large.c1m1", "db=std1.large.c1m1"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-PTYPE     PLAN               VCPUS    MEMORY    FEATURES                          
-db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-`, "output")
+PTYPE     PLAN               VCPUS    MEMORY    FEATURES
+db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+`)
 
 	// with requests/limit parameter
 	server.Mux.HandleFunc("/v2/apps/phew/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Limits: map[string]interface{}{
+				Limits: map[string]any{
 					"web":    "std1.large.c1m1",
 					"worker": "std1.large.c1m1",
 					"db":     "std1.large.c1m1",
@@ -478,13 +479,13 @@ worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 
 	err = cmdr.LimitsSet("phew", []string{"web=std1.large.c1m1", "worker=std1.large.c1m1", "db=std1.large.c1m1"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-PTYPE     PLAN               VCPUS    MEMORY    FEATURES                          
-db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-`, "output")
+PTYPE     PLAN               VCPUS    MEMORY    FEATURES
+db        std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+web       std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+worker    std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+`)
 }
 
 func TestLimitsUnset(t *testing.T) {
@@ -496,7 +497,7 @@ func TestLimitsUnset(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Limits: map[string]interface{}{
+				Limits: map[string]any{
 					"web": nil,
 				},
 			}, r)
@@ -523,17 +524,17 @@ func TestLimitsUnset(t *testing.T) {
 	err := cmdr.LimitsUnset("foo", []string{"web"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying limits... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying limits... done
 
-PTYPE    PLAN               VCPUS    MEMORY    FEATURES                          
-web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1    
-`, "output")
+PTYPE    PLAN               VCPUS    MEMORY    FEATURES
+web      std1.large.c1m1    1        1 GiB     Unknown Integrated GPU shared * 1
+`)
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Limits: map[string]interface{}{
+				Limits: map[string]any{
 					"web": nil,
 				},
 			}, r)
@@ -572,9 +573,9 @@ func TestLimitsSpecs(t *testing.T) {
 
 	err := cmdr.LimitsSpecs("", 10)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID      CPU            CLOCK      BOOST      CORES    THREADS    NETWORK    FEATURES                      
-std1    Unknown CPU    3100MHZ    3700MHZ    32       64         10G        Unknown Integrated GPU shared    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `ID      CPU            CLOCK      BOOST      CORES    THREADS    NETWORK    FEATURES
+std1    Unknown CPU    3100MHZ    3700MHZ    32       64         10G        Unknown Integrated GPU shared
+`)
 }
 
 func TestLimitsPlans(t *testing.T) {
@@ -587,8 +588,8 @@ func TestLimitsPlans(t *testing.T) {
 
 	err := cmdr.LimitsPlans("", 0, 0, 100)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID                 SPEC    CPU            VCPUS    MEMORY    FEATURES                      
-std1.large.c1m1    std1    Unknown CPU    1        1 GiB     Unknown Integrated GPU shared    
-std1.large.c1m2    std1    Unknown CPU    1        2 GiB     Unknown Integrated GPU shared    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `ID                 SPEC    CPU            VCPUS    MEMORY    FEATURES
+std1.large.c1m1    std1    Unknown CPU    1        1 GiB     Unknown Integrated GPU shared
+std1.large.c1m2    std1    Unknown CPU    1        2 GiB     Unknown Integrated GPU shared
+`)
 }

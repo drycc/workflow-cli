@@ -1,3 +1,4 @@
+// Package testutil provides utilities for testing the workflow CLI.
 package testutil
 
 import (
@@ -69,7 +70,7 @@ func NewTestServerAndClient() (string, *TestServer, error) {
 }
 
 // AssertBody asserts the value of the body of a request.
-func AssertBody(t *testing.T, expected interface{}, req *http.Request) {
+func AssertBody(t *testing.T, expected any, req *http.Request) {
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		t.Fatal(err)
@@ -101,4 +102,27 @@ func StripProgress(input string) string {
 // SetHeaders sets standard headers for requests
 func SetHeaders(w http.ResponseWriter) {
 	w.Header().Add("DRYCC_API_VERSION", drycc.APIVersion)
+}
+
+// AssertOutput compares multi-line text after trimming spaces and tabs from each line
+func AssertOutput(t *testing.T, expected string, actual string) {
+	t.Helper()
+	expectedLines := strings.Split(strings.Trim(expected, "\n"), "\n")
+	actualLines := strings.Split(strings.Trim(actual, "\n"), "\n")
+
+	// Trim spaces and tabs from each line
+	for i, line := range expectedLines {
+		expectedLines[i] = strings.Trim(line, " \t")
+	}
+	for i, line := range actualLines {
+		actualLines[i] = strings.Trim(line, " \t")
+	}
+
+	// Join lines back with newlines
+	expectedProcessed := strings.Join(expectedLines, "\n")
+	actualProcessed := strings.Join(actualLines, "\n")
+
+	if expectedProcessed != actualProcessed {
+		t.Errorf("Expected output:\n%s\n\nActual output:\n%s", expectedProcessed, actualProcessed)
+	}
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 func getHealthcheckString(ptype, probeType string, healthcheck *api.Healthcheck) string {
@@ -47,13 +47,12 @@ func getHealthchecksStrings(ptype string, healthchecks *api.Healthchecks) []stri
 
 // HealthchecksList lists an app's healthchecks.
 func (d *DryccCmd) HealthchecksList(appID, ptype string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
 	config, err := config.List(s.Client, appID, version)
-
 	if err != nil {
 		return err
 	}
@@ -107,8 +106,7 @@ func (d *DryccCmd) HealthchecksList(appID, ptype string, version int) error {
 
 // HealthchecksSet sets an app's healthchecks.
 func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *api.Healthcheck) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -138,7 +136,7 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *
 
 // HealthchecksUnset removes an app's healthchecks.
 func (d *DryccCmd) HealthchecksUnset(appID, ptype string, healthchecks []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

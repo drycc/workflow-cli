@@ -6,13 +6,12 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // TagsList lists an app's tags.
 func (d *DryccCmd) TagsList(appID, ptype string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -29,7 +28,6 @@ func (d *DryccCmd) TagsList(appID, ptype string, version int) error {
 	ptypes := []string{}
 	if ptype != "" {
 		ptypes = append(ptypes, ptype)
-
 	} else {
 		for ptype := range config.Tags {
 			ptypes = append(ptypes, ptype)
@@ -55,8 +53,7 @@ func (d *DryccCmd) TagsList(appID, ptype string, version int) error {
 
 // TagsSet sets an app's tags.
 func (d *DryccCmd) TagsSet(appID, ptype string, tags []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -86,8 +83,7 @@ func (d *DryccCmd) TagsSet(appID, ptype string, tags []string) error {
 
 // TagsUnset removes an app's tags.
 func (d *DryccCmd) TagsUnset(appID, ptype string, tags []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -115,12 +111,11 @@ func (d *DryccCmd) TagsUnset(appID, ptype string, tags []string) error {
 	return d.TagsList(appID, ptype, -1)
 }
 
-func parseTags(tags []string) (map[string]interface{}, error) {
-	tagMap := make(map[string]interface{})
+func parseTags(tags []string) (map[string]any, error) {
+	tagMap := make(map[string]any)
 
 	for _, tag := range tags {
 		key, value, err := parseTag(tag)
-
 		if err != nil {
 			return nil, err
 		}

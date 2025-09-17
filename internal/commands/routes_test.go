@@ -131,6 +131,7 @@ func TestRoutesAttach(t *testing.T) {
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Attaching route example-go to gateway example-go... done\n", "output")
 }
+
 func TestRoutesDetach(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()

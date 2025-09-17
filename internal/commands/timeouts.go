@@ -6,13 +6,12 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/config"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // TimeoutsList lists an app's timeouts.
 func (d *DryccCmd) TimeoutsList(appID string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -40,8 +39,7 @@ func (d *DryccCmd) TimeoutsList(appID string, version int) error {
 
 // TimeoutsSet sets an app's timeouts.
 func (d *DryccCmd) TimeoutsSet(appID string, timeouts []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -72,8 +70,7 @@ func (d *DryccCmd) TimeoutsSet(appID string, timeouts []string) error {
 
 // TimeoutsUnset removes an app's timeouts.
 func (d *DryccCmd) TimeoutsUnset(appID string, timeouts []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -84,7 +81,7 @@ func (d *DryccCmd) TimeoutsUnset(appID string, timeouts []string) error {
 
 	configObj := api.Config{}
 
-	valuesMap := make(map[string]interface{})
+	valuesMap := make(map[string]any)
 
 	for _, timeout := range timeouts {
 		valuesMap[timeout] = nil
@@ -104,12 +101,11 @@ func (d *DryccCmd) TimeoutsUnset(appID string, timeouts []string) error {
 	return d.TimeoutsList(appID, -1)
 }
 
-func parseTimeouts(timeouts []string) (map[string]interface{}, error) {
-	timeoutsMap := make(map[string]interface{})
+func parseTimeouts(timeouts []string) (map[string]any, error) {
+	timeoutsMap := make(map[string]any)
 
 	for _, timeout := range timeouts {
 		key, value, err := parseTimeout(timeout)
-
 		if err != nil {
 			return nil, err
 		}

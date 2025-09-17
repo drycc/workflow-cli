@@ -17,7 +17,6 @@ import (
 // KeysList lists a user's keys.
 func (d *DryccCmd) KeysList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -50,7 +49,6 @@ func (d *DryccCmd) KeysList(results int) error {
 // KeyRemove removes keys.
 func (d *DryccCmd) KeyRemove(keyID string) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -69,7 +67,6 @@ func (d *DryccCmd) KeyRemove(keyID string) error {
 // KeyAdd adds keys.
 func (d *DryccCmd) KeyAdd(name string, keyLocation string) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -119,7 +116,8 @@ func (d *DryccCmd) KeyAdd(name string, keyLocation string) error {
 }
 
 func chooseKey(keys []api.KeyCreateRequest, input io.Reader,
-	wOut io.Writer) (api.KeyCreateRequest, error) {
+	wOut io.Writer,
+) (api.KeyCreateRequest, error) {
 	fmt.Fprintln(wOut, "Found the following SSH public keys:")
 
 	for i, key := range keys {
@@ -134,7 +132,6 @@ func chooseKey(keys []api.KeyCreateRequest, input io.Reader,
 	fmt.Fscanln(input, &selected)
 
 	numSelected, err := strconv.Atoi(selected)
-
 	if err != nil {
 		return api.KeyCreateRequest{}, fmt.Errorf("%s is not a valid integer", selected)
 	}
@@ -158,7 +155,6 @@ func chooseKey(keys []api.KeyCreateRequest, input io.Reader,
 func listKeys(wOut io.Writer) ([]api.KeyCreateRequest, error) {
 	folder := filepath.Join(settings.FindHome(), ".ssh")
 	files, err := os.ReadDir(folder)
-
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +178,6 @@ func listKeys(wOut io.Writer) ([]api.KeyCreateRequest, error) {
 
 func getKey(filename string) (api.KeyCreateRequest, error) {
 	keyContents, err := os.ReadFile(filename)
-
 	if err != nil {
 		return api.KeyCreateRequest{}, err
 	}

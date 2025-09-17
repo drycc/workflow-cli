@@ -22,7 +22,7 @@ type parseTimeoutCase struct {
 func TestParseTimeout(t *testing.T) {
 	t.Parallel()
 
-	var errorHint = ` doesn't fit format type=#
+	errorHint := ` doesn't fit format type=#
 Examples: web=30 worker=300`
 
 	cases := []parseTimeoutCase{
@@ -47,7 +47,7 @@ Examples: web=30 worker=300`
 
 type parseTimeoutsCase struct {
 	Input         []string
-	ExpectedMap   map[string]interface{}
+	ExpectedMap   map[string]any
 	ExpectedError bool
 	ExpectedMsg   string
 }
@@ -56,7 +56,7 @@ func TestTimeoutTags(t *testing.T) {
 	t.Parallel()
 
 	cases := []parseTimeoutsCase{
-		{[]string{"web=10", "worker=20"}, map[string]interface{}{"web": "10", "worker": "20"}, false, ""},
+		{[]string{"web=10", "worker=20"}, map[string]any{"web": "10", "worker": "20"}, false, ""},
 		{[]string{"foo=", "web=10"}, nil, true, `foo= doesn't fit format type=#
 Examples: web=30 worker=300`},
 	}
@@ -105,10 +105,10 @@ func TestTimeoutsList(t *testing.T) {
 
 	err = cmdr.TimeoutsList("enterprise", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `PTYPE     TIMEOUT 
-web       10         
-worker    20         
-`, "output")
+	testutil.AssertOutput(t, b.String(), `PTYPE     TIMEOUT
+web       10
+worker    20
+`)
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
@@ -145,7 +145,7 @@ func TestTimeoutsSet(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Timeout: map[string]interface{}{
+				Timeout: map[string]any{
 					"web": "10",
 				},
 			}, r)
@@ -174,17 +174,17 @@ func TestTimeoutsSet(t *testing.T) {
 	err = cmdr.TimeoutsSet("foo", []string{"web=10"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-PTYPE    TIMEOUT 
-web      10         
-`, "output")
+PTYPE    TIMEOUT
+web      10
+`)
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Timeout: map[string]interface{}{
+				Timeout: map[string]any{
 					"web": "10",
 				},
 			}, r)
@@ -211,18 +211,18 @@ web      10
 	err = cmdr.TimeoutsSet("franklin", []string{"web=10"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-PTYPE    TIMEOUT 
-web      10         
-`, "output")
+PTYPE    TIMEOUT
+web      10
+`)
 
 	// with requests/timeout parameter
 	server.Mux.HandleFunc("/v2/apps/jim/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Timeout: map[string]interface{}{
+				Timeout: map[string]any{
 					"web":    "10",
 					"worker": "100",
 					"db":     "300",
@@ -253,14 +253,13 @@ web      10
 	err = cmdr.TimeoutsSet("jim", []string{"web=10", "worker=100", "db=300"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-PTYPE     TIMEOUT 
-db        300        
-web       10         
-worker    100        
-`, "output")
-
+PTYPE     TIMEOUT
+db        300
+web       10
+worker    100
+`)
 }
 
 func TestTimeoutsUnset(t *testing.T) {
@@ -275,7 +274,7 @@ func TestTimeoutsUnset(t *testing.T) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Timeout: map[string]interface{}{
+				Timeout: map[string]any{
 					"web": nil,
 				},
 			}, r)
@@ -304,17 +303,17 @@ func TestTimeoutsUnset(t *testing.T) {
 	err = cmdr.TimeoutsUnset("foo", []string{"web"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-PTYPE    TIMEOUT 
-web      10         
-`, "output")
+PTYPE    TIMEOUT
+web      10
+`)
 
 	server.Mux.HandleFunc("/v2/apps/franklin/config/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
 		if r.Method == "POST" {
 			testutil.AssertBody(t, api.Config{
-				Timeout: map[string]interface{}{
+				Timeout: map[string]any{
 					"web": nil,
 				},
 			}, r)
@@ -341,9 +340,9 @@ web      10
 	err = cmdr.TimeoutsUnset("franklin", []string{"web"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying timeouts... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying timeouts... done
 
-PTYPE    TIMEOUT 
-web      10         
-`, "output")
+PTYPE    TIMEOUT
+web      10
+`)
 }

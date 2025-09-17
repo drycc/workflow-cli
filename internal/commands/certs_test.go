@@ -151,7 +151,6 @@ func TestCertsListLimit(t *testing.T) {
 	assert.Equal(t, b.String(), `NAME                COMMON-NAME         EXPIRES        SAN                               DOMAINS                        
 test-example-com    test.example.com    10 Nov 2014    test.com,drycc.com,example.com    test.com,drycc.com,example.com    
 `, "output")
-
 }
 
 func TestCertsInfo(t *testing.T) {

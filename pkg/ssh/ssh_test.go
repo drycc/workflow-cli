@@ -36,7 +36,6 @@ func TestParseValidSSHPubKey(t *testing.T) {
 		}
 
 	}
-
 }
 
 func TestParseInvalidSSHPubKey(t *testing.T) {

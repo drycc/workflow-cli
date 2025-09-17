@@ -1,6 +1,7 @@
 //go:build linux || darwin
 // +build linux darwin
 
+// Package settings provides functionality for managing Drycc CLI settings.
 package settings
 
 import (

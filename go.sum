@@ -11,10 +11,10 @@ github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6N
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/drycc/controller-sdk-go v0.0.0-20250625050826-8be5432737be h1:aIdgIpvYa6SuPQIV3C3UKNItMaTK3YDxP0sRlfrYSUE=
-github.com/drycc/controller-sdk-go v0.0.0-20250625050826-8be5432737be/go.mod h1:MbFxGlgRQUaVlThbn3DmB06EJsf+e3/O+qgbWmdvtoE=
-github.com/drycc/pkg v0.0.0-20241223062248-04810c5faa4b h1:wSIZheOVyeakCpI1i6xDta9e5YLZgNCqw7JfxC6R5MA=
-github.com/drycc/pkg v0.0.0-20241223062248-04810c5faa4b/go.mod h1:upGcZF/RCEqidGjSnWHh/txRC1I4GPsRGvF8/+bDfwU=
+github.com/drycc/controller-sdk-go v0.0.0-20250917070349-910603c54927 h1:c1n5N5urQztpcBy93U+oBEWyRXXaa0k3PwCg9pzXqe0=
+github.com/drycc/controller-sdk-go v0.0.0-20250917070349-910603c54927/go.mod h1:eHcmYwg81ASlP55/U587xnBZnZoeZnPHXGeQ8nYWnsg=
+github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf h1:CYy3NoPhfFhkGAbEppTOQfY/HC2s0FJDcBgbtRKeweg=
+github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf/go.mod h1:BrrNrNskHKm+nJYhXfGuI114w8nupi0AMo8QZHID7CM=
 github.com/go-logr/logr v1.4.1 h1:pKouT5E8xu9zeFC39JXRDukb6JFQPXM5p5I91188VAQ=
 github.com/go-logr/logr v1.4.1/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=

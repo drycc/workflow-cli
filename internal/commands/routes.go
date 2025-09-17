@@ -7,14 +7,13 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/routes"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	"sigs.k8s.io/yaml"
 )
 
 // RoutesCreate create a route to an app.
 func (d *DryccCmd) RoutesCreate(appID, name string, kind string, backendRefs ...api.BackendRefRequest) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -34,8 +33,7 @@ func (d *DryccCmd) RoutesCreate(appID, name string, kind string, backendRefs ...
 
 // RoutesList lists routes for the app
 func (d *DryccCmd) RoutesList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -54,9 +52,9 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 		for _, route := range routes {
 			var services []string
 			for _, rule := range route.Rules {
-				if backends, ok := rule["backendRefs"].([]interface{}); ok {
+				if backends, ok := rule["backendRefs"].([]any); ok {
 					for _, backend := range backends {
-						if service, ok := backend.(map[string]interface{}); ok {
+						if service, ok := backend.(map[string]any); ok {
 							services = append(services, fmt.Sprintf("%v:%v", service["name"], service["port"]))
 						}
 					}
@@ -83,8 +81,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 
 // RoutesAttach bind a route to gateway.
 func (d *DryccCmd) RoutesAttach(appID, name string, port int, gateway string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -104,8 +101,7 @@ func (d *DryccCmd) RoutesAttach(appID, name string, port int, gateway string) er
 
 // RoutesDetach bind a route to gateway.
 func (d *DryccCmd) RoutesDetach(appID, name string, port int, gateway string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -125,8 +121,7 @@ func (d *DryccCmd) RoutesDetach(appID, name string, port int, gateway string) er
 
 // RoutesGet get rule of route for the app
 func (d *DryccCmd) RoutesGet(appID string, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -147,7 +142,7 @@ func (d *DryccCmd) RoutesGet(appID string, name string) error {
 
 // RoutesSet set rule of route for the app
 func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -178,8 +173,7 @@ func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
 
 // RoutesRemove removes a route registered with an app.
 func (d *DryccCmd) RoutesRemove(appID, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

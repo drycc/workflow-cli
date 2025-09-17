@@ -1,4 +1,5 @@
-package utils
+// Package loader provides common utility functions and helper methods for the workflow CLI.
+package loader
 
 import (
 	"os"

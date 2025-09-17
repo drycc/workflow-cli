@@ -6,13 +6,12 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/gateways"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // GatewaysList lists gateways for the app
 func (d *DryccCmd) GatewaysList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -41,8 +40,7 @@ func (d *DryccCmd) GatewaysList(appID string, results int) error {
 
 // GatewaysAdd adds a gateway to an app.
 func (d *DryccCmd) GatewaysAdd(appID, name string, port int, protocol string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -62,8 +60,7 @@ func (d *DryccCmd) GatewaysAdd(appID, name string, port int, protocol string) er
 
 // GatewaysRemove removes a gateway registered with an app.
 func (d *DryccCmd) GatewaysRemove(appID, name string, port int, protocol string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

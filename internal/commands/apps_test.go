@@ -7,11 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/pkg/settings"
 	"github.com/drycc/workflow-cli/pkg/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 type expandURLCases struct {
@@ -62,10 +61,10 @@ func TestAppsList(t *testing.T) {
 
 	err = cmdr.AppsList(-1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID             OWNER             CREATED                 UPDATED              
-lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
-consectetur    adipiscing        2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `ID             OWNER             CREATED                 UPDATED
+lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
+consectetur    adipiscing        2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
+`)
 }
 
 func TestAppsListLimit(t *testing.T) {
@@ -101,9 +100,9 @@ func TestAppsListLimit(t *testing.T) {
 
 	err = cmdr.AppsList(1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID             OWNER             CREATED                 UPDATED              
-lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z    
-`, "output")
+	testutil.AssertOutput(t, b.String(), `ID             OWNER             CREATED                 UPDATED
+lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
+`)
 }
 
 func TestAppsInfo(t *testing.T) {
@@ -187,26 +186,26 @@ func TestAppsInfo(t *testing.T) {
 	}
 	err = cmdr.AppInfo("lorem-ipsum")
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `App:          lorem-ipsum                             
-URL:          `+url+`                 
-UUID:         c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    
-Owner:        dolar-sit-amet                          
-Created:      2016-08-22T17:40:16Z                    
-Updated:      2016-08-22T17:40:16Z                    
-Processes:    
-              Name:                                   lorem-ipsum-cmd-1911796442-48b58    
-              Release:                                v2                                  
-              State:                                  up                                  
-              Ptype:                                  cmd                                 
-              Started:                                2016-08-22T17:42:16Z                
-Domains:      
-              Domain:                                 lorem-ipsum                         
-              Created:                                2016-08-22T17:40:16Z                
-              Updated:                                2016-08-22T17:40:16Z                
-Labels:       
-              Key:                                    team                                
-              Value:                                  frontend                            
-`, "output")
+	testutil.AssertOutput(t, b.String(), `App:          lorem-ipsum
+URL:          `+url+`
+UUID:         c4aed81c-d1ca-4ff1-ab89-d2151264e1a3
+Owner:        dolar-sit-amet
+Created:      2016-08-22T17:40:16Z
+Updated:      2016-08-22T17:40:16Z
+Processes:
+              Name:                                   lorem-ipsum-cmd-1911796442-48b58
+              Release:                                v2
+              State:                                  up
+              Ptype:                                  cmd
+              Started:                                2016-08-22T17:42:16Z
+Domains:
+              Domain:                                 lorem-ipsum
+              Created:                                2016-08-22T17:40:16Z
+              Updated:                                2016-08-22T17:40:16Z
+Labels:
+              Key:                                    team
+              Value:                                  frontend
+`)
 }
 
 func TestAppDestroy(t *testing.T) {
@@ -237,7 +236,7 @@ func TestAppDestroy(t *testing.T) {
 
 	err = cmdr.AppDestroy("lorem-ipsum", "lorem-ipsum")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Destroying lorem-ipsum...
+	assert.Equal(t, b.String(), `Destroying lorem-ipsum...
 done in 0s
 `, "output")
 }
@@ -268,7 +267,7 @@ func TestAppTransfer(t *testing.T) {
 
 	err = cmdr.AppTransfer("lorem-ipsum", "test-user")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Transferring lorem-ipsum to test-user... done
+	assert.Equal(t, b.String(), `Transferring lorem-ipsum to test-user... done
 `, "output")
 }
 

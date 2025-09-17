@@ -15,9 +15,9 @@ import (
 	"github.com/drycc/workflow-cli/pkg/settings"
 )
 
+// TokensList lists authentication tokens.
 func (d *DryccCmd) TokensList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -45,10 +45,10 @@ func (d *DryccCmd) TokensList(results int) error {
 	return nil
 }
 
+// TokensAdd creates a new authentication token.
 func (d *DryccCmd) TokensAdd(c *drycc.Client, username, password, alias, confirm string, render bool) (*api.AuthTokenResponse, error) {
 	if c == nil {
 		s, err := settings.Load(d.ConfigFile)
-
 		if err != nil {
 			return nil, err
 		}
@@ -101,9 +101,9 @@ func (d *DryccCmd) TokensAdd(c *drycc.Client, username, password, alias, confirm
 	return token, err
 }
 
+// TokensRemove deletes an authentication token.
 func (d *DryccCmd) TokensRemove(id, confirm string) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -132,7 +132,7 @@ func (d *DryccCmd) TokensRemove(id, confirm string) error {
 }
 
 func (d *DryccCmd) openBrower(URL string) error {
-	var commands = map[string]string{
+	commands := map[string]string{
 		"windows": "start",
 		"darwin":  "open",
 		"linux":   "xdg-open",

@@ -1,6 +1,7 @@
 //go:build linux
 // +build linux
 
+// Package webbrowser provides functionality to open URLs in the default browser
 package webbrowser
 
 import (

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"testing"
-
 	"reflect"
+	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
@@ -59,15 +58,15 @@ func TestBuildsInfo(t *testing.T) {
 
 	err = cmdr.BuildsInfo("foo", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `App:                                                
-Sha:                                                
-UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75    
-Owner:                                              
-Image:                                              
-Stack:                                              
-Created:    2014-01-01T00:00:00UTC                  
-Updated:                                            
-`, "output")
+	testutil.AssertOutput(t, b.String(), `App:
+Sha:
+UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75
+Owner:
+Image:
+Stack:
+Created:    2014-01-01T00:00:00UTC
+Updated:
+`)
 }
 
 func TestBuildsCreate(t *testing.T) {
@@ -126,7 +125,7 @@ func TestBuildsCreate(t *testing.T) {
 	}
 	data := `web: ./drive
 warp: ./warp 8`
-	if err := os.WriteFile(tmpDir+"/Procfile", []byte(data), 0644); err != nil {
+	if err := os.WriteFile(tmpDir+"/Procfile", []byte(data), 0o644); err != nil {
 		t.Fatalf("error creating %s/Procfile (%s)", tmpDir, err)
 	}
 	defer func() {
@@ -149,12 +148,12 @@ warp: ./warp 8`
 					"web":  "./drive",
 					"warp": "./warp 8",
 				},
-				Dryccfile: map[string]interface{}{
-					"pipeline": map[string]interface{}{
-						"web.yaml": map[string]interface{}{
+				Dryccfile: map[string]any{
+					"pipeline": map[string]any{
+						"web.yaml": map[string]any{
 							"kind":  "pipeline",
 							"ptype": "web",
-							"deploy": map[string]interface{}{
+							"deploy": map[string]any{
 								"command": []string{
 									"bash",
 									"-c",
@@ -180,7 +179,7 @@ warp: ./warp 8
 	assert.NoError(t, err)
 
 	dryccpath := ".drycc"
-	os.MkdirAll(dryccpath, 0700)
+	os.MkdirAll(dryccpath, 0o700)
 	defer os.RemoveAll(dryccpath)
 	err = os.WriteFile(filepath.Join(dryccpath, "web.yaml"), []byte(`
 kind: pipeline
@@ -197,7 +196,6 @@ deploy:
 	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "Procfile", dryccpath, "yes")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
-
 }
 
 func TestBuildsFetch(t *testing.T) {
@@ -239,7 +237,7 @@ func TestBuildsFetch(t *testing.T) {
 
 	// Helper function to compare YAML content ignoring field order
 	isEqualYAML := func(actual, expected string) bool {
-		var actualMap, expectedMap map[string]interface{}
+		var actualMap, expectedMap map[string]any
 		err := yaml.Unmarshal([]byte(actual), &actualMap)
 		if err != nil {
 			return false

@@ -49,7 +49,7 @@ Examples: rack=1 evironment=production`},
 
 type parseTagsCase struct {
 	Input         []string
-	ExpectedMap   map[string]interface{}
+	ExpectedMap   map[string]any
 	ExpectedError bool
 	ExpectedMsg   string
 }
@@ -58,7 +58,7 @@ func TestParseTags(t *testing.T) {
 	t.Parallel()
 
 	cases := []parseTagsCase{
-		{[]string{"foo=bar", "true=false"}, map[string]interface{}{"foo": "bar", "true": "false"}, false, ""},
+		{[]string{"foo=bar", "true=false"}, map[string]any{"foo": "bar", "true": "false"}, false, ""},
 		{[]string{"foo=", "true=false"}, nil, true, `foo= is invalid, Must be in format key=value
 Examples: rack=1 evironment=production`},
 	}
@@ -108,10 +108,10 @@ func TestTagsList(t *testing.T) {
 
 	err = cmdr.TagsList("enterprise", "web", -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `PTYPE    KEY     VALUE 
-web      ncc     1701     
-web      warp    8        
-`, "output")
+	testutil.AssertOutput(t, b.String(), `PTYPE    KEY     VALUE
+web      ncc     1701
+web      warp    8
+`)
 }
 
 func TestTagsSet(t *testing.T) {
@@ -156,11 +156,11 @@ func TestTagsSet(t *testing.T) {
 	err = cmdr.TagsSet("foo", "web", []string{"true=false"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-PTYPE    KEY     VALUE 
-web      true    false    
-`, "output")
+PTYPE    KEY     VALUE
+web      true    false
+`)
 }
 
 func TestTagsUnset(t *testing.T) {
@@ -205,9 +205,9 @@ func TestTagsUnset(t *testing.T) {
 	err = cmdr.TagsUnset("foo", "web", []string{"ncc"})
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying tags... done
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), `Applying tags... done
 
-PTYPE    KEY     VALUE 
-web      warp    8        
-`, "output")
+PTYPE    KEY     VALUE
+web      warp    8
+`)
 }

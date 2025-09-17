@@ -14,15 +14,14 @@ import (
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/schollz/progressbar/v3"
 	"sigs.k8s.io/yaml"
 )
 
 // VolumesList list volumes in the application
 func (d *DryccCmd) VolumesList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -45,8 +44,7 @@ func (d *DryccCmd) VolumesList(appID string, results int) error {
 
 // VolumesInfo get volume in the application
 func (d *DryccCmd) VolumesInfo(appID, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -81,9 +79,8 @@ func (d *DryccCmd) VolumesInfo(appID, name string) error {
 }
 
 // VolumesCreate create a volume for the application
-func (d *DryccCmd) VolumesCreate(appID, name, vType, size string, parameters map[string]interface{}) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+func (d *DryccCmd) VolumesCreate(appID, name, vType, size string, parameters map[string]any) error {
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -115,8 +112,7 @@ Examples: 2G 2g`, size)
 
 // VolumesExpand create a volume for the application
 func (d *DryccCmd) VolumesExpand(appID, name, size string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -146,8 +142,7 @@ Examples: 2G 2g`, size)
 
 // VolumesDelete delete a volume from the application
 func (d *DryccCmd) VolumesDelete(appID, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -182,8 +177,7 @@ func (d *DryccCmd) VolumesClient(appID, cmd string, args ...string) error {
 
 // VolumesMount mount a volume to process of the application
 func (d *DryccCmd) VolumesMount(appID string, name string, volumeVars []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -212,13 +206,12 @@ func (d *DryccCmd) VolumesMount(appID string, name string, volumeVars []string) 
 
 // VolumesUnmount unmount a volume from process of the application
 func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	valuesMap := make(map[string]interface{})
+	valuesMap := make(map[string]any)
 	for _, volumeVar := range volumeVars {
 		valuesMap[volumeVar] = nil
 	}
@@ -242,8 +235,7 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 
 // volumesClientLs get all directory entries sorted by filename.
 func (d *DryccCmd) volumesClientLs(appID, vol string) error {
-
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -284,7 +276,7 @@ func (d *DryccCmd) volumesClientGetAll(client *drycc.Client, appID, volumeID, vo
 			if err != nil {
 				return err
 			}
-			w, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+			w, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
 			if err != nil {
 				return err
 			}
@@ -317,7 +309,7 @@ func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, v
 		if err != nil {
 			return err
 		}
-		if stat.Size() > 0 { //ignore empty file
+		if stat.Size() > 0 { // ignore empty file
 			reader := progressbar.NewReader(file, d.newProgressbar(stat.Size(), "↑", localPath))
 			if _, err := volumes.PostFile(client, appID, volumeID, volumePath, file.Name(), stat.Size(), &reader); err != nil {
 				return err
@@ -347,7 +339,7 @@ func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, v
 
 // volumesClientCp copy files between volume and local file
 func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -388,7 +380,7 @@ func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
 
 // volumesClientRm delete a file from volume
 func (d *DryccCmd) volumesClientRm(appID, vol string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -407,8 +399,8 @@ func (d *DryccCmd) volumesClientRm(appID, vol string) error {
 	return nil
 }
 
-func parseVolume(volumeVars []string) (map[string]interface{}, error) {
-	volumeMap := make(map[string]interface{})
+func parseVolume(volumeVars []string) (map[string]any, error) {
+	volumeMap := make(map[string]any)
 	regex := regexp.MustCompile(`^([a-z0-9]+(?:-[a-z0-9]+)*)=(\/([\w]+[\w-]*\/?)+)$`)
 	for _, volume := range volumeVars {
 		if regex.MatchString(volume) {

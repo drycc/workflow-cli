@@ -5,8 +5,8 @@ go 1.25
 require (
 	github.com/chai2010/gettext-go v1.0.3
 	github.com/containerd/console v1.0.4
-	github.com/drycc/controller-sdk-go v0.0.0-20250625050826-8be5432737be
-	github.com/drycc/pkg v0.0.0-20241223062248-04810c5faa4b
+	github.com/drycc/controller-sdk-go v0.0.0-20250917070349-910603c54927
+	github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf
 	github.com/minio/selfupdate v0.6.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/schollz/progressbar/v3 v3.18.0

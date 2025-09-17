@@ -15,7 +15,7 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/events"
 	"github.com/drycc/controller-sdk-go/ps"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/logging"
 	"golang.org/x/net/websocket"
 	yaml "gopkg.in/yaml.v3"
@@ -31,7 +31,7 @@ const (
 
 // PsList lists an app's processes.
 func (d *DryccCmd) PsList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -50,10 +50,9 @@ func (d *DryccCmd) PsList(appID string, results int) error {
 	return nil
 }
 
-// PodLogs returns the logs from an pod.
+// PsLogs returns the logs from a pod.
 func (d *DryccCmd) PsLogs(appID, podID string, lines int, follow bool, container string, previous bool) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -82,9 +81,9 @@ func (d *DryccCmd) PsLogs(appID, podID string, lines int, follow bool, container
 	return nil
 }
 
-// PsList lists an app's processes.
+// PsExec executes a command in a pod.
 func (d *DryccCmd) PsExec(appID, podID string, tty, stdin bool, command []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -108,7 +107,7 @@ func (d *DryccCmd) PsExec(appID, podID string, tty, stdin bool, command []string
 
 // PsDescribe describe an app's processes.
 func (d *DryccCmd) PsDescribe(appID, podID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -200,8 +199,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 
 // PsDelete delete an pod.
 func (d *DryccCmd) PsDelete(appID string, podIDs []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -349,7 +347,6 @@ func parsePsTargets(targets []string) (map[string]int, error) {
 		if regex.MatchString(target) {
 			captures := regex.FindStringSubmatch(target)
 			targetMap[captures[1]], err = strconv.Atoi(captures[2])
-
 			if err != nil {
 				return nil, err
 			}
@@ -364,7 +361,7 @@ func parsePsTargets(targets []string) (map[string]int, error) {
 func parseChannelMessage(data string) (string, error) {
 	channel, message := data[0], data[1:]
 	if string(channel) == errorChannel {
-		data := make(map[string]interface{})
+		data := make(map[string]any)
 		yaml.Unmarshal([]byte(message), data)
 		if value, hasKey := data["message"]; hasKey {
 			if message, ok := value.(string); ok {

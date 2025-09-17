@@ -1,3 +1,4 @@
+// Package commands provides implementations for Drycc CLI commands.
 package commands
 
 import (
@@ -10,7 +11,7 @@ import (
 	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/domains"
 	"github.com/drycc/controller-sdk-go/ps"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/git"
 	"github.com/drycc/workflow-cli/pkg/settings"
 	"github.com/drycc/workflow-cli/pkg/webbrowser"
@@ -59,7 +60,6 @@ func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
 // AppsList lists apps on the Drycc controller.
 func (d *DryccCmd) AppsList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -91,8 +91,7 @@ func (d *DryccCmd) AppsList(results int) error {
 
 // AppInfo prints info about app.
 func (d *DryccCmd) AppInfo(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -177,8 +176,7 @@ func (d *DryccCmd) AppInfo(appID string) error {
 
 // AppOpen opens an app in the default webbrowser.
 func (d *DryccCmd) AppOpen(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -192,7 +190,7 @@ func (d *DryccCmd) AppOpen(appID string) error {
 		return fmt.Errorf(noDomainAssignedMsg, appID)
 	}
 
-	if !(strings.HasPrefix(u, "http://") || strings.HasPrefix(u, "https://")) {
+	if !strings.HasPrefix(u, "http://") && !strings.HasPrefix(u, "https://") {
 		u = "http://" + u
 	}
 
@@ -201,8 +199,7 @@ func (d *DryccCmd) AppOpen(appID string) error {
 
 // AppRun runs a one time command in the app.
 func (d *DryccCmd) AppRun(appID, command string, volumeVars []string, timeout, expires uint32) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -219,8 +216,8 @@ func (d *DryccCmd) AppRun(appID, command string, volumeVars []string, timeout, e
 	return nil
 }
 
-func parseMount(volumeVars []string) (map[string]interface{}, error) {
-	volumeMap := make(map[string]interface{})
+func parseMount(volumeVars []string) (map[string]any, error) {
+	volumeMap := make(map[string]any)
 
 	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*):([\s\S]*)$`)
 	for _, volume := range volumeVars {
@@ -239,14 +236,12 @@ func (d *DryccCmd) AppDestroy(appID, confirm string) error {
 	gitSession := false
 
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
 
 	if appID == "" {
 		appID, err = git.DetectAppName(git.DefaultCmd, s.Client.ControllerURL.Host)
-
 		if err != nil {
 			return err
 		}
@@ -286,8 +281,7 @@ func (d *DryccCmd) AppDestroy(appID, confirm string) error {
 
 // AppTransfer transfers app ownership to another user.
 func (d *DryccCmd) AppTransfer(appID, username string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

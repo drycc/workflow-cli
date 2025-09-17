@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Package i18n provides internationalization support for the CLI
 package i18n
 
 import (
@@ -27,7 +28,6 @@ import (
 	"sync"
 
 	"github.com/chai2010/gettext-go"
-
 	"k8s.io/klog/v2"
 )
 
@@ -51,7 +51,8 @@ var knownTranslations = map[string][]string{
 
 var (
 	lazyLoadTranslationsOnce sync.Once
-	LoadTranslationsFunc     = func() error {
+	// LoadTranslationsFunc is the function called to lazy load translations.
+	LoadTranslationsFunc = func() error {
 		return LoadTranslations("drycc", nil)
 	}
 	translationsLoaded bool

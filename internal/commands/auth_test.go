@@ -43,7 +43,7 @@ func TestLogin(t *testing.T) {
 			w.WriteHeader(http.StatusOK)
 			w.Write(nil)
 		} else {
-			w.Write([]byte(fmt.Sprintf(`{"key": "%s"}`, keyFixture)))
+			fmt.Fprintf(w, `{"key": "%s"}`, keyFixture)
 		}
 	})
 

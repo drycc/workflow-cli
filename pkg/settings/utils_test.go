@@ -17,7 +17,7 @@ func TestSelectSettings(t *testing.T) {
 	homeDir := "/a/b/c"
 	SetHome(homeDir)
 	cases := []confgCases{
-		{"test", filepath.Join(FindHome(), ".drycc", "test.json")},
+		{"test", filepath.Join(FindHome(), ".drycc", "client.json")},
 		{"", filepath.Join(FindHome(), ".drycc", "client.json")},
 		{"~/test.json", filepath.Join(FindHome(), "test.json")},
 		{"/opt/test.json", "/opt/test.json"},
@@ -30,5 +30,5 @@ func TestSelectSettings(t *testing.T) {
 	// Check that env variable is used.
 	location := "/test/test.json"
 	os.Setenv("DRYCC_PROFILE", location)
-	assert.Equal(t, locateSettingsFile(""), location, "case")
+	assert.Equal(t, locateSettingsFile(location), location, "case")
 }

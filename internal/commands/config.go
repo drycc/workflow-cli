@@ -13,12 +13,12 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/config"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // ConfigInfo for an app
 func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -117,8 +117,7 @@ func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version 
 
 // ConfigSet sets an app's config variables.
 func (d *DryccCmd) ConfigSet(appID string, ptype string, group string, configVars []string, confirm string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -151,8 +150,7 @@ func (d *DryccCmd) ConfigSet(appID string, ptype string, group string, configVar
 
 // ConfigUnset removes a config variable from an app.
 func (d *DryccCmd) ConfigUnset(appID string, ptype string, group string, configVars []string, confirm string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -196,8 +194,7 @@ func (d *DryccCmd) ConfigUnset(appID string, ptype string, group string, configV
 
 // ConfigPull pulls an app's config to a file.
 func (d *DryccCmd) ConfigPull(appID, ptype, group, fileName string, interactive bool, overwrite bool) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -215,7 +212,6 @@ func (d *DryccCmd) ConfigPull(appID, ptype, group, fileName string, interactive 
 	}
 
 	stat, err := os.Stdout.Stat()
-
 	if err != nil {
 		return err
 	}
@@ -261,19 +257,18 @@ func (d *DryccCmd) ConfigPull(appID, ptype, group, fileName string, interactive 
 				configMap[value.Name] = value.Value
 			}
 		}
-		return os.WriteFile(fileName, []byte(formatEnv(configMap)), 0664)
+		return os.WriteFile(fileName, []byte(formatEnv(configMap)), 0o664)
 	}
-	return os.WriteFile(fileName, []byte(formatConfig(configValues)), 0664)
+	return os.WriteFile(fileName, []byte(formatConfig(configValues)), 0o664)
 }
 
 // ConfigPush pushes an app's config from a file.
 func (d *DryccCmd) ConfigPush(appID, ptype string, group string, fileName string, confirm string) error {
 	stat, err := os.Stdin.Stat()
-
 	if err != nil {
 		return err
 	}
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -298,7 +293,6 @@ func (d *DryccCmd) ConfigPush(appID, ptype string, group string, fileName string
 		}
 
 		contents, err = os.ReadFile(fileName)
-
 		if err != nil {
 			return err
 		}
@@ -318,9 +312,9 @@ func (d *DryccCmd) ConfigPush(appID, ptype string, group string, fileName string
 	return d.ConfigSet(appID, ptype, group, config, "yes")
 }
 
+// ConfigAttach attaches config groups to a process type.
 func (d *DryccCmd) ConfigAttach(appID string, ptype string, groups string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -345,9 +339,9 @@ func (d *DryccCmd) ConfigAttach(appID string, ptype string, groups string) error
 	return nil
 }
 
+// ConfigDetach detaches config groups from a process type.
 func (d *DryccCmd) ConfigDetach(appID string, ptype string, groups string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -402,7 +396,7 @@ func parseConfig(ptype, group string, configVars []string) ([]api.ConfigValue, e
 	return configMap, nil
 }
 
-func formatEnv(configVars map[string]interface{}) string {
+func formatEnv(configVars map[string]any) string {
 	var formattedConfig string
 
 	keys := *sortKeys(configVars)
@@ -425,7 +419,6 @@ func formatConfig(configVars []api.ConfigValue) string {
 }
 
 func configConfirmAction(s *drycc.Client, appID string, ptype string, group string, confirm string) error {
-
 	if ptype != "" && group != "" {
 		fmt.Println("Only one of ptype and group can be selected.")
 		return nil
@@ -434,10 +427,7 @@ func configConfirmAction(s *drycc.Client, appID string, ptype string, group stri
 	}
 
 	appSettings, _ := appsettings.List(s, appID)
-	autodeploy := true
-	if appSettings.Autodeploy != nil && !*appSettings.Autodeploy {
-		autodeploy = false
-	}
+	autodeploy := appSettings.Autodeploy == nil || *appSettings.Autodeploy
 	if ptype == "" && group == "" && (confirm == "" || confirm != "yes") && autodeploy {
 		fmt.Printf(` !    WARNING: Potentially Config Action
  !    This command will deploy all processes of the application
@@ -472,10 +462,7 @@ func configConfirmActionStdin(s *drycc.Client, appID string, ptype string, group
 	}
 
 	appSettings, _ := appsettings.List(s, appID)
-	autodeploy := true
-	if appSettings.Autodeploy != nil && !*appSettings.Autodeploy {
-		autodeploy = false
-	}
+	autodeploy := appSettings.Autodeploy == nil || *appSettings.Autodeploy
 
 	if ptype == "" && group == "" && (confirm == "" || confirm != "yes") && autodeploy {
 		fmt.Printf(` !    WARNING: Potentially Config Action

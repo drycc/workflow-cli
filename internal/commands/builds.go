@@ -8,13 +8,13 @@ import (
 
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/builds"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	yaml "gopkg.in/yaml.v3"
 )
 
 // BuildsInfo lists an app's builds.
 func (d *DryccCmd) BuildsInfo(appID string, version int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -39,8 +39,7 @@ func (d *DryccCmd) BuildsInfo(appID string, version int) error {
 
 // BuildsCreate creates a build for an app.
 func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccpath, confirm string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -57,7 +56,7 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccpath, confir
 		}
 	}
 
-	dryccfileMap := make(map[string]interface{})
+	dryccfileMap := make(map[string]any)
 	if info, err := os.Stat(dryccpath); err == nil && info.IsDir() {
 		if dryccfileMap, err = drycc.ParseDryccfile(dryccpath); err != nil {
 			return err
@@ -82,8 +81,9 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccpath, confir
 	return nil
 }
 
+// BuildsFetch fetches a build for an app and saves the Procfile and Dryccfile to local files.
 func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, confirm string, save bool) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (d *DryccCmd) BuildsFetch(appID string, version int, procfile, dryccpath, c
 func writeProcfileToPath(d *DryccCmd, procfile string, Procinfo map[string]string, save bool) error {
 	if save {
 		os.Remove(procfile)
-		err := os.WriteFile(procfile, []byte(d.toYamlString(Procinfo, 2)), 0664)
+		err := os.WriteFile(procfile, []byte(d.toYamlString(Procinfo, 2)), 0o664)
 		return err
 	}
 	d.Println("---\n# Source:", procfile)
@@ -128,7 +128,7 @@ func writeProcfileToPath(d *DryccCmd, procfile string, Procinfo map[string]strin
 	return nil
 }
 
-func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]interface{}, save bool) error {
+func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]any, save bool) error {
 	// Create the directory if it doesn't exist
 	if save {
 		os.Remove(dryccpath)
@@ -140,7 +140,7 @@ func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]in
 	}
 
 	// Write config section
-	if config, ok := dryccfile["config"].(map[string]interface{}); ok {
+	if config, ok := dryccfile["config"].(map[string]any); ok {
 		configDir := filepath.Join(dryccpath, "config")
 		if save {
 			err := os.MkdirAll(configDir, os.ModePerm)
@@ -152,13 +152,13 @@ func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]in
 		for key, values := range config {
 			envFilePath := filepath.Join(configDir, key)
 			var content string
-			for k, v := range values.(map[string]interface{}) {
+			for k, v := range values.(map[string]any) {
 				// Append each key-value pair with newline
 				content += fmt.Sprintf("%s=%v\n", k, v)
 			}
 			// Write accumulated content once
 			if save {
-				err := os.WriteFile(envFilePath, []byte(content), 0664)
+				err := os.WriteFile(envFilePath, []byte(content), 0o664)
 				if err != nil {
 					return fmt.Errorf("failed to write env file: %w", err)
 				}
@@ -170,7 +170,7 @@ func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]in
 	}
 
 	// Write pipeline section
-	if pipeline, ok := dryccfile["pipeline"].(map[string]interface{}); ok {
+	if pipeline, ok := dryccfile["pipeline"].(map[string]any); ok {
 		for fileName, pipelineConfig := range pipeline {
 			filePath := filepath.Join(dryccpath, fileName)
 			var buf bytes.Buffer
@@ -181,7 +181,7 @@ func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]in
 			}
 			yamlContent := buf.Bytes()
 			if save {
-				err := os.WriteFile(filePath, yamlContent, 0664)
+				err := os.WriteFile(filePath, yamlContent, 0o664)
 				if err != nil {
 					return fmt.Errorf("failed to write pipeline file: %w", err)
 				}
@@ -201,8 +201,8 @@ func parseProcfile(procfile []byte) (map[string]string, error) {
 }
 
 func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]string,
-	dryccfileMap map[string]interface{}, confirm string) error {
-
+	dryccfileMap map[string]any, confirm string,
+) error {
 	build, _ := builds.Get(c, appID, 0)
 
 	if ((len(build.Procfile) != 0 && len(procfileMap) == 0) || (len(build.Dryccfile) != 0 && len(dryccfileMap) == 0)) && (confirm == "" || confirm != "yes") {
@@ -222,7 +222,6 @@ func buildConfirmAction(c *drycc.Client, appID string, procfileMap map[string]st
 }
 
 func buildFetchConfirmAction(confirm, procfile, dryccpath string, save bool) error {
-
 	if save && (confirm == "" || confirm != "yes") {
 		// hint
 		msg := fmt.Sprintf(" !    WARNING: Potentially Build Fetch Action\n"+

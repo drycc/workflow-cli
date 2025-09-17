@@ -7,18 +7,16 @@ import (
 	"regexp"
 	"strconv"
 
-	"sigs.k8s.io/yaml"
-
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/resources"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/settings"
+	"sigs.k8s.io/yaml"
 )
 
-// ResourceServices list resource service
+// ResourcesServices lists available resource services.
 func (d *DryccCmd) ResourcesServices(results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -47,10 +45,9 @@ func (d *DryccCmd) ResourcesServices(results int) error {
 	return nil
 }
 
-// ResourcePlans list resource plans
+// ResourcesPlans lists plans for a resource service.
 func (d *DryccCmd) ResourcesPlans(serviceName string, results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -81,12 +78,11 @@ func (d *DryccCmd) ResourcesPlans(serviceName string, results int) error {
 
 // ResourcesCreate create a resource for the application
 func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []string, values string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
-	paramsMap := make(map[string]interface{})
+	paramsMap := make(map[string]any)
 	if values != "" {
 		valueFile, err := os.Stat(values)
 		if err != nil {
@@ -99,7 +95,7 @@ func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []str
 		if err != nil {
 			return err
 		}
-		parsed := make(map[string]interface{})
+		parsed := make(map[string]any)
 		err = yaml.Unmarshal(rawValues, &parsed)
 		if err != nil {
 			return err
@@ -133,8 +129,7 @@ func (d *DryccCmd) ResourcesCreate(appID, plan string, name string, params []str
 
 // ResourcesList list resources in the application
 func (d *DryccCmd) ResourcesList(appID string, results int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -166,13 +161,12 @@ func (d *DryccCmd) ResourcesList(appID string, results int) error {
 
 // ResourceGet describe a resource from the application
 func (d *DryccCmd) ResourceGet(appID, name string, details bool) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	//d.Printf(" %s from %s... ", name, appID)
+	// d.Printf(" %s from %s... ", name, appID)
 
 	resource, err := resources.Get(s.Client, appID, name)
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -205,8 +199,7 @@ func (d *DryccCmd) ResourceGet(appID, name string, details bool) error {
 
 // ResourceDelete delete a resource from the application
 func (d *DryccCmd) ResourceDelete(appID, name, confirm string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -241,12 +234,11 @@ func (d *DryccCmd) ResourceDelete(appID, name, confirm string) error {
 
 // ResourcePut update a resource for the application
 func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string, values string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
-	paramsMap := make(map[string]interface{})
+	paramsMap := make(map[string]any)
 	if values != "" {
 		valueFile, err := os.Stat(values)
 		if err != nil {
@@ -259,7 +251,7 @@ func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string,
 		if err != nil {
 			return err
 		}
-		parsed := make(map[string]interface{})
+		parsed := make(map[string]any)
 		err = yaml.Unmarshal(rawValues, &parsed)
 		if err != nil {
 			return err
@@ -292,8 +284,7 @@ func (d *DryccCmd) ResourcePut(appID, plan string, name string, params []string,
 
 // ResourceBind mount a resource to process of the application
 func (d *DryccCmd) ResourceBind(appID string, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -316,8 +307,7 @@ func (d *DryccCmd) ResourceBind(appID string, name string) error {
 
 // ResourceUnbind resource a resource the application
 func (d *DryccCmd) ResourceUnbind(appID string, name string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -339,7 +329,7 @@ func (d *DryccCmd) ResourceUnbind(appID string, name string) error {
 }
 
 // parseParams transfer params to map
-func parseParams(paramsMap map[string]interface{}, params []string) (map[string]interface{}, error) {
+func parseParams(paramsMap map[string]any, params []string) (map[string]any, error) {
 	regex := regexp.MustCompile(`^([A-z_]+[A-z0-9_]*[\.{1}[A-z0-9_]+]*)=([\s\S]*)$`)
 	for _, param := range params {
 		if regex.MatchString(param) {

@@ -1,5 +1,7 @@
 package parser
 
-var app string
-var version int
-var limit int
+var (
+	app     string
+	version int
+	limit   int
+)

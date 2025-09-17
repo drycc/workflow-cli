@@ -92,7 +92,7 @@ func TestAutodeployEnable(t *testing.T) {
 
 	err = cmdr.AutodeployEnable("lothlorien")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), "Enabling autodeploy for lothlorien... done\n", "output")
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), "Enabling autodeploy for lothlorien... done\n")
 }
 
 func TestAutodeployDisable(t *testing.T) {
@@ -114,5 +114,5 @@ func TestAutodeployDisable(t *testing.T) {
 
 	err = cmdr.AutodeployDisable("bree")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), "Disabling autodeploy for bree... done\n", "output")
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), "Disabling autodeploy for bree... done\n")
 }

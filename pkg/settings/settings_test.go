@@ -16,19 +16,18 @@ const sFile string = `{"username":"t","ssl_verify":false,"controller":"http://fo
 
 func createTempProfile(contents string) (string, error) {
 	name, err := os.MkdirTemp("", "client")
-
 	if err != nil {
 		return "", err
 	}
 
 	file := filepath.Join(name, "test.json")
 
-	return file, os.WriteFile(file, []byte(contents), 0775)
+	return file, os.WriteFile(file, []byte(contents), 0o775)
 }
 
 type comparison struct {
-	key      interface{}
-	expected interface{}
+	key      any
+	expected any
 }
 
 func TestLoadSave(t *testing.T) {
@@ -40,7 +39,6 @@ func TestLoadSave(t *testing.T) {
 	}
 
 	s, err := Load(file)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +81,6 @@ func TestLoadSave(t *testing.T) {
 	s.Limit = 10
 
 	u, err := url.Parse("http://drycc.test")
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -103,7 +100,6 @@ func TestLoadSave(t *testing.T) {
 	}
 
 	s, err = Load(file)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,7 +172,6 @@ func TestNotLoggedIn(t *testing.T) {
 	t.Parallel()
 
 	name, err := os.MkdirTemp("", "client")
-
 	if err != nil {
 		t.Fatal(err)
 	}

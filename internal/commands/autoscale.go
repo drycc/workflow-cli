@@ -5,13 +5,12 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // AutoscaleList tells the informations about app's autoscale status
 func (d *DryccCmd) AutoscaleList(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -40,8 +39,7 @@ func (d *DryccCmd) AutoscaleList(appID string) error {
 
 // AutoscaleSet sets autoscale options for the app.
 func (d *DryccCmd) AutoscaleSet(appID string, ptype string, minCPU int, maxCPU int, CPUPercent int) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -71,8 +69,7 @@ func (d *DryccCmd) AutoscaleSet(appID string, ptype string, minCPU int, maxCPU i
 
 // AutoscaleUnset removes autoscale for the app.
 func (d *DryccCmd) AutoscaleUnset(appID string, ptype string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

@@ -6,9 +6,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewUpdateCommand creates a command for updating the workflow CLI.
 func NewUpdateCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	var dryRun bool
-	var cmd = &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "update",
 		Args:  cobra.NoArgs,
 		Short: i18n.T("Update workflow cli to latest release"),

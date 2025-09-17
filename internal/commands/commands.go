@@ -9,6 +9,8 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 )
 
+// Commander is the interface that defines all available commands for the Drycc CLI.
+//
 //go:generate mockgen -package testmocks -destination testmocks/mock_pack_client.go github.com/buildpacks/pack/internal/commands PackClient
 type Commander interface {
 	AppCreate(string, string, bool) error
@@ -123,14 +125,14 @@ type Commander interface {
 	UsersList(int) error
 	UsersEnable(string) error
 	UsersDisable(string) error
-	Println(...interface{}) (int, error)
-	Print(...interface{}) (int, error)
-	Printf(string, ...interface{}) (int, error)
-	PrintErrln(...interface{}) (int, error)
-	PrintErr(...interface{}) (int, error)
-	PrintErrf(string, ...interface{}) (int, error)
+	Println(...any) (int, error)
+	Print(...any) (int, error)
+	Printf(string, ...any) (int, error)
+	PrintErrln(...any) (int, error)
+	PrintErr(...any) (int, error)
+	PrintErrf(string, ...any) (int, error)
 	Version(bool) error
-	VolumesCreate(string, string, string, string, map[string]interface{}) error
+	VolumesCreate(string, string, string, string, map[string]any) error
 	VolumesExpand(string, string, string) error
 	VolumesDelete(string, string) error
 	VolumesList(string, int) error
@@ -149,6 +151,8 @@ type Commander interface {
 	ResourceUnbind(string, string) error
 }
 
+// DryccCmd is a struct that implements the Commander interface and provides
+// methods for executing Drycc CLI commands.
 type DryccCmd struct {
 	ConfigFile string
 	Warned     bool
@@ -159,31 +163,31 @@ type DryccCmd struct {
 }
 
 // Println prints a line to an output writer.
-func (d *DryccCmd) Println(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) Println(a ...any) (n int, err error) {
 	return fmt.Fprintln(d.WOut, a...)
 }
 
 // Print prints a line to an output writer.
-func (d *DryccCmd) Print(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) Print(a ...any) (n int, err error) {
 	return fmt.Fprint(d.WOut, a...)
 }
 
 // Printf prints a line to an error writer.
-func (d *DryccCmd) Printf(s string, a ...interface{}) (n int, err error) {
+func (d *DryccCmd) Printf(s string, a ...any) (n int, err error) {
 	return fmt.Fprintf(d.WOut, s, a...)
 }
 
 // PrintErrln prints a line to an error writer.
-func (d *DryccCmd) PrintErrln(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) PrintErrln(a ...any) (n int, err error) {
 	return fmt.Fprintln(d.WErr, a...)
 }
 
 // PrintErr prints a line to an error writer.
-func (d *DryccCmd) PrintErr(a ...interface{}) (n int, err error) {
+func (d *DryccCmd) PrintErr(a ...any) (n int, err error) {
 	return fmt.Fprint(d.WErr, a...)
 }
 
 // PrintErrf prints a line to an error writer.
-func (d *DryccCmd) PrintErrf(s string, a ...interface{}) (n int, err error) {
+func (d *DryccCmd) PrintErrf(s string, a ...any) (n int, err error) {
 	return fmt.Fprintf(d.WErr, s, a...)
 }

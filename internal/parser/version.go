@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Build an image from source code
+// NewVersionCommand creates a command for displaying the workflow CLI version.
 func NewVersionCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	var flags struct {
 		all bool

@@ -70,7 +70,7 @@ TRUE=false
 }
 
 func TestSortKeys(t *testing.T) {
-	test := map[string]interface{}{
+	test := map[string]any{
 		"d": nil,
 		"b": nil,
 		"c": nil,

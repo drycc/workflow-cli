@@ -3,13 +3,12 @@ package commands
 import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // RoutingInfo provides information about the status of app routing.
 func (d *DryccCmd) RoutingInfo(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -29,8 +28,7 @@ func (d *DryccCmd) RoutingInfo(appID string) error {
 
 // RoutingEnable enables an app from being exposed by the router.
 func (d *DryccCmd) RoutingEnable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -54,8 +52,7 @@ func (d *DryccCmd) RoutingEnable(appID string) error {
 
 // RoutingDisable disables an app from being exposed by the router.
 func (d *DryccCmd) RoutingDisable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

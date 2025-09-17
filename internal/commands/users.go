@@ -10,7 +10,6 @@ import (
 // UsersList lists users registered with the controller.
 func (d *DryccCmd) UsersList(results int) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -41,7 +40,6 @@ func (d *DryccCmd) UsersList(results int) error {
 // UsersEnable enable user with the controller.
 func (d *DryccCmd) UsersEnable(username string) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}
@@ -59,7 +57,6 @@ func (d *DryccCmd) UsersEnable(username string) error {
 // UsersDisable disable user with the controller.
 func (d *DryccCmd) UsersDisable(username string) error {
 	s, err := settings.Load(d.ConfigFile)
-
 	if err != nil {
 		return err
 	}

@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"github.com/drycc/controller-sdk-go/tls"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // TLSInfo prints info about the TLS settings for the given app.
 func (d *DryccCmd) TLSInfo(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -47,8 +46,7 @@ func (d *DryccCmd) TLSInfo(appID string) error {
 
 // TLSForceEnable enables the router to enforce https-only requests to the application.
 func (d *DryccCmd) TLSForceEnable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -69,8 +67,7 @@ func (d *DryccCmd) TLSForceEnable(appID string) error {
 
 // TLSForceDisable disables the router to enforce https-only requests to the application.
 func (d *DryccCmd) TLSForceDisable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -91,8 +88,7 @@ func (d *DryccCmd) TLSForceDisable(appID string) error {
 
 // TLSAutoEnable enables certs-auto requests to the application.
 func (d *DryccCmd) TLSAutoEnable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -113,8 +109,7 @@ func (d *DryccCmd) TLSAutoEnable(appID string) error {
 
 // TLSAutoDisable disables certs-auto requests to the application.
 func (d *DryccCmd) TLSAutoDisable(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -135,8 +130,7 @@ func (d *DryccCmd) TLSAutoDisable(appID string) error {
 
 // TLSAutoIssuer add issuer requests to the application.
 func (d *DryccCmd) TLSAutoIssuer(appID string, email string, server string, keyID string, keySecret string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}

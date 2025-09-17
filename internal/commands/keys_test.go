@@ -88,7 +88,7 @@ func TestListKeys(t *testing.T) {
 
 	folder := filepath.Join(name, ".ssh")
 
-	err = os.Mkdir(folder, 0600)
+	err = os.Mkdir(folder, 0o600)
 	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc test@example.com")
@@ -108,7 +108,7 @@ func TestListKeys(t *testing.T) {
 	}
 
 	for _, file := range fileNames {
-		os.WriteFile(filepath.Join(folder, file), toWrite, 0775)
+		os.WriteFile(filepath.Join(folder, file), toWrite, 0o775)
 		assert.NoError(t, err)
 	}
 
@@ -120,11 +120,10 @@ func TestListKeys(t *testing.T) {
 	var b bytes.Buffer
 	// Write bad ssh key
 	filename := filepath.Join(folder, "test3.pub")
-	os.WriteFile(filename, []byte("ssh-rsa"), 0775)
+	os.WriteFile(filename, []byte("ssh-rsa"), 0o775)
 	_, err = listKeys(&b)
 	assert.Equal(t, b.String(), filename+" is not a valid ssh key\n", "output")
 	assert.NoError(t, err)
-
 }
 
 type chooseKeyCases struct {
@@ -302,7 +301,7 @@ func TestKeyAdd(t *testing.T) {
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
-	err = os.Mkdir(folder, 0600)
+	err = os.Mkdir(folder, 0o600)
 	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -348,7 +347,7 @@ func TestKeyAddName(t *testing.T) {
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
-	err = os.Mkdir(folder, 0600)
+	err = os.Mkdir(folder, 0o600)
 	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()

@@ -1,3 +1,4 @@
+// Package template provides custom template functions for CLI examples
 package template
 
 import (
@@ -6,6 +7,7 @@ import (
 	"text/template"
 )
 
+// CustomExample formats a template with the given example and key-value pairs
 func CustomExample(example string, kwargs map[string]string) string {
 	tpl, err := template.New("template").Funcs(template.FuncMap{
 		"rpad": func(str string, length int) string {

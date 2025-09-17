@@ -6,13 +6,12 @@ import (
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/appsettings"
-	"github.com/drycc/workflow-cli/internal/utils"
+	"github.com/drycc/workflow-cli/internal/loader"
 )
 
 // LabelsList list app's labels
 func (d *DryccCmd) LabelsList(appID string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -41,8 +40,7 @@ func (d *DryccCmd) LabelsList(appID string) error {
 
 // LabelsSet sets labels for app
 func (d *DryccCmd) LabelsSet(appID string, labels []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
@@ -71,13 +69,12 @@ func (d *DryccCmd) LabelsSet(appID string, labels []string) error {
 
 // LabelsUnset removes labels for the app.
 func (d *DryccCmd) LabelsUnset(appID string, labels []string) error {
-	appID, s, err := utils.LoadAppSettings(d.ConfigFile, appID)
-
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	labelsMap := make(map[string]interface{})
+	labelsMap := make(map[string]any)
 
 	for _, label := range labels {
 		labelsMap[label] = nil
@@ -100,12 +97,11 @@ func (d *DryccCmd) LabelsUnset(appID string, labels []string) error {
 	return nil
 }
 
-func parseLabels(labels []string) (map[string]interface{}, error) {
-	labelsMap := make(map[string]interface{})
+func parseLabels(labels []string) (map[string]any, error) {
+	labelsMap := make(map[string]any)
 
 	for _, label := range labels {
 		key, value, err := parseLabel(label)
-
 		if err != nil {
 			return nil, err
 		}

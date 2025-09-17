@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewPsCommand creates a command for managing processes.
 func NewPsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ps",
@@ -31,7 +32,6 @@ func NewPsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func psListCommand(cmdr *commands.DryccCmd) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List application pods"),

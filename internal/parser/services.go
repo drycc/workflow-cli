@@ -6,11 +6,11 @@ import (
 	"github.com/drycc/workflow-cli/internal/commands"
 	"github.com/drycc/workflow-cli/internal/completion"
 	"github.com/drycc/workflow-cli/internal/template"
-
 	"github.com/drycc/workflow-cli/pkg/i18n"
 	"github.com/spf13/cobra"
 )
 
+// NewServicesCommand creates a command for managing application services.
 func NewServicesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "services",
