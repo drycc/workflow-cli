@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+# Define target OS/arch combinations to build
+BUILD_TARGETS=(
+  "linux/amd64"
+  "linux/arm"
+  "linux/arm64"
+  "linux/riscv64"
+  "windows/amd64"
+  "windows/arm64"
+  "darwin/amd64"
+  "darwin/arm64"
+)
+
+# Define targets that should be compressed with UPX
+COMPRESS_TARGETS=(
+  "linux/amd64"
+  "linux/arm"
+  "linux/arm64"
+  "windows/amd64"
+)
+
 go-build(){
   CGO_ENABLED=0 \
     GOOS=$GOOS \
@@ -7,20 +27,17 @@ go-build(){
     go build \
     -o _dist/drycc-$1-$GOOS-$GOARCH \
     drycc.go
-  if [[ "$GOOS" != "darwin" ]]; then
+  # Check if current target is in COMPRESS_TARGETS list
+  target="$GOOS/$GOARCH"
+  if [[ ${COMPRESS_TARGETS[@]/$target/} != ${COMPRESS_TARGETS[@]} ]]; then
     upx --lzma --best _dist/drycc-$1-$GOOS-$GOARCH
   fi
 }
 
-GOOS_LIST=("linux" "windows" "darwin")
-GOARCH_LIST=("386" "amd64" "arm" "arm64")
-EXCLUDE_TARGET=("darwin/386", "darwin/arm" "windows/arm64")
-
-for GOOS in ${GOOS_LIST[@]}; do
-  for GOARCH in ${GOARCH_LIST[@]}; do
-    target="$GOOS/$GOARCH"
-    if [[ ${EXCLUDE_TARGET[@]/$target/} == ${EXCLUDE_TARGET[@]} ]]; then
-      go-build "$1"
-    fi
-  done
+# Process each target
+for target in "${BUILD_TARGETS[@]}"; do
+  # Split target into OS and architecture
+  GOOS=${target%/*}
+  GOARCH=${target#*/}
+  go-build "$1"
 done
