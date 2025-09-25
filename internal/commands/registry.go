@@ -67,7 +67,7 @@ func (d *DryccCmd) RegistrySet(appID, ptype, username, password string) error {
 	}
 	configObj.Registry = registry
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -97,7 +97,7 @@ func (d *DryccCmd) RegistryUnset(appID, ptype string) error {
 		"password": nil,
 	}
 	configObj.Registry = registry
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

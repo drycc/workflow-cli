@@ -69,7 +69,7 @@ func (d *DryccCmd) TagsSet(appID, ptype string, tags []string) error {
 	configObj := api.Config{Tags: make(map[string]api.ConfigTags)}
 	configObj.Tags[ptype] = tagsMap
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -99,7 +99,7 @@ func (d *DryccCmd) TagsUnset(appID, ptype string, tags []string) error {
 	}
 	configObj.Tags[ptype] = configTags
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

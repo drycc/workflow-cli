@@ -56,7 +56,7 @@ func (d *DryccCmd) TimeoutsSet(appID string, timeouts []string) error {
 
 	configObj.Timeout = timeoutsMap
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -89,7 +89,7 @@ func (d *DryccCmd) TimeoutsUnset(appID string, timeouts []string) error {
 
 	configObj.Timeout = valuesMap
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

@@ -178,6 +178,7 @@ port number to perform the socket connection on the Container.
 	}
 
 	cmd.Flags().StringVarP(&healthchecksFlags.ptype, "ptype", "p", "", i18n.T("The ptype for which the health check needs to be applied"))
+	cmd.MarkFlagRequired("ptype")
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
 
