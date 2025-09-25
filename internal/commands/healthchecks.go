@@ -120,7 +120,7 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *
 	configObj := api.Config{Healthcheck: make(map[string]*api.Healthchecks)}
 	configObj.Healthcheck[ptype] = &healthcheckMap
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 
 	quit <- true
 	<-quit
@@ -157,7 +157,7 @@ func (d *DryccCmd) HealthchecksUnset(appID, ptype string, healthchecks []string)
 
 	configObj.Healthcheck = healthchecksMap
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 
 	quit <- true
 	<-quit

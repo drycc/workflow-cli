@@ -116,7 +116,7 @@ func (d *DryccCmd) ConfigInfo(appID string, ptype string, group string, version 
 }
 
 // ConfigSet sets an app's config variables.
-func (d *DryccCmd) ConfigSet(appID string, ptype string, group string, configVars []string, confirm string) error {
+func (d *DryccCmd) ConfigSet(appID string, ptype string, group string, configVars []string, merge bool, confirm string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -138,7 +138,7 @@ func (d *DryccCmd) ConfigSet(appID string, ptype string, group string, configVar
 
 	quit := progress(d.WOut)
 	configObj := api.Config{Values: configMap}
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, merge)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -180,7 +180,7 @@ func (d *DryccCmd) ConfigUnset(appID string, ptype string, group string, configV
 	}
 
 	configObj := api.Config{Values: valuesMaps}
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 
 	quit <- true
 	<-quit
@@ -263,7 +263,7 @@ func (d *DryccCmd) ConfigPull(appID, ptype, group, fileName string, interactive 
 }
 
 // ConfigPush pushes an app's config from a file.
-func (d *DryccCmd) ConfigPush(appID, ptype string, group string, fileName string, confirm string) error {
+func (d *DryccCmd) ConfigPush(appID, ptype string, group string, fileName string, merge bool, confirm string) error {
 	stat, err := os.Stdin.Stat()
 	if err != nil {
 		return err
@@ -309,7 +309,7 @@ func (d *DryccCmd) ConfigPush(appID, ptype string, group string, fileName string
 		}
 	}
 
-	return d.ConfigSet(appID, ptype, group, config, "yes")
+	return d.ConfigSet(appID, ptype, group, config, merge, "yes")
 }
 
 // ConfigAttach attaches config groups to a process type.
@@ -327,7 +327,7 @@ func (d *DryccCmd) ConfigAttach(appID string, ptype string, groups string) error
 		ptype: gs,
 	}
 	configObj := api.Config{ValuesRefs: refs}
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 
 	quit <- true
 	<-quit

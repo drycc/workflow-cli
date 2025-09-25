@@ -75,7 +75,7 @@ func (d *DryccCmd) LimitsSet(appID string, limits []string) error {
 
 	quit := progress(d.WOut)
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -107,7 +107,7 @@ func (d *DryccCmd) LimitsUnset(appID string, limits []string) error {
 		configObj.Limits = limitsMap
 	}
 
-	_, err = config.Set(s.Client, appID, configObj)
+	_, err = config.Set(s.Client, appID, configObj, true)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

@@ -85,7 +85,7 @@ func configSetCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Short: i18n.T("Set environment variables for an app"),
 		Long:  i18n.T("Sets environment variables for an application or config group"),
 		RunE: func(_ *cobra.Command, args []string) error {
-			return cmdr.ConfigSet(app, configFlags.ptype, configFlags.group, args, flags.confirm)
+			return cmdr.ConfigSet(app, configFlags.ptype, configFlags.group, args, true, flags.confirm)
 		},
 	}
 
@@ -174,6 +174,7 @@ read by foreman to load the local environment for your app.`),
 func configPushCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	var flags struct {
 		path    string
+		merge   bool
 		confirm string
 	}
 
@@ -186,13 +187,14 @@ This file can be read by foreman
 to load the local environment for your app. The file should be piped via
 stdin, 'drycc config push < .env', or using the --path option.`),
 		RunE: func(_ *cobra.Command, _ []string) error {
-			return cmdr.ConfigPush(app, configFlags.ptype, configFlags.group, flags.path, flags.confirm)
+			return cmdr.ConfigPush(app, configFlags.ptype, configFlags.group, flags.path, flags.merge, flags.confirm)
 		},
 	}
 
 	cmd.Flags().StringVarP(&configFlags.ptype, "ptype", "p", "", i18n.T("The ptype for which the config needs to be push"))
 	cmd.Flags().StringVarP(&configFlags.group, "group", "g", "", i18n.T("The group for which the config needs to be push"))
 	cmd.Flags().StringVar(&flags.path, "path", ".env", i18n.T("A path leading to an environment file"))
+	cmd.Flags().BoolVarP(&flags.merge, "merge", "", false, i18n.T("Merge config values"))
 	cmd.Flags().StringVar(&flags.confirm, "confirm", "", i18n.T("To proceed, type 'yes'"))
 	cmd.Flags().SortFlags = false
 	cmd.MarkFlagsMutuallyExclusive("ptype", "group")

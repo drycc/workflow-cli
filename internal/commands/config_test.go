@@ -139,7 +139,7 @@ func TestConfigSet(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.ConfigSet("foo", "web", "", []string{"TRUE=false", "DEBUG=true"}, "yes")
+	err = cmdr.ConfigSet("foo", "web", "", []string{"TRUE=false", "DEBUG=true"}, true, "yes")
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), `Creating config... done

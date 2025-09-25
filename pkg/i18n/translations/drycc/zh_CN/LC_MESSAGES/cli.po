@@ -29,6 +29,10 @@ msgstr "用于推送应用程序代码的SSH公钥的本地文件路径"
 msgid "A path leading to an environment file"
 msgstr "指向环境文件的路径"
 
+#: internal/parser/config.go:179
+msgid "Merge config values"
+msgstr "合并配置"
+
 #: internal/parser/tls.go:121
 msgid "ACME account email"
 msgstr "ACME账户邮箱"
