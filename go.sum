@@ -11,8 +11,8 @@ github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6N
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/drycc/controller-sdk-go v0.0.0-20250925082016-6b35f24ddb99 h1:rl63cNXjiTKi/gPbk7Gw0KL0sKJe64w7a9ol/J1DAS0=
-github.com/drycc/controller-sdk-go v0.0.0-20250925082016-6b35f24ddb99/go.mod h1:eHcmYwg81ASlP55/U587xnBZnZoeZnPHXGeQ8nYWnsg=
+github.com/drycc/controller-sdk-go v0.0.0-20250928085928-c05195c88417 h1:IG0CJBmk5DWfanSGqseELqKpJ45PB/CsAN2wHTF8lQw=
+github.com/drycc/controller-sdk-go v0.0.0-20250928085928-c05195c88417/go.mod h1:eHcmYwg81ASlP55/U587xnBZnZoeZnPHXGeQ8nYWnsg=
 github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf h1:CYy3NoPhfFhkGAbEppTOQfY/HC2s0FJDcBgbtRKeweg=
 github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf/go.mod h1:BrrNrNskHKm+nJYhXfGuI114w8nupi0AMo8QZHID7CM=
 github.com/go-logr/logr v1.4.1 h1:pKouT5E8xu9zeFC39JXRDukb6JFQPXM5p5I91188VAQ=
