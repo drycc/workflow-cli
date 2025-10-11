@@ -18,14 +18,16 @@ COPY --from=build /usr/local/bin/drycc /usr/local/bin/drycc
 
 ADD docker/rootfs /
 
-RUN install-packages bash-completion git vim \
+RUN install-packages bash-completion git vim-tiny \
   && groupadd drycc --gid ${DRYCC_GID} \
   && useradd drycc -u ${DRYCC_UID} -g ${DRYCC_GID} -s /bin/bash -m -d ${DRYCC_HOME_DIR} \
   && mkdir -p /etc/wait \
   && chown ${DRYCC_GID}:${DRYCC_UID} /etc/wait /usr/local/bin \
   && echo 'alias cd="echo \"cd: restricted\"; false"' > ${DRYCC_HOME_DIR}/.bash_aliases \
   && echo 'alias unalias="echo \"unalias: restricted\"; false"' >> ${DRYCC_HOME_DIR}/.bash_aliases \
-  && ln /usr/bin/{ls,git,date,vim,cat,sed,clear,find,flock,bash,mkdir,sleep,dircolors} /usr/local/bin/ \
+  && for cmd in ls git date vi cat sed clear find flock bash mkdir sleep dircolors; do \
+       ln -f "$(readlink -f "/usr/bin/$cmd")" "/usr/local/bin/$cmd"; \
+     done \
   && apt autoremove python3 -yq \
   && rm -rf /var/lib/apt/lists/* /sbin /usr/sbin /usr/bin
 
