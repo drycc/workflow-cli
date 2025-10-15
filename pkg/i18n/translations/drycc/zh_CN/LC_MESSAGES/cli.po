@@ -1783,9 +1783,13 @@ msgstr ""
 "要处理请求的Procfile类型（如webhooks），需绑定到PORT端口\n"
 "             每个Procfile类型只能创建一个附加服务"
 
-#: internal/parser/volumes.go:91
-msgid "secret access key for authentication"
+#: internal/parser/volumes.go:95
+msgid "Secret access key for authentication"
 msgstr "认证密钥（Secret Access Key）"
+
+#: internal/parser/volumes.go:97
+msgid "Force a path-style endpoint to be used"
+msgstr "强制使用路径风格的端点"
 
 #: internal/parser/resources.go:224
 msgid ""

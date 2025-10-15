@@ -45,6 +45,7 @@ func volumesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		nfsPath      string
 		ossServer    string
 		ossBucket    string
+		ossPathStyle bool
 		ossAccessKey string
 		ossSecretKey string
 	}
@@ -76,6 +77,7 @@ func volumesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 					"bucket":     flags.ossBucket,
 					"access_key": flags.ossAccessKey,
 					"secret_key": flags.ossSecretKey,
+					"path_style": flags.ossPathStyle,
 				}
 			}
 			return cmdr.VolumesCreate(app, flags.name, flags.vtype, flags.size, parameters)
@@ -89,7 +91,8 @@ func volumesAddCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringVar(&flags.ossServer, "oss-server", "", i18n.T("Endpoint url for object storage service"))
 	cmd.Flags().StringVar(&flags.ossBucket, "oss-bucket", "", i18n.T("Bucket name in object storage"))
 	cmd.Flags().StringVar(&flags.ossAccessKey, "oss-access-key", "", i18n.T("Access key id for authentication"))
-	cmd.Flags().StringVar(&flags.ossSecretKey, "oss-secret-key", "", i18n.T("secret access key for authentication"))
+	cmd.Flags().StringVar(&flags.ossSecretKey, "oss-secret-key", "", i18n.T("Secret access key for authentication"))
+	cmd.Flags().BoolVar(&flags.ossPathStyle, "oss-path-style", false, i18n.T("Force a path-style endpoint to be used"))
 
 	cmd.Flags().SortFlags = false
 	cmd.MarkFlagsRequiredTogether("nfs-server", "nfs-path")
