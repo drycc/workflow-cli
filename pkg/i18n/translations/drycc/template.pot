@@ -150,10 +150,6 @@ msgstr ""
 msgid "Configure automatic certificate management issuer details"
 msgstr ""
 
-#: internal/parser/volumes.go:227
-msgid "Copy volume objects"
-msgstr ""
-
 #: internal/parser/apps.go:44
 msgid "Create a new application"
 msgstr ""
@@ -482,10 +478,6 @@ msgstr ""
 
 #: internal/parser/tags.go:52
 msgid "List tags for an application"
-msgstr ""
-
-#: internal/parser/volumes.go:211
-msgid "List volume objects"
 msgstr ""
 
 #: internal/parser/volumes.go:134
@@ -877,10 +869,6 @@ msgstr ""
 msgid "Remove service from an application"
 msgstr ""
 
-#: internal/parser/volumes.go:242
-msgid "Remove volume objects"
-msgstr ""
-
 #: internal/parser/keys.go:81
 msgid "Removes an SSH key for the logged in user"
 msgstr ""
@@ -1155,7 +1143,7 @@ msgid ""
 msgstr ""
 
 #: internal/parser/volumes.go:201
-msgid "The client used to manage volume files"
+msgid "Serve a WebDAV service for the volume"
 msgstr ""
 
 #: internal/parser/volumes.go:261 internal/parser/apps.go:158
@@ -1428,10 +1416,6 @@ msgstr ""
 msgid "The tag value"
 msgstr ""
 
-#: internal/parser/volumes.go:208 internal/parser/volumes.go:239
-msgid "The target path of volume"
-msgstr ""
-
 #: internal/parser/routes.go:187 internal/parser/routes.go:223
 msgid "The unique name of the gaetway"
 msgstr ""
@@ -1534,14 +1518,6 @@ msgstr ""
 
 #: internal/parser/volumes.go:183
 msgid "The volume name to be removed"
-msgstr ""
-
-#: internal/parser/volumes.go:223
-msgid "The volume or local source path"
-msgstr ""
-
-#: internal/parser/volumes.go:224
-msgid "The volume or local target path"
 msgstr ""
 
 #: internal/parser/volumes.go:58 internal/parser/volumes.go:115

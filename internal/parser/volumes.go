@@ -30,7 +30,7 @@ func NewVolumesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.AddCommand(volumesExpandCommand(cmdr))
 	cmd.AddCommand(volumesInfoCommand(cmdr))
 	cmd.AddCommand(volumesRemoveCommand(cmdr))
-	cmd.AddCommand(volumesClientCommand(cmdr))
+	cmd.AddCommand(volumesServeCommand(cmdr))
 	cmd.AddCommand(volumesMountCommand(cmdr))
 	cmd.AddCommand(volumesUnmountCommand(cmdr))
 	return cmd
@@ -199,57 +199,27 @@ func volumesRemoveCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	return cmd
 }
 
-func volumesClientCommand(cmdr *commands.DryccCmd) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "client",
-		Short: i18n.T("The client used to manage volume files"),
+func volumesServeCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	var flags struct {
+		name string
 	}
-	cmd.AddCommand(&cobra.Command{
-		Use: "ls <target>",
+	volumeCompletion := completion.VolumeCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
+	cmd := &cobra.Command{
+		Use:   "serve <name>",
+		Short: i18n.T("Serve a WebDAV service for the volume"),
 		Example: template.CustomExample(
-			"drycc volumes client ls vol://myvolume/tmp",
+			"drycc volumes serve myvolume",
 			map[string]string{
-				"<target>": i18n.T("The target path of volume"),
+				"<name>": i18n.T("The volume name"),
 			},
 		),
-		Short: i18n.T("List volume objects"),
-		Args:  cobra.ExactArgs(1),
+		Args:              cobra.ExactArgs(1),
+		ValidArgsFunction: volumeCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
-			return cmdr.VolumesClient(app, "ls", args...)
+			flags.name = args[0]
+			return cmdr.VolumesServe(app, flags.name)
 		},
-	})
-
-	cmd.AddCommand(&cobra.Command{
-		Use: "cp <source> <target>",
-		Example: template.CustomExample(
-			"drycc volumes client cp vol://myvolume/tmp /tmp",
-			map[string]string{
-				"<source>": i18n.T("The volume or local source path"),
-				"<target>": i18n.T("The volume or local target path"),
-			},
-		),
-		Short: i18n.T("Copy volume objects"),
-		Args:  cobra.ExactArgs(2),
-		RunE: func(_ *cobra.Command, args []string) error {
-			return cmdr.VolumesClient(app, "cp", args...)
-		},
-	})
-
-	cmd.AddCommand(&cobra.Command{
-		Use: "rm <target>",
-		Example: template.CustomExample(
-			"drycc volumes client rm vol://myvolume/tmp",
-			map[string]string{
-				"<target>": i18n.T("The target path of volume"),
-			},
-		),
-		Short: i18n.T("Remove volume objects"),
-		Args:  cobra.ExactArgs(1),
-		RunE: func(_ *cobra.Command, args []string) error {
-			return cmdr.VolumesClient(app, "rm", args...)
-		},
-	})
-
+	}
 	return cmd
 }
 

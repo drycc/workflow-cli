@@ -155,10 +155,6 @@ msgstr "要解绑的域名通用名称"
 msgid "Configure automatic certificate management issuer details"
 msgstr "配置自动证书管理颁发者详情"
 
-#: internal/parser/volumes.go:227
-msgid "Copy volume objects"
-msgstr "复制卷对象"
-
 #: internal/parser/apps.go:44
 msgid "Create a new application"
 msgstr "创建新应用"
@@ -500,10 +496,6 @@ msgstr "列出服务器规格信息"
 #: internal/parser/tags.go:52
 msgid "List tags for an application"
 msgstr "列出应用标签"
-
-#: internal/parser/volumes.go:211
-msgid "List volume objects"
-msgstr "列出卷对象"
 
 #: internal/parser/volumes.go:134
 msgid "List volumes in the application"
@@ -894,10 +886,6 @@ msgstr "从应用移除网关"
 msgid "Remove service from an application"
 msgstr "从应用移除服务"
 
-#: internal/parser/volumes.go:242
-msgid "Remove volume objects"
-msgstr "删除卷对象"
-
 #: internal/parser/keys.go:81
 msgid "Removes an SSH key for the logged in user"
 msgstr "移除登录用户的SSH密钥"
@@ -1244,8 +1232,8 @@ msgstr ""
 "                  exec探测接受参数列表，httpGet和tcpSocket探测需指定端口号"
 
 #: internal/parser/volumes.go:201
-msgid "The client used to manage volume files"
-msgstr "用于管理卷文件的客户端"
+msgid "Serve a WebDAV service for the volume"
+msgstr "为卷提供WebDAV服务"
 
 #: internal/parser/volumes.go:261 internal/parser/apps.go:158
 #: internal/parser/shortcuts.go:44
@@ -1512,10 +1500,6 @@ msgstr "要清除的标签键"
 msgid "The tag value"
 msgstr "标签值"
 
-#: internal/parser/volumes.go:208 internal/parser/volumes.go:239
-msgid "The target path of volume"
-msgstr "卷的目标路径"
-
 #: internal/parser/routes.go:187 internal/parser/routes.go:223
 msgid "The unique name of the gaetway"
 msgstr "网关唯一名称"
@@ -1619,14 +1603,6 @@ msgstr "要查询信息的卷名称"
 #: internal/parser/volumes.go:183
 msgid "The volume name to be removed"
 msgstr "要移除的卷名称"
-
-#: internal/parser/volumes.go:223
-msgid "The volume or local source path"
-msgstr "The volume or local source path"
-
-#: internal/parser/volumes.go:224
-msgid "The volume or local target path"
-msgstr "卷或本地目标路径"
 
 #: internal/parser/volumes.go:58 internal/parser/volumes.go:115
 msgid "The volume size, such as '500G'"

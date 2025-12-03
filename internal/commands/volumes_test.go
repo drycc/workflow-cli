@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
-	"os"
+	"syscall"
 	"testing"
+	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
@@ -134,7 +135,7 @@ Updated:       2020-08-26T00:00:00UTC
 `)
 }
 
-func TestVolumesClientLs(t *testing.T) {
+func TestVolumesServe(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -143,68 +144,43 @@ func TestVolumesClientLs(t *testing.T) {
 	defer server.Close()
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/filer/_/ping", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `{"results": [
-  {"name":"handler.go","size":"4159","timestamp":"2024-06-25T22:55:16+08:00","type":"file","path":"/handler.go"},
-  {"name":"handler_test.go","size":"2310","timestamp":"2024-06-04T15:29:45+08:00","type":"file","path":"/handler_test.go"}
-], "count": 2}`)
+		fmt.Fprintf(w, `pong`)
+	})
+	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/filer/_/bind", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{"endpoint": "/v2/apps/example-go/volumes/myvolume/filer/webdav", "username": "user", "password": "pass"}`)
 	})
 
-	err = cmdr.VolumesClient("example-go", "ls", "vol://myvolume")
-	assert.NoError(t, err)
-	assert.Contains(t, b.String(), "handler_test.go")
-}
+	// Use a channel to signal when the method has been called
+	done := make(chan error, 1)
+	go func() {
+		done <- cmdr.VolumesServe("example-go", "myvolume")
+	}()
 
-func TestVolumesClientCp(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
+	// Give the goroutine time to start and produce output
+	time.Sleep(500 * time.Millisecond)
+
+	// Send interrupt signal to stop the blocking method
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		syscall.Kill(syscall.Getpid(), syscall.SIGINT)
+	}()
+
+	// Wait for completion with timeout
+	select {
+	case err := <-done:
+		assert.NoError(t, err)
+	case <-time.After(5 * time.Second):
+		t.Fatal("VolumesServe did not complete within timeout")
 	}
-	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.SetHeaders(w)
-		if r.URL.RawQuery == "path=etc" {
-			fmt.Fprintf(w, `{"results":[],"count":0}`)
-		} else if r.Method == http.MethodGet {
-			fmt.Fprintf(w, `{"results":[{"name":"hello.txt","size":"4159","timestamp":"2024-06-25T22:55:16+08:00","type":"file","path":"/hello.txt"}], "count": 1}`)
-		}
-	})
-	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/hello.txt", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `hello word`)
-	})
-	defer server.Close()
 
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-	// test download file
-	err = cmdr.VolumesClient("example-go", "cp", "vol://myvolume/hello.txt", "/tmp")
-	assert.NoError(t, err)
-	result, err := os.ReadFile("/tmp/hello.txt")
-	assert.NoError(t, err)
-	assert.Equal(t, string(result), `hello word`, "output")
-	// test upload file
-	err = cmdr.VolumesClient("example-go", "cp", "/tmp/hello.txt", "vol://myvolume/etc")
-	assert.NoError(t, err)
-}
-
-func TestVolumesClientRm(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-	// test rm file
-	server.Mux.HandleFunc("/v2/apps/example-go/volumes/myvolume/client/etc/hello.txt", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusOK)
-	})
-	err = cmdr.VolumesClient("example-go", "rm", "vol://myvolume/etc/hello.txt")
-	assert.NoError(t, err)
+	output := b.String()
+	assert.Contains(t, output, "WebDAV service for volume myvolume is running.")
+	assert.Contains(t, output, "Endpoint:")
+	assert.Contains(t, output, "Username:")
+	assert.Contains(t, output, "Password:")
 }
 
 func TestVolumesExpand(t *testing.T) {

@@ -1,17 +1,16 @@
 package commands
 
 import (
+	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"net/url"
 	"os"
-	"path"
+	"os/signal"
 	"regexp"
 	"strings"
+	"syscall"
 	"time"
 
-	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
 	"github.com/drycc/workflow-cli/internal/loader"
@@ -161,17 +160,41 @@ func (d *DryccCmd) VolumesDelete(appID, name string) error {
 	return nil
 }
 
-// VolumesClient a client for manage volume file
-func (d *DryccCmd) VolumesClient(appID, cmd string, args ...string) error {
-	switch cmd {
-	case "ls":
-		return d.volumesClientLs(appID, args[0])
-	case "cp":
-		return d.volumesClientCp(appID, args[0], args[1])
-	case "rm":
-		return d.volumesClientRm(appID, args[0])
-	default:
-		return fmt.Errorf("unknown command %s", cmd)
+// VolumesServe Serve serves an app's volume.
+func (d *DryccCmd) VolumesServe(appID, name string) error {
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+	parent, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	quit := progress(d.WOut)
+	ctx, filer, err := volumes.Serve(parent, s.Client, appID, name)
+	quit <- true
+	<-quit
+	if err != nil {
+		return err
+	}
+
+	table := d.getDefaultFormatTable([]string{})
+	table.Append([]string{"Endpoint:", filer["endpoint"]})
+	table.Append([]string{"Username:", filer["username"]})
+	table.Append([]string{"Password:", filer["password"]})
+	table.Render()
+	d.Print("\n")
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP, syscall.SIGUSR1, syscall.SIGUSR2)
+	d.Printf("WebDAV service for volume %s is running. Press Ctrl+C to stop.\n", name)
+	for {
+		select {
+		case <-signalChan:
+			return nil
+		case <-ctx.Done():
+			return nil
+		default:
+			time.Sleep(2 * time.Second)
+		}
 	}
 }
 
@@ -229,172 +252,6 @@ func (d *DryccCmd) VolumesUnmount(appID string, name string, volumeVars []string
 
 	d.Print("done\n")
 	d.Print("The pods should be restart, please check the pods up or not.\n")
-
-	return nil
-}
-
-// volumesClientLs get all directory entries sorted by filename.
-func (d *DryccCmd) volumesClientLs(appID, vol string) error {
-	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-
-	name, path, err := parseVol(vol)
-	if err != nil {
-		return err
-	}
-	dirs, _, err := volumes.ListDir(s.Client, appID, name, path, 3000)
-	if err != nil {
-		return err
-	}
-
-	table := d.getDefaultFormatTable([]string{})
-	for _, dir := range dirs {
-		if dir.Type == "dir" {
-			dir.Name = fmt.Sprintf("%s/", dir.Name)
-		}
-		table.Append([]string{fmt.Sprintf("[%s]", d.formatTime(dir.Timestamp)), dir.Size, dir.Name})
-	}
-	table.Render()
-	return nil
-}
-
-func (d *DryccCmd) volumesClientGetAll(client *drycc.Client, appID, volumeID, volumePath, localPath string) error {
-	if _, err := os.Stat(localPath); err != nil && os.IsNotExist(err) {
-		os.MkdirAll(localPath, os.ModePerm)
-	}
-	dirs, _, err := volumes.ListDir(client, appID, volumeID, volumePath, 3000)
-	if err != nil {
-		return err
-	}
-	for _, dir := range dirs {
-		_, subpath := path.Split(dir.Path)
-		filepath := path.Join(localPath, subpath)
-		if dir.Type == "file" {
-			res, err := volumes.GetFile(client, appID, volumeID, dir.Path)
-			if err != nil {
-				return err
-			}
-			w, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
-			if err != nil {
-				return err
-			}
-			bar := d.newProgressbar(res.ContentLength, "↓", filepath)
-			defer w.Close()
-			if _, err = io.Copy(io.MultiWriter(w, bar), res.Body); err != nil {
-				return err
-			}
-		} else {
-			os.MkdirAll(filepath, os.ModePerm)
-			if err := d.volumesClientGetAll(client, appID, volumeID, dir.Path, filepath); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func (d *DryccCmd) volumesClientPostAll(client *drycc.Client, appID, volumeID, volumePath, localPath string) error {
-	if file, err := os.Stat(localPath); err != nil {
-		return err
-	} else if !file.IsDir() {
-		file, err := os.Open(localPath)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		stat, err := file.Stat()
-		if err != nil {
-			return err
-		}
-		if stat.Size() > 0 { // ignore empty file
-			reader := progressbar.NewReader(file, d.newProgressbar(stat.Size(), "↑", localPath))
-			if _, err := volumes.PostFile(client, appID, volumeID, volumePath, file.Name(), stat.Size(), &reader); err != nil {
-				return err
-			}
-		} else {
-			d.newProgressbar(1, "?", localPath).Finish()
-		}
-		return nil
-	}
-	if entries, err := os.ReadDir(localPath); err == nil {
-		for _, entry := range entries {
-			var dstFilepath string
-			if entry.IsDir() {
-				dstFilepath = path.Join(volumePath, entry.Name())
-			} else {
-				dstFilepath = volumePath
-			}
-			if err := d.volumesClientPostAll(client, appID, volumeID, dstFilepath, path.Join(localPath, entry.Name())); err != nil {
-				return err
-			}
-		}
-	} else {
-		return err
-	}
-	return nil
-}
-
-// volumesClientCp copy files between volume and local file
-func (d *DryccCmd) volumesClientCp(appID, src, dst string) error {
-	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-	if strings.HasPrefix(src, "vol://") {
-		f, err := os.Stat(dst)
-		if err != nil {
-			return err
-		}
-		if !f.IsDir() {
-			return fmt.Errorf("the local path must be an existing dir")
-		}
-		volumeID, volumePath, err := parseVol(src)
-		if err != nil {
-			return err
-		}
-		if dirs, _, err := volumes.ListDir(s.Client, appID, volumeID, volumePath, 3000); err == nil && (len(dirs) != 1 || dirs[0].Type != "file") {
-			dst = mergeDestDir(dst, volumePath)
-		}
-		return d.volumesClientGetAll(s.Client, appID, volumeID, volumePath, dst)
-	} else if strings.HasPrefix(dst, "vol://") {
-		volumeID, volumePath, err := parseVol(dst)
-		if err != nil {
-			return err
-		}
-		if dirs, _, err := volumes.ListDir(s.Client, appID, volumeID, volumePath, 3000); err == nil {
-			names := strings.Split(strings.Trim(src, "/"), "/")
-			if len(dirs) == 1 && dirs[0].Type == "file" && strings.HasSuffix(strings.Trim(volumePath, "/"), names[len(names)-1]) {
-				return fmt.Errorf("the volume path cannot be an existing file")
-			}
-		}
-		if file, err := os.Stat(src); err == nil && file.IsDir() {
-			volumePath = mergeDestDir(volumePath, src)
-		}
-		return d.volumesClientPostAll(s.Client, appID, volumeID, volumePath, src)
-	}
-	return nil
-}
-
-// volumesClientRm delete a file from volume
-func (d *DryccCmd) volumesClientRm(appID, vol string) error {
-	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-	host, path, err := parseVol(vol)
-	if err != nil {
-		return err
-	}
-	res, err := volumes.DeleteFile(s.Client, appID, host, path)
-	if err != nil {
-		return err
-	}
-	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("incorrect http status code %d", res.StatusCode)
-	}
 
 	return nil
 }
