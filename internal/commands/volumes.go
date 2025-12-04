@@ -168,6 +168,8 @@ func (d *DryccCmd) VolumesServe(appID, name string) error {
 	}
 	parent, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	d.Print("Starting WebDAV file access service ")
 	quit := progress(d.WOut)
 	ctx, filer, err := volumes.Serve(parent, s.Client, appID, name)
 	quit <- true
@@ -176,6 +178,7 @@ func (d *DryccCmd) VolumesServe(appID, name string) error {
 		return err
 	}
 
+	d.Print("\n\n")
 	table := d.getDefaultFormatTable([]string{})
 	table.Append([]string{"Endpoint:", filer["endpoint"]})
 	table.Append([]string{"Username:", filer["username"]})
