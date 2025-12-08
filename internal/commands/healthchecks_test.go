@@ -208,7 +208,7 @@ func TestHealthchecksSet(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksSet("foo", "livenessProbe", "web", &api.Healthcheck{})
+	err = cmdr.HealthchecksSet("foo", "livenessProbe", "web", &api.ContainerProbe{})
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Applying livenessProbe healthcheck... done
 

@@ -63,8 +63,6 @@ func healthchecksList(cmdr *commands.DryccCmd) *cobra.Command {
 func healthchecksSet(cmdr *commands.DryccCmd) *cobra.Command {
 	var flags struct {
 		ptype         string
-		healthType    string
-		probeType     string
 		path          string
 		port          int
 		headers       string
@@ -76,15 +74,15 @@ func healthchecksSet(cmdr *commands.DryccCmd) *cobra.Command {
 		commandArgs   []string
 	}
 
-	healthChecksCompletion := completion.HealthChecksCompletion{ConfigFile: &cmdr.ConfigFile}
+	healthCheckCompletion := completion.HealthCheckCompletion{ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
-		Use:  "set <health-type> <probe-type> [flags] [--] <args>...",
+		Use:  "set <probe> <action> [flags] [--] <args>...",
 		Args: cobra.MinimumNArgs(2),
 		Example: template.CustomExample(
 			"drycc healthchecks set readinessProbe httpGet --path=/health -- 8000",
 			map[string]string{
-				"<health-type>": i18n.T("The healthcheck type, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'"),
-				"<probe-type>":  i18n.T("the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'"),
+				"<probe>":  i18n.T("The healthcheck probe, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'"),
+				"<action>": i18n.T("the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'"),
 				"<args>": i18n.T(`The arguments required for the healthcheck probe. 'exec', accepts a list of arguments;
                   'httpGet' and 'tcpSocket' accept a port number.`),
 			},
@@ -122,12 +120,12 @@ probes accept a string of arguments to be run inside the Container.
 considered healthy if the check can establish a connection. 'tcpSocket' probes accept a
 port number to perform the socket connection on the Container.
 `),
-		ValidArgsFunction: healthChecksCompletion.CompletionFunc,
+		ValidArgsFunction: healthCheckCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			healthType := args[0]
 			probeType := args[1]
 
-			probe := &api.Healthcheck{
+			probe := &api.ContainerProbe{
 				InitialDelaySeconds: flags.initialDelay,
 				TimeoutSeconds:      flags.timeout,
 				PeriodSeconds:       flags.period,
@@ -150,14 +148,14 @@ port number to perform the socket connection on the Container.
 				if err != nil {
 					return fmt.Errorf("could not parse port: %s", err)
 				}
-				probe.HTTPGet = &api.HTTPGetProbe{
+				probe.HTTPGet = &api.HTTPGetAction{
 					Path:        flags.path,
 					Port:        port,
 					HTTPHeaders: parsedHeaders,
 				}
 			case "exec":
 				probeArgs := args[2:]
-				probe.Exec = &api.ExecProbe{
+				probe.Exec = &api.ExecAction{
 					Command: probeArgs,
 				}
 			case "tcpSocket":
@@ -166,7 +164,7 @@ port number to perform the socket connection on the Container.
 					return fmt.Errorf("could not parse port: %s", err)
 				}
 
-				probe.TCPSocket = &api.TCPSocketProbe{
+				probe.TCPSocket = &api.TCPSocketAction{
 					Port: port,
 				}
 			default:
@@ -201,18 +199,18 @@ func healthchecksUnset(cmdr *commands.DryccCmd) *cobra.Command {
 		healths []string
 	}
 
-	healthTypeCompletion := completion.HealthTypeCompletion{ConfigFile: &cmdr.ConfigFile}
+	healthcheckProbeTypeCompletion := completion.HealthcheckProbeTypeCompletion{ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
-		Use:  "unset <health-type>...",
+		Use:  "unset <probe>...",
 		Args: cobra.MinimumNArgs(1),
 		Example: template.CustomExample(
 			"drycc healthchecks unset startupProbe",
 			map[string]string{
-				"<health-type>": i18n.T("the healthcheck type, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'"),
+				"<probe>": i18n.T("the healthcheck probe, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'"),
 			},
 		),
 		Short:             i18n.T("Unset healthchecks for an application"),
-		ValidArgsFunction: healthTypeCompletion.CompletionFunc,
+		ValidArgsFunction: healthcheckProbeTypeCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			flags.healths = args
 			for healthcheck := range flags.healths {
@@ -228,29 +226,6 @@ func healthchecksUnset(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
 
 	return cmd
-}
-
-func parseHeaders(headers []string) ([]*api.KVPair, error) {
-	var parsedHeaders []*api.KVPair
-	for _, header := range headers {
-		parsedHeader, err := parseHeader(header)
-		if err != nil {
-			return nil, err
-		}
-		parsedHeaders = append(parsedHeaders, parsedHeader)
-	}
-	return parsedHeaders, nil
-}
-
-func parseHeader(header string) (*api.KVPair, error) {
-	headerParts := strings.SplitN(header, ":", 2)
-	if len(headerParts) != 2 {
-		return nil, fmt.Errorf("could not find separator in header (%s)", header)
-	}
-	return &api.KVPair{
-		Name:  strings.TrimSpace(headerParts[0]),
-		Value: strings.TrimSpace(headerParts[1]),
-	}, nil
 }
 
 func checkProbeType(probe string) error {

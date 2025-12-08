@@ -3,18 +3,15 @@ package commands
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"os"
 	"os/signal"
 	"regexp"
-	"strings"
 	"syscall"
 	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
 	"github.com/drycc/workflow-cli/internal/loader"
-	"github.com/schollz/progressbar/v3"
 	"sigs.k8s.io/yaml"
 )
 
@@ -274,27 +271,6 @@ func parseVolume(volumeVars []string) (map[string]any, error) {
 	return volumeMap, nil
 }
 
-// parseVol format volume url
-func parseVol(vol string) (string, string, error) {
-	u, err := url.Parse(vol)
-	if err != nil {
-		return "", "", err
-	}
-	if u.Scheme != "vol" || u.Host == "" {
-		return "", "", fmt.Errorf("vol %s format err", vol)
-	}
-	return u.Host, strings.TrimPrefix(u.Path, "/"), nil
-}
-
-// mergeDestDir merge dest dir
-func mergeDestDir(prefix, dir string) string {
-	if !strings.HasSuffix(dir, "/") {
-		names := strings.Split(dir, "/")
-		return strings.Join([]string{prefix, names[len(names)-1]}, "/")
-	}
-	return prefix
-}
-
 // printVolumes format volume data
 func printVolumes(d *DryccCmd, volumes api.Volumes) {
 	table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "TYPE", "PTYPE", "PATH", "SIZE"})
@@ -308,29 +284,4 @@ func printVolumes(d *DryccCmd, volumes api.Volumes) {
 		}
 	}
 	table.Render()
-}
-
-func (d *DryccCmd) newProgressbar(maxBytes int64, icon, description string) *progressbar.ProgressBar {
-	return progressbar.NewOptions64(
-		maxBytes,
-		progressbar.OptionSetDescription(description),
-		progressbar.OptionSetWriter(os.Stderr),
-		progressbar.OptionShowBytes(true),
-		progressbar.OptionEnableColorCodes(true),
-		progressbar.OptionSetWidth(10),
-		progressbar.OptionThrottle(65*time.Millisecond),
-		progressbar.OptionShowCount(),
-		progressbar.OptionOnCompletion(func() { fmt.Fprint(os.Stderr, "\n") }),
-		progressbar.OptionSpinnerType(14),
-		progressbar.OptionFullWidth(),
-		progressbar.OptionSetRenderBlankState(true),
-		progressbar.OptionSetDescription(fmt.Sprintf("[cyan][%s][reset] %s", icon, d.fixateString(description, 32))),
-		progressbar.OptionSetTheme(progressbar.Theme{
-			Saucer:        "[green]=[reset]",
-			SaucerHead:    "[green]>[reset]",
-			SaucerPadding: " ",
-			BarStart:      "[",
-			BarEnd:        "]",
-		}),
-	)
 }

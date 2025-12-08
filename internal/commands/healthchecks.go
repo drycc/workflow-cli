@@ -9,40 +9,44 @@ import (
 	"github.com/drycc/workflow-cli/internal/loader"
 )
 
-func getHealthcheckString(ptype, probeType string, healthcheck *api.Healthcheck) string {
+func getContainerProbeString(ptype, probeType string, containerProbe *api.ContainerProbe) string {
 	params := fmt.Sprintf(
 		"delay=%ds timeout=%ds period=%ds #success=%d #failure=%d",
-		healthcheck.InitialDelaySeconds,
-		healthcheck.TimeoutSeconds,
-		healthcheck.PeriodSeconds,
-		healthcheck.SuccessThreshold,
-		healthcheck.FailureThreshold,
+		containerProbe.InitialDelaySeconds,
+		containerProbe.TimeoutSeconds,
+		containerProbe.PeriodSeconds,
+		containerProbe.SuccessThreshold,
+		containerProbe.FailureThreshold,
 	)
 
-	if healthcheck.Exec != nil {
-		return fmt.Sprintf("%s %s exec %v %s", probeType, ptype, healthcheck.Exec.Command, params)
-	} else if healthcheck.TCPSocket != nil {
-		return fmt.Sprintf("%s %s tcp-socket port=%v %s", probeType, ptype, healthcheck.TCPSocket.Port, params)
-	} else if healthcheck.HTTPGet != nil {
+	if containerProbe.Exec != nil {
+		return fmt.Sprintf("%s %s exec %v %s", probeType, ptype, containerProbe.Exec.Command, params)
+	} else if containerProbe.TCPSocket != nil {
+		return fmt.Sprintf("%s %s tcp-socket port=%v %s", probeType, ptype, containerProbe.TCPSocket.Port, params)
+	} else if containerProbe.HTTPGet != nil {
 		return fmt.Sprintf(
 			"%s %s http-get headers=%v path=%s port=%d %s",
 			probeType,
 			ptype,
-			healthcheck.HTTPGet.HTTPHeaders,
-			healthcheck.HTTPGet.Path,
-			healthcheck.HTTPGet.Port,
+			containerProbe.HTTPGet.HTTPHeaders,
+			containerProbe.HTTPGet.Path,
+			containerProbe.HTTPGet.Port,
 			params,
 		)
 	}
 	return ""
 }
 
-func getHealthchecksStrings(ptype string, healthchecks *api.Healthchecks) []string {
-	var probes []string
-	for key := range *healthchecks {
-		probes = append(probes, getHealthcheckString(ptype, key, (*healthchecks)[key]))
+func getHealthchecksStrings(ptype string, healthcheck *api.Healthcheck) []string {
+	var containerProbes []string
+	if healthcheck.StartupProbe != nil {
+		containerProbes = append(containerProbes, getContainerProbeString(ptype, "startupProbe", *healthcheck.StartupProbe))
+	} else if healthcheck.LivenessProbe != nil {
+		containerProbes = append(containerProbes, getContainerProbeString(ptype, "livenessProbe", *healthcheck.LivenessProbe))
+	} else if healthcheck.ReadinessProbe != nil {
+		containerProbes = append(containerProbes, getContainerProbeString(ptype, "readinessProbe", *healthcheck.ReadinessProbe))
 	}
-	return probes
+	return containerProbes
 }
 
 // HealthchecksList lists an app's healthchecks.
@@ -105,7 +109,7 @@ func (d *DryccCmd) HealthchecksList(appID, ptype string, version int) error {
 }
 
 // HealthchecksSet sets an app's healthchecks.
-func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *api.Healthcheck) error {
+func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *api.ContainerProbe) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -114,11 +118,19 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *
 	d.Printf("Applying %s healthcheck... ", healthcheckType)
 
 	quit := progress(d.WOut)
-
-	healthcheckMap := make(api.Healthchecks)
-	healthcheckMap[healthcheckType] = probe
-	configObj := api.Config{Healthcheck: make(map[string]*api.Healthchecks)}
-	configObj.Healthcheck[ptype] = &healthcheckMap
+	var healthcheck api.Healthcheck
+	switch healthcheckType {
+	case "livenessProbe":
+		healthcheck.LivenessProbe = &probe
+	case "readinessProbe":
+		healthcheck.ReadinessProbe = &probe
+	case "startupProbe":
+		healthcheck.StartupProbe = &probe
+	default:
+		return fmt.Errorf("unknown healthcheck type: %s", healthcheckType)
+	}
+	configObj := api.Config{Healthcheck: make(map[string]*api.Healthcheck)}
+	configObj.Healthcheck[ptype] = &healthcheck
 
 	_, err = config.Set(s.Client, appID, configObj, true)
 
@@ -135,7 +147,7 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *
 }
 
 // HealthchecksUnset removes an app's healthchecks.
-func (d *DryccCmd) HealthchecksUnset(appID, ptype string, healthchecks []string) error {
+func (d *DryccCmd) HealthchecksUnset(appID, ptype string, containerProbeTypes []string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
@@ -147,16 +159,23 @@ func (d *DryccCmd) HealthchecksUnset(appID, ptype string, healthchecks []string)
 
 	configObj := api.Config{}
 
-	healthchecksMap := make(map[string]*api.Healthchecks)
-	healthcheckMap := make(api.Healthchecks)
-
-	for _, healthcheck := range healthchecks {
-		healthcheckMap[healthcheck] = nil
+	healthcheckMap := make(map[string]*api.Healthcheck)
+	var nullContainerProbe *api.ContainerProbe = nil
+	for _, containerProbeType := range containerProbeTypes {
+		healthcheck := &api.Healthcheck{}
+		switch containerProbeType {
+		case "livenessProbe":
+			healthcheck.LivenessProbe = &nullContainerProbe
+		case "readinessProbe":
+			healthcheck.ReadinessProbe = &nullContainerProbe
+		case "startupProbe":
+			healthcheck.StartupProbe = &nullContainerProbe
+		default:
+			return fmt.Errorf("unknown container probe type: %s", containerProbeType)
+		}
+		healthcheckMap[containerProbeType] = healthcheck
 	}
-	healthchecksMap[ptype] = &healthcheckMap
-
-	configObj.Healthcheck = healthchecksMap
-
+	configObj.Healthcheck = healthcheckMap
 	_, err = config.Set(s.Client, appID, configObj, true)
 
 	quit <- true

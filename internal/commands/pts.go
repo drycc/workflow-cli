@@ -193,15 +193,15 @@ func printProcessTypeDetail(d *DryccCmd, ptypeStates api.PtypeStates, events api
 				tpt.Append([]string{"", fmt.Sprintf("%s from %s", mount.MountPath, mount.Name)})
 			}
 		}
-		sp := getHealthcheckString("", "", &ptypeState.StartupProbe)
+		sp := getContainerProbeString("", "", &ptypeState.StartupProbe)
 		if sp != "" {
 			tpt.Append([]string{"Startup:", strings.TrimSpace(sp)})
 		}
-		lp := getHealthcheckString("", "", &ptypeState.LivenessProbe)
+		lp := getContainerProbeString("", "", &ptypeState.LivenessProbe)
 		if lp != "" {
 			tpt.Append([]string{"Liveness:", strings.TrimSpace(lp)})
 		}
-		rp := getHealthcheckString("", "", &ptypeState.ReadinessProbe)
+		rp := getContainerProbeString("", "", &ptypeState.ReadinessProbe)
 		if rp != "" {
 			tpt.Append([]string{"Readiness:", strings.TrimSpace(rp)})
 		}

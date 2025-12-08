@@ -216,17 +216,16 @@ func (c *GatewayNameCompletion) CompletionFunc(_ *cobra.Command, args []string, 
 	return results, cobra.ShellCompDirectiveNoFileComp
 }
 
-// HealthTypeCompletion provides completion for health check types
-type HealthTypeCompletion struct {
+// LifecycleHandlerCompletion provides completion for lifecycle handler types
+type LifecycleHandlerCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
 }
 
-// CompletionFunc returns a list of health check types for completion
-func (c *HealthTypeCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	healthTypes := []string{"startupProbe", "livenessProbe", "readinessProbe"}
+// CompletionFunc returns a list of lifecycle handler types for completion
+func (c *LifecycleHandlerCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	healthTypes := []string{"postStart", "preStop"}
 	if c.ArgsLen < 0 || len(args) == c.ArgsLen {
-
 		var results []string
 		for _, healthType := range healthTypes {
 			if strings.HasPrefix(healthType, toComplete) {
@@ -239,14 +238,76 @@ func (c *HealthTypeCompletion) CompletionFunc(_ *cobra.Command, args []string, t
 	return nil, cobra.ShellCompDirectiveNoFileComp
 }
 
-// ProbeTypeCompletion provides completion for probe types
-type ProbeTypeCompletion struct {
+// LifecycleActionTypeCompletion provides completion for lifecycle action types
+type LifecycleActionTypeCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
 }
 
-// CompletionFunc returns a list of probe types for completion
-func (c *ProbeTypeCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+// CompletionFunc returns a list of lifecycle action types for completion
+func (c *LifecycleActionTypeCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	lifecycleActionTypes := []string{"exec", "sleep", "httpGet", "tcpSocket"}
+	if c.ArgsLen < 0 || len(args) == c.ArgsLen {
+
+		var results []string
+		for _, lifecycleActionType := range lifecycleActionTypes {
+			if strings.HasPrefix(lifecycleActionType, toComplete) {
+				results = append(results, lifecycleActionType)
+			}
+		}
+		return results, cobra.ShellCompDirectiveNoFileComp
+
+	}
+	return nil, cobra.ShellCompDirectiveNoFileComp
+}
+
+// LifecycleCompletion provides completion for health checks
+type LifecycleCompletion struct {
+	ArgsLen    int
+	ConfigFile *string
+}
+
+// CompletionFunc returns a list of health checks for completion
+func (c *LifecycleCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	if len(args) == 0 {
+		lifecycleHandlerCompletion := LifecycleHandlerCompletion{ArgsLen: 0, ConfigFile: c.ConfigFile}
+		return lifecycleHandlerCompletion.CompletionFunc(cmd, args, toComplete)
+	}
+	lifecycleActionTypeCompletion := LifecycleActionTypeCompletion{ArgsLen: 1, ConfigFile: c.ConfigFile}
+	return lifecycleActionTypeCompletion.CompletionFunc(cmd, args, toComplete)
+}
+
+// ProbeTypeCompletion provides completion for probe types
+type HealthcheckProbeTypeCompletion struct {
+	ArgsLen    int
+	ConfigFile *string
+}
+
+// CompletionFunc returns a list of health check types for completion
+func (p *HealthcheckProbeTypeCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	probeTypes := []string{"startupProbe", "livenessProbe", "readinessProbe"}
+	if p.ArgsLen < 0 || len(args) == p.ArgsLen {
+
+		var results []string
+		for _, probeType := range probeTypes {
+			if strings.HasPrefix(probeType, toComplete) {
+				results = append(results, probeType)
+			}
+		}
+		return results, cobra.ShellCompDirectiveNoFileComp
+
+	}
+	return nil, cobra.ShellCompDirectiveNoFileComp
+}
+
+// HealthcheckProbeActionTypeCompletion provides completion for health check probe action types
+type HealthcheckProbeActionTypeCompletion struct {
+	ArgsLen    int
+	ConfigFile *string
+}
+
+// CompletionFunc returns a list of health check probe action types for completion
+func (c *HealthcheckProbeActionTypeCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	probeTypes := []string{"httpGet", "exec", "tcpSocket"}
 	if c.ArgsLen < 0 || len(args) == c.ArgsLen {
 
@@ -263,19 +324,19 @@ func (c *ProbeTypeCompletion) CompletionFunc(_ *cobra.Command, args []string, to
 }
 
 // HealthChecksCompletion provides completion for health checks
-type HealthChecksCompletion struct {
+type HealthCheckCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
 }
 
 // CompletionFunc returns a list of health checks for completion
-func (c *HealthChecksCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+func (c *HealthCheckCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if len(args) == 0 {
-		healthTypeCompletion := HealthTypeCompletion{ArgsLen: 0, ConfigFile: c.ConfigFile}
-		return healthTypeCompletion.CompletionFunc(cmd, args, toComplete)
+		healthcheckProbeTypeCompletion := HealthcheckProbeTypeCompletion{ArgsLen: 0, ConfigFile: c.ConfigFile}
+		return healthcheckProbeTypeCompletion.CompletionFunc(cmd, args, toComplete)
 	}
-	probeTypeCompletion := ProbeTypeCompletion{ArgsLen: 1, ConfigFile: c.ConfigFile}
-	return probeTypeCompletion.CompletionFunc(cmd, args, toComplete)
+	healthcheckProbeActionTypeCompletion := HealthcheckProbeActionTypeCompletion{ArgsLen: 1, ConfigFile: c.ConfigFile}
+	return healthcheckProbeActionTypeCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
 // ServiceProtocolCompletion provides completion for service protocols

@@ -49,6 +49,7 @@ func NewDryccCommand() *cobra.Command {
 	rootCmd.AddCommand(parser.NewDomainsCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewGatewaysCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewGitCommand(&cmdr))
+	rootCmd.AddCommand(parser.NewLifecyclesCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewHealthchecksCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewKeysCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewLabelsCommand(&cmdr))

@@ -71,7 +71,7 @@ type Commander interface {
 	GitRemote(string, string, bool) error
 	GitRemove(string) error
 	HealthchecksList(string, string, int) error
-	HealthchecksSet(string, string, string, *api.Healthcheck) error
+	HealthchecksSet(string, string, string, *api.ContainerProbe) error
 	HealthchecksUnset(string, string, []string) error
 	KeysList(int) error
 	KeyRemove(string) error
