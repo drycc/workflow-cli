@@ -23,13 +23,15 @@ type settingsFile struct {
 	Controller string `json:"controller"`
 	Token      string `json:"token"`
 	Limit      int    `json:"response_limit"`
+	Workspace  string `json:"workspace"`
 }
 
 // Settings is the settings object created from the settings file.
 type Settings struct {
-	Username string
-	Limit    int
-	Client   *drycc.Client
+	Username  string
+	Limit     int
+	Client    *drycc.Client
+	Workspace string
 }
 
 // Load loads a new client from a settings file.
@@ -66,6 +68,7 @@ Are you logged in? Use 'drycc login' or 'drycc register' to get started`, filena
 	settings := Settings{}
 	settings.Username = sF.Username
 	settings.Client = c
+	settings.Workspace = sF.Workspace
 
 	// If users have defined a custom response limit, respect it.
 	if sF.Limit > 0 {
@@ -82,6 +85,7 @@ func (s *Settings) Save(cf string) (string, error) {
 	settings := settingsFile{
 		Username: s.Username, VerifySSL: s.Client.VerifySSL,
 		Controller: s.Client.ControllerURL.String(), Token: s.Client.Token, Limit: s.Limit,
+		Workspace: s.Workspace,
 	}
 
 	settingsContents, err := json.Marshal(settings)
@@ -90,6 +94,10 @@ func (s *Settings) Save(cf string) (string, error) {
 	}
 
 	filename := locateSettingsFile(cf)
+
+	if err := os.MkdirAll(filepath.Dir(filename), 0o700); err != nil {
+		return "", err
+	}
 
 	return filename, os.WriteFile(filename, settingsContents, 0o600)
 }

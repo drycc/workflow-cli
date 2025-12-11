@@ -118,20 +118,6 @@ func (d *DryccCmd) wrapString(s string) string {
 	return strings.Join(sa, "\n")
 }
 
-// fixateString  fix s width.
-func (d *DryccCmd) fixateString(s string, width int) string {
-	switch {
-	case len(s) > width:
-		trimSize := len(s) - width + 3
-		if trimSize < len(s) {
-			s = "..." + s[trimSize:]
-		}
-	case len(s) < width:
-		s += strings.Repeat(" ", width-len(s))
-	}
-	return s
-}
-
 // indentString indent s into a paragraph of lines of length lim, with minimal raggedness.
 func (d *DryccCmd) indentString(s string, indent int) string {
 	var lines []string
@@ -170,10 +156,10 @@ func sortConfigValues(data []api.ConfigValue) []api.ConfigValue {
 
 func sortPtypes(ptypes []string) []string {
 	sort.Slice(ptypes, func(i, j int) bool {
-		if ptypes[i] == "web" {
+		if ptypes[i] == api.PtypeWeb {
 			return true
 		}
-		if ptypes[j] == "web" {
+		if ptypes[j] == api.PtypeWeb {
 			return false
 		}
 		return ptypes[i] < ptypes[j]

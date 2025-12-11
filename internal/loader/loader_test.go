@@ -23,8 +23,9 @@ func TestLoadProject(t *testing.T) {
 	assert.NoError(t, err)
 
 	config := settings.Settings{
-		Username: "test",
-		Client:   client,
+		Username:  "test",
+		Client:    client,
+		Workspace: "test-workspace",
 	}
 
 	filename, err = config.Save(filename)
@@ -52,4 +53,56 @@ func TestLoadProject(t *testing.T) {
 	appID, _, err = LoadAppSettings(filename, "")
 	assert.NoError(t, err)
 	assert.Equal(t, appID, "testing", "app")
+}
+
+func TestLoadAppSettingsNoWorkspace(t *testing.T) {
+	name, err := os.MkdirTemp("", "drycc-cli-unit-test-no-workspace")
+	assert.NoError(t, err)
+	defer os.RemoveAll(name)
+
+	filename := filepath.Join(name, "test.json")
+	client, err := drycc.New(false, "drycc.example.com", "")
+	assert.NoError(t, err)
+
+	config := settings.Settings{
+		Username: "test",
+		Client:   client,
+	}
+	filename, err = config.Save(filename)
+	assert.NoError(t, err)
+
+	_, _, err = LoadAppSettings(filename, "test")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "no workspace specified")
+}
+
+func TestLoadWorkspace(t *testing.T) {
+	name, err := os.MkdirTemp("", "drycc-cli-unit-test-workspace")
+	assert.NoError(t, err)
+	defer os.RemoveAll(name)
+
+	filename := filepath.Join(name, "test.json")
+	client, err := drycc.New(false, "drycc.example.com", "")
+	assert.NoError(t, err)
+
+	// Test with no workspace set
+	config := settings.Settings{
+		Username: "test",
+		Client:   client,
+	}
+	filename, err = config.Save(filename)
+	assert.NoError(t, err)
+
+	_, _, err = LoadWorkspace(filename)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "no workspace specified")
+
+	// Test with default workspace in config
+	config.Workspace = "default-workspace"
+	filename, err = config.Save(filename)
+	assert.NoError(t, err)
+
+	workspace, _, err := LoadWorkspace(filename)
+	assert.NoError(t, err)
+	assert.Equal(t, "default-workspace", workspace)
 }

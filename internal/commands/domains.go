@@ -23,11 +23,10 @@ func (d *DryccCmd) DomainsList(appID string, results int) error {
 		return err
 	}
 	if count > 0 {
-		table := d.getDefaultFormatTable([]string{"APP", "OWNER", "PTYPE", "CREATED", "UPDATED", "DOMAIN"})
+		table := d.getDefaultFormatTable([]string{"APP", "PTYPE", "CREATED", "UPDATED", "DOMAIN"})
 		for _, domain := range domains {
 			table.Append([]string{
 				domain.App,
-				domain.Owner,
 				domain.Ptype,
 				d.formatTime(domain.Created),
 				d.formatTime(domain.Updated),

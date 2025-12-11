@@ -200,7 +200,6 @@ Issuer:               testca
 Subject:              testing                 
                       
 Connected Domains:    test.com,example.com    
-Owner:                admin                   
 Created:              2016-06-09T00:00:00Z    
 Updated:              2016-06-09T00:00:00Z    
 `, "output")
@@ -225,7 +224,6 @@ Issuer:               <none>
 Subject:              <none>            
                       
 Connected Domains:    <none>            
-Owner:                <none>            
 Created:                                
 Updated:                                
 `, "output")

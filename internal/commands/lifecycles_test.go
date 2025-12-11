@@ -64,7 +64,6 @@ func TestLifecyclesList(t *testing.T) {
 	// 使用assert.Contains来检查关键部分，而不是完全匹配
 	assert.Contains(t, actual, "App:          foo")
 	assert.Contains(t, actual, "UUID:         c039a380-6068-4511-b35a-535a73b86ef5")
-	assert.Contains(t, actual, "Owner:        bar")
 	assert.Contains(t, actual, "Created:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "Updated:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "stopSignal=SIGTERM")
@@ -169,7 +168,6 @@ func TestLifecyclesListAllLifecycles(t *testing.T) {
 	// 检查关键部分
 	assert.Contains(t, actual, "App:          foo")
 	assert.Contains(t, actual, "UUID:         c039a380-6068-4511-b35a-535a73b86ef5")
-	assert.Contains(t, actual, "Owner:        bar")
 	assert.Contains(t, actual, "Created:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "Updated:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "stopSignal=SIGTERM")
@@ -249,7 +247,6 @@ func TestLifecyclesSet(t *testing.T) {
 	assert.Contains(t, actual, "Applying lifecycle... done")
 	assert.Contains(t, actual, "App:          foo")
 	assert.Contains(t, actual, "UUID:         c039a380-6068-4511-b35a-535a73b86ef5")
-	assert.Contains(t, actual, "Owner:        bar")
 	assert.Contains(t, actual, "Created:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "Updated:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "stopSignal=SIGTERM")

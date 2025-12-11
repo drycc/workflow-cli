@@ -121,6 +121,9 @@ func releasesDeployCommand(cmdr *commands.DryccCmd) *cobra.Command {
 }
 
 func releasesRollbackCommand(cmdr *commands.DryccCmd) *cobra.Command {
+	ptsArgsCompletion := completion.PtsArgsCompletion{
+		PtsCompletion: &completion.PtsCompletion{AppID: &app, ArgsLen: -1, ConfigFile: &cmdr.ConfigFile},
+	}
 	cmd := &cobra.Command{
 		Use: "rollback [<ptype>...] [version]",
 		Example: template.CustomExample(
@@ -130,16 +133,17 @@ func releasesRollbackCommand(cmdr *commands.DryccCmd) *cobra.Command {
 				"<version>": i18n.T(`The release of the application, such as '1'`),
 			},
 		),
-		Short: i18n.T("Return to a previous release"),
-		Long:  i18n.T("Rolls back to a previous application release"),
-		Args:  cobra.MinimumNArgs(1),
+		Short:             i18n.T("Return to a previous release"),
+		Long:              i18n.T("Rolls back to a previous application release"),
+		Args:              cobra.MinimumNArgs(1),
+		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			// Handle arguments safely
 			var ptypes []string
 			var versionStr string
 
 			if len(args) == 1 {
-				versionStr = args[1]
+				versionStr = args[0]
 			} else {
 				ptypes = args[:len(args)-1]
 				versionStr = args[len(args)-1]

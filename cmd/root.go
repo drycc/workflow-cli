@@ -54,7 +54,7 @@ func NewDryccCommand() *cobra.Command {
 	rootCmd.AddCommand(parser.NewKeysCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewLabelsCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewLimitsCommand(&cmdr))
-	rootCmd.AddCommand(parser.NewPermsCommand(&cmdr))
+	rootCmd.AddCommand(parser.NewWorkspacesCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewPsCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewPtsCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewRegistryCommand(&cmdr))
@@ -68,7 +68,6 @@ func NewDryccCommand() *cobra.Command {
 	rootCmd.AddCommand(parser.NewTLSCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewTokensCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewUpdateCommand(&cmdr))
-	rootCmd.AddCommand(parser.NewUsersCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewVolumesCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewVersionCommand(&cmdr))
 	// shortcuts

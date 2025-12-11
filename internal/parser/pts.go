@@ -145,6 +145,9 @@ func ptsCleanCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		ptypes []string
 	}
 
+	ptsArgsCompletion := completion.PtsArgsCompletion{
+		PtsCompletion: &completion.PtsCompletion{AppID: &app, ArgsLen: -1, ConfigFile: &cmdr.ConfigFile},
+	}
 	cmd := &cobra.Command{
 		Use:  "clean <ptype>...",
 		Args: cobra.MinimumNArgs(1),
@@ -154,7 +157,8 @@ func ptsCleanCommand(cmdr *commands.DryccCmd) *cobra.Command {
 				"<ptype>": i18n.T("The process name as defined in your Procfile"),
 			},
 		),
-		Short: i18n.T("Clean process types of not used"),
+		Short:             i18n.T("Clean process types of not used"),
+		ValidArgsFunction: ptsArgsCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
 			flags.ptypes = args
 			return cmdr.PtsClean(app, flags.ptypes)

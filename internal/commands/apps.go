@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/apps"
 	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/domains"
@@ -19,14 +20,14 @@ import (
 
 // AppCreate creates an app.
 func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
-	s, err := settings.Load(d.ConfigFile)
+	workspace, s, err := loader.LoadWorkspace(d.ConfigFile)
 	if err != nil {
 		return err
 	}
 
 	d.Print("Creating Application... ")
 	quit := progress(d.WOut)
-	app, err := apps.New(s.Client, id)
+	app, err := apps.New(s.Client, id, workspace)
 
 	quit <- true
 	<-quit
@@ -59,7 +60,7 @@ func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
 
 // AppsList lists apps on the Drycc controller.
 func (d *DryccCmd) AppsList(results int) error {
-	s, err := settings.Load(d.ConfigFile)
+	workspace, s, err := loader.LoadWorkspace(d.ConfigFile)
 	if err != nil {
 		return err
 	}
@@ -68,16 +69,16 @@ func (d *DryccCmd) AppsList(results int) error {
 		results = s.Limit
 	}
 
-	apps, count, err := apps.List(s.Client, results)
+	apps, count, err := apps.List(s.Client, workspace, results)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 	if count > 0 {
-		table := d.getDefaultFormatTable([]string{"ID", "OWNER", "CREATED", "UPDATED"})
+		table := d.getDefaultFormatTable([]string{"ID", "WORKSPACE", "CREATED", "UPDATED"})
 		for _, app := range apps {
 			table.Append([]string{
 				app.ID,
-				app.Owner,
+				app.Workspace,
 				d.formatTime(app.Created),
 				d.formatTime(app.Updated),
 			})
@@ -110,7 +111,7 @@ func (d *DryccCmd) AppInfo(appID string) error {
 	table.Append([]string{"App:", app.ID})
 	table.Append([]string{"URL:", url})
 	table.Append([]string{"UUID:", app.UUID})
-	table.Append([]string{"Owner:", app.Owner})
+	table.Append([]string{"Workspace:", app.Workspace})
 	table.Append([]string{"Created:", d.formatTime(app.Created)})
 	table.Append([]string{"Updated:", d.formatTime(app.Updated)})
 
@@ -279,16 +280,16 @@ func (d *DryccCmd) AppDestroy(appID, confirm string) error {
 	return nil
 }
 
-// AppTransfer transfers app ownership to another user.
-func (d *DryccCmd) AppTransfer(appID, username string) error {
+// AppTransfer transfers app to another workspace.
+func (d *DryccCmd) AppTransfer(appID, workspace string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Transferring %s to %s... ", appID, username)
+	d.Printf("Transferring %s to %s... ", appID, workspace)
 
-	err = apps.Transfer(s.Client, appID, username)
+	err = apps.Transfer(s.Client, appID, workspace)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
@@ -306,23 +307,10 @@ func (d *DryccCmd) appURL(s *settings.Settings, appID string) (string, error) {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return "", err
 	}
-
-	if len(domains) == 0 {
-		return "", nil
+	for _, domain := range domains {
+		if domain.Ptype == api.PtypeWeb {
+			return domain.Domain, nil
+		}
 	}
-
-	return expandURL(s.Client.ControllerURL.Host, domains[0].Domain), nil
-}
-
-// expandURL expands an app url if necessary.
-func expandURL(host, u string) string {
-	if strings.Contains(u, ".") {
-		// If domain is a full url.
-		return u
-	}
-
-	// If domain is a subdomain, look up the controller url and replace the subdomain.
-	parts := strings.Split(host, ".")
-	parts[0] = u
-	return strings.Join(parts, ".")
+	return "", nil
 }

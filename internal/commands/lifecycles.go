@@ -57,7 +57,6 @@ func (d *DryccCmd) LifecyclesList(appID, ptype string, version int) error {
 	table := d.getDefaultFormatTable([]string{})
 	table.Append([]string{"App:", config.App})
 	table.Append([]string{"UUID:", config.UUID})
-	table.Append([]string{"Owner:", config.Owner})
 	table.Append([]string{"Created:", d.formatTime(config.Created)})
 	table.Append([]string{"Updated:", d.formatTime(config.Updated)})
 	table.Append([]string{"Lifecycle:"})
@@ -117,7 +116,7 @@ func (d *DryccCmd) LifecyclesUnset(appID, ptype string, handlers []string) error
 
 	configObj := api.Config{Lifecycle: make(map[string]*api.Lifecycle)}
 	lifecycle := &api.Lifecycle{}
-	var nullLifecycleHandler *api.LifecycleHandler = nil
+	var nullLifecycleHandler *api.LifecycleHandler
 	for _, handler := range handlers {
 		switch handler {
 		case "postStart":

@@ -73,7 +73,6 @@ func (d *DryccCmd) HealthchecksList(appID, ptype string, version int) error {
 			table := d.getDefaultFormatTable([]string{})
 			table.Append([]string{"App:", config.App})
 			table.Append([]string{"UUID:", config.UUID})
-			table.Append([]string{"Owner:", config.Owner})
 			table.Append([]string{"Created:", d.formatTime(config.Created)})
 			table.Append([]string{"Updated:", d.formatTime(config.Updated)})
 			table.Append([]string{"Healthchecks:"})
@@ -91,7 +90,6 @@ func (d *DryccCmd) HealthchecksList(appID, ptype string, version int) error {
 			table := d.getDefaultFormatTable([]string{})
 			table.Append([]string{"App:", config.App})
 			table.Append([]string{"UUID:", config.UUID})
-			table.Append([]string{"Owner:", config.Owner})
 			table.Append([]string{"Created:", d.formatTime(config.Created)})
 			table.Append([]string{"Updated:", d.formatTime(config.Updated)})
 			table.Append([]string{"Healthchecks:"})
@@ -160,7 +158,7 @@ func (d *DryccCmd) HealthchecksUnset(appID, ptype string, containerProbeTypes []
 	configObj := api.Config{}
 
 	healthcheckMap := make(map[string]*api.Healthcheck)
-	var nullContainerProbe *api.ContainerProbe = nil
+	var nullContainerProbe *api.ContainerProbe
 	for _, containerProbeType := range containerProbeTypes {
 		healthcheck := &api.Healthcheck{}
 		switch containerProbeType {

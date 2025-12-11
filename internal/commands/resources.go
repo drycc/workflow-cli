@@ -145,11 +145,10 @@ func (d *DryccCmd) ResourcesList(appID string, results int) error {
 	if count == 0 {
 		d.Println(fmt.Sprintf("No resources found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "PLAN", "UPDATED"})
+		table := d.getDefaultFormatTable([]string{"NAME", "PLAN", "UPDATED"})
 		for _, resource := range resources {
 			table.Append([]string{
 				resource.Name,
-				resource.Owner,
 				resource.Plan,
 				d.formatTime(resource.Updated),
 			})
@@ -177,7 +176,6 @@ func (d *DryccCmd) ResourceGet(appID, name string, details bool) error {
 	table.Append([]string{"UUID:", resource.UUID})
 	table.Append([]string{"Name:", resource.Name})
 	table.Append([]string{"Plan:", resource.Plan})
-	table.Append([]string{"Owner:", resource.Owner})
 	table.Append([]string{"Status:", resource.Status})
 	table.Append([]string{"Binding:", resource.Binding})
 	table.Append([]string{"Data:"})

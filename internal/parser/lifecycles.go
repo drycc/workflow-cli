@@ -17,7 +17,7 @@ var lifecycleFlags struct {
 	ptype string
 }
 
-// NewLifecycleCommand creates a command for managing application lifecycle.
+// NewLifecyclesCommand creates a command for managing application lifecycle.
 func NewLifecyclesCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "lifecycles",
@@ -219,6 +219,7 @@ func lifecyclesUnset(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The ptype for which the lifecycle handler needs to be unset"))
+	cmd.MarkFlagRequired("ptype")
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
 

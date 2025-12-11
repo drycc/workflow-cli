@@ -15,7 +15,6 @@ import (
 	"github.com/drycc/controller-sdk-go/gateways"
 	"github.com/drycc/controller-sdk-go/keys"
 	"github.com/drycc/controller-sdk-go/limits"
-	"github.com/drycc/controller-sdk-go/perms"
 	"github.com/drycc/controller-sdk-go/ps"
 	"github.com/drycc/controller-sdk-go/pts"
 	"github.com/drycc/controller-sdk-go/releases"
@@ -24,6 +23,8 @@ import (
 	"github.com/drycc/controller-sdk-go/services"
 	"github.com/drycc/controller-sdk-go/tokens"
 	"github.com/drycc/controller-sdk-go/volumes"
+	"github.com/drycc/controller-sdk-go/workspaces"
+	"github.com/drycc/controller-sdk-go/workspaces/members"
 	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/settings"
 	"github.com/spf13/cobra"
@@ -43,14 +44,16 @@ type AppCompletion struct {
 // CompletionFunc returns a list of application names for completion
 func (c *AppCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if s, err := settings.Load(*c.ConfigFile); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
-		if apps, _, err := apps.List(s.Client, -1); err == nil {
-			var results []string
-			for _, app := range apps {
-				if strings.HasPrefix(app.ID, toComplete) {
-					results = append(results, app.ID)
+		if s.Workspace != "" {
+			if apps, _, err := apps.List(s.Client, s.Workspace, -1); err == nil {
+				var results []string
+				for _, app := range apps {
+					if strings.HasPrefix(app.ID, toComplete) {
+						results = append(results, app.ID)
+					}
 				}
+				return results, cobra.ShellCompDirectiveNoFileComp
 			}
-			return results, cobra.ShellCompDirectiveNoFileComp
 		}
 	}
 	return nil, cobra.ShellCompDirectiveNoFileComp
@@ -277,7 +280,7 @@ func (c *LifecycleCompletion) CompletionFunc(cmd *cobra.Command, args []string, 
 	return lifecycleActionTypeCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
-// ProbeTypeCompletion provides completion for probe types
+// HealthcheckProbeTypeCompletion provides completion for probe types
 type HealthcheckProbeTypeCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
@@ -323,7 +326,7 @@ func (c *HealthcheckProbeActionTypeCompletion) CompletionFunc(_ *cobra.Command, 
 	return nil, cobra.ShellCompDirectiveNoFileComp
 }
 
-// HealthChecksCompletion provides completion for health checks
+// HealthCheckCompletion provides completion for health checks
 type HealthCheckCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
@@ -480,63 +483,48 @@ func (c *LimitSetPlanCompletion) CompletionFunc(cmd *cobra.Command, args []strin
 	return ptsSetArgsCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
-// UserPermsCompletion provides completion for user permissions
-type UserPermsCompletion struct {
+// WorkspaceCompletion provides completion for workspace names
+type WorkspaceCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
 }
 
-// CompletionFunc returns a list of user permissions for completion
-func (c *UserPermsCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	perms := []string{"view", "change", "delete"}
-	if len(args) > 0 && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
-
-		var results []string
-		for _, perm := range perms {
-			if strings.HasPrefix(perm, toComplete) {
-				results = append(results, perm)
+// CompletionFunc returns a list of workspace names for completion
+func (c *WorkspaceCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	if s, err := settings.Load(*c.ConfigFile); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
+		if wkspaces, _, err := workspaces.List(s.Client, -1); err == nil {
+			var results []string
+			for _, ws := range wkspaces {
+				if strings.HasPrefix(ws.Name, toComplete) {
+					results = append(results, ws.Name)
+				}
 			}
+			return results, cobra.ShellCompDirectiveNoFileComp
 		}
-		return results, cobra.ShellCompDirectiveNoFileComp
-
 	}
 	return nil, cobra.ShellCompDirectiveNoFileComp
 }
 
-// UserPermsArgsCompletion provides completion for user permission arguments.
-type UserPermsArgsCompletion struct {
-	*UserPermsCompletion
-}
-
-// CompletionFunc returns a list of user permission arguments for completion
-func (c *UserPermsArgsCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	c.ArgsLen = -1
-	var results []string
-	completes, _ := c.UserPermsCompletion.CompletionFunc(cmd, args, toComplete)
-	for _, complete := range completes {
-		if !slices.Contains(args, complete) {
-			results = append(results, complete)
-		}
-	}
-	return results, cobra.ShellCompDirectiveNoFileComp
-}
-
-// PermUsernameCompletion provides completion for permission usernames
-type PermUsernameCompletion struct {
-	AppID      *string
+// WorkspaceMemberCompletion provides completion for workspace member usernames
+type WorkspaceMemberCompletion struct {
+	Workspace  *string
 	ArgsLen    int
 	ConfigFile *string
 }
 
-// CompletionFunc returns a list of permission usernames for completion
-func (c *PermUsernameCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if len(args) == 0 {
-		if appID, s, err := loader.LoadAppSettings(*c.ConfigFile, *c.AppID); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
-			if perms, _, err := perms.List(s.Client, appID, -1); err == nil {
+// CompletionFunc returns a list of workspace member usernames for completion
+func (c *WorkspaceMemberCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	workspace := *c.Workspace
+	if workspace == "" && len(args) > 0 {
+		workspace = args[0]
+	}
+	if workspace != "" {
+		if s, err := settings.Load(*c.ConfigFile); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
+			if mems, _, err := members.List(s.Client, workspace, -1); err == nil {
 				var results []string
-				for _, perm := range perms {
-					if strings.HasPrefix(perm.Username, toComplete) {
-						results = append(results, perm.Username)
+				for _, m := range mems {
+					if strings.HasPrefix(m.User, toComplete) {
+						results = append(results, m.User)
 					}
 				}
 				return results, cobra.ShellCompDirectiveNoFileComp
@@ -546,23 +534,61 @@ func (c *PermUsernameCompletion) CompletionFunc(_ *cobra.Command, args []string,
 	return nil, cobra.ShellCompDirectiveNoFileComp
 }
 
-// PermUpdateCompletion provides completion for permission updates
-type PermUpdateCompletion struct {
-	AppID      *string
+// WorkspaceRoleCompletion provides completion for workspace member roles
+type WorkspaceRoleCompletion struct {
 	ArgsLen    int
 	ConfigFile *string
 }
 
-// CompletionFunc returns a list of permission updates for completion
-func (c *PermUpdateCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+// CompletionFunc returns a list of workspace roles for completion
+func (c *WorkspaceRoleCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	roles := []string{"admin", "member", "viewer"}
+	if c.ArgsLen < 0 || len(args) == c.ArgsLen {
+		var results []string
+		for _, role := range roles {
+			if strings.HasPrefix(role, toComplete) {
+				results = append(results, role)
+			}
+		}
+		return results, cobra.ShellCompDirectiveNoFileComp
+	}
+	return nil, cobra.ShellCompDirectiveNoFileComp
+}
+
+// WorkspaceUpdateCompletion provides completion for workspace update command
+type WorkspaceUpdateCompletion struct {
+	ConfigFile *string
+}
+
+// CompletionFunc returns completion for workspace update positional args
+func (c *WorkspaceUpdateCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if len(args) == 0 {
-		permUsernameCompletion := PermUsernameCompletion{AppID: c.AppID, ArgsLen: 0, ConfigFile: c.ConfigFile}
-		return permUsernameCompletion.CompletionFunc(cmd, args, toComplete)
+		// First arg: workspace name
+		workspaceCompletion := WorkspaceCompletion{ArgsLen: 0, ConfigFile: c.ConfigFile}
+		return workspaceCompletion.CompletionFunc(cmd, args, toComplete)
 	}
-	userPermsArgsCompletion := UserPermsArgsCompletion{
-		UserPermsCompletion: &UserPermsCompletion{ConfigFile: c.ConfigFile},
+	// Second arg: member username
+	workspace := args[0]
+	memberCompletion := WorkspaceMemberCompletion{Workspace: &workspace, ArgsLen: 1, ConfigFile: c.ConfigFile}
+	return memberCompletion.CompletionFunc(cmd, args, toComplete)
+}
+
+// WorkspaceRemoveCompletion provides completion for workspace remove command
+type WorkspaceRemoveCompletion struct {
+	ConfigFile *string
+}
+
+// CompletionFunc returns completion for workspace remove positional args
+func (c *WorkspaceRemoveCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	if len(args) == 0 {
+		// First arg: workspace name
+		workspaceCompletion := WorkspaceCompletion{ArgsLen: 0, ConfigFile: c.ConfigFile}
+		return workspaceCompletion.CompletionFunc(cmd, args, toComplete)
 	}
-	return userPermsArgsCompletion.CompletionFunc(cmd, args, toComplete)
+	// Second arg: member username
+	workspace := args[0]
+	memberCompletion := WorkspaceMemberCompletion{Workspace: &workspace, ArgsLen: 1, ConfigFile: c.ConfigFile}
+	return memberCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
 // PsCompletion provides completion for process names
