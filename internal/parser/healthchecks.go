@@ -77,7 +77,7 @@ func healthchecksSet(cmdr *commands.DryccCmd) *cobra.Command {
 	healthCheckCompletion := completion.HealthCheckCompletion{ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use:  "set <probe> <action> [flags] [--] <args>...",
-		Args: cobra.MinimumNArgs(2),
+		Args: cobra.MinimumNArgs(3),
 		Example: template.CustomExample(
 			"drycc healthchecks set readinessProbe httpGet --path=/health -- 8000",
 			map[string]string{

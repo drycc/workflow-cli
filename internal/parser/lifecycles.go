@@ -71,7 +71,7 @@ func lifecyclesSet(cmdr *commands.DryccCmd) *cobra.Command {
 	lifecycleCompletion := completion.LifecycleCompletion{ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
 		Use:  "set <handler> <action> [flags] [--] <args>...",
-		Args: cobra.MinimumNArgs(2),
+		Args: cobra.MinimumNArgs(3),
 		Example: template.CustomExample(
 			"drycc lifecycles set postStart httpGet --path=/health -- 8000",
 			map[string]string{
