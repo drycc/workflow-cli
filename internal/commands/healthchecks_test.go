@@ -57,7 +57,6 @@ func TestHealthchecksList(t *testing.T) {
 
 	assert.Equal(t, b.String(), `App:             foo                                                                                                            
 UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                           
-Owner:           bar                                                                                                            
 Created:         2016-09-12T22:20:14Z                                                                                           
 Updated:         2016-09-12T22:20:14Z                                                                                           
 Healthchecks:    
@@ -158,7 +157,6 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
 
 	assert.Equal(t, b.String(), `App:             foo                                                                                                               
 UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                              
-Owner:           bar                                                                                                               
 Created:         2016-09-12T22:20:14Z                                                                                              
 Updated:         2016-09-12T22:20:14Z                                                                                              
 Healthchecks:    
@@ -214,7 +212,6 @@ func TestHealthchecksSet(t *testing.T) {
 
 App:             foo                                                                                                            
 UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                           
-Owner:           bar                                                                                                            
 Created:         2016-09-12T22:20:14Z                                                                                           
 Updated:         2016-09-12T22:20:14Z                                                                                           
 Healthchecks:    

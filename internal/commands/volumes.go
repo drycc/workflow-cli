@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
-	"syscall"
 	"time"
 
 	"github.com/drycc/controller-sdk-go/api"
@@ -52,7 +51,6 @@ func (d *DryccCmd) VolumesInfo(appID, name string) error {
 	table := d.getDefaultFormatTable([]string{})
 	table.Append([]string{"UUID:", volume.UUID})
 	table.Append([]string{"Name:", volume.Name})
-	table.Append([]string{"Owner:", volume.Owner})
 	table.Append([]string{"Type:", volume.Type})
 	// table append path
 	table.Append([]string{"Path:"})
@@ -184,7 +182,7 @@ func (d *DryccCmd) VolumesServe(appID, name string) error {
 	d.Print("\n")
 
 	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP, syscall.SIGUSR1, syscall.SIGUSR2)
+	signal.Notify(signalChan, os.Interrupt)
 	d.Printf("WebDAV service for volume %s is running. Press Ctrl+C to stop.\n", name)
 	for {
 		select {
@@ -273,14 +271,14 @@ func parseVolume(volumeVars []string) (map[string]any, error) {
 
 // printVolumes format volume data
 func printVolumes(d *DryccCmd, volumes api.Volumes) {
-	table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "TYPE", "PTYPE", "PATH", "SIZE"})
+	table := d.getDefaultFormatTable([]string{"NAME", "TYPE", "PTYPE", "PATH", "SIZE"})
 	for _, volume := range volumes {
 		if len(volume.Path) > 0 {
 			for _, key := range *sortKeys(volume.Path) {
-				table.Append([]string{volume.Name, volume.Owner, volume.Type, key, fmt.Sprintf("%v", volume.Path[key]), volume.Size})
+				table.Append([]string{volume.Name, volume.Type, key, fmt.Sprintf("%v", volume.Path[key]), volume.Size})
 			}
 		} else {
-			table.Append([]string{volume.Name, volume.Owner, volume.Type, "", "", volume.Size})
+			table.Append([]string{volume.Name, volume.Type, "", "", volume.Size})
 		}
 	}
 	table.Render()

@@ -88,7 +88,7 @@ func TestListKeys(t *testing.T) {
 
 	folder := filepath.Join(name, ".ssh")
 
-	err = os.Mkdir(folder, 0o600)
+	err = os.Mkdir(folder, 0o700)
 	assert.NoError(t, err)
 
 	toWrite := []byte("ssh-rsa abc test@example.com")
@@ -115,7 +115,7 @@ func TestListKeys(t *testing.T) {
 	keys, err := listKeys(io.Discard)
 	assert.NoError(t, err)
 
-	assert.Equal(t, keys, expected, "key")
+	assert.Equal(t, expected, keys, "key")
 
 	var b bytes.Buffer
 	// Write bad ssh key
@@ -233,9 +233,9 @@ func TestKeysList(t *testing.T) {
 
 	err = cmdr.KeysList(-1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID                              OWNER    KEY                           
-cpike@starfleet.ufp             cpike    ssh-rsa abc cpik...rfleet.ufp    
-cpike@1701.ncc.starfleet.ufp    cpike    ssh-rsa 123 cpik...rfleet.ufp    
+	assert.Equal(t, b.String(), `ID                              KEY                           
+cpike@starfleet.ufp             ssh-rsa abc cpik...rfleet.ufp    
+cpike@1701.ncc.starfleet.ufp    ssh-rsa 123 cpik...rfleet.ufp    
 `, "output")
 }
 
@@ -270,8 +270,8 @@ func TestKeysListLimit(t *testing.T) {
 
 	err = cmdr.KeysList(1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID                     OWNER    KEY                           
-cpike@starfleet.ufp    cpike    ssh-rsa abc cpik...rfleet.ufp    
+	assert.Equal(t, b.String(), `ID                     KEY                           
+cpike@starfleet.ufp    ssh-rsa abc cpik...rfleet.ufp    
 `, "output")
 }
 
@@ -301,7 +301,7 @@ func TestKeyAdd(t *testing.T) {
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
-	err = os.Mkdir(folder, 0o600)
+	err = os.Mkdir(folder, 0o700)
 	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -347,7 +347,7 @@ func TestKeyAddName(t *testing.T) {
 	assert.NoError(t, err)
 	settings.SetHome(name)
 	folder := filepath.Join(name, ".ssh")
-	err = os.Mkdir(folder, 0o600)
+	err = os.Mkdir(folder, 0o700)
 	assert.NoError(t, err)
 
 	cf, server, err := testutil.NewTestServerAndClient()

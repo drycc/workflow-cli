@@ -54,6 +54,7 @@ func appsCreate(cmdr *commands.DryccCmd) *cobra.Command {
 
 	cmd.Flags().StringVarP(&flags.remote, "remote", "r", "drycc", i18n.T("Name of remote to create"))
 	cmd.Flags().BoolVar(&flags.noRemote, "no-remote", false, i18n.T("Do not create a 'drycc' git remote"))
+
 	return cmd
 }
 
@@ -62,13 +63,14 @@ func appsList(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: i18n.T("List accessible applications"),
-		Long:  i18n.T("Lists applications visible to the current user"),
+		Long:  i18n.T("Lists applications visible to the current user in the specified workspace"),
 		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppsList(limit)
 		},
 	}
 
 	cmd.Flags().IntVarP(&limit, "limit", "l", 0, i18n.T("Maximum number of results to display"))
+
 	return cmd
 }
 
@@ -172,14 +174,16 @@ func appsDestroy(cmdr *commands.DryccCmd) *cobra.Command {
 
 // AppsTransfer creates the apps transfer command
 func appsTransfer(cmdr *commands.DryccCmd) *cobra.Command {
+	workspaceCompletion := completion.WorkspaceCompletion{ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
-		Use:   "transfer <username>",
-		Args:  cobra.ExactArgs(1),
-		Short: i18n.T("Transfer app ownership to another user"),
-		Long:  i18n.T("Transfer application ownership to another user."),
+		Use:               "transfer <workspace>",
+		Args:              cobra.ExactArgs(1),
+		Short:             i18n.T("Transfer app to another workspace"),
+		Long:              i18n.T("Transfer application to another workspace."),
+		ValidArgsFunction: workspaceCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
-			user := args[0]
-			return cmdr.AppTransfer(app, user)
+			workspace := args[0]
+			return cmdr.AppTransfer(app, workspace)
 		},
 	}
 

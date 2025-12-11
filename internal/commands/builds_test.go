@@ -61,7 +61,6 @@ func TestBuildsInfo(t *testing.T) {
 	testutil.AssertOutput(t, b.String(), `App:
 Sha:
 UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75
-Owner:
 Image:
 Stack:
 Created:    2014-01-01T00:00:00UTC

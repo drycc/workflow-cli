@@ -87,10 +87,14 @@ type Commander interface {
 	TimeoutsList(string, int) error
 	TimeoutsSet(string, []string) error
 	TimeoutsUnset(string, []string) error
-	PermList(string, int) error
-	PermCreate(string, string, string) error
-	PermUpdate(string, string, string) error
-	PermDelete(string, string) error
+	WorkspacesList(int) error
+	WorkspacesCreate(string, string) error
+	WorkspacesInfo(string, int) error
+	WorkspacesDelete(string, string) error
+	WorkspacesInvite(string, string) error
+	WorkspacesRemove(string, string) error
+	WorkspacesUpdate(string, string, string, *bool) error
+	WorkspacesSwitch(string) error
 	PsList(string, int) error
 	PsLogs(string, string, int, bool, string, bool) error
 	PsExec(string, string, bool, bool, []string) error
@@ -122,9 +126,6 @@ type Commander interface {
 	TLSAutoDisable(string) error
 	TLSAutoIssuer(string, string, string, string, string) error
 	Update(bool) error
-	UsersList(int) error
-	UsersEnable(string) error
-	UsersDisable(string) error
 	Println(...any) (int, error)
 	Print(...any) (int, error)
 	Printf(string, ...any) (int, error)

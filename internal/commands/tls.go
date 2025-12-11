@@ -20,7 +20,6 @@ func (d *DryccCmd) TLSInfo(appID string) error {
 	}
 	table := d.getDefaultFormatTable([]string{})
 	table.Append([]string{"UUID:", tls.UUID})
-	table.Append([]string{"Owner:", tls.Owner})
 	table.Append([]string{"CertsAuto:", fmt.Sprintf("%v", tls.CertsAutoEnabled != nil && *(tls.CertsAutoEnabled))})
 	table.Append([]string{"HTTPSEnforced:", fmt.Sprintf("%v", tls.HTTPSEnforced != nil && *(tls.HTTPSEnforced))})
 	// Issuer

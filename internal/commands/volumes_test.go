@@ -48,9 +48,9 @@ func TestVolumesList(t *testing.T) {
 
 	err = cmdr.VolumesList("example-go", -1)
 	assert.NoError(t, err)
-	testutil.AssertOutput(t, b.String(), `NAME        OWNER    TYPE    PTYPE     PATH            SIZE
-myvolume    test     csi     cmd       /data/cmd1      500G
-myvolume    test     csi     cmd123    /data/cmd123    500G
+	testutil.AssertOutput(t, b.String(), `NAME        TYPE    PTYPE     PATH            SIZE
+myvolume    csi     cmd       /data/cmd1      500G
+myvolume    csi     cmd123    /data/cmd123    500G
 `)
 }
 
@@ -118,7 +118,6 @@ func TestVolumesInfo(t *testing.T) {
 	assert.NoError(t, err)
 	testutil.AssertOutput(t, b.String(), `UUID:          de1bf5b5-4a72-4f94-a10c-d2a3741cdf75
 Name:          myvolume
-Owner:         test
 Type:          nfs
 Path:
                cmd: /data/cmd1

@@ -62,7 +62,11 @@ func (d *DryccCmd) Whoami(all bool) error {
 		}
 		d.Println(user)
 	} else {
-		d.Printf("You are %s at %s\n", s.Username, s.Client.ControllerURL.String())
+		if s.Workspace != "" {
+			d.Printf("You are %s at %s, workspace %s\n", s.Username, s.Client.ControllerURL.String(), s.Workspace)
+		} else {
+			d.Printf("You are %s at %s\n", s.Username, s.Client.ControllerURL.String())
+		}
 	}
 	return nil
 }

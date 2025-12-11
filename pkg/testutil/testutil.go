@@ -57,8 +57,9 @@ func NewTestServerAndClient() (string, *TestServer, error) {
 	}
 
 	config := settings.Settings{
-		Username: "test",
-		Client:   client,
+		Username:  "test",
+		Client:    client,
+		Workspace: "test-workspace",
 	}
 
 	filename, err = config.Save(filename)

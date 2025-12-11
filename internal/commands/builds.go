@@ -27,7 +27,6 @@ func (d *DryccCmd) BuildsInfo(appID string, version int) error {
 	table.Append([]string{"App:", build.App})
 	table.Append([]string{"Sha:", build.Sha})
 	table.Append([]string{"UUID:", build.UUID})
-	table.Append([]string{"Owner:", build.Owner})
 	table.Append([]string{"Image:", build.Image})
 	table.Append([]string{"Stack:", build.Stack})
 	table.Append([]string{"Created:", build.Created})

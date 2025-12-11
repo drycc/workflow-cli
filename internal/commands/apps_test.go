@@ -25,6 +25,12 @@ func TestAppsList(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
+
+	// Set workspace in config so AppsList can read it
+	s, _ := settings.Load(cf)
+	s.Workspace = "dolar-sit-amet"
+	cf, _ = s.Save(cf)
+
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
@@ -38,7 +44,7 @@ func TestAppsList(t *testing.T) {
 			    {
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"id": "lorem-ipsum",
-					"owner": "dolar-sit-amet",
+					"workspace": "dolar-sit-amet",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
 					"structure": {
@@ -48,7 +54,7 @@ func TestAppsList(t *testing.T) {
 				{
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"id": "consectetur",
-					"owner": "adipiscing",
+					"workspace": "adipiscing",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
 					"structure": {
@@ -61,10 +67,31 @@ func TestAppsList(t *testing.T) {
 
 	err = cmdr.AppsList(-1)
 	assert.NoError(t, err)
-	testutil.AssertOutput(t, b.String(), `ID             OWNER             CREATED                 UPDATED
+	testutil.AssertOutput(t, b.String(), `ID             WORKSPACE         CREATED                 UPDATED
 lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
 consectetur    adipiscing        2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
 `)
+}
+
+func TestAppsListNoWorkspace(t *testing.T) {
+	t.Parallel()
+	cf, _, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Clear workspace from config
+	s, _ := settings.Load(cf)
+	s.Workspace = ""
+	cf, _ = s.Save(cf)
+
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	// When no default workspace in config, should return error
+	err = cmdr.AppsList(-1)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "no workspace specified")
 }
 
 func TestAppsListLimit(t *testing.T) {
@@ -74,6 +101,12 @@ func TestAppsListLimit(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
+
+	// Set workspace in config so AppsList can read it
+	s, _ := settings.Load(cf)
+	s.Workspace = "dolar-sit-amet"
+	cf, _ = s.Save(cf)
+
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
@@ -87,7 +120,7 @@ func TestAppsListLimit(t *testing.T) {
 			    {
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"id": "lorem-ipsum",
-					"owner": "dolar-sit-amet",
+					"workspace": "dolar-sit-amet",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
 					"structure": {
@@ -100,7 +133,7 @@ func TestAppsListLimit(t *testing.T) {
 
 	err = cmdr.AppsList(1)
 	assert.NoError(t, err)
-	testutil.AssertOutput(t, b.String(), `ID             OWNER             CREATED                 UPDATED
+	testutil.AssertOutput(t, b.String(), `ID             WORKSPACE         CREATED                 UPDATED
 lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
 `)
 }
@@ -120,7 +153,7 @@ func TestAppsInfo(t *testing.T) {
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
     "id": "lorem-ipsum",
-    "owner": "dolar-sit-amet",
+    "workspace": "dolar-sit-amet",
     "structure": {
       "cmd": 1
     },
@@ -189,7 +222,7 @@ func TestAppsInfo(t *testing.T) {
 	testutil.AssertOutput(t, b.String(), `App:          lorem-ipsum
 URL:          `+url+`
 UUID:         c4aed81c-d1ca-4ff1-ab89-d2151264e1a3
-Owner:        dolar-sit-amet
+Workspace:    dolar-sit-amet
 Created:      2016-08-22T17:40:16Z
 Updated:      2016-08-22T17:40:16Z
 Processes:
@@ -223,7 +256,7 @@ func TestAppDestroy(t *testing.T) {
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
     "id": "lorem-ipsum",
-    "owner": "dolar-sit-amet",
+    "workspace": "dolar-sit-amet",
     "structure": {
       "cmd": 1
     },
@@ -256,7 +289,7 @@ func TestAppTransfer(t *testing.T) {
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
     "id": "lorem-ipsum",
-    "owner": "dolar-sit-amet",
+    "workspace": "dolar-sit-amet",
     "structure": {
       "cmd": 1
     },
@@ -271,33 +304,17 @@ func TestAppTransfer(t *testing.T) {
 `, "output")
 }
 
-func TestExpandUrl(t *testing.T) {
-	checks := []expandURLCases{
-		{
-			Input:    "test.com",
-			Expected: "test.com",
-		},
-		{
-			Input:    "test",
-			Expected: "test.foo.com",
-		},
-	}
-
-	for _, check := range checks {
-		out := expandURL("drycc.foo.com", check.Input)
-
-		if out != check.Expected {
-			t.Errorf("Expected %s, Got %s", check.Expected, out)
-		}
-	}
-}
-
 func TestRemoteExists(t *testing.T) {
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
+
+	// Set workspace in config so AppCreate can read it
+	s, _ := settings.Load(cf)
+	s.Workspace = "test-workspace"
+	cf, _ = s.Save(cf)
 
 	server.Mux.HandleFunc("/v2/apps/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
@@ -329,6 +346,6 @@ func TestRemoteExists(t *testing.T) {
 	// Check that an error occurred and it contains the remote name
 	// This works for any language since the remote name "drycc" is always in the error
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "drycc", 
+	assert.Contains(t, err.Error(), "drycc",
 		"error message should contain the remote name 'drycc', got: %s", err.Error())
 }

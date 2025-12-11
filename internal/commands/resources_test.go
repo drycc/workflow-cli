@@ -134,8 +134,8 @@ func TestResourcesList(t *testing.T) {
 	err = cmdr.ResourcesList("example-go", -1)
 	assert.NoError(t, err)
 
-	testutil.AssertOutput(t, b.String(), `NAME     OWNER    PLAN         UPDATED
-mysql    test     mysql:5.6    2020-09-08T00:00:00UTC
+	testutil.AssertOutput(t, b.String(), `NAME     PLAN         UPDATED
+mysql    mysql:5.6    2020-09-08T00:00:00UTC
 `)
 }
 
@@ -173,7 +173,6 @@ func TestResourceGet(t *testing.T) {
 UUID:       de1bf5b5-4a72-4f94-a10c-d2a3741cdf75
 Name:       mysql
 Plan:       mysql:5.6
-Owner:      test
 Status:     Ready
 Binding:    Ready
 Data:
