@@ -63,9 +63,15 @@ func (d *DryccCmd) LifecyclesList(appID, ptype string, version int) error {
 	table.Append([]string{"Lifecycle:"})
 	for _, ptype := range sortPtypes(ptypes) {
 		if lifecycle, ok := config.Lifecycle[ptype]; ok {
-			table.Append([]string{"", fmt.Sprintf("stopSignal=%s", lifecycle.StopSignal)})
-			table.Append([]string{"", getLifecycleHandlerString(ptype, "postStart", lifecycle.StopSignal, *lifecycle.PostStart)})
-			table.Append([]string{"", getLifecycleHandlerString(ptype, "preStop", lifecycle.StopSignal, *lifecycle.PreStop)})
+			if lifecycle.StopSignal != "" {
+				table.Append([]string{"", fmt.Sprintf("stopSignal=%s", lifecycle.StopSignal)})
+			}
+			if lifecycle.PostStart != nil {
+				table.Append([]string{"", getLifecycleHandlerString(ptype, "postStart", lifecycle.StopSignal, *lifecycle.PostStart)})
+			}
+			if lifecycle.PreStop != nil {
+				table.Append([]string{"", getLifecycleHandlerString(ptype, "preStop", lifecycle.StopSignal, *lifecycle.PreStop)})
+			}
 		}
 	}
 	table.Render()
