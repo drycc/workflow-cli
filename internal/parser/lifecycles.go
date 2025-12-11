@@ -219,6 +219,7 @@ func lifecyclesUnset(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVarP(&flags.ptype, "ptype", "p", "", i18n.T("The ptype for which the lifecycle handler needs to be unset"))
+	cmd.MarkFlagRequired("ptype")
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
 

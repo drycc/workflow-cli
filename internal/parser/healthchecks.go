@@ -222,6 +222,7 @@ func healthchecksUnset(cmdr *commands.DryccCmd) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVarP(&healthchecksFlags.ptype, "ptype", "p", "", i18n.T("The ptype for which the health check needs to be removed"))
+	cmd.MarkFlagRequired("ptype")
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
 
