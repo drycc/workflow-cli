@@ -18,7 +18,7 @@ import (
 )
 
 // AppCreate creates an app.
-func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
+func (d *DryccCmd) AppCreate(id, workspace, remote string, noRemote bool) error {
 	s, err := settings.Load(d.ConfigFile)
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func (d *DryccCmd) AppCreate(id, remote string, noRemote bool) error {
 
 	d.Print("Creating Application... ")
 	quit := progress(d.WOut)
-	app, err := apps.New(s.Client, id)
+	app, err := apps.New(s.Client, id, workspace)
 
 	quit <- true
 	<-quit
@@ -73,11 +73,11 @@ func (d *DryccCmd) AppsList(results int) error {
 		return err
 	}
 	if count > 0 {
-		table := d.getDefaultFormatTable([]string{"ID", "OWNER", "CREATED", "UPDATED"})
+		table := d.getDefaultFormatTable([]string{"ID", "WORKSPACE", "CREATED", "UPDATED"})
 		for _, app := range apps {
 			table.Append([]string{
 				app.ID,
-				app.Owner,
+				app.Workspace,
 				d.formatTime(app.Created),
 				d.formatTime(app.Updated),
 			})
@@ -110,7 +110,7 @@ func (d *DryccCmd) AppInfo(appID string) error {
 	table.Append([]string{"App:", app.ID})
 	table.Append([]string{"URL:", url})
 	table.Append([]string{"UUID:", app.UUID})
-	table.Append([]string{"Owner:", app.Owner})
+	table.Append([]string{"Workspace:", app.Workspace})
 	table.Append([]string{"Created:", d.formatTime(app.Created)})
 	table.Append([]string{"Updated:", d.formatTime(app.Updated)})
 
@@ -279,16 +279,16 @@ func (d *DryccCmd) AppDestroy(appID, confirm string) error {
 	return nil
 }
 
-// AppTransfer transfers app ownership to another user.
-func (d *DryccCmd) AppTransfer(appID, username string) error {
+// AppTransfer transfers app to another workspace.
+func (d *DryccCmd) AppTransfer(appID, workspace string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	d.Printf("Transferring %s to %s... ", appID, username)
+	d.Printf("Transferring %s to %s... ", appID, workspace)
 
-	err = apps.Transfer(s.Client, appID, username)
+	err = apps.Transfer(s.Client, appID, workspace)
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}

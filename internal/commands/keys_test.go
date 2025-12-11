@@ -233,9 +233,9 @@ func TestKeysList(t *testing.T) {
 
 	err = cmdr.KeysList(-1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID                              OWNER    KEY                           
-cpike@starfleet.ufp             cpike    ssh-rsa abc cpik...rfleet.ufp    
-cpike@1701.ncc.starfleet.ufp    cpike    ssh-rsa 123 cpik...rfleet.ufp    
+	assert.Equal(t, b.String(), `ID                              KEY                           
+cpike@starfleet.ufp             ssh-rsa abc cpik...rfleet.ufp    
+cpike@1701.ncc.starfleet.ufp    ssh-rsa 123 cpik...rfleet.ufp    
 `, "output")
 }
 
@@ -270,8 +270,8 @@ func TestKeysListLimit(t *testing.T) {
 
 	err = cmdr.KeysList(1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `ID                     OWNER    KEY                           
-cpike@starfleet.ufp    cpike    ssh-rsa abc cpik...rfleet.ufp    
+	assert.Equal(t, b.String(), `ID                     KEY                           
+cpike@starfleet.ufp    ssh-rsa abc cpik...rfleet.ufp    
 `, "output")
 }
 

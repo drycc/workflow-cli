@@ -132,7 +132,6 @@ func (d *DryccCmd) CertInfo(appID string, name string) error {
 	table.Append([]string{"Subject:", safeGetString(cert.Subject)})
 	table.Append([]string{""})
 	table.Append([]string{"Connected Domains:", safeGetString(strings.Join(cert.Domains[:], ","))})
-	table.Append([]string{"Owner:", safeGetString(cert.Owner)})
 	table.Append([]string{"Created:", d.formatTime(cert.Created)})
 	table.Append([]string{"Updated:", d.formatTime(cert.Updated)})
 	table.Render()

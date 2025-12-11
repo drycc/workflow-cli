@@ -44,7 +44,6 @@ func TestTLSInfo(t *testing.T) {
 	err = cmdr.TLSInfo("numenor")
 	assert.NoError(t, err)
 	assert.Equal(t, b.String(), `UUID:             c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    
-Owner:            nazgul                                  
 CertsAuto:        true                                    
 HTTPSEnforced:    true                                    
 Issuer:                                                   

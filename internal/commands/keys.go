@@ -31,11 +31,10 @@ func (d *DryccCmd) KeysList(results int) error {
 	}
 
 	if len(keys) > 0 {
-		table := d.getDefaultFormatTable([]string{"ID", "OWNER", "KEY"})
+		table := d.getDefaultFormatTable([]string{"ID", "KEY"})
 		for _, key := range keys {
 			table.Append([]string{
 				key.ID,
-				key.Owner,
 				fmt.Sprintf("%s...%s", key.Public[:16], key.Public[len(key.Public)-10:]),
 			})
 		}

@@ -38,7 +38,7 @@ func TestAppsList(t *testing.T) {
 			    {
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"id": "lorem-ipsum",
-					"owner": "dolar-sit-amet",
+					"workspace": "dolar-sit-amet",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
 					"structure": {
@@ -48,7 +48,7 @@ func TestAppsList(t *testing.T) {
 				{
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"id": "consectetur",
-					"owner": "adipiscing",
+					"workspace": "adipiscing",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
 					"structure": {
@@ -61,7 +61,7 @@ func TestAppsList(t *testing.T) {
 
 	err = cmdr.AppsList(-1)
 	assert.NoError(t, err)
-	testutil.AssertOutput(t, b.String(), `ID             OWNER             CREATED                 UPDATED
+	testutil.AssertOutput(t, b.String(), `ID             WORKSPACE         CREATED                 UPDATED
 lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
 consectetur    adipiscing        2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
 `)
@@ -87,7 +87,7 @@ func TestAppsListLimit(t *testing.T) {
 			    {
 					"uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
 					"id": "lorem-ipsum",
-					"owner": "dolar-sit-amet",
+					"workspace": "dolar-sit-amet",
 					"created": "2016-08-22T17:40:16Z",
 					"updated": "2016-08-22T17:40:16Z",
 					"structure": {
@@ -100,7 +100,7 @@ func TestAppsListLimit(t *testing.T) {
 
 	err = cmdr.AppsList(1)
 	assert.NoError(t, err)
-	testutil.AssertOutput(t, b.String(), `ID             OWNER             CREATED                 UPDATED
+	testutil.AssertOutput(t, b.String(), `ID             WORKSPACE         CREATED                 UPDATED
 lorem-ipsum    dolar-sit-amet    2016-08-22T17:40:16Z    2016-08-22T17:40:16Z
 `)
 }
@@ -120,7 +120,7 @@ func TestAppsInfo(t *testing.T) {
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
     "id": "lorem-ipsum",
-    "owner": "dolar-sit-amet",
+    "workspace": "dolar-sit-amet",
     "structure": {
       "cmd": 1
     },
@@ -189,7 +189,7 @@ func TestAppsInfo(t *testing.T) {
 	testutil.AssertOutput(t, b.String(), `App:          lorem-ipsum
 URL:          `+url+`
 UUID:         c4aed81c-d1ca-4ff1-ab89-d2151264e1a3
-Owner:        dolar-sit-amet
+Workspace:    dolar-sit-amet
 Created:      2016-08-22T17:40:16Z
 Updated:      2016-08-22T17:40:16Z
 Processes:
@@ -223,7 +223,7 @@ func TestAppDestroy(t *testing.T) {
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
     "id": "lorem-ipsum",
-    "owner": "dolar-sit-amet",
+    "workspace": "dolar-sit-amet",
     "structure": {
       "cmd": 1
     },
@@ -256,7 +256,7 @@ func TestAppTransfer(t *testing.T) {
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
     "id": "lorem-ipsum",
-    "owner": "dolar-sit-amet",
+    "workspace": "dolar-sit-amet",
     "structure": {
       "cmd": 1
     },
@@ -324,11 +324,11 @@ func TestRemoteExists(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	err = cmdr.AppCreate("foo", "drycc", false)
+	err = cmdr.AppCreate("foo", "", "drycc", false)
 
 	// Check that an error occurred and it contains the remote name
 	// This works for any language since the remote name "drycc" is always in the error
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "drycc", 
+	assert.Contains(t, err.Error(), "drycc",
 		"error message should contain the remote name 'drycc', got: %s", err.Error())
 }

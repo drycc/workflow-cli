@@ -35,8 +35,9 @@ func NewAppsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 // AppsCreate creates the apps create command
 func appsCreate(cmdr *commands.DryccCmd) *cobra.Command {
 	var flags struct {
-		remote   string
-		noRemote bool
+		workspace string
+		remote    string
+		noRemote  bool
 	}
 	cmd := &cobra.Command{
 		Use:   "create [<id>]",
@@ -48,12 +49,17 @@ func appsCreate(cmdr *commands.DryccCmd) *cobra.Command {
 			if len(args) > 0 {
 				id = args[0]
 			}
-			return cmdr.AppCreate(id, flags.remote, flags.noRemote)
+			return cmdr.AppCreate(id, flags.workspace, flags.remote, flags.noRemote)
 		},
 	}
 
+	cmd.Flags().StringVarP(&flags.workspace, "workspace", "w", "", i18n.T("The workspace to create the app in"))
+	cmd.MarkFlagRequired("workspace")
 	cmd.Flags().StringVarP(&flags.remote, "remote", "r", "drycc", i18n.T("Name of remote to create"))
 	cmd.Flags().BoolVar(&flags.noRemote, "no-remote", false, i18n.T("Do not create a 'drycc' git remote"))
+
+	workspaceCompletion := completion.WorkspaceCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	cmd.RegisterFlagCompletionFunc("workspace", workspaceCompletion.CompletionFunc)
 	return cmd
 }
 
@@ -172,14 +178,16 @@ func appsDestroy(cmdr *commands.DryccCmd) *cobra.Command {
 
 // AppsTransfer creates the apps transfer command
 func appsTransfer(cmdr *commands.DryccCmd) *cobra.Command {
+	workspaceCompletion := completion.WorkspaceCompletion{ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
-		Use:   "transfer <username>",
-		Args:  cobra.ExactArgs(1),
-		Short: i18n.T("Transfer app ownership to another user"),
-		Long:  i18n.T("Transfer application ownership to another user."),
+		Use:               "transfer <workspace>",
+		Args:              cobra.ExactArgs(1),
+		Short:             i18n.T("Transfer app to another workspace"),
+		Long:              i18n.T("Transfer application to another workspace."),
+		ValidArgsFunction: workspaceCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
-			user := args[0]
-			return cmdr.AppTransfer(app, user)
+			workspace := args[0]
+			return cmdr.AppTransfer(app, workspace)
 		},
 	}
 

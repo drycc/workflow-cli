@@ -59,9 +59,9 @@ func TestReleasesList(t *testing.T) {
 
 	err = cmdr.ReleasesList("numenor", []string{}, -1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `OWNER     STATE      VERSION    CREATED                   SUMMARY                        
-nazgul    succeed    v2         2016-08-22T17:40:16Z      khamul added ANGMAR               
-nazgul    succeed    v1         2014-01-01T00:00:00UTC    nazgul created initial release    
+	assert.Equal(t, b.String(), `STATE      VERSION    CREATED                   SUMMARY                        
+succeed    v2         2016-08-22T17:40:16Z      khamul added ANGMAR               
+succeed    v1         2014-01-01T00:00:00UTC    nazgul created initial release    
 `, "output")
 }
 
@@ -100,8 +100,8 @@ func TestReleasesListLimit(t *testing.T) {
 
 	err = cmdr.ReleasesList("numenor", []string{}, 1)
 	assert.NoError(t, err)
-	assert.Equal(t, b.String(), `OWNER     STATE      VERSION    CREATED                 SUMMARY             
-nazgul    succeed    v2         2016-08-22T17:40:16Z    khamul added ANGMAR    
+	assert.Equal(t, b.String(), `STATE      VERSION    CREATED                 SUMMARY             
+succeed    v2         2016-08-22T17:40:16Z    khamul added ANGMAR    
 `, "output")
 }
 
@@ -144,7 +144,6 @@ func TestReleasesInfo(t *testing.T) {
 	assert.Equal(t, b.String(), `App:        numenor                                 
 UUID:       c4aed81c-d1ca-4ff1-ab89-d2151264e1a3    
 State:      succeed                                 
-Owner:      nazgul                                  
 Build:                                              
 Config:     3bb816b1-4fde-4b06-8afe-acd12f58a266    
 Created:    2016-08-22T17:40:16Z                    

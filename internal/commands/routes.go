@@ -48,7 +48,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 	if count == 0 {
 		d.Println(fmt.Sprintf("No routes found in %s app.", appID))
 	} else {
-		table := d.getDefaultFormatTable([]string{"NAME", "OWNER", "KIND", "GATEWAYS", "SERVICES"})
+		table := d.getDefaultFormatTable([]string{"NAME", "KIND", "GATEWAYS", "SERVICES"})
 		for _, route := range routes {
 			var services []string
 			for _, rule := range route.Rules {
@@ -72,7 +72,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 			if err != nil {
 				return err
 			}
-			table.Append([]string{route.Name, route.Owner, route.Kind, string(gatewaysBytes), string(servicesBytes)})
+			table.Append([]string{route.Name, route.Kind, string(gatewaysBytes), string(servicesBytes)})
 		}
 		table.Render()
 	}
