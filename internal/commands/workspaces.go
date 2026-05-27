@@ -28,7 +28,7 @@ func (d *DryccCmd) WorkspacesList(results int) error {
 		table := d.getDefaultFormatTable([]string{"NAME", "EMAIL", "CREATED", "UPDATED"})
 		for _, ws := range wkspaces {
 			table.Append([]string{
-				ws.Name,
+				ws.ID,
 				ws.Email,
 				d.formatTime(ws.Created),
 				d.formatTime(ws.Updated),
@@ -57,7 +57,7 @@ func (d *DryccCmd) WorkspacesCreate(name, email string) error {
 		return err
 	}
 
-	d.Printf("done, created %s\n", ws.Name)
+	d.Printf("done, created %s\n", ws.ID)
 	return nil
 }
 
@@ -74,7 +74,7 @@ func (d *DryccCmd) WorkspacesInfo(name string, results int) error {
 	}
 
 	table := d.getDefaultFormatTable([]string{})
-	table.Append([]string{"Name:", ws.Name})
+	table.Append([]string{"Name:", ws.ID})
 	table.Append([]string{"Email:", ws.Email})
 	table.Append([]string{"Created:", d.formatTime(ws.Created)})
 	table.Append([]string{"Updated:", d.formatTime(ws.Updated)})

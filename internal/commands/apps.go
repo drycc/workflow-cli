@@ -111,6 +111,9 @@ func (d *DryccCmd) AppInfo(appID string) error {
 	table.Append([]string{"App:", app.ID})
 	table.Append([]string{"URL:", url})
 	table.Append([]string{"UUID:", app.UUID})
+	if app.UID != 0 {
+		table.Append([]string{"UID:", fmt.Sprintf("%d", app.UID)})
+	}
 	table.Append([]string{"Workspace:", app.Workspace})
 	table.Append([]string{"Created:", d.formatTime(app.Created)})
 	table.Append([]string{"Updated:", d.formatTime(app.Updated)})

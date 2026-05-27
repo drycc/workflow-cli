@@ -148,6 +148,7 @@ func TestAppsInfo(t *testing.T) {
 		fmt.Fprintf(w, `{
     "uuid": "c4aed81c-d1ca-4ff1-ab89-d2151264e1a3",
     "id": "lorem-ipsum",
+	"uid": 1001,
     "workspace": "dolar-sit-amet",
     "structure": {
       "cmd": 1
@@ -217,6 +218,7 @@ func TestAppsInfo(t *testing.T) {
 	testutil.AssertOutput(t, b.String(), `App:          lorem-ipsum
 URL:          `+url+`
 UUID:         c4aed81c-d1ca-4ff1-ab89-d2151264e1a3
+UID:          1001
 Workspace:    dolar-sit-amet
 Created:      2016-08-22T17:40:16Z
 Updated:      2016-08-22T17:40:16Z

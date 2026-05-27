@@ -495,8 +495,8 @@ func (c *WorkspaceCompletion) CompletionFunc(_ *cobra.Command, args []string, to
 		if wkspaces, _, err := workspaces.List(s.Client, -1); err == nil {
 			var results []string
 			for _, ws := range wkspaces {
-				if strings.HasPrefix(ws.Name, toComplete) {
-					results = append(results, ws.Name)
+				if strings.HasPrefix(ws.ID, toComplete) {
+					results = append(results, ws.ID)
 				}
 			}
 			return results, cobra.ShellCompDirectiveNoFileComp
