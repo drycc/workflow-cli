@@ -5,31 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/routes"
 	"github.com/drycc/workflow-cli/internal/loader"
+	"github.com/drycc/workflow-cli/pkg/coder"
 	"sigs.k8s.io/yaml"
 )
-
-// RoutesCreate create a route to an app.
-func (d *DryccCmd) RoutesCreate(appID, name string, kind string, backendRefs ...api.BackendRefRequest) error {
-	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-	d.Printf("Adding route %s to %s... ", name, appID)
-
-	quit := progress(d.WOut)
-	err = routes.New(s.Client, appID, name, kind, backendRefs...)
-	quit <- true
-	<-quit
-	if d.checkAPICompatibility(s.Client, err) != nil {
-		return err
-	}
-
-	d.Println("done")
-	return nil
-}
 
 // RoutesList lists routes for the app
 func (d *DryccCmd) RoutesList(appID string, results int) error {
@@ -79,94 +59,63 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 	return nil
 }
 
-// RoutesAttach bind a route to gateway.
-func (d *DryccCmd) RoutesAttach(appID, name string, port int, gateway string) error {
+// RoutesInfo shows detailed information about a route.
+func (d *DryccCmd) RoutesInfo(appID, name string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
-	d.Printf("Attaching route %s to gateway %s... ", name, gateway)
+
+	info, err := routes.Info(s.Client, appID, name)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	c := &coder.RouteCoder{Info: info}
+	yamlBytes, err := c.Encode()
+	if err != nil {
+		return err
+	}
+	d.Println(string(yamlBytes))
+	return nil
+}
+
+// RoutesApply applies route configuration from a YAML file.
+func (d *DryccCmd) RoutesApply(appID, filePath string) error {
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	yamlData, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	jsonData, err := yaml.YAMLToJSON(yamlData)
+	if err != nil {
+		return err
+	}
+
+	c := &coder.RouteCoder{}
+	if err := c.Decode(jsonData); err != nil {
+		return fmt.Errorf("invalid route configuration: %w", err)
+	}
+	if c.Request.Name == "" {
+		return fmt.Errorf("invalid route configuration: missing metadata.name")
+	}
+	req := c.Request
+
+	d.Printf("Applying route %s to %s... ", req.Name, appID)
 
 	quit := progress(d.WOut)
-	err = routes.AttachGateway(s.Client, appID, name, port, gateway)
+	_, err = routes.Apply(s.Client, appID, req)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
 
-	d.Println("done")
-	return nil
-}
-
-// RoutesDetach bind a route to gateway.
-func (d *DryccCmd) RoutesDetach(appID, name string, port int, gateway string) error {
-	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-	d.Printf("Detaching route %s to gateway %s... ", name, gateway)
-
-	quit := progress(d.WOut)
-	err = routes.DetachGateway(s.Client, appID, name, port, gateway)
-	quit <- true
-	<-quit
-	if d.checkAPICompatibility(s.Client, err) != nil {
-		return err
-	}
-
-	d.Println("done")
-	return nil
-}
-
-// RoutesGet get rule of route for the app
-func (d *DryccCmd) RoutesGet(appID string, name string) error {
-	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-
-	route, err := routes.GetRule(s.Client, appID, name)
-	if d.checkAPICompatibility(s.Client, err) != nil {
-		return err
-	}
-
-	var rules []byte
-	rules, err = yaml.JSONToYAML([]byte(route))
-	if err != nil {
-		return err
-	}
-	d.Println(string(rules))
-	return nil
-}
-
-// RoutesSet set rule of route for the app
-func (d *DryccCmd) RoutesSet(appID string, name string, ruleFile string) error {
-	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
-	if err != nil {
-		return err
-	}
-
-	var contents []byte
-	if _, err := os.Stat(ruleFile); err != nil {
-		return err
-	}
-	contents, err = os.ReadFile(ruleFile)
-	if err != nil {
-		return err
-	}
-	rules, err := yaml.YAMLToJSON(contents)
-	if err != nil {
-		return err
-	}
-	d.Print("Applying rules... ")
-	quit := progress(d.WOut)
-	err = routes.SetRule(s.Client, appID, name, string(rules))
-	quit <- true
-	<-quit
-	if d.checkAPICompatibility(s.Client, err) != nil {
-		return err
-	}
 	d.Println("done")
 	return nil
 }
@@ -177,7 +126,7 @@ func (d *DryccCmd) RoutesRemove(appID, name string) error {
 	if err != nil {
 		return err
 	}
-	d.Printf("Removing route %s to %s... ", name, appID)
+	d.Printf("Removing route %s from %s... ", name, appID)
 
 	quit := progress(d.WOut)
 	err = routes.Delete(s.Client, appID, name)

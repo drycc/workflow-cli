@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/drycc/controller-sdk-go/api"
@@ -32,20 +33,15 @@ func TestGatewaysList(t *testing.T) {
             "app": "foo",
             "name": "foo",
             "created": "2023-04-19T00:00:00UTC",
-            "owner": "test",
             "updated": "2023-04-19T00:00:00UTC",
-            "listeners": [
+            "ports": [
                 {
-                    "name": "foo-80-http",
                     "port": 80,
-                    "protocol": "HTTP",
-                    "allowedRoutes": {"namespaces": {"from": "All"}}
+                    "protocol": "HTTP"
                 },
                 {
-                    "name": "foo-443-https",
                     "port": 443,
-                    "protocol": "HTTPS",
-                    "allowedRoutes": {"namespaces": {"from": "All"}}
+                    "protocol": "HTTPS"
                 }
             ],
             "addresses": [
@@ -62,13 +58,13 @@ func TestGatewaysList(t *testing.T) {
 	err = cmdr.GatewaysList("foo", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `NAME    LISENTER         PORT    PROTOCOL    ADDRESSES    
-foo     foo-80-http      80      HTTP        192.168.11.1    
-foo     foo-443-https    443     HTTPS       192.168.11.1    
+	assert.Equal(t, b.String(), `NAME    PORT    PROTOCOL    ADDRESSES    
+foo     80      HTTP        192.168.11.1    
+foo     443     HTTPS       192.168.11.1    
 `, "output")
 }
 
-func TestGatewaysAdd(t *testing.T) {
+func TestGatewaysApply(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -78,21 +74,27 @@ func TestGatewaysAdd(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/gateways/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.GatewayCreateRequest{Name: "example-go", Port: 443, Protocol: "HTTPS"}, r)
+	server.Mux.HandleFunc("/v2/apps/foo/gateways/example-go/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.AssertBody(t, api.GatewayUpdateRequest{App: "foo", Name: "example-go", Ports: []api.GatewayPort{{Port: 443, Protocol: "HTTPS"}}}, r)
 		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusCreated)
-		// Body isn't used by CLI, so it isn't set.
+		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("{}"))
 	})
 
-	err = cmdr.GatewaysAdd("foo", "example-go", 443, "HTTPS")
+	gatewayFile, err := os.CreateTemp("", "gateway.yaml")
+	assert.NoError(t, err)
+	defer os.Remove(gatewayFile.Name())
+	_, err = gatewayFile.Write([]byte("apiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata:\n  name: example-go\nspec:\n  ports:\n  - port: 443\n    protocol: HTTPS\n"))
+	assert.NoError(t, err)
+	gatewayFile.Close()
+
+	err = cmdr.GatewaysApply("foo", gatewayFile.Name())
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), "Adding gateway example-go to foo... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Applying gateway example-go to foo... done\n", "output")
 }
 
-func TestGatewaysDelete(t *testing.T) {
+func TestGatewaysRemove(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -102,13 +104,13 @@ func TestGatewaysDelete(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/gateways/", func(w http.ResponseWriter, _ *http.Request) {
+	server.Mux.HandleFunc("/v2/apps/foo/gateways/example-go/", func(w http.ResponseWriter, _ *http.Request) {
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err = cmdr.GatewaysRemove("foo", "example-go", 443, "HTTPS")
+	err = cmdr.GatewaysRemove("foo", "example-go")
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), "Removing gateway example-go to foo... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Removing gateway example-go from foo... done\n", "output")
 }

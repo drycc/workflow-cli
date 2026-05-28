@@ -29,6 +29,26 @@ msgstr "用于推送应用程序代码的SSH公钥的本地文件路径"
 msgid "A path leading to an environment file"
 msgstr "指向环境文件的路径"
 
+#: internal/parser/gateways.go:72 internal/parser/routes.go:71
+msgid "Apply gateway configuration"
+msgstr "应用网关配置"
+
+#: internal/parser/routes.go:72
+msgid "Apply route configuration"
+msgstr "应用路由配置"
+
+#: internal/parser/gateways.go:73
+msgid "Applies gateway configuration from a YAML file using the raw API payload in the file"
+msgstr "使用 YAML 文件中的原始 API 载荷应用网关配置"
+
+#: internal/parser/routes.go:73
+msgid "Applies route configuration from a YAML file using the raw API payload in the file"
+msgstr "使用 YAML 文件中的原始 API 载荷应用路由配置"
+
+#: internal/parser/routes.go:68
+msgid "Path to the YAML configuration file"
+msgstr "YAML 配置文件路径"
+
 #: internal/parser/tls.go:123
 msgid "ACME account email"
 msgstr "ACME账户邮箱"

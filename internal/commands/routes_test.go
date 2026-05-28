@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRoutesCreate(t *testing.T) {
+func TestRoutesApply(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -22,25 +22,32 @@ func TestRoutesCreate(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	server.Mux.HandleFunc("/v2/apps/foo/routes/", func(w http.ResponseWriter, r *http.Request) {
-		request := api.RouteCreateRequest{
-			Name: "example-go",
-			Kind: "HTTPRoute",
-			Rules: []api.RequestRouteRule{{
-				BackendRefs: []api.BackendRefRequest{{Name: "example-go", Port: 443}},
+	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/", func(w http.ResponseWriter, r *http.Request) {
+		request := api.RouteUpdateRequest{
+			App:        "foo",
+			Name:       "example-go",
+			Kind:       "HTTPRoute",
+			ParentRefs: []api.RouteParentRef{},
+			Rules: []api.RouteRule{{
+				"backendRefs": []map[string]any{{"name": "example-go", "port": 443}},
 			}},
 		}
 		testutil.AssertBody(t, request, r)
 		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusCreated)
-		// Body isn't used by CLI, so it isn't set.
+		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("{}"))
 	})
+	routeFile, err := os.CreateTemp("", "route.yaml")
+	assert.NoError(t, err)
+	defer os.Remove(routeFile.Name())
+	_, err = routeFile.Write([]byte("apiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: example-go\nspec:\n  parents: []\n  rules:\n  - backends:\n    - name: example-go\n      port: 443\n"))
+	assert.NoError(t, err)
+	routeFile.Close()
 
-	err = cmdr.RoutesCreate("foo", "example-go", "HTTPRoute", api.BackendRefRequest{Name: "example-go", Port: 443})
+	err = cmdr.RoutesApply("foo", routeFile.Name())
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), "Adding route example-go to foo... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Applying route example-go to foo... done\n", "output")
 }
 
 func TestRoutesList(t *testing.T) {
@@ -108,144 +115,6 @@ example-go    HTTPRoute    ["example-go:80","example-go:8080"]    ["yygl-nextclo
 `, "output")
 }
 
-func TestRoutesAttach(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/attach/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.RouteAttachRequest{Port: 4443, Gateway: "example-go"}, r)
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusCreated)
-		// Body isn't used by CLI, so it isn't set.
-		w.Write([]byte("{}"))
-	})
-
-	err = cmdr.RoutesAttach("foo", "example-go", 4443, "example-go")
-	assert.NoError(t, err)
-
-	assert.Equal(t, testutil.StripProgress(b.String()), "Attaching route example-go to gateway example-go... done\n", "output")
-}
-
-func TestRoutesDetach(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/detach/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.RouteDetachRequest{Port: 4443, Gateway: "example-go"}, r)
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusCreated)
-		// Body isn't used by CLI, so it isn't set.
-		w.Write([]byte("{}"))
-	})
-
-	err = cmdr.RoutesDetach("foo", "example-go", 4443, "example-go")
-	assert.NoError(t, err)
-
-	assert.Equal(t, testutil.StripProgress(b.String()), "Detaching route example-go to gateway example-go... done\n", "output")
-}
-
-func TestRouteGet(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		fmt.Fprintf(w, `
-[{
-	"backendRefs": [
-		{
-			"group": "",
-			"kind": "Service",
-			"name": "example-go",
-			"port": 1234,
-			"weight": 1
-		}
-		],
-		"matches": [
-		{
-			"path": {
-			"type": "PathPrefix",
-			"value": "/get"
-			}
-		}
-		]
-	}
-]`)
-	})
-
-	err = cmdr.RoutesGet("foo", "example-go")
-	assert.NoError(t, err)
-
-	assert.Equal(t, b.String(), `- backendRefs:
-  - group: ""
-    kind: Service
-    name: example-go
-    port: 1234
-    weight: 1
-  matches:
-  - path:
-      type: PathPrefix
-      value: /get
-
-`, "output")
-}
-
-func TestRoutesSet(t *testing.T) {
-	t.Parallel()
-	cf, server, err := testutil.NewTestServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	var b bytes.Buffer
-	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/rules/", func(w http.ResponseWriter, _ *http.Request) {
-		testutil.SetHeaders(w)
-		w.WriteHeader(http.StatusNoContent)
-		w.Write([]byte(""))
-	})
-	ruleFile, err := os.CreateTemp("", "rules.yaml")
-	rules := `
-- backendRefs:
-  - group: ""
-    kind: Service
-    name: example-go
-    port: 1234
-    weight: 1
-  matches:
-  - path:
-      type: PathPrefix
-      value: /get`
-	assert.NoError(t, err)
-	defer os.Remove(ruleFile.Name())
-	_, err = ruleFile.Write([]byte(rules))
-	assert.NoError(t, err)
-	ruleFile.Close()
-	err = cmdr.RoutesSet("foo", "example-go", ruleFile.Name())
-	assert.NoError(t, err)
-
-	assert.Equal(t, testutil.StripProgress(b.String()), "Applying rules... done\n", "output")
-}
-
 func TestRoutesRemove(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
@@ -264,5 +133,5 @@ func TestRoutesRemove(t *testing.T) {
 	err = cmdr.RoutesRemove("foo", "example-go")
 	assert.NoError(t, err)
 
-	assert.Equal(t, testutil.StripProgress(b.String()), "Removing route example-go to foo... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Removing route example-go from foo... done\n", "output")
 }

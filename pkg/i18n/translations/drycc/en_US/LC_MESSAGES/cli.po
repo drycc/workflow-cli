@@ -29,6 +29,26 @@ msgstr ""
 msgid "A path leading to an environment file"
 msgstr ""
 
+#: internal/parser/gateways.go:72 internal/parser/routes.go:71
+msgid "Apply gateway configuration"
+msgstr ""
+
+#: internal/parser/routes.go:72
+msgid "Apply route configuration"
+msgstr ""
+
+#: internal/parser/gateways.go:73
+msgid "Applies gateway configuration from a YAML file using the raw API payload in the file"
+msgstr ""
+
+#: internal/parser/routes.go:73
+msgid "Applies route configuration from a YAML file using the raw API payload in the file"
+msgstr ""
+
+#: internal/parser/routes.go:68
+msgid "Path to the YAML configuration file"
+msgstr ""
+
 #: internal/parser/tls.go:123
 msgid "ACME account email"
 msgstr ""

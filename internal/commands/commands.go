@@ -58,15 +58,13 @@ type Commander interface {
 	ServicesList(string) error
 	ServicesAdd(string, string, string, string) error
 	ServicesRemove(string, string, string, int) error
-	GatewaysAdd(string, string, int, string) error
 	GatewaysList(string, int) error
-	GatewaysRemove(string, string, int, string) error
-	RoutesCreate(string, string, string, ...api.BackendRefRequest) error
+	GatewaysInfo(string, string) error
+	GatewaysApply(string, string) error
+	GatewaysRemove(string, string) error
 	RoutesList(string, int) error
-	RoutesGet(string, string) error
-	RoutesSet(string, string, string) error
-	RoutesAttach(string, string, int, string) error
-	RoutesDetach(string, string, int, string) error
+	RoutesInfo(string, string) error
+	RoutesApply(string, string) error
 	RoutesRemove(string, string) error
 	GitRemote(string, string, bool) error
 	GitRemove(string) error
