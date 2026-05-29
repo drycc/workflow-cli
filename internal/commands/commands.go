@@ -139,15 +139,6 @@ type Commander interface {
 	VolumesClient(string, string, ...string) error
 	VolumesMount(string, string, []string) error
 	VolumesUnmount(string, string, []string) error
-	ResourcesServices(int) error
-	ResourcesPlans(string, int) error
-	ResourcesCreate(string, string, string, []string, string) error
-	ResourcesList(string, int) error
-	ResourceDelete(string, string, string) error
-	ResourceGet(string, string, bool) error
-	ResourcePut(string, string, string, []string, string) error
-	ResourceBind(string, string) error
-	ResourceUnbind(string, string) error
 }
 
 // DryccCmd is a struct that implements the Commander interface and provides

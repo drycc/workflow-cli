@@ -1813,3 +1813,45 @@ msgstr ""
 #: internal/parser/resources.go:264
 msgid "unbind a resources for an application"
 msgstr ""
+
+#: internal/parser/plugins.go:14
+msgid "Provides utilities for interacting with plugins"
+msgstr ""
+
+#: internal/parser/plugins.go:15
+msgid ""
+"Provides utilities for interacting with plugins.\n"
+"\n"
+"Plugins provide extended functionality that is not part of the major command-line distribution.\n"
+"\n"
+"The easiest way to use plugins is to place executables named 'drycc-<name>' in your PATH.\n"
+"When you run 'drycc <name>', the CLI will automatically invoke the 'drycc-<name>' plugin if it exists."
+msgstr ""
+
+#: internal/parser/plugins.go:22
+msgid ""
+"  # List all available plugins\n"
+"  drycc plugins list"
+msgstr ""
+
+#: internal/parser/plugins.go:36
+msgid "List all visible plugin executables on a user's PATH"
+msgstr ""
+
+#: internal/parser/plugins.go:37
+msgid ""
+"List all available plugin files on a user's PATH.\n"
+"\n"
+"Available plugin files are those that are:\n"
+"- executable\n"
+"- anywhere on the user's PATH\n"
+"- begin with \"drycc-\""
+msgstr ""
+
+#: internal/parser/plugins.go:55
+msgid "Unable to find any drycc plugins in your PATH"
+msgstr ""
+
+#: internal/parser/plugins.go:59
+msgid "The following compatible plugins are available:"
+msgstr ""

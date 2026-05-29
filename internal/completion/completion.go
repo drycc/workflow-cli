@@ -18,7 +18,6 @@ import (
 	"github.com/drycc/controller-sdk-go/ps"
 	"github.com/drycc/controller-sdk-go/pts"
 	"github.com/drycc/controller-sdk-go/releases"
-	"github.com/drycc/controller-sdk-go/resources"
 	"github.com/drycc/controller-sdk-go/routes"
 	"github.com/drycc/controller-sdk-go/services"
 	"github.com/drycc/controller-sdk-go/tokens"
@@ -679,110 +678,6 @@ func (c *PtsSetArgsCompletion) CompletionFunc(cmd *cobra.Command, args []string,
 		}
 	}
 	return results, cobra.ShellCompDirectiveNoSpace
-}
-
-// ResourceServiceCompletion provides completion for resource services
-type ResourceServiceCompletion struct {
-	ArgsLen    int
-	ConfigFile *string
-}
-
-// CompletionFunc returns a list of resource services for completion
-func (c *ResourceServiceCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if s, err := settings.Load(*c.ConfigFile); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
-		if services, _, err := resources.Services(s.Client, -1); err == nil {
-			var results []string
-			for _, service := range services {
-				if strings.HasPrefix(service.Name, toComplete) {
-					results = append(results, service.Name)
-				}
-			}
-			return results, cobra.ShellCompDirectiveNoFileComp
-		}
-	}
-	return nil, cobra.ShellCompDirectiveNoFileComp
-}
-
-// ResourcePlanCompletion provides completion for resource plans
-type ResourcePlanCompletion struct {
-	Service    string
-	ArgsLen    int
-	ConfigFile *string
-}
-
-// CompletionFunc returns a list of resource plans for completion
-func (c *ResourcePlanCompletion) CompletionFunc(_ *cobra.Command, args []string, _ string) ([]string, cobra.ShellCompDirective) {
-	if s, err := settings.Load(*c.ConfigFile); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
-		var results []string
-		if services, _, err := resources.Plans(s.Client, c.Service, -1); err == nil {
-			for _, service := range services {
-				results = append(results, service.Name)
-			}
-		}
-		return results, cobra.ShellCompDirectiveNoFileComp
-	}
-	return nil, cobra.ShellCompDirectiveNoFileComp
-}
-
-// ResourceCreateCompletion provides completion for resource creation
-type ResourceCreateCompletion struct {
-	ArgsLen    int
-	ConfigFile *string
-}
-
-// CompletionFunc returns a list of resource creation options for completion
-func (c *ResourceCreateCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if len(args) == 0 {
-		resourceServiceCompletion := ResourceServiceCompletion{ArgsLen: 0, ConfigFile: c.ConfigFile}
-		return resourceServiceCompletion.CompletionFunc(cmd, args, toComplete)
-	}
-	resourcePlanCompletion := ResourcePlanCompletion{Service: args[0], ArgsLen: 1, ConfigFile: c.ConfigFile}
-	return resourcePlanCompletion.CompletionFunc(cmd, args, toComplete)
-}
-
-// ResourceCompletion provides completion for resources
-type ResourceCompletion struct {
-	AppID      *string
-	ArgsLen    int
-	ConfigFile *string
-}
-
-// CompletionFunc returns a list of resources for completion
-func (c *ResourceCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if appID, s, err := loader.LoadAppSettings(*c.ConfigFile, *c.AppID); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
-		if resources, _, err := resources.List(s.Client, appID, -1); err == nil {
-			var results []string
-			for _, resource := range resources {
-				if strings.HasPrefix(resource.Name, toComplete) {
-					results = append(results, resource.Name)
-				}
-			}
-			return results, cobra.ShellCompDirectiveNoFileComp
-		}
-	}
-	return nil, cobra.ShellCompDirectiveNoFileComp
-}
-
-// ResourceUpdateCompletion provides completion for resource update arguments.
-type ResourceUpdateCompletion struct {
-	AppID      *string
-	ArgsLen    int
-	ConfigFile *string
-}
-
-// CompletionFunc returns a list of resource update arguments for completion.
-func (c *ResourceUpdateCompletion) CompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if len(args) == 0 {
-		ResourceCompletion := ResourceCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile}
-		return ResourceCompletion.CompletionFunc(cmd, args, toComplete)
-	} else if len(args) == 1 {
-		resourceServiceCompletion := ResourceServiceCompletion{ArgsLen: -1, ConfigFile: c.ConfigFile}
-		return resourceServiceCompletion.CompletionFunc(cmd, args, toComplete)
-	} else if len(args) == 2 {
-		resourcePlanCompletion := ResourcePlanCompletion{Service: args[1], ArgsLen: -1, ConfigFile: c.ConfigFile}
-		return resourcePlanCompletion.CompletionFunc(cmd, args, toComplete)
-	}
-	return nil, cobra.ShellCompDirectiveNoFileComp
 }
 
 // ReleaseCompletion provides completion for release versions.

@@ -10,7 +10,9 @@ import (
 
 	"github.com/drycc/workflow-cli/internal/commands"
 	"github.com/drycc/workflow-cli/internal/parser"
+	"github.com/drycc/workflow-cli/internal/plugins"
 	"github.com/drycc/workflow-cli/pkg/i18n"
+	"github.com/drycc/workflow-cli/pkg/settings"
 	"github.com/spf13/cobra"
 )
 
@@ -57,9 +59,9 @@ func NewDryccCommand() *cobra.Command {
 	rootCmd.AddCommand(parser.NewWorkspacesCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewPsCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewPtsCommand(&cmdr))
+	rootCmd.AddCommand(parser.NewPluginsCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewRegistryCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewReleasesCommand(&cmdr))
-	rootCmd.AddCommand(parser.NewResourcesCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewRoutesCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewRoutingCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewServicesCommand(&cmdr))
@@ -81,4 +83,46 @@ func NewDryccCommand() *cobra.Command {
 	rootCmd.SilenceUsage = true
 
 	return rootCmd
+}
+
+// ExecuteWithPlugins runs the root command with plugin dispatch support
+func ExecuteWithPlugins(rootCmd *cobra.Command, config string) error {
+	// Try to find the command first
+	cmd, _, err := rootCmd.Find(os.Args[1:])
+	if err != nil || cmd == rootCmd {
+		// Command not found or is root command, try plugin dispatch
+		name := firstNonFlagArg(os.Args[1:])
+		if name != "" {
+			if path, ok := plugins.LookupPlugin(name); ok {
+				restArgs := argsAfter(os.Args[1:], name)
+				s, serr := settings.Load(config)
+				if serr != nil {
+					// If settings can't be loaded, use empty settings
+					s = &settings.Settings{}
+				}
+				return plugins.Run(path, restArgs, s)
+			}
+		}
+	}
+	return rootCmd.Execute()
+}
+
+// firstNonFlagArg returns the first argument that doesn't start with "-"
+func firstNonFlagArg(args []string) string {
+	for _, arg := range args {
+		if len(arg) > 0 && arg[0] != '-' {
+			return arg
+		}
+	}
+	return ""
+}
+
+// argsAfter returns all arguments after the specified name
+func argsAfter(args []string, name string) []string {
+	for i, arg := range args {
+		if arg == name {
+			return args[i+1:]
+		}
+	}
+	return args
 }

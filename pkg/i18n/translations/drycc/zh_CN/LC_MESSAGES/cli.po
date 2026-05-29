@@ -1928,3 +1928,59 @@ msgstr "生命周期处理器类型，如 'postStart' 或 'preStop'"
 #: internal/parser/resources.go:264
 msgid "unbind a resources for an application"
 msgstr "解除应用与资源的绑定"
+
+#: internal/parser/plugins.go:14
+msgid "Provides utilities for interacting with plugins"
+msgstr "提供与插件交互的工具"
+
+#: internal/parser/plugins.go:15
+msgid ""
+"Provides utilities for interacting with plugins.\n"
+"\n"
+"Plugins provide extended functionality that is not part of the major command-line distribution.\n"
+"\n"
+"The easiest way to use plugins is to place executables named 'drycc-<name>' in your PATH.\n"
+"When you run 'drycc <name>', the CLI will automatically invoke the 'drycc-<name>' plugin if it exists."
+msgstr ""
+"提供与插件交互的工具。\n"
+"\n"
+"插件提供不属于主要命令行发行版的扩展功能。\n"
+"\n"
+"使用插件的最简单方法是将名为 'drycc-<name>' 的可执行文件放在您的 PATH 中。\n"
+"当您运行 'drycc <name>' 时，如果存在 'drycc-<name>' 插件，CLI 将自动调用它。"
+
+#: internal/parser/plugins.go:22
+msgid ""
+"  # List all available plugins\n"
+"  drycc plugins list"
+msgstr ""
+"  # 列出所有可用插件\n"
+"  drycc plugins list"
+
+#: internal/parser/plugins.go:36
+msgid "List all visible plugin executables on a user's PATH"
+msgstr "列出用户 PATH 中所有可见的插件可执行文件"
+
+#: internal/parser/plugins.go:37
+msgid ""
+"List all available plugin files on a user's PATH.\n"
+"\n"
+"Available plugin files are those that are:\n"
+"- executable\n"
+"- anywhere on the user's PATH\n"
+"- begin with \"drycc-\""
+msgstr ""
+"列出用户 PATH 中所有可用的插件文件。\n"
+"\n"
+"可用的插件文件是那些：\n"
+"- 可执行的\n"
+"- 位于用户 PATH 中的任何位置\n"
+"- 以 \"drycc-\" 开头"
+
+#: internal/parser/plugins.go:55
+msgid "Unable to find any drycc plugins in your PATH"
+msgstr "在您的 PATH 中找不到任何 drycc 插件"
+
+#: internal/parser/plugins.go:59
+msgid "The following compatible plugins are available:"
+msgstr "以下兼容插件可用："
