@@ -9,6 +9,7 @@ import (
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/builds"
 	"github.com/drycc/workflow-cli/internal/loader"
+	"github.com/drycc/workflow-cli/pkg/i18n"
 	yaml "gopkg.in/yaml.v3"
 )
 
@@ -61,6 +62,11 @@ func (d *DryccCmd) BuildsCreate(appID, image, stack, procfile, dryccpath, confir
 			return err
 		}
 	}
+
+	if len(procfileMap) > 0 && len(dryccfileMap) > 0 {
+		d.Println(i18n.T("Warning: Both .drycc/ and Procfile found. .drycc/ takes priority and Procfile will be ignored. Consider removing Procfile if it's no longer needed."))
+	}
+
 	// check procfileMap dryccfileMap stack is exist
 	err = buildConfirmAction(s.Client, appID, procfileMap, dryccfileMap, confirm)
 	if err != nil {

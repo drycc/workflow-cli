@@ -24,6 +24,7 @@ type RouteCoder struct {
 	Info    api.RouteInfo
 }
 
+// Decode unmarshals JSON data into the Route update request.
 func (c *RouteCoder) Decode(data []byte) error {
 	var env Manifest
 	if err := json.Unmarshal(data, &env); err != nil {
@@ -66,6 +67,7 @@ func (c *RouteCoder) Decode(data []byte) error {
 	return nil
 }
 
+// Encode marshals the Route info into a YAML manifest.
 func (c *RouteCoder) Encode() ([]byte, error) {
 	var rules []map[string]any
 	for _, r := range c.Info.Rules {

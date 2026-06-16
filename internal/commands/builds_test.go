@@ -68,7 +68,7 @@ Updated:
 `)
 }
 
-func TestBuildsCreate(t *testing.T) {
+func TestBuildsCreateWithProcfile(t *testing.T) {
 	t.Parallel()
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {
@@ -77,28 +77,6 @@ func TestBuildsCreate(t *testing.T) {
 	defer server.Close()
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
-
-	// Create a new temporary directory and change to it.
-	name, err := os.MkdirTemp("", "client")
-	assert.NoError(t, err)
-	err = os.Chdir(name)
-	assert.NoError(t, err)
-
-	server.Mux.HandleFunc("/v2/apps/enterprise/build/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.SetHeaders(w)
-		if r.Method == "POST" {
-			testutil.AssertBody(t, api.CreateBuildRequest{
-				Image: "ncc/1701:A",
-				Stack: "container",
-			}, r)
-			w.WriteHeader(http.StatusCreated)
-			fmt.Fprintf(w, "{}")
-		}
-	})
-
-	err = cmdr.BuildsCreate("enterprise", "ncc/1701:A", "container", "", "", "yes")
-	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
 
 	server.Mux.HandleFunc("/v2/apps/bradbury/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -112,30 +90,101 @@ func TestBuildsCreate(t *testing.T) {
 				},
 			}, r)
 		}
-
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, "{}")
 	})
-	b.Reset()
 
 	tmpDir, err := os.MkdirTemp("", "tmpdir")
 	if err != nil {
 		t.Fatalf("error creating temp directory (%s)", err)
-	}
-	data := `web: ./drive
-warp: ./warp 8`
-	if err := os.WriteFile(tmpDir+"/Procfile", []byte(data), 0o644); err != nil {
-		t.Fatalf("error creating %s/Procfile (%s)", tmpDir, err)
 	}
 	defer func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Fatalf("failed to remove Procfile from %s (%s)", tmpDir, err)
 		}
 	}()
+	data := `web: ./drive
+warp: ./warp 8`
+	if err := os.WriteFile(tmpDir+"/Procfile", []byte(data), 0o644); err != nil {
+		t.Fatalf("error creating %s/Procfile (%s)", tmpDir, err)
+	}
 
 	err = cmdr.BuildsCreate("bradbury", "nx/72307:latest", "container", tmpDir+"/Procfile", "", "yes")
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
+}
+
+func TestBuildsCreateWithDryccfile(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/enterprise/build/", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		if r.Method == "POST" {
+			testutil.AssertBody(t, api.CreateBuildRequest{
+				Image: "nx/326:latest",
+				Stack: "container",
+				Dryccfile: map[string]any{
+					"pipeline": map[string]any{
+						"web.yaml": map[string]any{
+							"kind":  "pipeline",
+							"ptype": "web",
+							"deploy": map[string]any{
+								"command": []string{
+									"bash",
+									"-c",
+								},
+								"args": []string{
+									"bundle exec puma -C config/puma.rb",
+								},
+							},
+						},
+					},
+				},
+			}, r)
+		}
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprintf(w, "{}")
+	})
+
+	name, err := os.MkdirTemp("", "client")
+	assert.NoError(t, err)
+
+	dryccpath := filepath.Join(name, ".drycc")
+	os.MkdirAll(dryccpath, 0o700)
+	defer os.RemoveAll(dryccpath)
+	err = os.WriteFile(filepath.Join(dryccpath, "web.yaml"), []byte(`
+kind: pipeline
+ptype: web
+deploy:
+  command:
+  - bash
+  - -c
+  args:
+  - bundle exec puma -C config/puma.rb
+`), os.ModePerm)
+	assert.NoError(t, err)
+
+	err = cmdr.BuildsCreate("enterprise", "nx/326:latest", "container", "", dryccpath, "yes")
+	assert.NoError(t, err)
+	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
+}
+
+func TestBuildsCreateWithBoth(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/franklin/build/", func(w http.ResponseWriter, r *http.Request) {
 		testutil.SetHeaders(w)
@@ -166,18 +215,20 @@ warp: ./warp 8`
 				},
 			}, r)
 		}
-
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprintf(w, "{}")
 	})
-	b.Reset()
 
-	err = os.WriteFile("Procfile", []byte(`web: ./drive
+	name, err := os.MkdirTemp("", "client")
+	assert.NoError(t, err)
+
+	procfile := filepath.Join(name, "Procfile")
+	err = os.WriteFile(procfile, []byte(`web: ./drive
 warp: ./warp 8
 `), os.ModePerm)
 	assert.NoError(t, err)
 
-	dryccpath := ".drycc"
+	dryccpath := filepath.Join(name, ".drycc")
 	os.MkdirAll(dryccpath, 0o700)
 	defer os.RemoveAll(dryccpath)
 	err = os.WriteFile(filepath.Join(dryccpath, "web.yaml"), []byte(`
@@ -192,9 +243,9 @@ deploy:
 `), os.ModePerm)
 	assert.NoError(t, err)
 
-	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", "Procfile", dryccpath, "yes")
+	err = cmdr.BuildsCreate("franklin", "nx/326:latest", "container", procfile, dryccpath, "yes")
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), "Creating build... done\n", "output")
+	assert.Equal(t, testutil.StripProgress(b.String()), "Warning: Both .drycc/ and Procfile found. .drycc/ takes priority and Procfile will be ignored. Consider removing Procfile if it's no longer needed.\nCreating build... done\n", "output")
 }
 
 func TestBuildsFetch(t *testing.T) {

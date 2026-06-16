@@ -15,6 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// APIVersion is the Drycc API version used in Kubernetes-style manifests.
 var APIVersion string = fmt.Sprintf("controller.drycc.cc/v%s", strings.Split(drycc.APIVersion, ".")[0])
 
 // marshalYAML encodes a value to YAML with 2-space indentation and K8s-style
@@ -68,6 +69,7 @@ type Manifest struct {
 	Status     map[string]any `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
+// Metadata represents the Kubernetes-style metadata for a manifest resource.
 type Metadata struct {
 	Name string `json:"name" yaml:"name"`
 }

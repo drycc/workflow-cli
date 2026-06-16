@@ -1953,3 +1953,7 @@ msgstr "Unable to find any drycc plugins in your PATH"
 #: internal/parser/plugins.go:59
 msgid "The following compatible plugins are available:"
 msgstr "The following compatible plugins are available:"
+
+#: internal/commands/builds.go:66
+msgid "Warning: Both .drycc/ and Procfile found. .drycc/ takes priority and Procfile will be ignored. Consider removing Procfile if it's no longer needed."
+msgstr ""

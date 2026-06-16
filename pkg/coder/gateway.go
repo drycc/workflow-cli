@@ -22,6 +22,7 @@ type GatewayCoder struct {
 	Info    api.GatewayInfo
 }
 
+// Decode unmarshals JSON data into the Gateway update request.
 func (c *GatewayCoder) Decode(data []byte) error {
 	var env Manifest
 	if err := json.Unmarshal(data, &env); err != nil {
@@ -45,6 +46,7 @@ func (c *GatewayCoder) Decode(data []byte) error {
 	return nil
 }
 
+// Encode marshals the Gateway info into a YAML manifest.
 func (c *GatewayCoder) Encode() ([]byte, error) {
 	spec := map[string]any{"ports": normalize(c.Info.Ports)}
 

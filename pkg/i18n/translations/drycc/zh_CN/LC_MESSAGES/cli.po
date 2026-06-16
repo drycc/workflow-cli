@@ -1984,3 +1984,7 @@ msgstr "在您的 PATH 中找不到任何 drycc 插件"
 #: internal/parser/plugins.go:59
 msgid "The following compatible plugins are available:"
 msgstr "以下兼容插件可用："
+
+#: internal/commands/builds.go:66
+msgid "Warning: Both .drycc/ and Procfile found. .drycc/ takes priority and Procfile will be ignored. Consider removing Procfile if it's no longer needed."
+msgstr "警告：同时存在 .drycc/ 和 Procfile。.drycc/ 优先级更高，Procfile 将被忽略。如果不再需要，建议删除 Procfile。"

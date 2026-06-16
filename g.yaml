@@ -1,8 +1,0 @@
-name: demo01
-ports:
-- port: 80
-  protocol: HTTP
-- port: 8000
-  protocol: TCP
-- port: 8001
-  protocol: HTTP

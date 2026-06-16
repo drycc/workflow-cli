@@ -1,3 +1,4 @@
+// Package plugins provides a plugin system for extending the Drycc CLI.
 package plugins
 
 import (
