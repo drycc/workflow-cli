@@ -41,6 +41,7 @@ func NewDryccCommand() *cobra.Command {
 	rootCmd.PersistentFlags().BoolVarP(&flags.help, "help", "h", false, i18n.T("Display help information"))
 
 	rootCmd.AddCommand(parser.NewAppsCommand(&cmdr))
+	rootCmd.AddCommand(parser.NewAddonsCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewAuthCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewAutodeployCommand(&cmdr))
 	rootCmd.AddCommand(parser.NewAutorollbackCommand(&cmdr))

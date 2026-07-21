@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/drycc/controller-sdk-go/addons"
 	"github.com/drycc/controller-sdk-go/apps"
 	"github.com/drycc/controller-sdk-go/appsettings"
 	"github.com/drycc/controller-sdk-go/certs"
@@ -899,4 +900,27 @@ func (c *VolumesUnmountCompletion) CompletionFunc(cmd *cobra.Command, args []str
 		PtsCompletion: &PtsCompletion{AppID: c.AppID, ArgsLen: -1, ConfigFile: c.ConfigFile},
 	}
 	return ptsArgCompletion.CompletionFunc(cmd, args, toComplete)
+}
+
+// AddonCompletion provides completion for addon instances attached to an app
+type AddonCompletion struct {
+	AppID      *string
+	ArgsLen    int
+	ConfigFile *string
+}
+
+// CompletionFunc returns a list of addon instance names for completion
+func (c *AddonCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	if appID, s, err := loader.LoadAppSettings(*c.ConfigFile, *c.AppID); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
+		if instances, _, err := addons.List(s.Client, appID, -1); err == nil {
+			var results []string
+			for _, instance := range instances {
+				if strings.HasPrefix(instance.Name, toComplete) {
+					results = append(results, instance.Name)
+				}
+			}
+			return results, cobra.ShellCompDirectiveNoFileComp
+		}
+	}
+	return nil, cobra.ShellCompDirectiveNoFileComp
 }

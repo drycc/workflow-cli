@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: EMAIL\n"
-"POT-Creation-Date: 2026-03-26 14:27+0800\n"
+"POT-Creation-Date: 2026-07-21 14:48+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: internal/parser/plugins.go:21 internal/parser/plugins.go:40
+msgid ""
+"  # List all available plugins\n"
+"  drycc plugins list"
+msgstr ""
+"  # List all available plugins\n"
+"  drycc plugins list"
 
 #: internal/parser/builds.go:66 internal/parser/builds.go:113
 msgid "A YAML file used to supply a Procfile to the application"
@@ -27,26 +35,6 @@ msgstr ""
 
 #: internal/parser/config.go:158 internal/parser/config.go:196
 msgid "A path leading to an environment file"
-msgstr ""
-
-#: internal/parser/gateways.go:72 internal/parser/routes.go:71
-msgid "Apply gateway configuration"
-msgstr ""
-
-#: internal/parser/routes.go:72
-msgid "Apply route configuration"
-msgstr ""
-
-#: internal/parser/gateways.go:73
-msgid "Applies gateway configuration from a YAML file using the raw API payload in the file"
-msgstr ""
-
-#: internal/parser/routes.go:73
-msgid "Applies route configuration from a YAML file using the raw API payload in the file"
-msgstr ""
-
-#: internal/parser/routes.go:68
-msgid "Path to the YAML configuration file"
 msgstr ""
 
 #: internal/parser/tls.go:123
@@ -101,16 +89,44 @@ msgstr ""
 msgid "Application name"
 msgstr ""
 
+#: internal/parser/addons.go:108
+msgid ""
+"Applies addon configuration from a YAML file using the raw API payload in "
+"the file"
+msgstr ""
+"Applies addon configuration from a YAML file using the raw API payload in "
+"the file"
+
+#: internal/parser/gateways.go:72
+msgid ""
+"Applies gateway configuration from a YAML file using the raw API payload in "
+"the file"
+msgstr ""
+
+#: internal/parser/routes.go:69
+msgid ""
+"Applies route configuration from a YAML file using the raw API payload in "
+"the file"
+msgstr ""
+
+#: internal/parser/addons.go:107
+msgid "Apply addon configuration"
+msgstr "Apply addon configuration"
+
+#: internal/parser/gateways.go:71
+msgid "Apply gateway configuration"
+msgstr ""
+
+#: internal/parser/routes.go:68
+msgid "Apply route configuration"
+msgstr ""
+
 #: internal/parser/certs.go:135
 msgid "Attach a certificate to a domain"
 msgstr ""
 
 #: internal/parser/certs.go:134
 msgid "Attach an SSL certificate to a domain"
-msgstr ""
-
-#: internal/parser/routes.go:179
-msgid "Attach to gateway"
 msgstr ""
 
 #: internal/parser/auth.go:34
@@ -123,10 +139,6 @@ msgstr ""
 
 #: internal/parser/domains.go:55
 msgid "Bind a domain to an application"
-msgstr ""
-
-#: internal/parser/resources.go:242
-msgid "Bind a resource for an application"
 msgstr ""
 
 #: internal/parser/volumes.go:92
@@ -149,7 +161,7 @@ msgstr ""
 msgid "Clear the current user session"
 msgstr ""
 
-#: internal/parser/apps.go:146
+#: internal/parser/apps.go:143
 msgid "Command execution timeout in seconds"
 msgstr ""
 
@@ -166,35 +178,23 @@ msgstr ""
 msgid "Configure automatic certificate management issuer details"
 msgstr ""
 
-#: internal/parser/apps.go:45
+#: internal/parser/apps.go:44
 msgid "Create a new application"
-msgstr ""
-
-#: internal/parser/resources.go:98
-msgid "Create a resource for the application"
-msgstr ""
-
-#: internal/parser/routes.go:56
-msgid "Create a route for an application"
 msgstr ""
 
 #: internal/parser/volumes.go:62
 msgid "Create a volume for the application"
 msgstr ""
 
-#: internal/parser/workspaces.go:64
+#: internal/parser/workspaces.go:65
 msgid "Create a workspace"
 msgstr "Create a workspace"
-
-#: internal/parser/gateways.go:59
-msgid "Create gateways for an application"
-msgstr ""
 
 #: internal/parser/services.go:55
 msgid "Create service for an application"
 msgstr ""
 
-#: internal/parser/apps.go:46
+#: internal/parser/apps.go:45
 msgid ""
 "Creates a new application. If no <id> is provided, one will be generated "
 "automatically"
@@ -215,34 +215,16 @@ msgid ""
 "the main app domain"
 msgstr ""
 
-#: internal/parser/gateways.go:60
-msgid ""
-"Creates gateways for an application and binds it to allow listener of the "
-"main app domain"
-msgstr ""
-
-#: internal/parser/routes.go:57
-msgid "Creates routes for an application, provides a way to route requests"
-msgstr ""
-
-#: internal/parser/resources.go:217
-msgid "Delete a resource from the application"
-msgstr ""
-
 #: internal/parser/volumes.go:190
 msgid "Delete a volume from the application"
 msgstr ""
 
-#: internal/parser/workspaces.go:112
+#: internal/parser/workspaces.go:113
 msgid "Delete a workspace"
 msgstr "Delete a workspace"
 
 #: internal/parser/ps.go:155
 msgid "Delete the selected processes"
-msgstr ""
-
-#: internal/parser/gateways.go:92
-msgid "Deletes specific gateway for application"
 msgstr ""
 
 #: internal/parser/releases.go:108
@@ -253,7 +235,7 @@ msgstr ""
 msgid "Describe a process type"
 msgstr ""
 
-#: internal/parser/apps.go:164
+#: internal/parser/apps.go:161
 msgid "Destroy an application"
 msgstr ""
 
@@ -263,10 +245,6 @@ msgstr ""
 
 #: internal/parser/certs.go:160
 msgid "Detach certificate from a domain"
-msgstr ""
-
-#: internal/parser/routes.go:215
-msgid "Dettach to gateway"
 msgstr ""
 
 #: internal/parser/autorollback.go:58
@@ -285,7 +263,7 @@ msgstr ""
 msgid "Display client version"
 msgstr ""
 
-#: cmd/root.go:39
+#: cmd/root.go:41
 msgid "Display help information"
 msgstr "Display help information"
 
@@ -301,7 +279,7 @@ msgstr ""
 msgid "Displays the currently logged in user"
 msgstr ""
 
-#: internal/parser/apps.go:58
+#: internal/parser/apps.go:56
 msgid "Do not create a 'drycc' git remote"
 msgstr ""
 
@@ -313,7 +291,7 @@ msgstr ""
 msgid "Enable autorollback for an application"
 msgstr ""
 
-#: internal/parser/workspaces.go:201
+#: internal/parser/workspaces.go:202
 msgid "Enable or disable alerts: true or false"
 msgstr "Enable or disable alerts: true or false"
 
@@ -379,27 +357,15 @@ msgstr ""
 msgid "Force deploy"
 msgstr ""
 
-#: internal/parser/resources.go:148
-msgid "Get a resource's detail in the application"
-msgstr ""
-
 #: internal/parser/certs.go:110
 msgid "Get detailed informaton about the certificate"
-msgstr ""
-
-#: internal/parser/routes.go:123
-msgid "Get route rules"
-msgstr ""
-
-#: internal/parser/routes.go:124
-msgid "Get route rules for an application"
 msgstr ""
 
 #: internal/parser/healthchecks.go:187
 msgid "How often (in seconds) to perform the probe"
 msgstr ""
 
-#: internal/parser/workspaces.go:135
+#: internal/parser/workspaces.go:136
 msgid "Invite a user to a workspace"
 msgstr "Invite a user to a workspace"
 
@@ -411,9 +377,13 @@ msgstr ""
 msgid "List SSL certificates for an application"
 msgstr ""
 
-#: internal/parser/apps.go:69
+#: internal/parser/apps.go:65
 msgid "List accessible applications"
 msgstr ""
+
+#: internal/parser/addons.go:41
+msgid "List addons attached to an application"
+msgstr "List addons attached to an application"
 
 #: internal/parser/limits.go:141
 msgid "List all available limit plans"
@@ -423,19 +393,31 @@ msgstr ""
 msgid "List all available limit specs"
 msgstr ""
 
-#: internal/parser/resources.go:66
-msgid "List all available plans for a resource service"
+#: internal/parser/plugins.go:34
+msgid ""
+"List all available plugin files on a user's PATH.\n"
+"\n"
+"Available plugin files are those that are:\n"
+"- executable\n"
+"- anywhere on the user's PATH\n"
+"- begin with \"drycc-\""
 msgstr ""
+"List all available plugin files on a user's PATH.\n"
+"\n"
+"Available plugin files are those that are:\n"
+"- executable\n"
+"- anywhere on the user's PATH\n"
+"- begin with \"drycc-\""
 
-#: internal/parser/resources.go:45
-msgid "List all available resource services"
-msgstr ""
+#: internal/parser/plugins.go:33
+msgid "List all visible plugin executables on a user's PATH"
+msgstr "List all visible plugin executables on a user's PATH"
 
 #: internal/parser/releases.go:53
 msgid "List an application's release history"
 msgstr ""
 
-#: internal/parser/gateways.go:36
+#: internal/parser/gateways.go:37
 msgid "List application gateways"
 msgstr ""
 
@@ -447,7 +429,7 @@ msgstr ""
 msgid "List application process types"
 msgstr ""
 
-#: internal/parser/routes.go:100
+#: internal/parser/routes.go:81
 msgid "List application routes"
 msgstr ""
 
@@ -462,6 +444,10 @@ msgstr ""
 #: internal/parser/autoscale.go:34
 msgid "List autoscale options for an application"
 msgstr ""
+
+#: internal/parser/addons.go:142
+msgid "List available addon classes, or show details for one class"
+msgstr "List available addon classes, or show details for one class"
 
 #: internal/parser/domains.go:36
 msgid "List domains bound to an application"
@@ -487,10 +473,6 @@ msgstr ""
 msgid "List resource timeouts for an app"
 msgstr ""
 
-#: internal/parser/resources.go:120
-msgid "List resources in the application"
-msgstr ""
-
 #: internal/parser/limits.go:118
 msgid "List specification information of the server"
 msgstr ""
@@ -503,13 +485,13 @@ msgstr ""
 msgid "List volumes in the application"
 msgstr ""
 
-#: internal/parser/apps.go:70
+#: internal/parser/apps.go:66
 msgid ""
 "Lists applications visible to the current user in the specified workspace"
 msgstr ""
 "Lists applications visible to the current user in the specified workspace"
 
-#: internal/parser/gateways.go:37
+#: internal/parser/gateways.go:38
 msgid "Lists gateways for an application"
 msgstr ""
 
@@ -533,7 +515,7 @@ msgstr ""
 msgid "Lists tokens visible to the current controller"
 msgstr ""
 
-#: internal/parser/workspaces.go:39
+#: internal/parser/workspaces.go:40
 msgid "Lists workspaces for current user"
 msgstr "Lists workspaces for current user"
 
@@ -552,6 +534,10 @@ msgstr ""
 #: internal/parser/tls.go:17
 msgid "Manage TLS/SSL settings for applications"
 msgstr ""
+
+#: internal/parser/addons.go:16
+msgid "Manage addons for your applications"
+msgstr "Manage addons for your applications"
 
 #: internal/parser/domains.go:14
 msgid "Manage and assign domain names to your applications"
@@ -629,15 +615,11 @@ msgstr ""
 msgid "Manage resource limits for your application"
 msgstr ""
 
-#: internal/parser/resources.go:17
-msgid "Manage resources for your applications"
-msgstr ""
-
 #: internal/parser/routing.go:14
 msgid "Manage routability of an application"
 msgstr ""
 
-#: internal/parser/routes.go:20
+#: internal/parser/routes.go:15
 msgid "Manage routes for your applications"
 msgstr ""
 
@@ -669,7 +651,7 @@ msgstr "Manage workspaces"
 msgid "Max replicas to scale up to"
 msgstr ""
 
-#: internal/parser/apps.go:23 internal/parser/apps.go:76
+#: internal/parser/apps.go:23 internal/parser/apps.go:72
 msgid "Maximum number of results to display"
 msgstr ""
 
@@ -693,7 +675,7 @@ msgstr ""
 msgid "Mount a volume to process of the application"
 msgstr ""
 
-#: internal/parser/git.go:42 internal/parser/apps.go:57
+#: internal/parser/git.go:42 internal/parser/apps.go:55
 msgid "Name of remote to create"
 msgstr ""
 
@@ -718,11 +700,11 @@ msgid ""
 "Number or name of the port to access on the pods targeted by the service"
 msgstr ""
 
-#: internal/parser/apps.go:102
+#: internal/parser/apps.go:99
 msgid "Open the application in a browser"
 msgstr ""
 
-#: internal/parser/apps.go:103
+#: internal/parser/apps.go:100
 msgid "Opens a URL to the application in the default browser"
 msgstr ""
 
@@ -738,21 +720,13 @@ msgstr ""
 msgid "Path that is exported by the nfs server"
 msgstr ""
 
-#: cmd/root.go:38
+#: cmd/root.go:40
 msgid "Path to configuration file"
 msgstr "Path to configuration file"
 
-#: internal/parser/routes.go:188 internal/parser/routes.go:224
-msgid "Port is the network port, the gateway listener expects to receive"
+#: internal/parser/routes.go:65 internal/parser/addons.go:104
+msgid "Path to the YAML configuration file"
 msgstr ""
-
-#: internal/parser/gateways.go:67
-msgid "Port is the network port, the listener expects to receive"
-msgstr ""
-
-#: internal/parser/gateways.go:100
-msgid "Port is the network port, the listener received"
-msgstr "Port is the network port, the listener received"
 
 #: internal/parser/ps.go:133
 msgid "Print a detailed description of the selected process"
@@ -774,7 +748,7 @@ msgstr ""
 msgid "Print information about a volume"
 msgstr ""
 
-#: internal/parser/workspaces.go:85
+#: internal/parser/workspaces.go:86
 msgid "Print information about a workspace"
 msgstr "Print information about a workspace"
 
@@ -812,7 +786,7 @@ msgstr ""
 msgid "Prints info about a particular release"
 msgstr ""
 
-#: internal/parser/apps.go:85
+#: internal/parser/apps.go:82
 msgid "Prints info about the current application"
 msgstr ""
 
@@ -828,16 +802,6 @@ msgstr ""
 msgid "Prompts for each value to be overwritten"
 msgstr ""
 
-#: internal/parser/gateways.go:68
-msgid ""
-"Protocol specifies the network protocol this listener expects to receive. "
-"Supports TCP, UDP, TLS, HTTP, and HTTPS"
-msgstr ""
-
-#: internal/parser/gateways.go:101
-msgid "Protocol specifies the network protocol this listener received"
-msgstr "Protocol specifies the network protocol this listener received"
-
 #: internal/parser/tokens.go:55
 msgid "Provide a alias for controller authentication token"
 msgstr ""
@@ -849,6 +813,32 @@ msgstr ""
 #: internal/parser/auth.go:41 internal/parser/tokens.go:67
 msgid "Provide a username for the account"
 msgstr ""
+
+#: internal/parser/plugins.go:14
+msgid "Provides utilities for interacting with plugins"
+msgstr "Provides utilities for interacting with plugins"
+
+#: internal/parser/plugins.go:15
+msgid ""
+"Provides utilities for interacting with plugins.\n"
+"\n"
+"Plugins provide extended functionality that is not part of the major command-"
+"line distribution.\n"
+"\n"
+"The easiest way to use plugins is to place executables named 'drycc-<name>' "
+"in your PATH.\n"
+"When you run 'drycc <name>', the CLI will automatically invoke the 'drycc-"
+"<name>' plugin if it exists."
+msgstr ""
+"Provides utilities for interacting with plugins.\n"
+"\n"
+"Plugins provide extended functionality that is not part of the major command-"
+"line distribution.\n"
+"\n"
+"The easiest way to use plugins is to place executables named 'drycc-<name>' "
+"in your PATH.\n"
+"When you run 'drycc <name>', the CLI will automatically invoke the 'drycc-"
+"<name>' plugin if it exists."
 
 #: internal/parser/config.go:144
 msgid "Pull environment variables to the path"
@@ -870,7 +860,11 @@ msgstr ""
 msgid "Query plans that meet the specified spec id, see [specs] subcommand."
 msgstr ""
 
-#: internal/parser/routes.go:247
+#: internal/parser/gateways.go:86
+msgid "Remove a gateway"
+msgstr "Remove a gateway"
+
+#: internal/parser/routes.go:104
 msgid "Remove a route from an application"
 msgstr ""
 
@@ -878,7 +872,7 @@ msgstr ""
 msgid "Remove a token for controller authentication"
 msgstr ""
 
-#: internal/parser/workspaces.go:157
+#: internal/parser/workspaces.go:158
 msgid "Remove a user from a workspace"
 msgstr "Remove a user from a workspace"
 
@@ -890,21 +884,29 @@ msgstr ""
 msgid "Remove an SSL certificate from an app"
 msgstr ""
 
+#: internal/parser/addons.go:128
+msgid "Remove an addon from an application"
+msgstr "Remove an addon from an application"
+
 #: internal/parser/labels.go:90
 msgid "Remove application's label"
-msgstr ""
-
-#: internal/parser/gateways.go:91
-msgid "Remove gateways from an application"
 msgstr ""
 
 #: internal/parser/services.go:103
 msgid "Remove service from an application"
 msgstr ""
 
+#: internal/parser/gateways.go:87
+msgid "Removes a gateway from an application"
+msgstr "Removes a gateway from an application"
+
 #: internal/parser/keys.go:82
 msgid "Removes an SSH key for the logged in user"
 msgstr ""
+
+#: internal/parser/addons.go:129
+msgid "Removes an addon from an application"
+msgstr "Removes an addon from an application"
 
 #: internal/parser/git.go:52
 msgid "Removes git remote of application from repository"
@@ -918,7 +920,7 @@ msgstr ""
 msgid "Restart application process types"
 msgstr ""
 
-#: internal/parser/apps.go:147
+#: internal/parser/apps.go:144
 msgid "Retention time of records in seconds"
 msgstr ""
 
@@ -930,15 +932,11 @@ msgstr ""
 msgid "Rolls back to a previous application release"
 msgstr ""
 
-#: internal/parser/routes.go:158
-msgid "Rules-file is the file name of rule to apply"
-msgstr ""
-
-#: internal/parser/apps.go:136
+#: internal/parser/apps.go:133
 msgid "Run a command in an ephemeral app container"
 msgstr ""
 
-#: internal/parser/apps.go:137
+#: internal/parser/apps.go:134
 msgid "Runs a command inside an ephemeral app container"
 msgstr ""
 
@@ -1002,14 +1000,6 @@ msgstr ""
 
 #: internal/parser/timeouts.go:64
 msgid "Set resource timeouts for an app"
-msgstr ""
-
-#: internal/parser/routes.go:149
-msgid "Set route rules"
-msgstr ""
-
-#: internal/parser/routes.go:150
-msgid "Set route rules for an application"
 msgstr ""
 
 #: internal/parser/tags.go:86
@@ -1213,7 +1203,7 @@ msgstr ""
 msgid "Sets termination grace period for an application"
 msgstr ""
 
-#: cmd/root.go:74
+#: cmd/root.go:77
 msgid "Shortcut Commands:"
 msgstr "Shortcut Commands:"
 
@@ -1221,21 +1211,53 @@ msgstr "Shortcut Commands:"
 msgid "Show certificate information for an SSL application"
 msgstr ""
 
-#: internal/parser/resources.go:156
-msgid "Show extra details provided to resource"
+#: internal/parser/addons.go:86
+msgid "Show connection details for an addon"
+msgstr "Show connection details for an addon"
+
+#: internal/parser/gateways.go:55
+msgid "Show gateway information"
+msgstr "Show gateway information"
+
+#: internal/parser/addons.go:64
+msgid "Show information about an addon"
+msgstr "Show information about an addon"
+
+#: internal/parser/routes.go:46
+msgid "Show route information"
+msgstr "Show route information"
+
+#: internal/parser/gateways.go:56
+msgid "Shows detailed information about a gateway"
+msgstr "Shows detailed information about a gateway"
+
+#: internal/parser/routes.go:47
+msgid "Shows detailed information about a route"
+msgstr "Shows detailed information about a route"
+
+#: internal/parser/addons.go:65
+msgid "Shows detailed information about an addon attached to an application"
+msgstr "Shows detailed information about an addon attached to an application"
+
+#: internal/parser/addons.go:87
+msgid ""
+"Shows the connection details (such as host, port and credentials) for an "
+"addon attached to an application"
 msgstr ""
+"Shows the connection details (such as host, port and credentials) for an "
+"addon attached to an application"
 
 #: internal/parser/update.go:21
 msgid "Simulate an update, only print the version info."
 msgstr ""
 
-#: internal/parser/apps.go:171
+#: internal/parser/apps.go:168
 msgid ""
 "Skips the prompt for the application name. \n"
 "<app> is the uniquely identifiable name for the application"
 msgstr ""
 
-#: internal/parser/workspaces.go:119
+#: internal/parser/workspaces.go:120
 msgid "Skips the prompt for the workspace name"
 msgstr "Skips the prompt for the workspace name"
 
@@ -1243,19 +1265,15 @@ msgstr "Skips the prompt for the workspace name"
 msgid "Specify if the logs should be streamed"
 msgstr ""
 
-#: internal/parser/resources.go:112 internal/parser/resources.go:196
-msgid "Specify values in a YAML file. If set, params will be discard"
-msgstr ""
-
 #: internal/parser/ps.go:113
 msgid "Stdin is a TTY"
 msgstr ""
 
-#: internal/parser/workspaces.go:224
+#: internal/parser/workspaces.go:218
 msgid "Switch the default workspace"
 msgstr "Switch the default workspace"
 
-#: internal/parser/workspaces.go:225
+#: internal/parser/workspaces.go:219
 msgid "Switches the default workspace in the client configuration"
 msgstr "Switches the default workspace in the client configuration"
 
@@ -1263,7 +1281,7 @@ msgstr "Switches the default workspace in the client configuration"
 msgid "Target CPU utilization percentage"
 msgstr ""
 
-#: cmd/root.go:29
+#: cmd/root.go:31
 msgid "The Drycc command-line client issues API calls to a Drycc controller"
 msgstr "Drycc命令行客户端向Drycc控制器发出API调用"
 
@@ -1278,6 +1296,14 @@ msgstr ""
 #: internal/parser/services.go:65 internal/parser/services.go:116
 msgid "The IP protocol for this port. Supports TCP, UDP, and SCTP"
 msgstr ""
+
+#: internal/parser/addons.go:61 internal/parser/addons.go:83
+msgid "The addon name"
+msgstr "The addon name"
+
+#: internal/parser/addons.go:125
+msgid "The addon name to be removed"
+msgstr "The addon name to be removed"
 
 #: internal/parser/healthchecks.go:86
 msgid ""
@@ -1298,16 +1324,16 @@ msgstr ""
 "                  'sleep' accepts duration in seconds; 'httpGet' and "
 "'tcpSocket' accept a port number."
 
-#: internal/parser/workspaces.go:70
+#: internal/parser/workspaces.go:71
 msgid "The contact email for the workspace"
 msgstr "The contact email for the workspace"
 
-#: internal/parser/workspaces.go:132
+#: internal/parser/workspaces.go:133
 msgid "The email address of the user to invite"
 msgstr "The email address of the user to invite"
 
 #: internal/parser/shortcuts.go:53 internal/parser/volumes.go:235
-#: internal/parser/apps.go:132
+#: internal/parser/apps.go:129
 msgid "The filesystem path"
 msgstr ""
 
@@ -1369,15 +1395,15 @@ msgstr ""
 
 #: internal/parser/certs.go:23 internal/parser/certs.go:48
 #: internal/parser/domains.go:22 internal/parser/domains.go:43
-#: internal/parser/gateways.go:22 internal/parser/gateways.go:44
+#: internal/parser/gateways.go:22 internal/parser/gateways.go:45
 #: internal/parser/limits.go:127 internal/parser/limits.go:151
-#: internal/parser/releases.go:33 internal/parser/releases.go:62
-#: internal/parser/resources.go:25 internal/parser/resources.go:127
-#: internal/parser/routes.go:28 internal/parser/routes.go:107
+#: internal/parser/routes.go:23 internal/parser/routes.go:88
 #: internal/parser/tokens.go:22 internal/parser/tokens.go:40
 #: internal/parser/volumes.go:23 internal/parser/volumes.go:145
-#: internal/parser/workspaces.go:24 internal/parser/workspaces.go:46
-#: internal/parser/workspaces.go:93
+#: internal/parser/releases.go:33 internal/parser/releases.go:62
+#: internal/parser/workspaces.go:24 internal/parser/workspaces.go:47
+#: internal/parser/workspaces.go:94 internal/parser/addons.go:24
+#: internal/parser/addons.go:48 internal/parser/addons.go:154
 msgid "The maximum number of results to display"
 msgstr ""
 
@@ -1389,9 +1415,10 @@ msgstr ""
 msgid "The name of the cert to remove from the app"
 msgstr ""
 
-#: internal/parser/workspaces.go:61 internal/parser/workspaces.go:82
-#: internal/parser/workspaces.go:109 internal/parser/workspaces.go:131
-#: internal/parser/workspaces.go:153 internal/parser/workspaces.go:181
+#: internal/parser/workspaces.go:62 internal/parser/workspaces.go:83
+#: internal/parser/workspaces.go:110 internal/parser/workspaces.go:132
+#: internal/parser/workspaces.go:154 internal/parser/workspaces.go:182
+#: internal/parser/workspaces.go:215
 msgid "The name of the workspace"
 msgstr "The name of the workspace"
 
@@ -1399,7 +1426,7 @@ msgstr "The name of the workspace"
 msgid "The number of lines to display, -1 showing all log lines"
 msgstr ""
 
-#: internal/parser/pts.go:121 internal/parser/shortcuts.go:95
+#: internal/parser/shortcuts.go:95 internal/parser/pts.go:121
 msgid "The number of processes"
 msgstr ""
 
@@ -1428,11 +1455,11 @@ msgstr ""
 msgid "The private key of the SSL certificate"
 msgstr ""
 
-#: internal/parser/pts.go:62 internal/parser/pts.go:120
-#: internal/parser/pts.go:157 internal/parser/shortcuts.go:94
-#: internal/parser/tags.go:26 internal/parser/tags.go:60
-#: internal/parser/tags.go:100 internal/parser/tags.go:131
-#: internal/parser/volumes.go:234 internal/parser/volumes.go:259
+#: internal/parser/shortcuts.go:94 internal/parser/tags.go:26
+#: internal/parser/tags.go:60 internal/parser/tags.go:100
+#: internal/parser/tags.go:131 internal/parser/volumes.go:234
+#: internal/parser/volumes.go:259 internal/parser/pts.go:62
+#: internal/parser/pts.go:120 internal/parser/pts.go:157
 msgid "The process name as defined in your Procfile"
 msgstr ""
 
@@ -1533,44 +1560,11 @@ msgstr ""
 msgid "The release of the application, such as '1'"
 msgstr ""
 
-#: internal/parser/resources.go:214 internal/parser/resources.go:239
-#: internal/parser/resources.go:261
-msgid "The resource instance alias name"
-msgstr ""
-
-#: internal/parser/resources.go:94 internal/parser/resources.go:177
-msgid "The resource instance parameters key"
-msgstr ""
-
-#: internal/parser/resources.go:95 internal/parser/resources.go:178
-msgid "The resource instance parameters value"
-msgstr ""
-
-#: internal/parser/resources.go:92 internal/parser/resources.go:175
-msgid "The resource's service"
-msgstr ""
-
-#: internal/parser/workspaces.go:200
+#: internal/parser/workspaces.go:201
 msgid "The role to assign: admin, member, or viewer"
 msgstr "The role to assign: admin, member, or viewer"
 
-#: internal/parser/routes.go:52
-msgid "The route kind, range: HTTPRoute,TCPRoute,UDPRoute,GRPCRoute,TLSRoute"
-msgstr ""
-
-#: internal/parser/routes.go:53
-msgid "The route's backend, pattern: <service>:<port>,<weight>"
-msgstr ""
-
-#: internal/parser/resources.go:63
-msgid "The service name for plans"
-msgstr ""
-
-#: internal/parser/resources.go:93 internal/parser/resources.go:176
-msgid "The service's plan"
-msgstr ""
-
-#: internal/parser/shortcuts.go:54 internal/parser/apps.go:133
+#: internal/parser/shortcuts.go:54 internal/parser/apps.go:130
 msgid "The shell command to run inside the container"
 msgstr ""
 
@@ -1594,13 +1588,7 @@ msgstr ""
 msgid "The tag value"
 msgstr ""
 
-#: internal/parser/routes.go:187 internal/parser/routes.go:223
-msgid "The unique name of the gaetway"
-msgstr ""
-
-#: internal/parser/routes.go:51 internal/parser/routes.go:120
-#: internal/parser/routes.go:146 internal/parser/routes.go:176
-#: internal/parser/routes.go:212 internal/parser/routes.go:244
+#: internal/parser/routes.go:43 internal/parser/routes.go:101
 msgid "The unique name of the route"
 msgstr ""
 
@@ -1610,15 +1598,15 @@ msgstr ""
 #: internal/parser/config.go:29 internal/parser/domains.go:21
 #: internal/parser/gateways.go:21 internal/parser/git.go:18
 #: internal/parser/labels.go:21 internal/parser/limits.go:21
-#: internal/parser/ps.go:21 internal/parser/ps.go:112 internal/parser/pts.go:21
-#: internal/parser/pts.go:134 internal/parser/registry.go:26
-#: internal/parser/releases.go:32 internal/parser/resources.go:24
-#: internal/parser/routes.go:27 internal/parser/routing.go:20
-#: internal/parser/services.go:23 internal/parser/tags.go:25
-#: internal/parser/timeouts.go:21 internal/parser/volumes.go:22
-#: internal/parser/apps.go:91 internal/parser/apps.go:109
-#: internal/parser/apps.go:144 internal/parser/apps.go:170
-#: internal/parser/apps.go:193
+#: internal/parser/ps.go:21 internal/parser/ps.go:112
+#: internal/parser/registry.go:26 internal/parser/routes.go:22
+#: internal/parser/routing.go:20 internal/parser/services.go:23
+#: internal/parser/tags.go:25 internal/parser/timeouts.go:21
+#: internal/parser/volumes.go:22 internal/parser/pts.go:21
+#: internal/parser/pts.go:134 internal/parser/releases.go:32
+#: internal/parser/apps.go:88 internal/parser/apps.go:106
+#: internal/parser/apps.go:141 internal/parser/apps.go:167
+#: internal/parser/apps.go:190 internal/parser/addons.go:23
 msgid "The uniquely identifiable name for the application"
 msgstr ""
 
@@ -1626,7 +1614,7 @@ msgstr ""
 msgid "The uniquely identifiable name of the application"
 msgstr ""
 
-#: internal/parser/workspaces.go:182
+#: internal/parser/workspaces.go:183
 msgid "The username of the member to update"
 msgstr "The username of the member to update"
 
@@ -1634,7 +1622,7 @@ msgstr "The username of the member to update"
 msgid "The username of the registry"
 msgstr ""
 
-#: internal/parser/workspaces.go:154
+#: internal/parser/workspaces.go:155
 msgid "The username to remove from the workspace"
 msgstr "The username to remove from the workspace"
 
@@ -1682,7 +1670,7 @@ msgstr ""
 #: internal/parser/shortcuts.go:52 internal/parser/volumes.go:58
 #: internal/parser/volumes.go:118 internal/parser/volumes.go:213
 #: internal/parser/volumes.go:233 internal/parser/volumes.go:258
-#: internal/parser/apps.go:131
+#: internal/parser/apps.go:128
 msgid "The volume name"
 msgstr ""
 
@@ -1702,14 +1690,9 @@ msgstr ""
 msgid "The volume type, such as csi, nfs, oss"
 msgstr ""
 
-#: internal/parser/resources.go:91 internal/parser/resources.go:145
-#: internal/parser/resources.go:174
-msgid "This resource instance alias"
-msgstr ""
-
 #: internal/parser/builds.go:68 internal/parser/builds.go:115
-#: internal/parser/pts.go:99 internal/parser/releases.go:117
-#: internal/parser/tokens.go:103
+#: internal/parser/tokens.go:103 internal/parser/pts.go:99
+#: internal/parser/releases.go:117
 msgid "To proceed, type \"yes\""
 msgstr ""
 
@@ -1718,11 +1701,11 @@ msgstr ""
 msgid "To proceed, type 'yes'"
 msgstr ""
 
-#: internal/parser/apps.go:184
+#: internal/parser/apps.go:181
 msgid "Transfer app to another workspace"
 msgstr "Transfer app to another workspace"
 
-#: internal/parser/apps.go:185
+#: internal/parser/apps.go:182
 msgid "Transfer application to another workspace."
 msgstr "Transfer application to another workspace."
 
@@ -1792,13 +1775,9 @@ msgid ""
 "controller"
 msgstr ""
 
-#: internal/parser/workspaces.go:185
+#: internal/parser/workspaces.go:186
 msgid "Update a member's role and/or alerts in a workspace"
 msgstr "Update a member's role and/or alerts in a workspace"
-
-#: internal/parser/resources.go:181
-msgid "Update a resource from the application"
-msgstr ""
 
 #: internal/parser/update.go:15 internal/parser/update.go:16
 msgid "Update workflow cli to latest release"
@@ -1816,13 +1795,21 @@ msgstr ""
 msgid "View autorollback info for an application"
 msgstr ""
 
-#: internal/parser/apps.go:84
+#: internal/parser/apps.go:81
 msgid "View info about an application"
 msgstr ""
 
-#: internal/parser/apps.go:145
+#: internal/parser/apps.go:142
 msgid "Volume mounts in format 'volume:path'"
 msgstr ""
+
+#: internal/parser/addons.go:143
+msgid ""
+"Without a name argument, lists all addon classes in the catalog. With a "
+"name, shows detailed information about that class including its plans."
+msgstr ""
+"Without a name argument, lists all addon classes in the catalog. With a "
+"name, shows detailed information about that class including its plans."
 
 #: internal/parser/builds.go:49
 msgid "default container image"
@@ -1849,13 +1836,6 @@ msgid ""
 "procfile type which should handle the request, e.g. webhooks (should be bind "
 "to the port PORT)\n"
 "             only single extra service per Porcfile type could be created."
-msgstr ""
-
-#: internal/parser/resources.go:225
-msgid ""
-"skips the prompt for the resource name. <resource> is the uniquely "
-"identifiable\n"
-"name for the resource"
 msgstr ""
 
 #: internal/parser/healthchecks.go:85
@@ -1894,66 +1874,14 @@ msgstr ""
 msgid "the lifecycle handler type, such as 'postStart' or 'preStop'"
 msgstr "the lifecycle handler type, such as 'postStart' or 'preStop'"
 
-#: internal/parser/resources.go:264
-msgid "unbind a resources for an application"
-msgstr ""
+#~ msgid "Port is the network port, the listener received"
+#~ msgstr "Port is the network port, the listener received"
 
-#: internal/parser/plugins.go:14
-msgid "Provides utilities for interacting with plugins"
-msgstr "Provides utilities for interacting with plugins"
+#~ msgid "Protocol specifies the network protocol this listener received"
+#~ msgstr "Protocol specifies the network protocol this listener received"
 
-#: internal/parser/plugins.go:15
-msgid ""
-"Provides utilities for interacting with plugins.\n"
-"\n"
-"Plugins provide extended functionality that is not part of the major command-line distribution.\n"
-"\n"
-"The easiest way to use plugins is to place executables named 'drycc-<name>' in your PATH.\n"
-"When you run 'drycc <name>', the CLI will automatically invoke the 'drycc-<name>' plugin if it exists."
-msgstr ""
-"Provides utilities for interacting with plugins.\n"
-"\n"
-"Plugins provide extended functionality that is not part of the major command-line distribution.\n"
-"\n"
-"The easiest way to use plugins is to place executables named 'drycc-<name>' in your PATH.\n"
-"When you run 'drycc <name>', the CLI will automatically invoke the 'drycc-<name>' plugin if it exists."
+#~ msgid "The following compatible plugins are available:"
+#~ msgstr "The following compatible plugins are available:"
 
-#: internal/parser/plugins.go:22
-msgid ""
-"  # List all available plugins\n"
-"  drycc plugins list"
-msgstr ""
-"  # List all available plugins\n"
-"  drycc plugins list"
-
-#: internal/parser/plugins.go:36
-msgid "List all visible plugin executables on a user's PATH"
-msgstr "List all visible plugin executables on a user's PATH"
-
-#: internal/parser/plugins.go:37
-msgid ""
-"List all available plugin files on a user's PATH.\n"
-"\n"
-"Available plugin files are those that are:\n"
-"- executable\n"
-"- anywhere on the user's PATH\n"
-"- begin with \"drycc-\""
-msgstr ""
-"List all available plugin files on a user's PATH.\n"
-"\n"
-"Available plugin files are those that are:\n"
-"- executable\n"
-"- anywhere on the user's PATH\n"
-"- begin with \"drycc-\""
-
-#: internal/parser/plugins.go:55
-msgid "Unable to find any drycc plugins in your PATH"
-msgstr "Unable to find any drycc plugins in your PATH"
-
-#: internal/parser/plugins.go:59
-msgid "The following compatible plugins are available:"
-msgstr "The following compatible plugins are available:"
-
-#: internal/commands/builds.go:66
-msgid "Warning: Both .drycc/ and Procfile found. .drycc/ takes priority and Procfile will be ignored. Consider removing Procfile if it's no longer needed."
-msgstr ""
+#~ msgid "Unable to find any drycc plugins in your PATH"
+#~ msgstr "Unable to find any drycc plugins in your PATH"

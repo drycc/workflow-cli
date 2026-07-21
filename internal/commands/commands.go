@@ -21,6 +21,13 @@ type Commander interface {
 	AppRun(string, string, []string, uint32, uint32) error
 	AppDestroy(string, string) error
 	AppTransfer(string, string) error
+	AddonsList(string, int) error
+	AddonsInfo(string, string) error
+	AddonsConnection(string, string) error
+	AddonsApply(string, string) error
+	AddonsRemove(string, string) error
+	AddonsClassesList(int) error
+	AddonsClassesInfo(string) error
 	AutodeployInfo(string) error
 	AutodeployEnable(string) error
 	AutodeployDisable(string) error
