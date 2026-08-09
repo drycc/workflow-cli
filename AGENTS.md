@@ -1,5 +1,9 @@
 # AGENTS.md — workflow-cli
 
+> **When you change code patterns, conventions, or architecture, update this file
+> in the same commit.** AGENTS.md is the single source of truth for project
+> conventions — if it's stale, the next agent will follow wrong patterns.
+
 `drycc` is the command line utility for the Drycc PaaS. This Go project is the
 **user-facing tier** of a three-repo stack — it talks to a controller over HTTP
 through `controller-sdk-go`. Read this file before editing anything.
@@ -28,7 +32,7 @@ workflow-cli          (this repo, the `drycc` binary)  ← parses args, renders 
 - Go 1.26, module path `github.com/drycc/workflow-cli`
 - CLI framework: `github.com/spf13/cobra`
 - HTTP client: `github.com/drycc/controller-sdk-go`
-- Output: `github.com/olekukonko/tablewriter` (tables), `pkg/coder` (YAML manifests)
+- Output: `github.com/olekukonko/tablewriter` (tables), `pkg/coder` (flat YAML)
 - i18n: `github.com/chai2010/gettext-go` + `.po`/`.mo` catalogs
 - `vendor/` is **gitignored** — it is regenerated locally, never committed
 
@@ -44,7 +48,7 @@ internal/
   template/            cobra example templating
   plugins/             plugin loader
 pkg/
-  coder/               YAML manifest encode/decode (K8s-style kind/metadata/spec)
+  coder/               YAML encode/decode (flat snake_case, no K8s Manifest wrapper)
   i18n/                translation loader + catalogs (en_US, zh_CN)
   settings/            client config file (~/.drycc/client.json)
   testutil/            test HTTP server + helpers
@@ -85,6 +89,11 @@ it in the interface is the #1 missed step.
   `Connection` something else in the CLI).
 - `addon` / `AddOn` / `addon` — the project spells it **lowercase "addon"** in
   prose and identifiers (`addons`, `AddonInstance`, `AddonClass`). Keep it.
+- **All API-related field names and CLI parameters use snake_case.** K8s
+  camelCase names (e.g., `livenessProbe`, `httpGet`, `postStart`, `backendRefs`)
+  are converted to snake_case by the controller's `CamelCaseJSONField`. CLI
+  command arguments and display labels must also use snake_case:
+  `liveness_probe`, `http_get`, `post_start`, `backend_refs`, etc.
 
 ### i18n — every user-facing string goes through `i18n.T()`
 All `Short`/`Long`/flag descriptions/`<name>` arg descriptions must be wrapped:
@@ -103,13 +112,14 @@ Then translate the new `msgstr ""` entries in
 technical term "addon" untranslated in zh_CN to match the identifiers.
 
 ### Output rendering
-- **Lists** → `d.getDefaultFormatTable([]string{"COL1","COL2"})`, render with
+- **Lists** -> `d.getDefaultFormatTable([]string{"COL1","COL2"})`, render with
   `table.Append`/`table.Render`. It is whitespace-packed (`NoWhiteSpace`); assert
   with `assert.Contains` in tests, not exact-string equals.
-- **Single-object details** → `pkg/coder` YAML manifest (K8s-style
-  apiVersion/kind/metadata/spec/status) via a `*Coder.Encode()`.
-- **Connection/secret-style key→value blobs** → KEY/VALUE table, keys sorted.
-- **Mutating ops** (apply/remove/upsert) → print `"<verb> <obj> ... "`,
+- **Single-object details** -> `pkg/coder` flat YAML (snake_case, no K8s Manifest
+  wrapper) via a `*Coder.Encode()`. Coder `Decode` is just `json.Unmarshal`,
+  `Encode` is just `marshalYAML` - no field renaming.
+- **Connection/secret-style key->value blobs** -> KEY/VALUE table, keys sorted.
+- **Mutating ops** (apply/remove/upsert) -> print `"<verb> <obj> ... "`,
   call `progress(d.WOut)` for a spinner, then `done`.
 
 ### Shared parser state

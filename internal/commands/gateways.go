@@ -84,7 +84,7 @@ func (d *DryccCmd) GatewaysApply(appID, filePath string) error {
 		return fmt.Errorf("invalid gateway configuration: %w", err)
 	}
 	if c.Request.Name == "" {
-		return fmt.Errorf("invalid gateway configuration: missing metadata.name")
+		return fmt.Errorf("invalid gateway configuration: missing name")
 	}
 	req := c.Request
 

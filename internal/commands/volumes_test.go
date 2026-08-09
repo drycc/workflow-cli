@@ -106,7 +106,7 @@ func TestVolumesInfo(t *testing.T) {
 		"nfs": {
 			"server": "nfs.drycc.cc",
 			"path": "/mnt",
-			"readOnly": true
+			"read_only": true
 		}
 	},
 	"created": "2020-08-26T00:00:00UTC",
@@ -126,7 +126,7 @@ Path:
 Parameters:
                nfs:
                  path: /mnt
-                 readOnly: true
+                  read_only: true
                  server: nfs.drycc.cc
 
 Created:       2020-08-26T00:00:00UTC

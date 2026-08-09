@@ -179,24 +179,24 @@ func TestPsDescribe(t *testing.T) {
 				"args": ["sleep 3600s"],
 				"state": {
 					"running": {
-					  "startedAt": "2024-05-21T02:27:03+00:00"
+					  "started_at": "2024-05-21T02:27:03+00:00"
 					},
 					"waiting": {
 					  "message": "container create failed: executable file './start.sh' not found in $PATH: No such file or directory\n",
 					  "reason": "CreateContainerError"
 					}
 				},
-				"lastState": {
+				"last_state": {
 					"terminated": {
-					  "containerID": "cri-o://ccfc73b0b4d966af4f93ca871a04fa97460620cd8005c1c36f7734a08ba49ed0",
-					  "exitCode": 1,
-					  "finishedAt": "2024-05-21T02:27:03+00:00",
+					  "container_id": "cri-o://ccfc73b0b4d966af4f93ca871a04fa97460620cd8005c1c36f7734a08ba49ed0",
+					  "exit_code": 1,
+					  "finished_at": "2024-05-21T02:27:03+00:00",
 					  "reason": "Error",
-					  "startedAt": "2024-05-21T02:26:33+00:00"
+					  "started_at": "2024-05-21T02:26:33+00:00"
 					}
 				},
 				"ready": true,
-				"restartCount": 1
+				"restart_count": 1
 			}]
 		}`)
 	})

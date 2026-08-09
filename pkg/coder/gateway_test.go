@@ -11,15 +11,11 @@ func TestGatewayCoderDecode(t *testing.T) {
 	t.Parallel()
 
 	input := `{
-		"apiVersion": "gateway.networking.k8s.io/v1",
-		"kind": "Gateway",
-		"metadata": {"name": "my-gateway"},
-		"spec": {
-			"ports": [
-				{"port": 80, "protocol": "HTTP"},
-				{"port": 443, "protocol": "HTTPS"}
-			]
-		}
+		"name": "my-gateway",
+		"ports": [
+			{"port": 80, "protocol": "HTTP"},
+			{"port": 443, "protocol": "HTTPS"}
+		]
 	}`
 
 	c := &GatewayCoder{}
@@ -44,7 +40,7 @@ func TestGatewayCoderDecode(t *testing.T) {
 func TestGatewayCoderDecodeMinimal(t *testing.T) {
 	t.Parallel()
 
-	input := `{"kind": "Gateway", "metadata": {"name": "simple"}}`
+	input := `{"name": "simple"}`
 
 	c := &GatewayCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
@@ -91,15 +87,6 @@ func TestGatewayCoderEncode(t *testing.T) {
 
 	yaml := string(data)
 
-	// Check field order: apiVersion should come first
-	if !strings.HasPrefix(yaml, "apiVersion:") {
-		t.Errorf("expected YAML to start with apiVersion:, got:\n%s", yaml)
-	}
-
-	// Check key fields are present
-	if !strings.Contains(yaml, "kind: Gateway") {
-		t.Error("expected kind: Gateway in output")
-	}
 	if !strings.Contains(yaml, "name: my-gateway") {
 		t.Error("expected name: my-gateway in output")
 	}
@@ -146,7 +133,6 @@ func TestGatewayCoderEncodeNoAddresses(t *testing.T) {
 func TestGatewayCoderRoundTrip(t *testing.T) {
 	t.Parallel()
 
-	// Encode
 	original := &GatewayCoder{
 		Info: api.GatewayInfo{
 			Name: "round-trip",
@@ -164,17 +150,9 @@ func TestGatewayCoderRoundTrip(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	// Decode the equivalent JSON
 	input := `{
-		"apiVersion": "controller.drycc.cc/v2.3",
-		"kind": "Gateway",
-		"metadata": {"name": "round-trip"},
-		"spec": {
-			"ports": [{"port": 8080, "protocol": "TCP"}]
-		},
-		"status": {
-			"addresses": [{"type": "IPAddress", "value": "10.0.0.1"}]
-		}
+		"name": "round-trip",
+		"ports": [{"port": 8080, "protocol": "TCP"}]
 	}`
 
 	decoded := &GatewayCoder{}
@@ -189,5 +167,5 @@ func TestGatewayCoderRoundTrip(t *testing.T) {
 		t.Error("Ports mismatch after round trip")
 	}
 
-	_ = yamlData // yamlData is valid YAML output, verified above
+	_ = yamlData
 }

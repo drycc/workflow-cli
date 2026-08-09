@@ -84,7 +84,7 @@ func TestGatewaysApply(t *testing.T) {
 	gatewayFile, err := os.CreateTemp("", "gateway.yaml")
 	assert.NoError(t, err)
 	defer os.Remove(gatewayFile.Name())
-	_, err = gatewayFile.Write([]byte("apiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata:\n  name: example-go\nspec:\n  ports:\n  - port: 443\n    protocol: HTTPS\n"))
+	_, err = gatewayFile.Write([]byte("name: example-go\nports:\n- port: 443\n  protocol: HTTPS\n"))
 	assert.NoError(t, err)
 	gatewayFile.Close()
 

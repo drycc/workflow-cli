@@ -73,39 +73,39 @@ func lifecyclesSet(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:  "set <handler> <action> [flags] [--] <args>...",
 		Args: cobra.MinimumNArgs(3),
 		Example: template.CustomExample(
-			"drycc lifecycles set postStart httpGet --path=/health -- 8000",
+			"drycc lifecycles set post_start http_get --path=/health -- 8000",
 			map[string]string{
-				"<handler>": i18n.T("The lifecycle handler, such as 'postStart' 'preStop'"),
-				"<action>":  i18n.T("the lifecycle action type, such as 'httpGet', 'exec', 'sleep' or 'tcpSocket'"),
+				"<handler>": i18n.T("The lifecycle handler, such as 'post_start' 'pre_stop'"),
+				"<action>":  i18n.T("the lifecycle action type, such as 'http_get', 'exec', 'sleep' or 'tcp_socket'"),
 				"<args>": i18n.T(`The arguments required for the lifecycle action. 'exec' accepts a list of arguments;
-                  'sleep' accepts duration in seconds; 'httpGet' and 'tcpSocket' accept a port number.`),
+                  'sleep' accepts duration in seconds; 'http_get' and 'tcp_socket' accept a port number.`),
 			},
 		),
 		Short: i18n.T("Set lifecycles for an application"),
 		Long: i18n.T(`Sets lifecycle handlers for an application.
 
 Lifecycle handlers allow you to run actions at specific points in a container's lifecycle.
-Two types of lifecycle handlers are supported: 'postStart' and 'preStop'.
+Two types of lifecycle handlers are supported: 'post_start' and 'pre_stop'.
 
-A 'postStart' handler runs immediately after a container is created. If the handler fails,
+A 'post_start' handler runs immediately after a container is created. If the handler fails,
 the container is terminated and restarted according to its restart policy.
 
-A 'preStop' handler runs immediately before a container is terminated. This handler must
+A 'pre_stop' handler runs immediately before a container is terminated. This handler must
 complete before the container termination signal is sent. If the handler fails, the
 container enters a termination grace period and is then forcefully terminated.
 
 Each lifecycle handler can be configured with one of the following action types:
 
-'httpGet': Performs an HTTP GET request to the container. The action is considered
-successful if the response status code is in the 200-399 range. 'httpGet' actions require
+'http_get': Performs an HTTP GET request to the container. The action is considered
+successful if the response status code is in the 200-399 range. 'http_get' actions require
 a port number to specify where to send the HTTP request.
 
 'exec': Executes a command inside the container. The action is considered successful if
 the command exits with status code 0. 'exec' actions accept a list of command arguments
 to run inside the container.
 
-'tcpSocket': Attempts to open a TCP socket connection to the container. The action is
-considered successful if a connection can be established. 'tcpSocket' actions require a
+'tcp_socket': Attempts to open a TCP socket connection to the container. The action is
+considered successful if a connection can be established. 'tcp_socket' actions require a
 port number to specify where to attempt the connection.
 
 'sleep': Waits for a specified duration before proceeding. 'sleep' actions accept a
@@ -117,7 +117,7 @@ duration in seconds to wait.
 			lifecycleHandler := &api.LifecycleHandler{}
 
 			switch action {
-			case "httpGet":
+			case "http_get":
 				headers := []string{}
 				if flags.headers != "" {
 					headers = strings.Split(flags.headers, ",")
@@ -149,7 +149,7 @@ duration in seconds to wait.
 				lifecycleHandler.Sleep = &api.SleepAction{
 					Seconds: seconds,
 				}
-			case "tcpSocket":
+			case "tcp_socket":
 				port, err := strconv.Atoi(args[2])
 				if err != nil {
 					return fmt.Errorf("could not parse port: %s", err)
@@ -159,17 +159,17 @@ duration in seconds to wait.
 					Port: port,
 				}
 			default:
-				return fmt.Errorf("invalid action type %s, Must be one of: \"httpGet\", \"sleep\", \"exec\", \"tcpSocket\"", action)
+				return fmt.Errorf("invalid action type %s, Must be one of: \"http_get\", \"sleep\", \"exec\", \"tcp_socket\"", action)
 			}
 			handler := args[0]
 			lifecycle := &api.Lifecycle{StopSignal: flags.stopSignal}
 			switch handler {
-			case "postStart":
+			case "post_start":
 				lifecycle.PostStart = &lifecycleHandler
-			case "preStop":
+			case "pre_stop":
 				lifecycle.PreStop = &lifecycleHandler
 			default:
-				return fmt.Errorf("lifecycle handler %s is invalid. Must be one of 'postStart' or 'preStop'", handler)
+				return fmt.Errorf("lifecycle handler %s is invalid. Must be one of 'post_start' or 'pre_stop'", handler)
 			}
 
 			return cmdr.LifecyclesSet(app, flags.ptype, lifecycle)
@@ -181,8 +181,8 @@ duration in seconds to wait.
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
 
-	cmd.Flags().StringVar(&flags.path, "path", "/", i18n.T("The relative URL path for 'httpGet' actions"))
-	cmd.Flags().StringVar(&flags.headers, "headers", "", i18n.T("The HTTP headers to send for 'httpGet' actions, separated by commas"))
+	cmd.Flags().StringVar(&flags.path, "path", "/", i18n.T("The relative URL path for 'http_get' actions"))
+	cmd.Flags().StringVar(&flags.headers, "headers", "", i18n.T("The HTTP headers to send for 'http_get' actions, separated by commas"))
 	cmd.Flags().StringVar(&flags.stopSignal, "stop-signal", "SIGTERM", i18n.T("The stop signal to send to the container"))
 	cmd.Flags().SortFlags = false
 
@@ -201,9 +201,9 @@ func lifecyclesUnset(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:  "unset <handler>...",
 		Args: cobra.MinimumNArgs(1),
 		Example: template.CustomExample(
-			"drycc lifecycles unset postStart",
+			"drycc lifecycles unset post_start",
 			map[string]string{
-				"<handler>": i18n.T("the lifecycle handler type, such as 'postStart' or 'preStop'"),
+				"<handler>": i18n.T("the lifecycle handler type, such as 'post_start' or 'pre_stop'"),
 			},
 		),
 		Short:             i18n.T("Unset lifecycle handler for an application"),
@@ -228,9 +228,9 @@ func lifecyclesUnset(cmdr *commands.DryccCmd) *cobra.Command {
 
 func checkLifecycleHandlerType(lifecycleHandlerType string) error {
 	switch lifecycleHandlerType {
-	case "postStart", "preStop":
+	case "post_start", "pre_stop":
 		return nil
 	default:
-		return fmt.Errorf("lifecycle handler type %s is invalid. Must be one of 'postStart' or 'preStop'", lifecycleHandlerType)
+		return fmt.Errorf("lifecycle handler type %s is invalid. Must be one of 'post_start' or 'pre_stop'", lifecycleHandlerType)
 	}
 }

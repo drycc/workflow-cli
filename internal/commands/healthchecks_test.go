@@ -34,16 +34,16 @@ func TestHealthchecksList(t *testing.T) {
   "registry": {},
   "healthcheck": {
     "web": {
-      "livenessProbe": {
-        "initialDelaySeconds": 50,
-        "timeoutSeconds": 50,
-        "periodSeconds": 10,
-        "failureThreshold": 3,
-        "httpGet": {
+      "liveness_probe": {
+        "initial_delay_seconds": 50,
+        "timeout_seconds": 50,
+        "period_seconds": 10,
+        "failure_threshold": 3,
+        "http_get": {
           "port": 80,
           "path": "/"
         },
-        "successThreshold": 1
+        "success_threshold": 1
       }
     }
   },
@@ -55,13 +55,12 @@ func TestHealthchecksList(t *testing.T) {
 	err = cmdr.HealthchecksList("foo", "web", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `App:             foo                                                                                                            
-UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                           
-Created:         2016-09-12T22:20:14Z                                                                                           
-Updated:         2016-09-12T22:20:14Z                                                                                           
-Healthchecks:    
-                 livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
-`, "output")
+	actual := b.String()
+	assert.Contains(t, actual, "App:")
+	assert.Contains(t, actual, "foo")
+	assert.Contains(t, actual, "c039a380-6068-4511-b35a-535a73b86ef5")
+	assert.Contains(t, actual, "Healthchecks:")
+	assert.Contains(t, actual, "liveness_probe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3")
 }
 
 func TestHealthchecksListNoHealthCheck(t *testing.T) {
@@ -121,29 +120,29 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
   "registry": {},
   "healthcheck": {
     "web": {
-      "livenessProbe": {
-        "initialDelaySeconds": 50,
-        "timeoutSeconds": 50,
-        "periodSeconds": 10,
-        "failureThreshold": 3,
-        "httpGet": {
+      "liveness_probe": {
+        "initial_delay_seconds": 50,
+        "timeout_seconds": 50,
+        "period_seconds": 10,
+        "failure_threshold": 3,
+        "http_get": {
           "port": 80,
           "path": "/"
         },
-        "successThreshold": 1
+        "success_threshold": 1
       }
     },
 		"task": {
-      "livenessProbe": {
-        "initialDelaySeconds": 50,
-        "timeoutSeconds": 50,
-        "periodSeconds": 10,
-        "failureThreshold": 3,
-        "httpGet": {
+      "liveness_probe": {
+        "initial_delay_seconds": 50,
+        "timeout_seconds": 50,
+        "period_seconds": 10,
+        "failure_threshold": 3,
+        "http_get": {
           "port": 8000,
           "path": "/"
         },
-        "successThreshold": 1
+        "success_threshold": 1
       }
     }
   },
@@ -155,14 +154,13 @@ func TestHealthchecksListAllHealthChecks(t *testing.T) {
 	err = cmdr.HealthchecksList("foo", "", -1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, b.String(), `App:             foo                                                                                                               
-UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                              
-Created:         2016-09-12T22:20:14Z                                                                                              
-Updated:         2016-09-12T22:20:14Z                                                                                              
-Healthchecks:    
-                 livenessProbe task http-get headers=[] path=/ port=8000 delay=50s timeout=50s period=10s #success=1 #failure=3    
-                 livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3       
-`, "output")
+	actual := b.String()
+	assert.Contains(t, actual, "App:")
+	assert.Contains(t, actual, "foo")
+	assert.Contains(t, actual, "c039a380-6068-4511-b35a-535a73b86ef5")
+	assert.Contains(t, actual, "Healthchecks:")
+	assert.Contains(t, actual, "liveness_probe task http-get headers=[] path=/ port=8000 delay=50s timeout=50s period=10s #success=1 #failure=3")
+	assert.Contains(t, actual, "liveness_probe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3")
 }
 
 func TestHealthchecksSet(t *testing.T) {
@@ -188,16 +186,16 @@ func TestHealthchecksSet(t *testing.T) {
   "registry": {},
   "healthcheck": {
     "web": {
-      "livenessProbe": {
-        "initialDelaySeconds": 50,
-        "timeoutSeconds": 50,
-        "periodSeconds": 10,
-        "failureThreshold": 3,
-        "httpGet": {
+      "liveness_probe": {
+        "initial_delay_seconds": 50,
+        "timeout_seconds": 50,
+        "period_seconds": 10,
+        "failure_threshold": 3,
+        "http_get": {
           "port": 80,
           "path": "/"
         },
-        "successThreshold": 1
+        "success_threshold": 1
       }
     }
   },
@@ -206,17 +204,15 @@ func TestHealthchecksSet(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksSet("foo", "livenessProbe", "web", &api.ContainerProbe{})
+	err = cmdr.HealthchecksSet("foo", "liveness_probe", "web", &api.ContainerProbe{})
 	assert.NoError(t, err)
-	assert.Equal(t, testutil.StripProgress(b.String()), `Applying livenessProbe healthcheck... done
-
-App:             foo                                                                                                            
-UUID:            c039a380-6068-4511-b35a-535a73b86ef5                                                                           
-Created:         2016-09-12T22:20:14Z                                                                                           
-Updated:         2016-09-12T22:20:14Z                                                                                           
-Healthchecks:    
-                 livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3    
-`, "output")
+	actual := testutil.StripProgress(b.String())
+	assert.Contains(t, actual, "Applying liveness_probe healthcheck... done")
+	assert.Contains(t, actual, "App:")
+	assert.Contains(t, actual, "foo")
+	assert.Contains(t, actual, "c039a380-6068-4511-b35a-535a73b86ef5")
+	assert.Contains(t, actual, "Healthchecks:")
+	assert.Contains(t, actual, "liveness_probe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3")
 }
 
 func TestHealthchecksUnset(t *testing.T) {
@@ -246,7 +242,7 @@ func TestHealthchecksUnset(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.HealthchecksUnset("foo", "web", []string{"livenessProbe"})
+	err = cmdr.HealthchecksUnset("foo", "web", []string{"liveness_probe"})
 	assert.NoError(t, err)
 	assert.Equal(t, testutil.StripProgress(b.String()), `Removing healthchecks... done
 

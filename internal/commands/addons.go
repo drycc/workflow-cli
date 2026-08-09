@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"sort"
@@ -106,20 +107,26 @@ func (d *DryccCmd) AddonsApply(appID, filePath string) error {
 	if err := c.Decode(jsonData); err != nil {
 		return fmt.Errorf("invalid addon configuration: %w", err)
 	}
-	if c.Name == "" {
-		return fmt.Errorf("invalid addon configuration: missing metadata.name")
+	var nameReq struct {
+		Name string `json:"name"`
+	}
+	if err := json.Unmarshal(jsonData, &nameReq); err != nil {
+		return fmt.Errorf("invalid addon configuration: %w", err)
+	}
+	if nameReq.Name == "" {
+		return fmt.Errorf("invalid addon configuration: missing name")
 	}
 	if c.Request.Kind == "" {
 		return fmt.Errorf("invalid addon configuration: missing kind")
 	}
 	if c.Request.Plan == "" {
-		return fmt.Errorf("invalid addon configuration: missing spec.plan")
+		return fmt.Errorf("invalid addon configuration: missing plan")
 	}
 
-	d.Printf("Applying addon %s to %s... ", c.Name, appID)
+	d.Printf("Applying addon %s to %s... ", nameReq.Name, appID)
 
 	quit := progress(d.WOut)
-	_, err = addons.Upsert(s.Client, appID, c.Name, c.Request)
+	_, err = addons.Upsert(s.Client, appID, nameReq.Name, c.Request)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {

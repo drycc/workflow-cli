@@ -152,7 +152,7 @@ func TestAddonsApply(t *testing.T) {
 	addonFile, err := os.CreateTemp("", "addon.yaml")
 	assert.NoError(t, err)
 	defer os.Remove(addonFile.Name())
-	_, err = addonFile.Write([]byte("apiVersion: controller.drycc.cc/v2\nkind: Valkey\nmetadata:\n  name: my-addon\nspec:\n  plan: micro\n  parameters: {}\n"))
+	_, err = addonFile.Write([]byte("name: my-addon\nkind: Valkey\nplan: micro\nparameters: {}\n"))
 	assert.NoError(t, err)
 	addonFile.Close()
 
@@ -175,13 +175,13 @@ func TestAddonsApplyMissingName(t *testing.T) {
 	addonFile, err := os.CreateTemp("", "addon.yaml")
 	assert.NoError(t, err)
 	defer os.Remove(addonFile.Name())
-	_, err = addonFile.Write([]byte("kind: Valkey\nspec:\n  plan: micro\n"))
+	_, err = addonFile.Write([]byte("kind: Valkey\nplan: micro\n"))
 	assert.NoError(t, err)
 	addonFile.Close()
 
 	err = cmdr.AddonsApply("foo", addonFile.Name())
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "missing metadata.name")
+	assert.Contains(t, err.Error(), "missing name")
 }
 
 func TestAddonsRemove(t *testing.T) {
@@ -287,6 +287,6 @@ func TestAddonsClassesInfo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Contains(t, b.String(), "kind: Valkey")
 	assert.Contains(t, b.String(), "name: valkey")
-	assert.Contains(t, b.String(), "storageModel: bundle")
+	assert.Contains(t, b.String(), "storage_model: bundle")
 	assert.Contains(t, b.String(), "micro")
 }

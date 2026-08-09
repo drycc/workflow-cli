@@ -11,21 +11,18 @@ func TestRouteCoderDecode(t *testing.T) {
 	t.Parallel()
 
 	input := `{
-		"apiVersion": "gateway.networking.k8s.io/v1",
+		"name": "my-route",
 		"kind": "HTTPRoute",
-		"metadata": {"name": "my-route"},
-		"spec": {
-			"parents": [
-				{"name": "my-gateway", "port": 80}
-			],
-			"rules": [
-				{
-					"backends": [
-						{"kind": "Service", "name": "my-svc", "port": 5000, "weight": 100}
-					]
-				}
-			]
-		}
+		"parent_refs": [
+			{"name": "my-gateway", "port": 80}
+		],
+		"rules": [
+			{
+				"backend_refs": [
+					{"kind": "Service", "name": "my-svc", "port": 5000, "weight": 100}
+				]
+			}
+		]
 	}`
 
 	c := &RouteCoder{}
@@ -51,19 +48,15 @@ func TestRouteCoderDecode(t *testing.T) {
 	if len(c.Request.Rules) != 1 {
 		t.Fatalf("expected 1 Rule, got %d", len(c.Request.Rules))
 	}
-	// backends should be mapped to backendRefs
-	if _, ok := c.Request.Rules[0]["backendRefs"]; !ok {
-		t.Error("expected backendRefs key in rule, got none")
-	}
-	if _, ok := c.Request.Rules[0]["backends"]; ok {
-		t.Error("backends key should not exist in rule after decode")
+	if _, ok := c.Request.Rules[0]["backend_refs"]; !ok {
+		t.Error("expected backend_refs key in rule, got none")
 	}
 }
 
 func TestRouteCoderDecodeMinimal(t *testing.T) {
 	t.Parallel()
 
-	input := `{"kind": "HTTPRoute", "metadata": {"name": "simple"}}`
+	input := `{"name": "simple", "kind": "HTTPRoute"}`
 
 	c := &RouteCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
@@ -106,7 +99,7 @@ func TestRouteCoderEncode(t *testing.T) {
 			},
 			Rules: []api.RouteRule{
 				{
-					"backendRefs": []map[string]any{
+					"backend_refs": []map[string]any{
 						{"kind": "Service", "name": "my-svc", "port": 5000},
 					},
 				},
@@ -122,30 +115,20 @@ func TestRouteCoderEncode(t *testing.T) {
 
 	yaml := string(data)
 
-	// Check field order: apiVersion should come first
-	if !strings.HasPrefix(yaml, "apiVersion:") {
-		t.Errorf("expected YAML to start with apiVersion:, got:\n%s", yaml)
-	}
-
-	// Check key fields are present
 	if !strings.Contains(yaml, "kind: HTTPRoute") {
 		t.Error("expected kind: HTTPRoute in output")
 	}
 	if !strings.Contains(yaml, "name: my-route") {
 		t.Error("expected name: my-route in output")
 	}
-	if !strings.Contains(yaml, "parents:") {
-		t.Error("expected parents: in output")
+	if !strings.Contains(yaml, "parent_refs:") {
+		t.Error("expected parent_refs: in output")
 	}
-	if !strings.Contains(yaml, "backends:") {
-		t.Error("expected backends: in output (backendRefs should be mapped to backends)")
+	if !strings.Contains(yaml, "backend_refs:") {
+		t.Error("expected backend_refs: in output")
 	}
 	if !strings.Contains(yaml, "routable: true") {
-		t.Error("expected routable: true in status")
-	}
-	// backendRefs should NOT appear in output
-	if strings.Contains(yaml, "backendRefs:") {
-		t.Error("backendRefs should not appear in output, should be backends")
+		t.Error("expected routable: true in output")
 	}
 }
 
@@ -173,7 +156,6 @@ func TestRouteCoderEncodeNoRoutable(t *testing.T) {
 func TestRouteCoderRoundTrip(t *testing.T) {
 	t.Parallel()
 
-	// Encode
 	routable := false
 	original := &RouteCoder{
 		Info: api.RouteInfo{
@@ -184,7 +166,7 @@ func TestRouteCoderRoundTrip(t *testing.T) {
 			},
 			Rules: []api.RouteRule{
 				{
-					"backendRefs": []map[string]any{
+					"backend_refs": []map[string]any{
 						{"name": "svc", "port": 8080},
 					},
 				},
@@ -198,17 +180,11 @@ func TestRouteCoderRoundTrip(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	// Decode the YAML back (first convert YAML to JSON)
-	// Since Decode expects JSON, we test the field mapping logic directly
 	input := `{
-		"apiVersion": "controller.drycc.cc/v2.3",
+		"name": "round-trip",
 		"kind": "HTTPRoute",
-		"metadata": {"name": "round-trip"},
-		"spec": {
-			"parents": [{"name": "gw", "port": 443}],
-			"rules": [{"backends": [{"name": "svc", "port": 8080}]}]
-		},
-		"status": {"routable": false}
+		"parent_refs": [{"name": "gw", "port": 443}],
+		"rules": [{"backend_refs": [{"name": "svc", "port": 8080}]}]
 	}`
 
 	decoded := &RouteCoder{}
@@ -228,9 +204,9 @@ func TestRouteCoderRoundTrip(t *testing.T) {
 	if len(decoded.Request.Rules) != 1 {
 		t.Fatal("expected 1 Rule after round trip")
 	}
-	if _, ok := decoded.Request.Rules[0]["backendRefs"]; !ok {
-		t.Error("expected backendRefs in rule after round trip")
+	if _, ok := decoded.Request.Rules[0]["backend_refs"]; !ok {
+		t.Error("expected backend_refs in rule after round trip")
 	}
 
-	_ = yamlData // yamlData is valid YAML output, verified above
+	_ = yamlData
 }

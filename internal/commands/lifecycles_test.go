@@ -34,15 +34,15 @@ func TestLifecyclesList(t *testing.T) {
   "registry": {},
   "lifecycle": {
     "web": {
-      "stopSignal": "SIGTERM",
-      "postStart": {
-        "httpGet": {
+      "stop_signal": "SIGTERM",
+      "post_start": {
+        "http_get": {
           "port": 80,
           "path": "/health",
-          "httpHeaders": []
+          "http_headers": []
         }
       },
-      "preStop": {
+      "pre_stop": {
         "exec": {
           "command": ["/bin/sh", "-c", "echo stopping"]
         }
@@ -66,9 +66,9 @@ func TestLifecyclesList(t *testing.T) {
 	assert.Contains(t, actual, "UUID:         c039a380-6068-4511-b35a-535a73b86ef5")
 	assert.Contains(t, actual, "Created:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "Updated:      2016-09-12T22:20:14Z")
-	assert.Contains(t, actual, "stopSignal=SIGTERM")
-	assert.Contains(t, actual, "postStart web http-get headers=[] path=/health port=80 SIGTERM")
-	assert.Contains(t, actual, "preStop web exec [/bin/sh -c echo stopping] SIGTERM")
+	assert.Contains(t, actual, "stop_signal=SIGTERM")
+	assert.Contains(t, actual, "post_start web http-get headers=[] path=/health port=80 SIGTERM")
+	assert.Contains(t, actual, "pre_stop web exec [/bin/sh -c echo stopping] SIGTERM")
 }
 
 func TestLifecyclesListNoLifecycle(t *testing.T) {
@@ -126,28 +126,28 @@ func TestLifecyclesListAllLifecycles(t *testing.T) {
   "registry": {},
   "lifecycle": {
     "web": {
-      "stopSignal": "SIGTERM",
-      "postStart": {
-        "httpGet": {
+      "stop_signal": "SIGTERM",
+      "post_start": {
+        "http_get": {
           "port": 80,
           "path": "/health",
-          "httpHeaders": []
+          "http_headers": []
         }
       },
-      "preStop": {
+      "pre_stop": {
         "exec": {
           "command": ["/bin/sh", "-c", "echo stopping"]
         }
       }
     },
     "worker": {
-      "stopSignal": "SIGKILL",
-      "postStart": {
-        "tcpSocket": {
+      "stop_signal": "SIGKILL",
+      "post_start": {
+        "tcp_socket": {
           "port": 8080
         }
       },
-      "preStop": {
+      "pre_stop": {
         "sleep": {
           "seconds": 30
         }
@@ -170,12 +170,12 @@ func TestLifecyclesListAllLifecycles(t *testing.T) {
 	assert.Contains(t, actual, "UUID:         c039a380-6068-4511-b35a-535a73b86ef5")
 	assert.Contains(t, actual, "Created:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "Updated:      2016-09-12T22:20:14Z")
-	assert.Contains(t, actual, "stopSignal=SIGTERM")
-	assert.Contains(t, actual, "postStart web http-get headers=[] path=/health port=80 SIGTERM")
-	assert.Contains(t, actual, "preStop web exec [/bin/sh -c echo stopping] SIGTERM")
-	assert.Contains(t, actual, "stopSignal=SIGKILL")
-	assert.Contains(t, actual, "postStart worker tcp-socket port=8080 SIGKILL")
-	assert.Contains(t, actual, "preStop worker sleep Seconds=30 SIGKILL")
+	assert.Contains(t, actual, "stop_signal=SIGTERM")
+	assert.Contains(t, actual, "post_start web http-get headers=[] path=/health port=80 SIGTERM")
+	assert.Contains(t, actual, "pre_stop web exec [/bin/sh -c echo stopping] SIGTERM")
+	assert.Contains(t, actual, "stop_signal=SIGKILL")
+	assert.Contains(t, actual, "post_start worker tcp-socket port=8080 SIGKILL")
+	assert.Contains(t, actual, "pre_stop worker sleep Seconds=30 SIGKILL")
 }
 
 func TestLifecyclesSet(t *testing.T) {
@@ -201,15 +201,15 @@ func TestLifecyclesSet(t *testing.T) {
   "registry": {},
   "lifecycle": {
     "web": {
-      "stopSignal": "SIGTERM",
-      "postStart": {
-        "httpGet": {
+      "stop_signal": "SIGTERM",
+      "post_start": {
+        "http_get": {
           "port": 80,
           "path": "/health",
-          "httpHeaders": []
+          "http_headers": []
         }
       },
-      "preStop": {
+      "pre_stop": {
         "exec": {
           "command": ["/bin/sh", "-c", "echo stopping"]
         }
@@ -249,9 +249,9 @@ func TestLifecyclesSet(t *testing.T) {
 	assert.Contains(t, actual, "UUID:         c039a380-6068-4511-b35a-535a73b86ef5")
 	assert.Contains(t, actual, "Created:      2016-09-12T22:20:14Z")
 	assert.Contains(t, actual, "Updated:      2016-09-12T22:20:14Z")
-	assert.Contains(t, actual, "stopSignal=SIGTERM")
-	assert.Contains(t, actual, "postStart web http-get headers=[] path=/health port=80 SIGTERM")
-	assert.Contains(t, actual, "preStop web exec [/bin/sh -c echo stopping] SIGTERM")
+	assert.Contains(t, actual, "stop_signal=SIGTERM")
+	assert.Contains(t, actual, "post_start web http-get headers=[] path=/health port=80 SIGTERM")
+	assert.Contains(t, actual, "pre_stop web exec [/bin/sh -c echo stopping] SIGTERM")
 }
 
 func TestLifecyclesUnset(t *testing.T) {
@@ -281,7 +281,7 @@ func TestLifecyclesUnset(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.LifecyclesUnset("foo", "web", []string{"postStart"})
+	err = cmdr.LifecyclesUnset("foo", "web", []string{"post_start"})
 	assert.NoError(t, err)
 	assert.Equal(t, "Applying lifecycle... done\n\nNo lifecycle found in foo app.\n", testutil.StripProgress(b.String()))
 }
@@ -313,7 +313,7 @@ func TestLifecyclesUnsetMultipleHandlers(t *testing.T) {
 }`)
 	})
 
-	err = cmdr.LifecyclesUnset("foo", "web", []string{"postStart", "preStop"})
+	err = cmdr.LifecyclesUnset("foo", "web", []string{"post_start", "pre_stop"})
 	assert.NoError(t, err)
 	assert.Equal(t, "Applying lifecycle... done\n\nNo lifecycle found in foo app.\n", testutil.StripProgress(b.String()))
 }

@@ -32,7 +32,7 @@ func (d *DryccCmd) RoutesList(appID string, results int) error {
 		for _, route := range routes {
 			var services []string
 			for _, rule := range route.Rules {
-				if backends, ok := rule["backendRefs"].([]any); ok {
+				if backends, ok := rule["backend_refs"].([]any); ok {
 					for _, backend := range backends {
 						if service, ok := backend.(map[string]any); ok {
 							services = append(services, fmt.Sprintf("%v:%v", service["name"], service["port"]))
@@ -102,7 +102,7 @@ func (d *DryccCmd) RoutesApply(appID, filePath string) error {
 		return fmt.Errorf("invalid route configuration: %w", err)
 	}
 	if c.Request.Name == "" {
-		return fmt.Errorf("invalid route configuration: missing metadata.name")
+		return fmt.Errorf("invalid route configuration: missing name")
 	}
 	req := c.Request
 

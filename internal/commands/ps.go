@@ -144,7 +144,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 			value := containerState.State[key]
 			for innerKey := range value {
 				innerValue := strconv.Quote(fmt.Sprintf("%v", value[innerKey]))
-				if innerKey == "startedAt" || innerKey == "finishedAt" {
+				if innerKey == "started_at" || innerKey == "finished_at" {
 					if value[innerKey] != nil {
 						innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
 					} else {
@@ -160,7 +160,7 @@ func (d *DryccCmd) PsDescribe(appID, podID string) error {
 			value := containerState.LastState[key]
 			for innerKey := range value {
 				innerValue := strconv.Quote(fmt.Sprintf("%v", value[innerKey]))
-				if innerKey == "startedAt" || innerKey == "finishedAt" {
+				if innerKey == "started_at" || innerKey == "finished_at" {
 					if value[innerKey] != nil {
 						innerValue = d.formatTime(fmt.Sprintf("%s", value[innerKey]))
 					} else {

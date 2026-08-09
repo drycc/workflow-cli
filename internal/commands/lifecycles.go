@@ -63,13 +63,13 @@ func (d *DryccCmd) LifecyclesList(appID, ptype string, version int) error {
 	for _, ptype := range sortPtypes(ptypes) {
 		if lifecycle, ok := config.Lifecycle[ptype]; ok {
 			if lifecycle.StopSignal != "" {
-				table.Append([]string{"", fmt.Sprintf("stopSignal=%s", lifecycle.StopSignal)})
+				table.Append([]string{"", fmt.Sprintf("stop_signal=%s", lifecycle.StopSignal)})
 			}
 			if lifecycle.PostStart != nil {
-				table.Append([]string{"", getLifecycleHandlerString(ptype, "postStart", lifecycle.StopSignal, *lifecycle.PostStart)})
+				table.Append([]string{"", getLifecycleHandlerString(ptype, "post_start", lifecycle.StopSignal, *lifecycle.PostStart)})
 			}
 			if lifecycle.PreStop != nil {
-				table.Append([]string{"", getLifecycleHandlerString(ptype, "preStop", lifecycle.StopSignal, *lifecycle.PreStop)})
+				table.Append([]string{"", getLifecycleHandlerString(ptype, "pre_stop", lifecycle.StopSignal, *lifecycle.PreStop)})
 			}
 		}
 	}
@@ -119,9 +119,9 @@ func (d *DryccCmd) LifecyclesUnset(appID, ptype string, handlers []string) error
 	var nullLifecycleHandler *api.LifecycleHandler
 	for _, handler := range handlers {
 		switch handler {
-		case "postStart":
+		case "post_start":
 			lifecycle.PostStart = &nullLifecycleHandler
-		case "preStop":
+		case "pre_stop":
 			lifecycle.PreStop = &nullLifecycleHandler
 		default:
 			return fmt.Errorf("unknown lifecycle handler: %s", handler)

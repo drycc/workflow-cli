@@ -40,11 +40,11 @@ func getContainerProbeString(ptype, probeType string, containerProbe *api.Contai
 func getHealthchecksStrings(ptype string, healthcheck *api.Healthcheck) []string {
 	var containerProbes []string
 	if healthcheck.StartupProbe != nil {
-		containerProbes = append(containerProbes, getContainerProbeString(ptype, "startupProbe", *healthcheck.StartupProbe))
+		containerProbes = append(containerProbes, getContainerProbeString(ptype, "startup_probe", *healthcheck.StartupProbe))
 	} else if healthcheck.LivenessProbe != nil {
-		containerProbes = append(containerProbes, getContainerProbeString(ptype, "livenessProbe", *healthcheck.LivenessProbe))
+		containerProbes = append(containerProbes, getContainerProbeString(ptype, "liveness_probe", *healthcheck.LivenessProbe))
 	} else if healthcheck.ReadinessProbe != nil {
-		containerProbes = append(containerProbes, getContainerProbeString(ptype, "readinessProbe", *healthcheck.ReadinessProbe))
+		containerProbes = append(containerProbes, getContainerProbeString(ptype, "readiness_probe", *healthcheck.ReadinessProbe))
 	}
 	return containerProbes
 }
@@ -118,11 +118,11 @@ func (d *DryccCmd) HealthchecksSet(appID, healthcheckType, ptype string, probe *
 	quit := progress(d.WOut)
 	var healthcheck api.Healthcheck
 	switch healthcheckType {
-	case "livenessProbe":
+	case "liveness_probe":
 		healthcheck.LivenessProbe = &probe
-	case "readinessProbe":
+	case "readiness_probe":
 		healthcheck.ReadinessProbe = &probe
-	case "startupProbe":
+	case "startup_probe":
 		healthcheck.StartupProbe = &probe
 	default:
 		return fmt.Errorf("unknown healthcheck type: %s", healthcheckType)
@@ -162,11 +162,11 @@ func (d *DryccCmd) HealthchecksUnset(appID, ptype string, containerProbeTypes []
 	for _, containerProbeType := range containerProbeTypes {
 		healthcheck := &api.Healthcheck{}
 		switch containerProbeType {
-		case "livenessProbe":
+		case "liveness_probe":
 			healthcheck.LivenessProbe = &nullContainerProbe
-		case "readinessProbe":
+		case "readiness_probe":
 			healthcheck.ReadinessProbe = &nullContainerProbe
-		case "startupProbe":
+		case "startup_probe":
 			healthcheck.StartupProbe = &nullContainerProbe
 		default:
 			return fmt.Errorf("unknown container probe type: %s", containerProbeType)

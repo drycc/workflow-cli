@@ -79,12 +79,12 @@ func healthchecksSet(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:  "set <probe> <action> [flags] [--] <args>...",
 		Args: cobra.MinimumNArgs(3),
 		Example: template.CustomExample(
-			"drycc healthchecks set readinessProbe httpGet --path=/health -- 8000",
+			"drycc healthchecks set readiness_probe http_get --path=/health -- 8000",
 			map[string]string{
-				"<probe>":  i18n.T("The healthcheck probe, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'"),
-				"<action>": i18n.T("the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'"),
+				"<probe>":  i18n.T("The healthcheck probe, such as 'startup_probe' 'liveness_probe' or 'readiness_probe'"),
+				"<action>": i18n.T("the healthcheck probe type, such as 'http_get', 'exec' or 'tcp_socket'"),
 				"<args>": i18n.T(`The arguments required for the healthcheck probe. 'exec', accepts a list of arguments;
-                  'httpGet' and 'tcpSocket' accept a port number.`),
+                  'http_get' and 'tcp_socket' accept a port number.`),
 			},
 		),
 		Short: i18n.T("Set healthchecks for an application"),
@@ -92,32 +92,32 @@ func healthchecksSet(cmdr *commands.DryccCmd) *cobra.Command {
 
 By default, Workflow only checks that the application starts in their Container. A health
 check may be added by configuring a health check probe for the application. The health
-checks are implemented as Kubernetes Container Probes. A 'startupProbe' 'livenessProbe' 
-and a 'readinessProbe' can be configured, and each probe can be of type 'httpGet', 'exec' 
-or 'tcpSocket' depending on the type of probe the Container requires.
+checks are implemented as Kubernetes Container Probes. A 'startup_probe' 'liveness_probe' 
+and a 'readiness_probe' can be configured, and each probe can be of type 'http_get', 'exec' 
+or 'tcp_socket' depending on the type of probe the Container requires.
 
-A 'startupProbe' indicates whether the application within the container is started.
+A 'startup_probe' indicates whether the application within the container is started.
 All other probes are disabled if a startup probe is provided, until it succeeds.
 If the startup probe fails, the container is subjected to its restart policy.
 
-A 'livenessProbe' is useful for applications running for long periods of time, eventually
+A 'liveness_probe' is useful for applications running for long periods of time, eventually
 transitioning to broken states and cannot recover except by restarting them.
 
-Other times, a 'readinessProbe' is useful when the Container is only temporarily unable
-to serve, and will recover on its own. In this case, if a Container fails its 'readinessProbe'
+Other times, a 'readiness_probe' is useful when the Container is only temporarily unable
+to serve, and will recover on its own. In this case, if a Container fails its 'readiness_probe'
 , the Container will not be shut down, but rather the Container will stop receiving
 incoming requests.
 
-'httpGet' probes are just as it sounds: it performs a HTTP GET operation on the Container.
-A response code inside the 200-399 range is considered a pass. 'httpGet' probes accept a
+'http_get' probes are just as it sounds: it performs a HTTP GET operation on the Container.
+A response code inside the 200-399 range is considered a pass. 'http_get' probes accept a
 port number to perform the HTTP GET operation on the Container.
 
 'exec' probes run a command inside the Container to determine its health. An exit code of
 zero is considered a pass, while a non-zero status code is considered a fail. 'exec'
 probes accept a string of arguments to be run inside the Container.
 
-'tcpSocket' probes attempt to open a socket in the Container. The Container is only
-considered healthy if the check can establish a connection. 'tcpSocket' probes accept a
+'tcp_socket' probes attempt to open a socket in the Container. The Container is only
+considered healthy if the check can establish a connection. 'tcp_socket' probes accept a
 port number to perform the socket connection on the Container.
 `),
 		ValidArgsFunction: healthCheckCompletion.CompletionFunc,
@@ -134,7 +134,7 @@ port number to perform the socket connection on the Container.
 			}
 
 			switch probeType {
-			case "httpGet":
+			case "http_get":
 				headers := []string{}
 				if flags.headers != "" {
 					headers = strings.Split(flags.headers, ",")
@@ -158,7 +158,7 @@ port number to perform the socket connection on the Container.
 				probe.Exec = &api.ExecAction{
 					Command: probeArgs,
 				}
-			case "tcpSocket":
+			case "tcp_socket":
 				port, err := strconv.Atoi(args[2])
 				if err != nil {
 					return fmt.Errorf("could not parse port: %s", err)
@@ -168,7 +168,7 @@ port number to perform the socket connection on the Container.
 					Port: port,
 				}
 			default:
-				return fmt.Errorf("invalid probe type %s, Must be one of: \"httpGet\", \"exec\", \"tcpSocket\"", probeType)
+				return fmt.Errorf("invalid probe type %s, Must be one of: \"http_get\", \"exec\", \"tcp_socket\"", probeType)
 			}
 
 			return cmdr.HealthchecksSet(app, healthType, healthchecksFlags.ptype, probe)
@@ -180,8 +180,8 @@ port number to perform the socket connection on the Container.
 	ptypeCompletion := completion.PtsCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile, AppID: &app}
 	cmd.RegisterFlagCompletionFunc("ptype", ptypeCompletion.CompletionFunc)
 
-	cmd.Flags().StringVar(&flags.path, "path", "/", i18n.T("The relative URL path for 'httpGet' probes"))
-	cmd.Flags().StringVar(&flags.headers, "headers", "", i18n.T("The HTTP headers to send for 'httpGet' probes, separated by commas"))
+	cmd.Flags().StringVar(&flags.path, "path", "/", i18n.T("The relative URL path for 'http_get' probes"))
+	cmd.Flags().StringVar(&flags.headers, "headers", "", i18n.T("The HTTP headers to send for 'http_get' probes, separated by commas"))
 	cmd.Flags().IntVar(&flags.initialDelay, "initial-delay-timeout", 50, i18n.T("The initial delay timeout for the probe"))
 	cmd.Flags().IntVar(&flags.timeout, "timeout-seconds", 50, i18n.T("The number of seconds after which the probe times out"))
 	cmd.Flags().IntVar(&flags.period, "period-seconds", 10, i18n.T("How often (in seconds) to perform the probe"))
@@ -204,9 +204,9 @@ func healthchecksUnset(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:  "unset <probe>...",
 		Args: cobra.MinimumNArgs(1),
 		Example: template.CustomExample(
-			"drycc healthchecks unset startupProbe",
+			"drycc healthchecks unset startup_probe",
 			map[string]string{
-				"<probe>": i18n.T("the healthcheck probe, such as 'startupProbe' 'livenessProbe' or 'readinessProbe'"),
+				"<probe>": i18n.T("the healthcheck probe, such as 'startup_probe' 'liveness_probe' or 'readiness_probe'"),
 			},
 		),
 		Short:             i18n.T("Unset healthchecks for an application"),
@@ -232,9 +232,9 @@ func healthchecksUnset(cmdr *commands.DryccCmd) *cobra.Command {
 func checkProbeType(probe string) error {
 	var found bool
 	probeTypes := []string{
-		"startupProbe",
-		"livenessProbe",
-		"readinessProbe",
+		"startup_probe",
+		"liveness_probe",
+		"readiness_probe",
 	}
 	for _, probeType := range probeTypes {
 		if probe == probeType {

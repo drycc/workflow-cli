@@ -29,7 +29,7 @@ func TestRoutesApply(t *testing.T) {
 			Kind:       "HTTPRoute",
 			ParentRefs: []api.RouteParentRef{},
 			Rules: []api.RouteRule{{
-				"backendRefs": []map[string]any{{"name": "example-go", "port": 443}},
+				"backend_refs": []map[string]any{{"name": "example-go", "port": 443}},
 			}},
 		}
 		testutil.AssertBody(t, request, r)
@@ -40,7 +40,7 @@ func TestRoutesApply(t *testing.T) {
 	routeFile, err := os.CreateTemp("", "route.yaml")
 	assert.NoError(t, err)
 	defer os.Remove(routeFile.Name())
-	_, err = routeFile.Write([]byte("apiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: example-go\nspec:\n  parents: []\n  rules:\n  - backends:\n    - name: example-go\n      port: 443\n"))
+	_, err = routeFile.Write([]byte("name: example-go\nkind: HTTPRoute\nparent_refs: []\nrules:\n- backend_refs:\n  - name: example-go\n    port: 443\n"))
 	assert.NoError(t, err)
 	routeFile.Close()
 
@@ -87,7 +87,7 @@ func TestRoutesList(t *testing.T) {
                 }
             ],
 			"rules": [{
-				"backendRefs": [
+				"backend_refs": [
 					{
 						"kind": "Service",
 						"name": "yygl-nextcloud",
