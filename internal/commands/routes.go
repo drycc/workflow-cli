@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/drycc/controller-sdk-go/routes"
 	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/coder"
-	"sigs.k8s.io/yaml"
 )
 
 // RoutesList lists routes for the app
@@ -72,33 +72,31 @@ func (d *DryccCmd) RoutesInfo(appID, name string) error {
 	}
 
 	c := &coder.RouteCoder{Info: info}
-	yamlBytes, err := c.Encode()
+	tomlBytes, err := c.Encode()
 	if err != nil {
 		return err
 	}
-	d.Println(string(yamlBytes))
+	d.Println(string(tomlBytes))
 	return nil
 }
 
-// RoutesApply applies route configuration from a YAML file.
+// RoutesApply applies route configuration from a TOML file.
 func (d *DryccCmd) RoutesApply(appID, filePath string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	yamlData, err := os.ReadFile(filePath)
-	if err != nil {
-		return err
-	}
-
-	jsonData, err := yaml.YAMLToJSON(yamlData)
+	tomlData, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
 
 	c := &coder.RouteCoder{}
-	if err := c.Decode(jsonData); err != nil {
+	if err := c.Decode(tomlData); err != nil {
+		if strings.Contains(err.Error(), "rules") {
+			return fmt.Errorf("invalid route configuration: %w\n(hint: rules must be a list, did you forget the [[rules]] header?)", err)
+		}
 		return fmt.Errorf("invalid route configuration: %w", err)
 	}
 	if c.Request.Name == "" {

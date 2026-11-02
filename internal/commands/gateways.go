@@ -9,7 +9,6 @@ import (
 	"github.com/drycc/controller-sdk-go/gateways"
 	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/coder"
-	"sigs.k8s.io/yaml"
 )
 
 // GatewaysList lists gateways for the app
@@ -54,33 +53,28 @@ func (d *DryccCmd) GatewaysInfo(appID, name string) error {
 	}
 
 	c := &coder.GatewayCoder{Info: info}
-	yamlBytes, err := c.Encode()
+	tomlBytes, err := c.Encode()
 	if err != nil {
 		return err
 	}
-	d.Println(string(yamlBytes))
+	d.Println(string(tomlBytes))
 	return nil
 }
 
-// GatewaysApply applies gateway configuration from a YAML file.
+// GatewaysApply applies gateway configuration from a TOML file.
 func (d *DryccCmd) GatewaysApply(appID, filePath string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	yamlData, err := os.ReadFile(filePath)
-	if err != nil {
-		return err
-	}
-
-	jsonData, err := yaml.YAMLToJSON(yamlData)
+	tomlData, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
 
 	c := &coder.GatewayCoder{}
-	if err := c.Decode(jsonData); err != nil {
+	if err := c.Decode(tomlData); err != nil {
 		return fmt.Errorf("invalid gateway configuration: %w", err)
 	}
 	if c.Request.Name == "" {

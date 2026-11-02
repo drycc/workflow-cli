@@ -97,9 +97,9 @@ func TestAddonsInfo(t *testing.T) {
 
 	err = cmdr.AddonsInfo("foo", "my-addon")
 	assert.NoError(t, err)
-	assert.Contains(t, b.String(), "kind: Valkey")
-	assert.Contains(t, b.String(), "name: my-addon")
-	assert.Contains(t, b.String(), "plan: micro")
+	assert.Contains(t, b.String(), "kind = \"Valkey\"")
+	assert.Contains(t, b.String(), "name = \"my-addon\"")
+	assert.Contains(t, b.String(), "plan = \"micro\"")
 }
 
 func TestAddonsConnection(t *testing.T) {
@@ -149,10 +149,10 @@ func TestAddonsApply(t *testing.T) {
 		w.Write([]byte("{}"))
 	})
 
-	addonFile, err := os.CreateTemp("", "addon.yaml")
+	addonFile, err := os.CreateTemp("", "addon.toml")
 	assert.NoError(t, err)
 	defer os.Remove(addonFile.Name())
-	_, err = addonFile.Write([]byte("name: my-addon\nkind: Valkey\nplan: micro\nparameters: {}\n"))
+	_, err = addonFile.Write([]byte("name = \"my-addon\"\nkind = \"Valkey\"\nplan = \"micro\"\n\n[parameters]\n"))
 	assert.NoError(t, err)
 	addonFile.Close()
 
@@ -172,10 +172,10 @@ func TestAddonsApplyMissingName(t *testing.T) {
 	var b bytes.Buffer
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
-	addonFile, err := os.CreateTemp("", "addon.yaml")
+	addonFile, err := os.CreateTemp("", "addon.toml")
 	assert.NoError(t, err)
 	defer os.Remove(addonFile.Name())
-	_, err = addonFile.Write([]byte("kind: Valkey\nplan: micro\n"))
+	_, err = addonFile.Write([]byte("kind = \"Valkey\"\nplan = \"micro\"\n"))
 	assert.NoError(t, err)
 	addonFile.Close()
 
@@ -285,8 +285,8 @@ func TestAddonsClassesInfo(t *testing.T) {
 
 	err = cmdr.AddonsClassesInfo("valkey")
 	assert.NoError(t, err)
-	assert.Contains(t, b.String(), "kind: Valkey")
-	assert.Contains(t, b.String(), "name: valkey")
-	assert.Contains(t, b.String(), "storage_model: bundle")
+	assert.Contains(t, b.String(), "kind = \"Valkey\"")
+	assert.Contains(t, b.String(), "name = \"valkey\"")
+	assert.Contains(t, b.String(), "storage_model = \"bundle\"")
 	assert.Contains(t, b.String(), "micro")
 }

@@ -91,21 +91,21 @@ msgstr ""
 
 #: internal/parser/addons.go:108
 msgid ""
-"Applies addon configuration from a YAML file using the raw API payload in "
+"Applies addon configuration from a TOML file using the raw API payload in "
 "the file"
 msgstr ""
-"Applies addon configuration from a YAML file using the raw API payload in "
+"Applies addon configuration from a TOML file using the raw API payload in "
 "the file"
 
 #: internal/parser/gateways.go:72
 msgid ""
-"Applies gateway configuration from a YAML file using the raw API payload in "
+"Applies gateway configuration from a TOML file using the raw API payload in "
 "the file"
 msgstr ""
 
 #: internal/parser/routes.go:69
 msgid ""
-"Applies route configuration from a YAML file using the raw API payload in "
+"Applies route configuration from a TOML file using the raw API payload in "
 "the file"
 msgstr ""
 
@@ -725,7 +725,7 @@ msgid "Path to configuration file"
 msgstr "Path to configuration file"
 
 #: internal/parser/routes.go:65 internal/parser/addons.go:104
-msgid "Path to the YAML configuration file"
+msgid "Path to the TOML configuration file"
 msgstr ""
 
 #: internal/parser/ps.go:133

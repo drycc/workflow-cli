@@ -37,10 +37,10 @@ func TestRoutesApply(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("{}"))
 	})
-	routeFile, err := os.CreateTemp("", "route.yaml")
+	routeFile, err := os.CreateTemp("", "route.toml")
 	assert.NoError(t, err)
 	defer os.Remove(routeFile.Name())
-	_, err = routeFile.Write([]byte("name: example-go\nkind: HTTPRoute\nparent_refs: []\nrules:\n- backend_refs:\n  - name: example-go\n    port: 443\n"))
+	_, err = routeFile.Write([]byte("name = \"example-go\"\nkind = \"HTTPRoute\"\nparent_refs = []\n\n[[rules]]\n\n[[rules.backend_refs]]\nname = \"example-go\"\nport = 443\n"))
 	assert.NoError(t, err)
 	routeFile.Close()
 

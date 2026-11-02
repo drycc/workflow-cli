@@ -60,13 +60,13 @@ func routesApplyCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:  "apply <file>",
 		Args: cobra.ExactArgs(1),
 		Example: template.CustomExample(
-			"drycc routes apply route.yaml",
+			"drycc routes apply route.toml",
 			map[string]string{
-				"<file>": i18n.T("Path to the YAML configuration file"),
+				"<file>": i18n.T("Path to the TOML configuration file"),
 			},
 		),
 		Short: i18n.T("Apply route configuration"),
-		Long:  i18n.T("Applies route configuration from a YAML file using the raw API payload in the file"),
+		Long:  i18n.T("Applies route configuration from a TOML file using the raw API payload in the file"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.RoutesApply(app, args[0])
 		},

@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,6 +8,7 @@ import (
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/builds"
 	"github.com/drycc/workflow-cli/internal/loader"
+	"github.com/drycc/workflow-cli/pkg/coder"
 	"github.com/drycc/workflow-cli/pkg/i18n"
 	yaml "gopkg.in/yaml.v3"
 )
@@ -178,21 +178,18 @@ func writeDryccfileToPath(d *DryccCmd, dryccpath string, dryccfile map[string]an
 	if pipeline, ok := dryccfile["pipeline"].(map[string]any); ok {
 		for fileName, pipelineConfig := range pipeline {
 			filePath := filepath.Join(dryccpath, fileName)
-			var buf bytes.Buffer
-			encoder := yaml.NewEncoder(&buf)
-			encoder.SetIndent(2)
-			if err := encoder.Encode(pipelineConfig); err != nil {
+			tomlContent, err := coder.MarshalTOML(pipelineConfig)
+			if err != nil {
 				return fmt.Errorf("failed to marshal pipeline config: %w", err)
 			}
-			yamlContent := buf.Bytes()
 			if save {
-				err := os.WriteFile(filePath, yamlContent, 0o664)
+				err := os.WriteFile(filePath, tomlContent, 0o664)
 				if err != nil {
 					return fmt.Errorf("failed to write pipeline file: %w", err)
 				}
 			} else {
 				d.Println("---\n# Source:", filePath)
-				d.Println(string(yamlContent))
+				d.Println(string(tomlContent))
 			}
 		}
 	}

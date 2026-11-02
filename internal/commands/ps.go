@@ -2,6 +2,7 @@ package commands
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -18,7 +19,6 @@ import (
 	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/logging"
 	"golang.org/x/net/websocket"
-	yaml "gopkg.in/yaml.v3"
 )
 
 const (
@@ -362,7 +362,8 @@ func parseChannelMessage(data string) (string, error) {
 	channel, message := data[0], data[1:]
 	if string(channel) == errorChannel {
 		data := make(map[string]any)
-		yaml.Unmarshal([]byte(message), data)
+		// the error channel carries a JSON-encoded metav1.Status
+		json.Unmarshal([]byte(message), &data)
 		if value, hasKey := data["message"]; hasKey {
 			if message, ok := value.(string); ok {
 				return message, nil

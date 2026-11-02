@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"sort"
@@ -10,7 +9,6 @@ import (
 	"github.com/drycc/workflow-cli/internal/loader"
 	"github.com/drycc/workflow-cli/pkg/coder"
 	"github.com/drycc/workflow-cli/pkg/settings"
-	"sigs.k8s.io/yaml"
 )
 
 // AddonsList lists addon instances attached to an app.
@@ -52,11 +50,11 @@ func (d *DryccCmd) AddonsInfo(appID, name string) error {
 	}
 
 	c := &coder.AddonCoder{Info: info}
-	yamlBytes, err := c.Encode()
+	tomlBytes, err := c.Encode()
 	if err != nil {
 		return err
 	}
-	d.Println(string(yamlBytes))
+	d.Println(string(tomlBytes))
 	return nil
 }
 
@@ -86,34 +84,23 @@ func (d *DryccCmd) AddonsConnection(appID, name string) error {
 	return nil
 }
 
-// AddonsApply creates or updates an addon instance from a YAML file.
+// AddonsApply creates or updates an addon instance from a TOML file.
 func (d *DryccCmd) AddonsApply(appID, filePath string) error {
 	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
 	if err != nil {
 		return err
 	}
 
-	yamlData, err := os.ReadFile(filePath)
-	if err != nil {
-		return err
-	}
-
-	jsonData, err := yaml.YAMLToJSON(yamlData)
+	tomlData, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
 
 	c := &coder.AddonCoder{}
-	if err := c.Decode(jsonData); err != nil {
+	if err := c.Decode(tomlData); err != nil {
 		return fmt.Errorf("invalid addon configuration: %w", err)
 	}
-	var nameReq struct {
-		Name string `json:"name"`
-	}
-	if err := json.Unmarshal(jsonData, &nameReq); err != nil {
-		return fmt.Errorf("invalid addon configuration: %w", err)
-	}
-	if nameReq.Name == "" {
+	if c.Name == "" {
 		return fmt.Errorf("invalid addon configuration: missing name")
 	}
 	if c.Request.Kind == "" {
@@ -123,10 +110,10 @@ func (d *DryccCmd) AddonsApply(appID, filePath string) error {
 		return fmt.Errorf("invalid addon configuration: missing plan")
 	}
 
-	d.Printf("Applying addon %s to %s... ", nameReq.Name, appID)
+	d.Printf("Applying addon %s to %s... ", c.Name, appID)
 
 	quit := progress(d.WOut)
-	_, err = addons.Upsert(s.Client, appID, nameReq.Name, c.Request)
+	_, err = addons.Upsert(s.Client, appID, c.Name, c.Request)
 	quit <- true
 	<-quit
 	if d.checkAPICompatibility(s.Client, err) != nil {
@@ -195,10 +182,10 @@ func (d *DryccCmd) AddonsClassesInfo(name string) error {
 		return err
 	}
 
-	yamlBytes, err := coder.EncodeClass(class)
+	tomlBytes, err := coder.EncodeClass(class)
 	if err != nil {
 		return err
 	}
-	d.Println(string(yamlBytes))
+	d.Println(string(tomlBytes))
 	return nil
 }

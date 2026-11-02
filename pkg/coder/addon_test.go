@@ -10,20 +10,26 @@ import (
 func TestAddonCoderDecode(t *testing.T) {
 	t.Parallel()
 
-	input := `{
-		"kind": "Valkey",
-		"plan": "micro",
-		"parameters": {
-			"shards": 1,
-			"tls": {"enabled": true}
-		}
-	}`
+	input := `
+name = "my-addon"
+kind = "Valkey"
+plan = "micro"
+
+[parameters]
+shards = 1
+
+[parameters.tls]
+enabled = true
+`
 
 	c := &AddonCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
 		t.Fatalf("Decode failed: %v", err)
 	}
 
+	if c.Name != "my-addon" {
+		t.Errorf("expected Name=my-addon, got %s", c.Name)
+	}
 	if c.Request.Kind != "Valkey" {
 		t.Errorf("expected Kind=Valkey, got %s", c.Request.Kind)
 	}
@@ -36,12 +42,16 @@ func TestAddonCoderDecode(t *testing.T) {
 	if v, ok := c.Request.Parameters["shards"].(float64); !ok || v != 1 {
 		t.Errorf("expected Parameters[shards]=1, got %v", c.Request.Parameters["shards"])
 	}
+	tls, ok := c.Request.Parameters["tls"].(map[string]any)
+	if !ok || tls["enabled"] != true {
+		t.Errorf("expected Parameters[tls][enabled]=true, got %v", c.Request.Parameters["tls"])
+	}
 }
 
 func TestAddonCoderDecodeMinimal(t *testing.T) {
 	t.Parallel()
 
-	input := `{"kind": "Valkey"}`
+	input := `kind = "Valkey"`
 
 	c := &AddonCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
@@ -59,12 +69,12 @@ func TestAddonCoderDecodeMinimal(t *testing.T) {
 	}
 }
 
-func TestAddonCoderDecodeInvalidJSON(t *testing.T) {
+func TestAddonCoderDecodeInvalid(t *testing.T) {
 	t.Parallel()
 
 	c := &AddonCoder{}
 	if err := c.Decode([]byte(`{invalid`)); err == nil {
-		t.Error("expected error for invalid JSON, got nil")
+		t.Error("expected error for invalid TOML, got nil")
 	}
 }
 
@@ -88,22 +98,22 @@ func TestAddonCoderEncode(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	yaml := string(data)
+	toml := string(data)
 
-	if !strings.Contains(yaml, "kind: Valkey") {
-		t.Error("expected kind: Valkey in output")
+	if !strings.Contains(toml, `kind = "Valkey"`) {
+		t.Errorf("expected kind in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "name: my-addon") {
-		t.Error("expected name: my-addon in output")
+	if !strings.Contains(toml, `name = "my-addon"`) {
+		t.Errorf("expected name in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "plan: micro") {
-		t.Error("expected plan: micro in output")
+	if !strings.Contains(toml, `plan = "micro"`) {
+		t.Errorf("expected plan in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "shards:") {
-		t.Error("expected shards: in parameters output")
+	if !strings.Contains(toml, "shards = 1") {
+		t.Errorf("expected shards in parameters output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "multiplier: 2") {
-		t.Error("expected multiplier: 2 in output")
+	if !strings.Contains(toml, "multiplier = 2") {
+		t.Errorf("expected multiplier in output, got:\n%s", toml)
 	}
 }
 
@@ -123,10 +133,8 @@ func TestAddonCoderEncodeEmpty(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	yaml := string(data)
-
-	if strings.Contains(yaml, "multiplier") {
-		t.Error("multiplier should be omitted when 0")
+	if strings.Contains(string(data), "multiplier") {
+		t.Errorf("multiplier should be omitted when 0, got:\n%s", string(data))
 	}
 }
 
@@ -143,20 +151,29 @@ func TestAddonCoderRoundTrip(t *testing.T) {
 		},
 	}
 
-	data, err := c.Encode()
+	encoded, err := c.Encode()
 	if err != nil {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	yaml := string(data)
+	toml := string(encoded)
+	if !strings.Contains(toml, `kind = "Valkey"`) {
+		t.Errorf("expected kind in output, got:\n%s", toml)
+	}
+	if !strings.Contains(toml, `plan = "small"`) {
+		t.Errorf("expected plan in output, got:\n%s", toml)
+	}
+	if !strings.Contains(toml, "replicas = 1") {
+		t.Errorf("expected replicas in parameters output, got:\n%s", toml)
+	}
 
-	if !strings.Contains(yaml, "kind: Valkey") {
-		t.Error("expected kind: Valkey in output")
+	// info output feeds back into apply directly
+	decoded := &AddonCoder{}
+	if err := decoded.Decode(encoded); err != nil {
+		t.Fatalf("Decode failed: %v", err)
 	}
-	if !strings.Contains(yaml, "plan: small") {
-		t.Error("expected plan: small in output")
-	}
-	if !strings.Contains(yaml, "replicas:") {
-		t.Error("expected replicas: in parameters output")
+	if decoded.Name != "round-trip" || decoded.Request.Kind != "Valkey" || decoded.Request.Plan != "small" {
+		t.Errorf("mismatch after round trip: name=%s kind=%s plan=%s",
+			decoded.Name, decoded.Request.Kind, decoded.Request.Plan)
 	}
 }

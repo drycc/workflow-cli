@@ -1,8 +1,6 @@
 package coder
 
 import (
-	"encoding/json"
-
 	"github.com/drycc/controller-sdk-go/api"
 )
 
@@ -12,9 +10,9 @@ type RouteCoder struct {
 }
 
 func (c *RouteCoder) Decode(data []byte) error {
-	return json.Unmarshal(data, &c.Request)
+	return UnmarshalTOML(data, &c.Request)
 }
 
 func (c *RouteCoder) Encode() ([]byte, error) {
-	return marshalYAML(c.Info)
+	return MarshalTOML(c.Info)
 }

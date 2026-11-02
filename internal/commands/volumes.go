@@ -11,7 +11,7 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/controller-sdk-go/volumes"
 	"github.com/drycc/workflow-cli/internal/loader"
-	"sigs.k8s.io/yaml"
+	"github.com/drycc/workflow-cli/pkg/coder"
 )
 
 // VolumesList list volumes in the application
@@ -54,14 +54,14 @@ func (d *DryccCmd) VolumesInfo(appID, name string) error {
 	table.Append([]string{"Type:", volume.Type})
 	// table append path
 	table.Append([]string{"Path:"})
-	path, err := yaml.Marshal(volume.Path)
+	path, err := coder.MarshalTOML(volume.Path)
 	if err != nil {
 		return err
 	}
 	table.Append([]string{"", string(path)})
 	// table append parameters
 	table.Append([]string{"Parameters:"})
-	parameters, err := yaml.Marshal(volume.Parameters)
+	parameters, err := coder.MarshalTOML(volume.Parameters)
 	if err != nil {
 		return err
 	}

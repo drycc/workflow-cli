@@ -1,7 +1,0 @@
-apiVersion: controller.drycc.cc/v2
-kind: Valkey
-metadata:
-  name: my-addon
-spec:
-  parameters: {}
-  plan: small

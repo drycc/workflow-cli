@@ -69,7 +69,7 @@ func gatewaysApply(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:   "apply <file>",
 		Args:  cobra.ExactArgs(1),
 		Short: i18n.T("Apply gateway configuration"),
-		Long:  i18n.T("Applies gateway configuration from a YAML file using the raw API payload in the file"),
+		Long:  i18n.T("Applies gateway configuration from a TOML file using the raw API payload in the file"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.GatewaysApply(app, args[0])
 		},

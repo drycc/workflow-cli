@@ -10,13 +10,17 @@ import (
 func TestGatewayCoderDecode(t *testing.T) {
 	t.Parallel()
 
-	input := `{
-		"name": "my-gateway",
-		"ports": [
-			{"port": 80, "protocol": "HTTP"},
-			{"port": 443, "protocol": "HTTPS"}
-		]
-	}`
+	input := `
+name = "my-gateway"
+
+[[ports]]
+port = 80
+protocol = "HTTP"
+
+[[ports]]
+port = 443
+protocol = "HTTPS"
+`
 
 	c := &GatewayCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
@@ -40,7 +44,7 @@ func TestGatewayCoderDecode(t *testing.T) {
 func TestGatewayCoderDecodeMinimal(t *testing.T) {
 	t.Parallel()
 
-	input := `{"name": "simple"}`
+	input := `name = "simple"`
 
 	c := &GatewayCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
@@ -55,12 +59,12 @@ func TestGatewayCoderDecodeMinimal(t *testing.T) {
 	}
 }
 
-func TestGatewayCoderDecodeInvalidJSON(t *testing.T) {
+func TestGatewayCoderDecodeInvalid(t *testing.T) {
 	t.Parallel()
 
 	c := &GatewayCoder{}
 	if err := c.Decode([]byte(`{invalid`)); err == nil {
-		t.Error("expected error for invalid JSON, got nil")
+		t.Error("expected error for invalid TOML, got nil")
 	}
 }
 
@@ -85,25 +89,28 @@ func TestGatewayCoderEncode(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	yaml := string(data)
+	toml := string(data)
 
-	if !strings.Contains(yaml, "name: my-gateway") {
-		t.Error("expected name: my-gateway in output")
+	if !strings.Contains(toml, `name = "my-gateway"`) {
+		t.Errorf("expected name in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "ports:") {
-		t.Error("expected ports: in output")
+	if !strings.Contains(toml, "[[ports]]") {
+		t.Errorf("expected [[ports]] in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "port: 80") {
-		t.Error("expected port: 80 in output")
+	if !strings.Contains(toml, "port = 80") {
+		t.Errorf("expected port = 80 in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "protocol: HTTP") {
-		t.Error("expected protocol: HTTP in output")
+	if strings.Contains(toml, "80.0") {
+		t.Errorf("integer should not be rendered as float, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "addresses:") {
-		t.Error("expected addresses: in output")
+	if !strings.Contains(toml, `protocol = "HTTP"`) {
+		t.Errorf("expected protocol in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "192.168.1.1") {
-		t.Error("expected address value in output")
+	if !strings.Contains(toml, "[[addresses]]") {
+		t.Errorf("expected [[addresses]] in output, got:\n%s", toml)
+	}
+	if !strings.Contains(toml, "192.168.1.1") {
+		t.Errorf("expected address value in output, got:\n%s", toml)
 	}
 }
 
@@ -124,9 +131,8 @@ func TestGatewayCoderEncodeNoAddresses(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	yaml := string(data)
-	if strings.Contains(yaml, "addresses") {
-		t.Error("addresses should not appear when empty")
+	if strings.Contains(string(data), "addresses") {
+		t.Errorf("addresses should not appear when empty, got:\n%s", string(data))
 	}
 }
 
@@ -145,18 +151,14 @@ func TestGatewayCoderRoundTrip(t *testing.T) {
 		},
 	}
 
-	yamlData, err := original.Encode()
+	encoded, err := original.Encode()
 	if err != nil {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	input := `{
-		"name": "round-trip",
-		"ports": [{"port": 8080, "protocol": "TCP"}]
-	}`
-
+	// info output feeds back into apply directly
 	decoded := &GatewayCoder{}
-	if err := decoded.Decode([]byte(input)); err != nil {
+	if err := decoded.Decode(encoded); err != nil {
 		t.Fatalf("Decode failed: %v", err)
 	}
 
@@ -166,6 +168,4 @@ func TestGatewayCoderRoundTrip(t *testing.T) {
 	if len(decoded.Request.Ports) != 1 || decoded.Request.Ports[0].Port != 8080 {
 		t.Error("Ports mismatch after round trip")
 	}
-
-	_ = yamlData
 }

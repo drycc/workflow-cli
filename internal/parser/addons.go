@@ -99,13 +99,13 @@ func addonsApplyCommand(cmdr *commands.DryccCmd) *cobra.Command {
 		Use:  "apply <file>",
 		Args: cobra.ExactArgs(1),
 		Example: template.CustomExample(
-			"drycc addons apply addon.yaml",
+			"drycc addons apply addon.toml",
 			map[string]string{
-				"<file>": i18n.T("Path to the YAML configuration file"),
+				"<file>": i18n.T("Path to the TOML configuration file"),
 			},
 		),
 		Short: i18n.T("Apply addon configuration"),
-		Long:  i18n.T("Applies addon configuration from a YAML file using the raw API payload in the file"),
+		Long:  i18n.T("Applies addon configuration from a TOML file using the raw API payload in the file"),
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmdr.AddonsApply(app, args[0])
 		},

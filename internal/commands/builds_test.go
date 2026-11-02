@@ -12,7 +12,7 @@ import (
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/drycc/workflow-cli/pkg/testutil"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/yaml.v3"
+	"github.com/BurntSushi/toml"
 )
 
 func TestParseProcfile(t *testing.T) {
@@ -132,8 +132,7 @@ func TestBuildsCreateWithDryccfile(t *testing.T) {
 				Stack: "container",
 				Dryccfile: map[string]any{
 					"pipeline": map[string]any{
-						"web.yaml": map[string]any{
-							"kind":  "pipeline",
+						"web.toml": map[string]any{
 							"ptype": "web",
 							"deploy": map[string]any{
 								"command": []string{
@@ -159,15 +158,12 @@ func TestBuildsCreateWithDryccfile(t *testing.T) {
 	dryccpath := filepath.Join(name, ".drycc")
 	os.MkdirAll(dryccpath, 0o700)
 	defer os.RemoveAll(dryccpath)
-	err = os.WriteFile(filepath.Join(dryccpath, "web.yaml"), []byte(`
-kind: pipeline
-ptype: web
-deploy:
-  command:
-  - bash
-  - -c
-  args:
-  - bundle exec puma -C config/puma.rb
+	err = os.WriteFile(filepath.Join(dryccpath, "web.toml"), []byte(`
+ptype = "web"
+
+[deploy]
+command = ["bash", "-c"]
+args = ["bundle exec puma -C config/puma.rb"]
 `), os.ModePerm)
 	assert.NoError(t, err)
 
@@ -198,8 +194,7 @@ func TestBuildsCreateWithBoth(t *testing.T) {
 				},
 				Dryccfile: map[string]any{
 					"pipeline": map[string]any{
-						"web.yaml": map[string]any{
-							"kind":  "pipeline",
+						"web.toml": map[string]any{
 							"ptype": "web",
 							"deploy": map[string]any{
 								"command": []string{
@@ -231,15 +226,12 @@ warp: ./warp 8
 	dryccpath := filepath.Join(name, ".drycc")
 	os.MkdirAll(dryccpath, 0o700)
 	defer os.RemoveAll(dryccpath)
-	err = os.WriteFile(filepath.Join(dryccpath, "web.yaml"), []byte(`
-kind: pipeline
-ptype: web
-deploy:
-  command:
-  - bash
-  - -c
-  args:
-  - bundle exec puma -C config/puma.rb
+	err = os.WriteFile(filepath.Join(dryccpath, "web.toml"), []byte(`
+ptype = "web"
+
+[deploy]
+command = ["bash", "-c"]
+args = ["bundle exec puma -C config/puma.rb"]
 `), os.ModePerm)
 	assert.NoError(t, err)
 
@@ -268,8 +260,7 @@ func TestBuildsFetch(t *testing.T) {
 			"procfile": {"web": "node server.js"},
 			"dryccfile": {
 				"pipeline": {
-					"web.yaml": {
-						"kind": "pipeline",
+					"web.toml": {
 						"ptype": "web",
 						"deploy": {
 							"command": ["bash", "-c"],
@@ -285,15 +276,13 @@ func TestBuildsFetch(t *testing.T) {
 		}`)
 	})
 
-	// Helper function to compare YAML content ignoring field order
-	isEqualYAML := func(actual, expected string) bool {
+	// Helper function to compare TOML content ignoring field order
+	isEqualTOML := func(actual, expected string) bool {
 		var actualMap, expectedMap map[string]any
-		err := yaml.Unmarshal([]byte(actual), &actualMap)
-		if err != nil {
+		if err := toml.Unmarshal([]byte(actual), &actualMap); err != nil {
 			return false
 		}
-		err = yaml.Unmarshal([]byte(expected), &expectedMap)
-		if err != nil {
+		if err := toml.Unmarshal([]byte(expected), &expectedMap); err != nil {
 			return false
 		}
 		return reflect.DeepEqual(actualMap, expectedMap)
@@ -339,14 +328,14 @@ func TestBuildsFetch(t *testing.T) {
 			t.Errorf("expected env1.env content %q, got %q", expectedEnv1, string(env1Content))
 		}
 
-		// Verify .drycc/web.yaml content
-		webYamlContent, err := os.ReadFile(filepath.Join(dryccpath, "web.yaml"))
+		// Verify .drycc/web.toml content
+		webTomlContent, err := os.ReadFile(filepath.Join(dryccpath, "web.toml"))
 		if err != nil {
-			t.Fatalf("failed to read web.yaml: %v", err)
+			t.Fatalf("failed to read web.toml: %v", err)
 		}
-		expectedWebYaml := "kind: pipeline\nptype: web\ndeploy:\n  command:\n  - bash\n  - -c\n  args:\n  - echo hello\n"
-		if !isEqualYAML(string(webYamlContent), expectedWebYaml) {
-			t.Errorf("expected web.yaml content %q, got %q", expectedWebYaml, string(webYamlContent))
+		expectedWebToml := "ptype = \"web\"\n\n[deploy]\ncommand = [\"bash\", \"-c\"]\nargs = [\"echo hello\"]\n"
+		if !isEqualTOML(string(webTomlContent), expectedWebToml) {
+			t.Errorf("expected web.toml content %q, got %q", expectedWebToml, string(webTomlContent))
 		}
 
 		os.Stdin = restoreStdin

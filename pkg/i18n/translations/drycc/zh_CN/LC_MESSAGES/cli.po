@@ -92,21 +92,21 @@ msgstr "应用程序名称"
 
 #: internal/parser/addons.go:108
 msgid ""
-"Applies addon configuration from a YAML file using the raw API payload in "
+"Applies addon configuration from a TOML file using the raw API payload in "
 "the file"
-msgstr "使用 YAML 文件中的原始 API 载荷应用 addon 配置"
+msgstr "使用 TOML 文件中的原始 API 载荷应用 addon 配置"
 
 #: internal/parser/gateways.go:72
 msgid ""
-"Applies gateway configuration from a YAML file using the raw API payload in "
+"Applies gateway configuration from a TOML file using the raw API payload in "
 "the file"
-msgstr "使用 YAML 文件中的原始 API 载荷应用网关配置"
+msgstr "使用 TOML 文件中的原始 API 载荷应用网关配置"
 
 #: internal/parser/routes.go:69
 msgid ""
-"Applies route configuration from a YAML file using the raw API payload in "
+"Applies route configuration from a TOML file using the raw API payload in "
 "the file"
-msgstr "使用 YAML 文件中的原始 API 载荷应用路由配置"
+msgstr "使用 TOML 文件中的原始 API 载荷应用路由配置"
 
 #: internal/parser/addons.go:107
 msgid "Apply addon configuration"
@@ -724,8 +724,8 @@ msgid "Path to configuration file"
 msgstr "配置文件的路径"
 
 #: internal/parser/routes.go:65 internal/parser/addons.go:104
-msgid "Path to the YAML configuration file"
-msgstr "YAML 配置文件路径"
+msgid "Path to the TOML configuration file"
+msgstr "TOML 配置文件路径"
 
 #: internal/parser/ps.go:133
 msgid "Print a detailed description of the selected process"

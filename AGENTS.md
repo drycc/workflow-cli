@@ -32,7 +32,7 @@ workflow-cli          (this repo, the `drycc` binary)  ← parses args, renders 
 - Go 1.26, module path `github.com/drycc/workflow-cli`
 - CLI framework: `github.com/spf13/cobra`
 - HTTP client: `github.com/drycc/controller-sdk-go`
-- Output: `github.com/olekukonko/tablewriter` (tables), `pkg/coder` (flat YAML)
+- Output: `github.com/olekukonko/tablewriter` (tables), `pkg/coder` (flat TOML)
 - i18n: `github.com/chai2010/gettext-go` + `.po`/`.mo` catalogs
 - `vendor/` is **gitignored** — it is regenerated locally, never committed
 
@@ -48,7 +48,7 @@ internal/
   template/            cobra example templating
   plugins/             plugin loader
 pkg/
-  coder/               YAML encode/decode (flat snake_case, no K8s Manifest wrapper)
+  coder/               TOML encode/decode (flat snake_case, no K8s Manifest wrapper)
   i18n/                translation loader + catalogs (en_US, zh_CN)
   settings/            client config file (~/.drycc/client.json)
   testutil/            test HTTP server + helpers
@@ -72,7 +72,7 @@ files. To add a subcommand you touch all of them. Example for `addons conn`:
 | 4. interface | `internal/commands/commands.go` | add the method signature to the `Commander` interface |
 | 5. root | `cmd/root.go` | `rootCmd.AddCommand(parser.NewAddonsCommand(&cmdr))` (only for new top-level domains, not subcommands) |
 | 6. completion | `internal/completion/completion.go` | `<Domain>Completion` struct with `CompletionFunc` (shell tab-complete) |
-| 7. coder | `pkg/coder/<domain>.go` | only when the command reads/writes K8s-style YAML manifests |
+| 7. coder | `pkg/coder/<domain>.go` | only when the command reads/writes TOML config files |
 
 **Don't forget layer 4.** The `Commander` interface enumerates every command
 method; mocks and tests rely on it. Adding a `DryccCmd` method without declaring
@@ -115,9 +115,11 @@ technical term "addon" untranslated in zh_CN to match the identifiers.
 - **Lists** -> `d.getDefaultFormatTable([]string{"COL1","COL2"})`, render with
   `table.Append`/`table.Render`. It is whitespace-packed (`NoWhiteSpace`); assert
   with `assert.Contains` in tests, not exact-string equals.
-- **Single-object details** -> `pkg/coder` flat YAML (snake_case, no K8s Manifest
-  wrapper) via a `*Coder.Encode()`. Coder `Decode` is just `json.Unmarshal`,
-  `Encode` is just `marshalYAML` - no field renaming.
+- **Single-object details** -> `pkg/coder` flat TOML (snake_case, no K8s Manifest
+  wrapper) via a `*Coder.Encode()`. `Encode` uses `MarshalTOML` (reflection over
+  SDK structs keeps the field order, json tags name the keys); `Decode` is
+  `UnmarshalTOML` (TOML -> map -> JSON -> SDK request struct) - no field
+  renaming, no duplicated struct definitions.
 - **Connection/secret-style key->value blobs** -> KEY/VALUE table, keys sorted.
 - **Mutating ops** (apply/remove/upsert) -> print `"<verb> <obj> ... "`,
   call `progress(d.WOut)` for a spinner, then `done`.
@@ -199,8 +201,8 @@ There is no `go generate` step in normal builds. CI (`Makefile`) runs inside a
 7. **Root** (`cmd/root.go`): `rootCmd.AddCommand(parser.New<Domain>Command(&cmdr))`.
 8. **Completion** (`internal/completion/completion.go`): if the command takes a
    `<name>` arg that maps to existing resources, add a `<Domain>Completion`.
-9. **Coder** (`pkg/coder/<domain>.go`): only if the command reads/writes YAML
-   manifests.
+9. **Coder** (`pkg/coder/<domain>.go`): only if the command reads/writes TOML
+   config files.
 10. **i18n**: `bash scripts/update-translations.sh -xkg`, translate zh_CN, `-g`.
 11. **Tests**: `internal/commands/<domain>_test.go` (+ `pkg/coder/<domain>_test.go`).
 12. **Verify**: `go vet ./... && go test ./...` before committing.

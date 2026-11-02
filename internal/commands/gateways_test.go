@@ -81,10 +81,10 @@ func TestGatewaysApply(t *testing.T) {
 		w.Write([]byte("{}"))
 	})
 
-	gatewayFile, err := os.CreateTemp("", "gateway.yaml")
+	gatewayFile, err := os.CreateTemp("", "gateway.toml")
 	assert.NoError(t, err)
 	defer os.Remove(gatewayFile.Name())
-	_, err = gatewayFile.Write([]byte("name: example-go\nports:\n- port: 443\n  protocol: HTTPS\n"))
+	_, err = gatewayFile.Write([]byte("name = \"example-go\"\n\n[[ports]]\nport = 443\nprotocol = \"HTTPS\"\n"))
 	assert.NoError(t, err)
 	gatewayFile.Close()
 

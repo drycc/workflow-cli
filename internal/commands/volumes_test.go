@@ -120,14 +120,14 @@ func TestVolumesInfo(t *testing.T) {
 Name:          myvolume
 Type:          nfs
 Path:
-               cmd: /data/cmd1
-               cmd123: /data/cmd123
+               cmd = "/data/cmd1"
+               cmd123 = "/data/cmd123"
 
 Parameters:
-               nfs:
-                 path: /mnt
-                  read_only: true
-                 server: nfs.drycc.cc
+               [nfs]
+               path = "/mnt"
+               read_only = true
+               server = "nfs.drycc.cc"
 
 Created:       2020-08-26T00:00:00UTC
 Updated:       2020-08-26T00:00:00UTC

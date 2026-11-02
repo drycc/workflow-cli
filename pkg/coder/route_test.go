@@ -10,20 +10,22 @@ import (
 func TestRouteCoderDecode(t *testing.T) {
 	t.Parallel()
 
-	input := `{
-		"name": "my-route",
-		"kind": "HTTPRoute",
-		"parent_refs": [
-			{"name": "my-gateway", "port": 80}
-		],
-		"rules": [
-			{
-				"backend_refs": [
-					{"kind": "Service", "name": "my-svc", "port": 5000, "weight": 100}
-				]
-			}
-		]
-	}`
+	input := `
+name = "my-route"
+kind = "HTTPRoute"
+
+[[parent_refs]]
+name = "my-gateway"
+port = 80
+
+[[rules]]
+
+[[rules.backend_refs]]
+kind = "Service"
+name = "my-svc"
+port = 5000
+weight = 100
+`
 
 	c := &RouteCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
@@ -53,10 +55,51 @@ func TestRouteCoderDecode(t *testing.T) {
 	}
 }
 
+func TestRouteCoderDecodeDottedKeys(t *testing.T) {
+	t.Parallel()
+
+	// path 用点号键写法
+	input := `
+name = "my-route"
+kind = "HTTPRoute"
+
+[[parent_refs]]
+name = "my-gateway"
+port = 80
+
+[[rules]]
+
+[[rules.matches]]
+path.type = "PathPrefix"
+path.value = "/"
+
+[[rules.backend_refs]]
+name = "my-svc"
+port = 5000
+`
+
+	c := &RouteCoder{}
+	if err := c.Decode([]byte(input)); err != nil {
+		t.Fatalf("Decode failed: %v", err)
+	}
+
+	if len(c.Request.Rules) != 1 {
+		t.Fatalf("expected 1 Rule, got %d", len(c.Request.Rules))
+	}
+	matches, ok := c.Request.Rules[0]["matches"].([]any)
+	if !ok || len(matches) != 1 {
+		t.Fatalf("expected 1 match, got %v", c.Request.Rules[0]["matches"])
+	}
+	path := matches[0].(map[string]any)["path"].(map[string]any)
+	if path["type"] != "PathPrefix" || path["value"] != "/" {
+		t.Errorf("unexpected path: %v", path)
+	}
+}
+
 func TestRouteCoderDecodeMinimal(t *testing.T) {
 	t.Parallel()
 
-	input := `{"name": "simple", "kind": "HTTPRoute"}`
+	input := "name = \"simple\"\nkind = \"HTTPRoute\"\n"
 
 	c := &RouteCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
@@ -77,12 +120,31 @@ func TestRouteCoderDecodeMinimal(t *testing.T) {
 	}
 }
 
-func TestRouteCoderDecodeInvalidJSON(t *testing.T) {
+func TestRouteCoderDecodeInvalid(t *testing.T) {
 	t.Parallel()
 
 	c := &RouteCoder{}
 	if err := c.Decode([]byte(`{invalid`)); err == nil {
-		t.Error("expected error for invalid JSON, got nil")
+		t.Error("expected error for invalid TOML, got nil")
+	}
+}
+
+func TestRouteCoderDecodeMissingRulesHeader(t *testing.T) {
+	t.Parallel()
+
+	// 忘记 [[rules]] 表头时 rules 会变成对象而不是数组，必须报错
+	input := `
+name = "my-route"
+kind = "HTTPRoute"
+
+[[rules.matches]]
+path.type = "PathPrefix"
+path.value = "/"
+`
+
+	c := &RouteCoder{}
+	if err := c.Decode([]byte(input)); err == nil {
+		t.Error("expected error when [[rules]] header is missing, got nil")
 	}
 }
 
@@ -113,22 +175,25 @@ func TestRouteCoderEncode(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	yaml := string(data)
+	toml := string(data)
 
-	if !strings.Contains(yaml, "kind: HTTPRoute") {
-		t.Error("expected kind: HTTPRoute in output")
+	if !strings.Contains(toml, `kind = "HTTPRoute"`) {
+		t.Errorf("expected kind in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "name: my-route") {
-		t.Error("expected name: my-route in output")
+	if !strings.Contains(toml, `name = "my-route"`) {
+		t.Errorf("expected name in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "parent_refs:") {
-		t.Error("expected parent_refs: in output")
+	if !strings.Contains(toml, "[[parent_refs]]") {
+		t.Errorf("expected [[parent_refs]] in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "backend_refs:") {
-		t.Error("expected backend_refs: in output")
+	if !strings.Contains(toml, "[[rules.backend_refs]]") {
+		t.Errorf("expected [[rules.backend_refs]] in output, got:\n%s", toml)
 	}
-	if !strings.Contains(yaml, "routable: true") {
-		t.Error("expected routable: true in output")
+	if !strings.Contains(toml, "port = 5000") {
+		t.Errorf("expected port = 5000 in output, got:\n%s", toml)
+	}
+	if !strings.Contains(toml, "routable = true") {
+		t.Errorf("expected routable = true in output, got:\n%s", toml)
 	}
 }
 
@@ -147,9 +212,8 @@ func TestRouteCoderEncodeNoRoutable(t *testing.T) {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	yaml := string(data)
-	if strings.Contains(yaml, "routable") {
-		t.Error("routable should not appear when nil")
+	if strings.Contains(string(data), "routable") {
+		t.Errorf("routable should not appear when nil, got:\n%s", string(data))
 	}
 }
 
@@ -175,20 +239,14 @@ func TestRouteCoderRoundTrip(t *testing.T) {
 		},
 	}
 
-	yamlData, err := original.Encode()
+	encoded, err := original.Encode()
 	if err != nil {
 		t.Fatalf("Encode failed: %v", err)
 	}
 
-	input := `{
-		"name": "round-trip",
-		"kind": "HTTPRoute",
-		"parent_refs": [{"name": "gw", "port": 443}],
-		"rules": [{"backend_refs": [{"name": "svc", "port": 8080}]}]
-	}`
-
+	// info output feeds back into apply directly
 	decoded := &RouteCoder{}
-	if err := decoded.Decode([]byte(input)); err != nil {
+	if err := decoded.Decode(encoded); err != nil {
 		t.Fatalf("Decode failed: %v", err)
 	}
 
@@ -207,6 +265,4 @@ func TestRouteCoderRoundTrip(t *testing.T) {
 	if _, ok := decoded.Request.Rules[0]["backend_refs"]; !ok {
 		t.Error("expected backend_refs in rule after round trip")
 	}
-
-	_ = yamlData
 }
