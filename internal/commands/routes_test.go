@@ -24,7 +24,6 @@ func TestRoutesApply(t *testing.T) {
 
 	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/", func(w http.ResponseWriter, r *http.Request) {
 		request := api.RouteUpdateRequest{
-			App:        "foo",
 			Name:       "example-go",
 			Kind:       "HTTPRoute",
 			ParentRefs: []api.RouteParentRef{},
@@ -48,6 +47,36 @@ func TestRoutesApply(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Applying route example-go to foo... done\n", "output")
+}
+
+func TestRoutesInfo(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/routes/example-go/", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+    "app": "foo",
+    "name": "example-go",
+    "kind": "HTTPRoute",
+    "parent_refs": [{"name": "example-go", "port": 80}],
+    "rules": [],
+    "routable": true
+}`)
+	})
+
+	err = cmdr.RoutesInfo("foo", "example-go")
+	assert.NoError(t, err)
+
+	assert.NotContains(t, b.String(), "app =")
+	assert.Contains(t, b.String(), `name = "example-go"`)
+	assert.Contains(t, b.String(), `kind = "HTTPRoute"`)
 }
 
 func TestRoutesList(t *testing.T) {

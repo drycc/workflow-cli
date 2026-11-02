@@ -48,6 +48,8 @@ func (d *DryccCmd) AddonsInfo(appID, name string) error {
 	if d.checkAPICompatibility(s.Client, err) != nil {
 		return err
 	}
+	// app is implied by the command context and apply overrides it, so omit it
+	info.App = ""
 
 	c := &coder.AddonCoder{Info: info}
 	tomlBytes, err := c.Encode()

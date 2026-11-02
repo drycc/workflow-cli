@@ -75,7 +75,7 @@ func TestGatewaysApply(t *testing.T) {
 	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
 
 	server.Mux.HandleFunc("/v2/apps/foo/gateways/example-go/", func(w http.ResponseWriter, r *http.Request) {
-		testutil.AssertBody(t, api.GatewayUpdateRequest{App: "foo", Name: "example-go", Ports: []api.GatewayPort{{Port: 443, Protocol: "HTTPS"}}}, r)
+		testutil.AssertBody(t, api.GatewayUpdateRequest{Name: "example-go", Ports: []api.GatewayPort{{Port: 443, Protocol: "HTTPS"}}}, r)
 		testutil.SetHeaders(w)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("{}"))
@@ -92,6 +92,34 @@ func TestGatewaysApply(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, testutil.StripProgress(b.String()), "Applying gateway example-go to foo... done\n", "output")
+}
+
+func TestGatewaysInfo(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/foo/gateways/example-go/", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprintf(w, `{
+    "app": "foo",
+    "name": "example-go",
+    "ports": [{"port": 80, "protocol": "HTTP"}],
+    "addresses": [{"type": "IPAddress", "value": "192.168.1.1"}]
+}`)
+	})
+
+	err = cmdr.GatewaysInfo("foo", "example-go")
+	assert.NoError(t, err)
+
+	assert.NotContains(t, b.String(), "app =")
+	assert.Contains(t, b.String(), `name = "example-go"`)
+	assert.Contains(t, b.String(), "port = 80")
 }
 
 func TestGatewaysRemove(t *testing.T) {

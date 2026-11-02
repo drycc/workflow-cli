@@ -120,6 +120,11 @@ technical term "addon" untranslated in zh_CN to match the identifiers.
   SDK structs keeps the field order, json tags name the keys); `Decode` is
   `UnmarshalTOML` (TOML -> map -> JSON -> SDK request struct) - no field
   renaming, no duplicated struct definitions.
+- **info <-> apply round-trip**: the TOML printed by `<domain> info` must be
+  saveable as-is as the input of `<domain> apply`. Fields that apply ignores or
+  overrides (e.g. `app`, which the command context determines) must be blanked
+  before `Encode()`. Read-only fields (addresses, routable, multiplier) are
+  fine: `UnmarshalTOML` drops unknown keys, so they round-trip safely.
 - **Connection/secret-style key->value blobs** -> KEY/VALUE table, keys sorted.
 - **Mutating ops** (apply/remove/upsert) -> print `"<verb> <obj> ... "`,
   call `progress(d.WOut)` for a spinner, then `done`.

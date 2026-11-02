@@ -97,6 +97,7 @@ func TestAddonsInfo(t *testing.T) {
 
 	err = cmdr.AddonsInfo("foo", "my-addon")
 	assert.NoError(t, err)
+	assert.NotContains(t, b.String(), "app =")
 	assert.Contains(t, b.String(), "kind = \"Valkey\"")
 	assert.Contains(t, b.String(), "name = \"my-addon\"")
 	assert.Contains(t, b.String(), "plan = \"micro\"")
