@@ -13,6 +13,9 @@ import (
 	drycc "github.com/drycc/controller-sdk-go"
 	"github.com/drycc/controller-sdk-go/api"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/pkg/twwarp"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 	yaml "gopkg.in/yaml.v3"
 )
 
@@ -81,23 +84,103 @@ func (d *DryccCmd) checkAPICompatibility(c *drycc.Client, err error) error {
 	return err
 }
 
+const (
+	defaultTablePadding  = "    "
+	defaultHeaderPadding = " "
+)
+
+type defaultFormatRenderer struct {
+	*renderer.Blueprint
+	rowLengths []int
+	rowIndex   int
+	rowLength  int
+}
+
+func (r *defaultFormatRenderer) Header(headers [][]string, ctx tw.Formatting) {
+	keys := ctx.Row.Widths.SortedKeys()
+	if len(keys) > 0 {
+		last := keys[len(keys)-1]
+		ctx.Row.Widths = ctx.Row.Widths.Clone()
+		ctx.Row.Widths.Set(last, max(0, ctx.Row.Widths.Get(last)-len(defaultTablePadding)+len(defaultHeaderPadding)))
+
+		cell := ctx.Row.Current[last]
+		cell.Padding.Right = defaultHeaderPadding
+		ctx.Row.Current[last] = cell
+	}
+	r.Blueprint.Header(headers, ctx)
+}
+
+func (r *defaultFormatRenderer) Row(row []string, ctx tw.Formatting) {
+	if !ctx.IsSubRow && r.rowIndex < len(r.rowLengths) {
+		r.rowLength = r.rowLengths[r.rowIndex]
+		r.rowIndex++
+	}
+
+	keys := ctx.Row.Widths.SortedKeys()
+	if r.rowLength < len(keys) {
+		cells := ctx.Row.Current
+		ctx.Row.Widths = ctx.Row.Widths.Clone()
+		ctx.Row.Current = make(map[int]tw.CellContext, r.rowLength)
+		for i, key := range keys {
+			if i < r.rowLength {
+				ctx.Row.Current[key] = cells[key]
+			} else {
+				ctx.Row.Widths.Delete(key)
+			}
+		}
+	}
+	r.Blueprint.Row(row, ctx)
+}
+
+type defaultFormatTable struct {
+	*tablewriter.Table
+	renderer *defaultFormatRenderer
+}
+
+func (t *defaultFormatTable) Append(rows ...interface{}) error {
+	if err := t.Table.Append(rows...); err != nil {
+		return err
+	}
+
+	rowLength := len(rows)
+	if len(rows) == 1 {
+		if row, ok := rows[0].([]string); ok {
+			rowLength = len(row)
+		}
+	}
+	t.renderer.rowLengths = append(t.renderer.rowLengths, rowLength)
+	return nil
+}
+
 // getDefaultFormatTable return default format ascii table
-func (d *DryccCmd) getDefaultFormatTable(headers []string) *tablewriter.Table {
-	table := tablewriter.NewWriter(d.WOut)
-	table.SetHeader(headers)
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	table.SetAutoWrapText(false)
-	table.SetAutoFormatHeaders(true)
-	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	table.SetCenterSeparator("")
-	table.SetColumnSeparator("")
-	table.SetRowSeparator("")
-	table.SetHeaderLine(false)
-	table.SetBorder(false)
-	table.SetTablePadding(fmt.Sprintf("%4s", " "))
-	table.SetNoWhiteSpace(true)
-	return table
+func (d *DryccCmd) getDefaultFormatTable(headers []string) *defaultFormatTable {
+	formattedHeaders := make([]string, len(headers))
+	for i, header := range headers {
+		formattedHeaders[i] = tw.Title(header)
+	}
+
+	formatRenderer := &defaultFormatRenderer{Blueprint: renderer.NewBlueprint()}
+	table := tablewriter.NewTable(d.WOut,
+		tablewriter.WithRenderer(formatRenderer),
+		tablewriter.WithHeaderAlignment(tw.AlignLeft),
+		tablewriter.WithRowAlignment(tw.AlignLeft),
+		tablewriter.WithHeaderAutoWrap(tw.WrapNone),
+		tablewriter.WithRowAutoWrap(tw.WrapNone),
+		tablewriter.WithHeaderAutoFormat(tw.Off),
+		tablewriter.WithTrimSpace(tw.Off),
+		tablewriter.WithTrimLine(tw.Off),
+		tablewriter.WithPadding(tw.Padding{Right: defaultTablePadding, Overwrite: true}),
+		tablewriter.WithRendition(tw.Rendition{
+			Borders: tw.BorderNone,
+			Symbols: tw.NewSymbols(tw.StyleNone),
+			Settings: tw.Settings{
+				Lines:      tw.LinesNone,
+				Separators: tw.SeparatorsNone,
+			},
+		}),
+		tablewriter.WithHeader(formattedHeaders),
+	)
+	return &defaultFormatTable{Table: table, renderer: formatRenderer}
 }
 
 // format time string to local time
@@ -114,7 +197,7 @@ func (d *DryccCmd) formatTime(timeStr string) string {
 
 // wrapString wraps s into a paragraph of lines of length lim, with minimal raggedness.
 func (d *DryccCmd) wrapString(s string) string {
-	sa, _ := tablewriter.WrapString(s, defaultLines)
+	sa, _ := twwarp.WrapString(s, defaultLines)
 	return strings.Join(sa, "\n")
 }
 

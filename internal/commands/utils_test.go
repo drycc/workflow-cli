@@ -3,6 +3,7 @@ package commands
 import (
 	"bytes"
 	"os"
+	"strings"
 	"testing"
 
 	drycc "github.com/drycc/controller-sdk-go"
@@ -20,6 +21,13 @@ func TestLimitsCount(t *testing.T) {
 	t.Parallel()
 	assert.Equal(t, limitCount(1, 1), "\n", "output")
 	assert.Equal(t, limitCount(1, 2), " (1 of 2)\n", "output")
+}
+
+func TestWrapString(t *testing.T) {
+	t.Parallel()
+	cmdr := DryccCmd{}
+	input := strings.Repeat("a", defaultLines) + " bb"
+	assert.Equal(t, strings.Repeat("a", defaultLines)+"\nbb", cmdr.wrapString(input))
 }
 
 func TestAPICompatibility(t *testing.T) {
