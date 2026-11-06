@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: EMAIL\n"
-"POT-Creation-Date: 2026-07-21 14:48+0800\n"
+"POT-Creation-Date: 2026-11-06 20:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,19 +89,25 @@ msgstr ""
 
 #: internal/parser/addons.go:108
 msgid ""
-"Applies addon configuration from a YAML file using the raw API payload in "
+"Applies addon configuration from a TOML file using the raw API payload in "
 "the file"
 msgstr ""
 
 #: internal/parser/gateways.go:72
 msgid ""
-"Applies gateway configuration from a YAML file using the raw API payload in "
+"Applies gateway configuration from a TOML file using the raw API payload in "
 "the file"
 msgstr ""
 
 #: internal/parser/routes.go:69
 msgid ""
-"Applies route configuration from a YAML file using the raw API payload in "
+"Applies route configuration from a TOML file using the raw API payload in "
+"the file"
+msgstr ""
+
+#: internal/parser/services.go:72
+msgid ""
+"Applies service configuration from a TOML file using the raw API payload in "
 "the file"
 msgstr ""
 
@@ -115,6 +121,10 @@ msgstr ""
 
 #: internal/parser/routes.go:68
 msgid "Apply route configuration"
+msgstr ""
+
+#: internal/parser/services.go:71
+msgid "Apply service configuration"
 msgstr ""
 
 #: internal/parser/certs.go:135
@@ -186,10 +196,6 @@ msgstr ""
 msgid "Create a workspace"
 msgstr ""
 
-#: internal/parser/services.go:55
-msgid "Create service for an application"
-msgstr ""
-
 #: internal/parser/apps.go:45
 msgid ""
 "Creates a new application. If no <id> is provided, one will be generated "
@@ -203,12 +209,6 @@ msgid ""
 "as a new release. If a Procfile or drycc.yaml is present in the current "
 "directory,\n"
 "it will be used as the default for this application."
-msgstr ""
-
-#: internal/parser/services.go:56
-msgid ""
-"Creates extra service for an application and binds it to specific route of "
-"the main app domain"
 msgstr ""
 
 #: internal/parser/volumes.go:190
@@ -416,7 +416,7 @@ msgstr ""
 msgid "List application routes"
 msgstr ""
 
-#: internal/parser/services.go:76
+#: internal/parser/services.go:37
 msgid "List application services"
 msgstr ""
 
@@ -491,6 +491,10 @@ msgstr ""
 
 #: internal/parser/releases.go:54
 msgid "Lists release history for an application"
+msgstr ""
+
+#: internal/parser/services.go:38
+msgid "Lists services for an application"
 msgstr ""
 
 #: internal/parser/tokens.go:33
@@ -605,7 +609,7 @@ msgstr ""
 msgid "Manage routes for your applications"
 msgstr ""
 
-#: internal/parser/services.go:17
+#: internal/parser/services.go:14
 msgid "Manage services for your applications"
 msgstr ""
 
@@ -677,11 +681,6 @@ msgstr ""
 msgid "Name of the certificate to reference it by"
 msgstr ""
 
-#: internal/parser/services.go:52
-msgid ""
-"Number or name of the port to access on the pods targeted by the service"
-msgstr ""
-
 #: internal/parser/apps.go:99
 msgid "Open the application in a browser"
 msgstr ""
@@ -707,7 +706,7 @@ msgid "Path to configuration file"
 msgstr ""
 
 #: internal/parser/routes.go:65 internal/parser/addons.go:104
-msgid "Path to the YAML configuration file"
+msgid "Path to the TOML configuration file"
 msgstr ""
 
 #: internal/parser/ps.go:133
@@ -841,6 +840,10 @@ msgstr ""
 msgid "Remove a route from an application"
 msgstr ""
 
+#: internal/parser/services.go:86
+msgid "Remove a service"
+msgstr ""
+
 #: internal/parser/tokens.go:94
 msgid "Remove a token for controller authentication"
 msgstr ""
@@ -865,12 +868,12 @@ msgstr ""
 msgid "Remove application's label"
 msgstr ""
 
-#: internal/parser/services.go:103
-msgid "Remove service from an application"
-msgstr ""
-
 #: internal/parser/gateways.go:87
 msgid "Removes a gateway from an application"
+msgstr ""
+
+#: internal/parser/services.go:87
+msgid "Removes a service from an application"
 msgstr ""
 
 #: internal/parser/keys.go:82
@@ -1000,35 +1003,35 @@ msgid ""
 "Container. A health\n"
 "check may be added by configuring a health check probe for the application. "
 "The health\n"
-"checks are implemented as Kubernetes Container Probes. A 'startupProbe' "
-"'livenessProbe' \n"
-"and a 'readinessProbe' can be configured, and each probe can be of type "
-"'httpGet', 'exec' \n"
-"or 'tcpSocket' depending on the type of probe the Container requires.\n"
+"checks are implemented as Kubernetes Container Probes. A 'startup_probe' "
+"'liveness_probe' \n"
+"and a 'readiness_probe' can be configured, and each probe can be of type "
+"'http_get', 'exec' \n"
+"or 'tcp_socket' depending on the type of probe the Container requires.\n"
 "\n"
-"A 'startupProbe' indicates whether the application within the container is "
+"A 'startup_probe' indicates whether the application within the container is "
 "started.\n"
 "All other probes are disabled if a startup probe is provided, until it "
 "succeeds.\n"
 "If the startup probe fails, the container is subjected to its restart "
 "policy.\n"
 "\n"
-"A 'livenessProbe' is useful for applications running for long periods of "
+"A 'liveness_probe' is useful for applications running for long periods of "
 "time, eventually\n"
 "transitioning to broken states and cannot recover except by restarting "
 "them.\n"
 "\n"
-"Other times, a 'readinessProbe' is useful when the Container is only "
+"Other times, a 'readiness_probe' is useful when the Container is only "
 "temporarily unable\n"
 "to serve, and will recover on its own. In this case, if a Container fails "
-"its 'readinessProbe'\n"
+"its 'readiness_probe'\n"
 ", the Container will not be shut down, but rather the Container will stop "
 "receiving\n"
 "incoming requests.\n"
 "\n"
-"'httpGet' probes are just as it sounds: it performs a HTTP GET operation on "
+"'http_get' probes are just as it sounds: it performs a HTTP GET operation on "
 "the Container.\n"
-"A response code inside the 200-399 range is considered a pass. 'httpGet' "
+"A response code inside the 200-399 range is considered a pass. 'http_get' "
 "probes accept a\n"
 "port number to perform the HTTP GET operation on the Container.\n"
 "\n"
@@ -1038,9 +1041,9 @@ msgid ""
 "fail. 'exec'\n"
 "probes accept a string of arguments to be run inside the Container.\n"
 "\n"
-"'tcpSocket' probes attempt to open a socket in the Container. The Container "
+"'tcp_socket' probes attempt to open a socket in the Container. The Container "
 "is only\n"
-"considered healthy if the check can establish a connection. 'tcpSocket' "
+"considered healthy if the check can establish a connection. 'tcp_socket' "
 "probes accept a\n"
 "port number to perform the socket connection on the Container.\n"
 msgstr ""
@@ -1061,13 +1064,13 @@ msgid ""
 "\n"
 "Lifecycle handlers allow you to run actions at specific points in a "
 "container's lifecycle.\n"
-"Two types of lifecycle handlers are supported: 'postStart' and 'preStop'.\n"
+"Two types of lifecycle handlers are supported: 'post_start' and 'pre_stop'.\n"
 "\n"
-"A 'postStart' handler runs immediately after a container is created. If the "
+"A 'post_start' handler runs immediately after a container is created. If the "
 "handler fails,\n"
 "the container is terminated and restarted according to its restart policy.\n"
 "\n"
-"A 'preStop' handler runs immediately before a container is terminated. This "
+"A 'pre_stop' handler runs immediately before a container is terminated. This "
 "handler must\n"
 "complete before the container termination signal is sent. If the handler "
 "fails, the\n"
@@ -1077,9 +1080,9 @@ msgid ""
 "Each lifecycle handler can be configured with one of the following action "
 "types:\n"
 "\n"
-"'httpGet': Performs an HTTP GET request to the container. The action is "
+"'http_get': Performs an HTTP GET request to the container. The action is "
 "considered\n"
-"successful if the response status code is in the 200-399 range. 'httpGet' "
+"successful if the response status code is in the 200-399 range. 'http_get' "
 "actions require\n"
 "a port number to specify where to send the HTTP request.\n"
 "\n"
@@ -1089,9 +1092,9 @@ msgid ""
 "command arguments\n"
 "to run inside the container.\n"
 "\n"
-"'tcpSocket': Attempts to open a TCP socket connection to the container. The "
+"'tcp_socket': Attempts to open a TCP socket connection to the container. The "
 "action is\n"
-"considered successful if a connection can be established. 'tcpSocket' "
+"considered successful if a connection can be established. 'tcp_socket' "
 "actions require a\n"
 "port number to specify where to attempt the connection.\n"
 "\n"
@@ -1154,12 +1157,20 @@ msgstr ""
 msgid "Show route information"
 msgstr ""
 
+#: internal/parser/services.go:55
+msgid "Show service information"
+msgstr ""
+
 #: internal/parser/gateways.go:56
 msgid "Shows detailed information about a gateway"
 msgstr ""
 
 #: internal/parser/routes.go:47
 msgid "Shows detailed information about a route"
+msgstr ""
+
+#: internal/parser/services.go:56
+msgid "Shows detailed information about a service"
 msgstr ""
 
 #: internal/parser/addons.go:65
@@ -1211,15 +1222,11 @@ msgid "The Drycc command-line client issues API calls to a Drycc controller"
 msgstr ""
 
 #: internal/parser/lifecycles.go:185
-msgid "The HTTP headers to send for 'httpGet' actions, separated by commas"
+msgid "The HTTP headers to send for 'http_get' actions, separated by commas"
 msgstr ""
 
 #: internal/parser/healthchecks.go:184
-msgid "The HTTP headers to send for 'httpGet' probes, separated by commas"
-msgstr ""
-
-#: internal/parser/services.go:65 internal/parser/services.go:116
-msgid "The IP protocol for this port. Supports TCP, UDP, and SCTP"
+msgid "The HTTP headers to send for 'http_get' probes, separated by commas"
 msgstr ""
 
 #: internal/parser/addons.go:61 internal/parser/addons.go:83
@@ -1234,15 +1241,15 @@ msgstr ""
 msgid ""
 "The arguments required for the healthcheck probe. 'exec', accepts a list of "
 "arguments;\n"
-"                  'httpGet' and 'tcpSocket' accept a port number."
+"                  'http_get' and 'tcp_socket' accept a port number."
 msgstr ""
 
 #: internal/parser/lifecycles.go:80
 msgid ""
 "The arguments required for the lifecycle action. 'exec' accepts a list of "
 "arguments;\n"
-"                  'sleep' accepts duration in seconds; 'httpGet' and "
-"'tcpSocket' accept a port number."
+"                  'sleep' accepts duration in seconds; 'http_get' and "
+"'tcp_socket' accept a port number."
 msgstr ""
 
 #: internal/parser/workspaces.go:71
@@ -1288,8 +1295,8 @@ msgstr ""
 
 #: internal/parser/healthchecks.go:84
 msgid ""
-"The healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
-"'readinessProbe'"
+"The healthcheck probe, such as 'startup_probe' 'liveness_probe' or "
+"'readiness_probe'"
 msgstr ""
 
 #: internal/parser/volumes.go:88
@@ -1305,7 +1312,7 @@ msgid "The initial delay timeout for the probe"
 msgstr ""
 
 #: internal/parser/lifecycles.go:78
-msgid "The lifecycle handler, such as 'postStart' 'preStop'"
+msgid "The lifecycle handler, such as 'post_start' 'pre_stop'"
 msgstr ""
 
 #: internal/parser/limits.go:67
@@ -1317,6 +1324,7 @@ msgstr ""
 #: internal/parser/gateways.go:22 internal/parser/gateways.go:45
 #: internal/parser/limits.go:127 internal/parser/limits.go:151
 #: internal/parser/routes.go:23 internal/parser/routes.go:88
+#: internal/parser/services.go:22 internal/parser/services.go:45
 #: internal/parser/tokens.go:22 internal/parser/tokens.go:40
 #: internal/parser/volumes.go:23 internal/parser/volumes.go:145
 #: internal/parser/releases.go:33 internal/parser/releases.go:62
@@ -1360,14 +1368,6 @@ msgstr ""
 #: internal/parser/ps.go:99 internal/parser/ps.go:130 internal/parser/ps.go:152
 #: internal/parser/shortcuts.go:66
 msgid "The pod name for the application"
-msgstr ""
-
-#: internal/parser/services.go:100
-msgid "The port exposed by this service"
-msgstr ""
-
-#: internal/parser/services.go:51
-msgid "The port that will be exposed by this service"
 msgstr ""
 
 #: internal/parser/certs.go:61
@@ -1468,11 +1468,11 @@ msgid "The public key of the SSL certificate"
 msgstr ""
 
 #: internal/parser/lifecycles.go:184
-msgid "The relative URL path for 'httpGet' actions"
+msgid "The relative URL path for 'http_get' actions"
 msgstr ""
 
 #: internal/parser/healthchecks.go:183
-msgid "The relative URL path for 'httpGet' probes"
+msgid "The relative URL path for 'http_get' probes"
 msgstr ""
 
 #: internal/parser/releases.go:76 internal/parser/releases.go:133
@@ -1519,7 +1519,7 @@ msgstr ""
 #: internal/parser/labels.go:21 internal/parser/limits.go:21
 #: internal/parser/ps.go:21 internal/parser/ps.go:112
 #: internal/parser/registry.go:26 internal/parser/routes.go:22
-#: internal/parser/routing.go:20 internal/parser/services.go:23
+#: internal/parser/routing.go:20 internal/parser/services.go:21
 #: internal/parser/tags.go:25 internal/parser/timeouts.go:21
 #: internal/parser/volumes.go:22 internal/parser/pts.go:21
 #: internal/parser/pts.go:134 internal/parser/releases.go:32
@@ -1744,25 +1744,14 @@ msgstr ""
 msgid "minimum replicas to keep around"
 msgstr ""
 
-#: internal/parser/services.go:99
-msgid "procfile type which should handle the request, e.g. webhooks"
-msgstr ""
-
-#: internal/parser/services.go:49
-msgid ""
-"procfile type which should handle the request, e.g. webhooks (should be bind "
-"to the port PORT)\n"
-"             only single extra service per Porcfile type could be created."
-msgstr ""
-
 #: internal/parser/healthchecks.go:85
-msgid "the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'"
+msgid "the healthcheck probe type, such as 'http_get', 'exec' or 'tcp_socket'"
 msgstr ""
 
 #: internal/parser/healthchecks.go:209
 msgid ""
-"the healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
-"'readinessProbe'"
+"the healthcheck probe, such as 'startup_probe' 'liveness_probe' or "
+"'readiness_probe'"
 msgstr ""
 
 #: internal/parser/labels.go:85
@@ -1781,9 +1770,10 @@ msgstr ""
 
 #: internal/parser/lifecycles.go:79
 msgid ""
-"the lifecycle action type, such as 'httpGet', 'exec', 'sleep' or 'tcpSocket'"
+"the lifecycle action type, such as 'http_get', 'exec', 'sleep' or "
+"'tcp_socket'"
 msgstr ""
 
 #: internal/parser/lifecycles.go:206
-msgid "the lifecycle handler type, such as 'postStart' or 'preStop'"
+msgid "the lifecycle handler type, such as 'post_start' or 'pre_stop'"
 msgstr ""

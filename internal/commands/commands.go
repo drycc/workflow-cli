@@ -62,9 +62,10 @@ type Commander interface {
 	DomainsList(string, int) error
 	DomainsAdd(string, string, string) error
 	DomainsRemove(string, string) error
-	ServicesList(string) error
-	ServicesAdd(string, string, string, string) error
-	ServicesRemove(string, string, string, int) error
+	ServicesList(string, int) error
+	ServicesInfo(string, string) error
+	ServicesApply(string, string) error
+	ServicesRemove(string, string) error
 	GatewaysList(string, int) error
 	GatewaysInfo(string, string) error
 	GatewaysApply(string, string) error

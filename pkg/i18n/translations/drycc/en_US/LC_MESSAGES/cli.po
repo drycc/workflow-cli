@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: EMAIL\n"
-"POT-Creation-Date: 2026-07-21 14:48+0800\n"
+"POT-Creation-Date: 2026-11-06 20:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,6 +109,14 @@ msgid ""
 "the file"
 msgstr ""
 
+#: internal/parser/services.go:72
+msgid ""
+"Applies service configuration from a TOML file using the raw API payload in "
+"the file"
+msgstr ""
+"Applies service configuration from a TOML file using the raw API payload in "
+"the file"
+
 #: internal/parser/addons.go:107
 msgid "Apply addon configuration"
 msgstr "Apply addon configuration"
@@ -120,6 +128,10 @@ msgstr ""
 #: internal/parser/routes.go:68
 msgid "Apply route configuration"
 msgstr ""
+
+#: internal/parser/services.go:71
+msgid "Apply service configuration"
+msgstr "Apply service configuration"
 
 #: internal/parser/certs.go:135
 msgid "Attach a certificate to a domain"
@@ -190,10 +202,6 @@ msgstr ""
 msgid "Create a workspace"
 msgstr "Create a workspace"
 
-#: internal/parser/services.go:55
-msgid "Create service for an application"
-msgstr ""
-
 #: internal/parser/apps.go:45
 msgid ""
 "Creates a new application. If no <id> is provided, one will be generated "
@@ -207,12 +215,6 @@ msgid ""
 "as a new release. If a Procfile or drycc.yaml is present in the current "
 "directory,\n"
 "it will be used as the default for this application."
-msgstr ""
-
-#: internal/parser/services.go:56
-msgid ""
-"Creates extra service for an application and binds it to specific route of "
-"the main app domain"
 msgstr ""
 
 #: internal/parser/volumes.go:190
@@ -433,7 +435,7 @@ msgstr ""
 msgid "List application routes"
 msgstr ""
 
-#: internal/parser/services.go:76
+#: internal/parser/services.go:37
 msgid "List application services"
 msgstr ""
 
@@ -510,6 +512,10 @@ msgstr ""
 #: internal/parser/releases.go:54
 msgid "Lists release history for an application"
 msgstr ""
+
+#: internal/parser/services.go:38
+msgid "Lists services for an application"
+msgstr "Lists services for an application"
 
 #: internal/parser/tokens.go:33
 msgid "Lists tokens visible to the current controller"
@@ -623,7 +629,7 @@ msgstr ""
 msgid "Manage routes for your applications"
 msgstr ""
 
-#: internal/parser/services.go:17
+#: internal/parser/services.go:14
 msgid "Manage services for your applications"
 msgstr ""
 
@@ -693,11 +699,6 @@ msgstr ""
 
 #: internal/parser/certs.go:59
 msgid "Name of the certificate to reference it by"
-msgstr ""
-
-#: internal/parser/services.go:52
-msgid ""
-"Number or name of the port to access on the pods targeted by the service"
 msgstr ""
 
 #: internal/parser/apps.go:99
@@ -868,6 +869,10 @@ msgstr "Remove a gateway"
 msgid "Remove a route from an application"
 msgstr ""
 
+#: internal/parser/services.go:86
+msgid "Remove a service"
+msgstr "Remove a service"
+
 #: internal/parser/tokens.go:94
 msgid "Remove a token for controller authentication"
 msgstr ""
@@ -892,13 +897,13 @@ msgstr "Remove an addon from an application"
 msgid "Remove application's label"
 msgstr ""
 
-#: internal/parser/services.go:103
-msgid "Remove service from an application"
-msgstr ""
-
 #: internal/parser/gateways.go:87
 msgid "Removes a gateway from an application"
 msgstr "Removes a gateway from an application"
+
+#: internal/parser/services.go:87
+msgid "Removes a service from an application"
+msgstr "Removes a service from an application"
 
 #: internal/parser/keys.go:82
 msgid "Removes an SSH key for the logged in user"
@@ -1032,35 +1037,35 @@ msgid ""
 "Container. A health\n"
 "check may be added by configuring a health check probe for the application. "
 "The health\n"
-"checks are implemented as Kubernetes Container Probes. A 'startupProbe' "
-"'livenessProbe' \n"
-"and a 'readinessProbe' can be configured, and each probe can be of type "
-"'httpGet', 'exec' \n"
-"or 'tcpSocket' depending on the type of probe the Container requires.\n"
+"checks are implemented as Kubernetes Container Probes. A 'startup_probe' "
+"'liveness_probe' \n"
+"and a 'readiness_probe' can be configured, and each probe can be of type "
+"'http_get', 'exec' \n"
+"or 'tcp_socket' depending on the type of probe the Container requires.\n"
 "\n"
-"A 'startupProbe' indicates whether the application within the container is "
+"A 'startup_probe' indicates whether the application within the container is "
 "started.\n"
 "All other probes are disabled if a startup probe is provided, until it "
 "succeeds.\n"
 "If the startup probe fails, the container is subjected to its restart "
 "policy.\n"
 "\n"
-"A 'livenessProbe' is useful for applications running for long periods of "
+"A 'liveness_probe' is useful for applications running for long periods of "
 "time, eventually\n"
 "transitioning to broken states and cannot recover except by restarting "
 "them.\n"
 "\n"
-"Other times, a 'readinessProbe' is useful when the Container is only "
+"Other times, a 'readiness_probe' is useful when the Container is only "
 "temporarily unable\n"
 "to serve, and will recover on its own. In this case, if a Container fails "
-"its 'readinessProbe'\n"
+"its 'readiness_probe'\n"
 ", the Container will not be shut down, but rather the Container will stop "
 "receiving\n"
 "incoming requests.\n"
 "\n"
-"'httpGet' probes are just as it sounds: it performs a HTTP GET operation on "
+"'http_get' probes are just as it sounds: it performs a HTTP GET operation on "
 "the Container.\n"
-"A response code inside the 200-399 range is considered a pass. 'httpGet' "
+"A response code inside the 200-399 range is considered a pass. 'http_get' "
 "probes accept a\n"
 "port number to perform the HTTP GET operation on the Container.\n"
 "\n"
@@ -1070,12 +1075,61 @@ msgid ""
 "fail. 'exec'\n"
 "probes accept a string of arguments to be run inside the Container.\n"
 "\n"
-"'tcpSocket' probes attempt to open a socket in the Container. The Container "
+"'tcp_socket' probes attempt to open a socket in the Container. The Container "
 "is only\n"
-"considered healthy if the check can establish a connection. 'tcpSocket' "
+"considered healthy if the check can establish a connection. 'tcp_socket' "
 "probes accept a\n"
 "port number to perform the socket connection on the Container.\n"
 msgstr ""
+"Sets healthchecks for an application.\n"
+"\n"
+"By default, Workflow only checks that the application starts in their "
+"Container. A health\n"
+"check may be added by configuring a health check probe for the application. "
+"The health\n"
+"checks are implemented as Kubernetes Container Probes. A 'startup_probe' "
+"'liveness_probe' \n"
+"and a 'readiness_probe' can be configured, and each probe can be of type "
+"'http_get', 'exec' \n"
+"or 'tcp_socket' depending on the type of probe the Container requires.\n"
+"\n"
+"A 'startup_probe' indicates whether the application within the container is "
+"started.\n"
+"All other probes are disabled if a startup probe is provided, until it "
+"succeeds.\n"
+"If the startup probe fails, the container is subjected to its restart "
+"policy.\n"
+"\n"
+"A 'liveness_probe' is useful for applications running for long periods of "
+"time, eventually\n"
+"transitioning to broken states and cannot recover except by restarting "
+"them.\n"
+"\n"
+"Other times, a 'readiness_probe' is useful when the Container is only "
+"temporarily unable\n"
+"to serve, and will recover on its own. In this case, if a Container fails "
+"its 'readiness_probe'\n"
+", the Container will not be shut down, but rather the Container will stop "
+"receiving\n"
+"incoming requests.\n"
+"\n"
+"'http_get' probes are just as it sounds: it performs a HTTP GET operation on "
+"the Container.\n"
+"A response code inside the 200-399 range is considered a pass. 'http_get' "
+"probes accept a\n"
+"port number to perform the HTTP GET operation on the Container.\n"
+"\n"
+"'exec' probes run a command inside the Container to determine its health. An "
+"exit code of\n"
+"zero is considered a pass, while a non-zero status code is considered a "
+"fail. 'exec'\n"
+"probes accept a string of arguments to be run inside the Container.\n"
+"\n"
+"'tcp_socket' probes attempt to open a socket in the Container. The Container "
+"is only\n"
+"considered healthy if the check can establish a connection. 'tcp_socket' "
+"probes accept a\n"
+"port number to perform the socket connection on the Container.\n"
 
 #: internal/parser/labels.go:61
 msgid ""
@@ -1093,13 +1147,13 @@ msgid ""
 "\n"
 "Lifecycle handlers allow you to run actions at specific points in a "
 "container's lifecycle.\n"
-"Two types of lifecycle handlers are supported: 'postStart' and 'preStop'.\n"
+"Two types of lifecycle handlers are supported: 'post_start' and 'pre_stop'.\n"
 "\n"
-"A 'postStart' handler runs immediately after a container is created. If the "
+"A 'post_start' handler runs immediately after a container is created. If the "
 "handler fails,\n"
 "the container is terminated and restarted according to its restart policy.\n"
 "\n"
-"A 'preStop' handler runs immediately before a container is terminated. This "
+"A 'pre_stop' handler runs immediately before a container is terminated. This "
 "handler must\n"
 "complete before the container termination signal is sent. If the handler "
 "fails, the\n"
@@ -1109,9 +1163,9 @@ msgid ""
 "Each lifecycle handler can be configured with one of the following action "
 "types:\n"
 "\n"
-"'httpGet': Performs an HTTP GET request to the container. The action is "
+"'http_get': Performs an HTTP GET request to the container. The action is "
 "considered\n"
-"successful if the response status code is in the 200-399 range. 'httpGet' "
+"successful if the response status code is in the 200-399 range. 'http_get' "
 "actions require\n"
 "a port number to specify where to send the HTTP request.\n"
 "\n"
@@ -1121,9 +1175,9 @@ msgid ""
 "command arguments\n"
 "to run inside the container.\n"
 "\n"
-"'tcpSocket': Attempts to open a TCP socket connection to the container. The "
+"'tcp_socket': Attempts to open a TCP socket connection to the container. The "
 "action is\n"
-"considered successful if a connection can be established. 'tcpSocket' "
+"considered successful if a connection can be established. 'tcp_socket' "
 "actions require a\n"
 "port number to specify where to attempt the connection.\n"
 "\n"
@@ -1135,13 +1189,13 @@ msgstr ""
 "\n"
 "Lifecycle handlers allow you to run actions at specific points in a "
 "container's lifecycle.\n"
-"Two types of lifecycle handlers are supported: 'postStart' and 'preStop'.\n"
+"Two types of lifecycle handlers are supported: 'post_start' and 'pre_stop'.\n"
 "\n"
-"A 'postStart' handler runs immediately after a container is created. If the "
+"A 'post_start' handler runs immediately after a container is created. If the "
 "handler fails,\n"
 "the container is terminated and restarted according to its restart policy.\n"
 "\n"
-"A 'preStop' handler runs immediately before a container is terminated. This "
+"A 'pre_stop' handler runs immediately before a container is terminated. This "
 "handler must\n"
 "complete before the container termination signal is sent. If the handler "
 "fails, the\n"
@@ -1151,9 +1205,9 @@ msgstr ""
 "Each lifecycle handler can be configured with one of the following action "
 "types:\n"
 "\n"
-"'httpGet': Performs an HTTP GET request to the container. The action is "
+"'http_get': Performs an HTTP GET request to the container. The action is "
 "considered\n"
-"successful if the response status code is in the 200-399 range. 'httpGet' "
+"successful if the response status code is in the 200-399 range. 'http_get' "
 "actions require\n"
 "a port number to specify where to send the HTTP request.\n"
 "\n"
@@ -1163,9 +1217,9 @@ msgstr ""
 "command arguments\n"
 "to run inside the container.\n"
 "\n"
-"'tcpSocket': Attempts to open a TCP socket connection to the container. The "
+"'tcp_socket': Attempts to open a TCP socket connection to the container. The "
 "action is\n"
-"considered successful if a connection can be established. 'tcpSocket' "
+"considered successful if a connection can be established. 'tcp_socket' "
 "actions require a\n"
 "port number to specify where to attempt the connection.\n"
 "\n"
@@ -1227,6 +1281,10 @@ msgstr "Show information about an addon"
 msgid "Show route information"
 msgstr "Show route information"
 
+#: internal/parser/services.go:55
+msgid "Show service information"
+msgstr "Show service information"
+
 #: internal/parser/gateways.go:56
 msgid "Shows detailed information about a gateway"
 msgstr "Shows detailed information about a gateway"
@@ -1234,6 +1292,10 @@ msgstr "Shows detailed information about a gateway"
 #: internal/parser/routes.go:47
 msgid "Shows detailed information about a route"
 msgstr "Shows detailed information about a route"
+
+#: internal/parser/services.go:56
+msgid "Shows detailed information about a service"
+msgstr "Shows detailed information about a service"
 
 #: internal/parser/addons.go:65
 msgid "Shows detailed information about an addon attached to an application"
@@ -1286,16 +1348,12 @@ msgid "The Drycc command-line client issues API calls to a Drycc controller"
 msgstr "Drycc命令行客户端向Drycc控制器发出API调用"
 
 #: internal/parser/lifecycles.go:185
-msgid "The HTTP headers to send for 'httpGet' actions, separated by commas"
-msgstr "The HTTP headers to send for 'httpGet' actions, separated by commas"
+msgid "The HTTP headers to send for 'http_get' actions, separated by commas"
+msgstr "The HTTP headers to send for 'http_get' actions, separated by commas"
 
 #: internal/parser/healthchecks.go:184
-msgid "The HTTP headers to send for 'httpGet' probes, separated by commas"
-msgstr ""
-
-#: internal/parser/services.go:65 internal/parser/services.go:116
-msgid "The IP protocol for this port. Supports TCP, UDP, and SCTP"
-msgstr ""
+msgid "The HTTP headers to send for 'http_get' probes, separated by commas"
+msgstr "The HTTP headers to send for 'http_get' probes, separated by commas"
 
 #: internal/parser/addons.go:61 internal/parser/addons.go:83
 msgid "The addon name"
@@ -1309,20 +1367,23 @@ msgstr "The addon name to be removed"
 msgid ""
 "The arguments required for the healthcheck probe. 'exec', accepts a list of "
 "arguments;\n"
-"                  'httpGet' and 'tcpSocket' accept a port number."
+"                  'http_get' and 'tcp_socket' accept a port number."
 msgstr ""
+"The arguments required for the healthcheck probe. 'exec', accepts a list of "
+"arguments;\n"
+"                  'http_get' and 'tcp_socket' accept a port number."
 
 #: internal/parser/lifecycles.go:80
 msgid ""
 "The arguments required for the lifecycle action. 'exec' accepts a list of "
 "arguments;\n"
-"                  'sleep' accepts duration in seconds; 'httpGet' and "
-"'tcpSocket' accept a port number."
+"                  'sleep' accepts duration in seconds; 'http_get' and "
+"'tcp_socket' accept a port number."
 msgstr ""
 "The arguments required for the lifecycle action. 'exec' accepts a list of "
 "arguments;\n"
-"                  'sleep' accepts duration in seconds; 'httpGet' and "
-"'tcpSocket' accept a port number."
+"                  'sleep' accepts duration in seconds; 'http_get' and "
+"'tcp_socket' accept a port number."
 
 #: internal/parser/workspaces.go:71
 msgid "The contact email for the workspace"
@@ -1367,11 +1428,11 @@ msgstr "The group that requires detach configurations"
 
 #: internal/parser/healthchecks.go:84
 msgid ""
-"The healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
-"'readinessProbe'"
+"The healthcheck probe, such as 'startup_probe' 'liveness_probe' or "
+"'readiness_probe'"
 msgstr ""
-"The healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
-"'readinessProbe'"
+"The healthcheck probe, such as 'startup_probe' 'liveness_probe' or "
+"'readiness_probe'"
 
 #: internal/parser/volumes.go:88
 msgid "The hostname or ip address of the nfs server"
@@ -1386,8 +1447,8 @@ msgid "The initial delay timeout for the probe"
 msgstr ""
 
 #: internal/parser/lifecycles.go:78
-msgid "The lifecycle handler, such as 'postStart' 'preStop'"
-msgstr "The lifecycle handler, such as 'postStart' 'preStop'"
+msgid "The lifecycle handler, such as 'post_start' 'pre_stop'"
+msgstr "The lifecycle handler, such as 'post_start' 'pre_stop'"
 
 #: internal/parser/limits.go:67
 msgid "The limit plan id to apply to the process type"
@@ -1398,6 +1459,7 @@ msgstr ""
 #: internal/parser/gateways.go:22 internal/parser/gateways.go:45
 #: internal/parser/limits.go:127 internal/parser/limits.go:151
 #: internal/parser/routes.go:23 internal/parser/routes.go:88
+#: internal/parser/services.go:22 internal/parser/services.go:45
 #: internal/parser/tokens.go:22 internal/parser/tokens.go:40
 #: internal/parser/volumes.go:23 internal/parser/volumes.go:145
 #: internal/parser/releases.go:33 internal/parser/releases.go:62
@@ -1441,14 +1503,6 @@ msgstr ""
 #: internal/parser/ps.go:99 internal/parser/ps.go:130 internal/parser/ps.go:152
 #: internal/parser/shortcuts.go:66
 msgid "The pod name for the application"
-msgstr ""
-
-#: internal/parser/services.go:100
-msgid "The port exposed by this service"
-msgstr "The port exposed by this service"
-
-#: internal/parser/services.go:51
-msgid "The port that will be exposed by this service"
 msgstr ""
 
 #: internal/parser/certs.go:61
@@ -1549,12 +1603,12 @@ msgid "The public key of the SSL certificate"
 msgstr ""
 
 #: internal/parser/lifecycles.go:184
-msgid "The relative URL path for 'httpGet' actions"
-msgstr "The relative URL path for 'httpGet' actions"
+msgid "The relative URL path for 'http_get' actions"
+msgstr "The relative URL path for 'http_get' actions"
 
 #: internal/parser/healthchecks.go:183
-msgid "The relative URL path for 'httpGet' probes"
-msgstr ""
+msgid "The relative URL path for 'http_get' probes"
+msgstr "The relative URL path for 'http_get' probes"
 
 #: internal/parser/releases.go:76 internal/parser/releases.go:133
 msgid "The release of the application, such as '1'"
@@ -1600,7 +1654,7 @@ msgstr ""
 #: internal/parser/labels.go:21 internal/parser/limits.go:21
 #: internal/parser/ps.go:21 internal/parser/ps.go:112
 #: internal/parser/registry.go:26 internal/parser/routes.go:22
-#: internal/parser/routing.go:20 internal/parser/services.go:23
+#: internal/parser/routing.go:20 internal/parser/services.go:21
 #: internal/parser/tags.go:25 internal/parser/timeouts.go:21
 #: internal/parser/volumes.go:22 internal/parser/pts.go:21
 #: internal/parser/pts.go:134 internal/parser/releases.go:32
@@ -1827,28 +1881,17 @@ msgstr ""
 msgid "minimum replicas to keep around"
 msgstr ""
 
-#: internal/parser/services.go:99
-msgid "procfile type which should handle the request, e.g. webhooks"
-msgstr "procfile type which should handle the request, e.g. webhooks"
-
-#: internal/parser/services.go:49
-msgid ""
-"procfile type which should handle the request, e.g. webhooks (should be bind "
-"to the port PORT)\n"
-"             only single extra service per Porcfile type could be created."
-msgstr ""
-
 #: internal/parser/healthchecks.go:85
-msgid "the healthcheck probe type, such as 'httpGet', 'exec' or 'tcpSocket'"
-msgstr ""
+msgid "the healthcheck probe type, such as 'http_get', 'exec' or 'tcp_socket'"
+msgstr "the healthcheck probe type, such as 'http_get', 'exec' or 'tcp_socket'"
 
 #: internal/parser/healthchecks.go:209
 msgid ""
-"the healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
-"'readinessProbe'"
+"the healthcheck probe, such as 'startup_probe' 'liveness_probe' or "
+"'readiness_probe'"
 msgstr ""
-"the healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
-"'readinessProbe'"
+"the healthcheck probe, such as 'startup_probe' 'liveness_probe' or "
+"'readiness_probe'"
 
 #: internal/parser/labels.go:85
 msgid "the label key to unset, for example: \"git_repo\" or \"team\""
@@ -1866,13 +1909,15 @@ msgstr ""
 
 #: internal/parser/lifecycles.go:79
 msgid ""
-"the lifecycle action type, such as 'httpGet', 'exec', 'sleep' or 'tcpSocket'"
+"the lifecycle action type, such as 'http_get', 'exec', 'sleep' or "
+"'tcp_socket'"
 msgstr ""
-"the lifecycle action type, such as 'httpGet', 'exec', 'sleep' or 'tcpSocket'"
+"the lifecycle action type, such as 'http_get', 'exec', 'sleep' or "
+"'tcp_socket'"
 
 #: internal/parser/lifecycles.go:206
-msgid "the lifecycle handler type, such as 'postStart' or 'preStop'"
-msgstr "the lifecycle handler type, such as 'postStart' or 'preStop'"
+msgid "the lifecycle handler type, such as 'post_start' or 'pre_stop'"
+msgstr "the lifecycle handler type, such as 'post_start' or 'pre_stop'"
 
 #~ msgid "Port is the network port, the listener received"
 #~ msgstr "Port is the network port, the listener received"
@@ -1880,8 +1925,147 @@ msgstr "the lifecycle handler type, such as 'postStart' or 'preStop'"
 #~ msgid "Protocol specifies the network protocol this listener received"
 #~ msgstr "Protocol specifies the network protocol this listener received"
 
+#~ msgid ""
+#~ "Sets lifecycle handlers for an application.\n"
+#~ "\n"
+#~ "Lifecycle handlers allow you to run actions at specific points in a "
+#~ "container's lifecycle.\n"
+#~ "Two types of lifecycle handlers are supported: 'postStart' and "
+#~ "'preStop'.\n"
+#~ "\n"
+#~ "A 'postStart' handler runs immediately after a container is created. If "
+#~ "the handler fails,\n"
+#~ "the container is terminated and restarted according to its restart "
+#~ "policy.\n"
+#~ "\n"
+#~ "A 'preStop' handler runs immediately before a container is terminated. "
+#~ "This handler must\n"
+#~ "complete before the container termination signal is sent. If the handler "
+#~ "fails, the\n"
+#~ "container enters a termination grace period and is then forcefully "
+#~ "terminated.\n"
+#~ "\n"
+#~ "Each lifecycle handler can be configured with one of the following action "
+#~ "types:\n"
+#~ "\n"
+#~ "'httpGet': Performs an HTTP GET request to the container. The action is "
+#~ "considered\n"
+#~ "successful if the response status code is in the 200-399 range. 'httpGet' "
+#~ "actions require\n"
+#~ "a port number to specify where to send the HTTP request.\n"
+#~ "\n"
+#~ "'exec': Executes a command inside the container. The action is considered "
+#~ "successful if\n"
+#~ "the command exits with status code 0. 'exec' actions accept a list of "
+#~ "command arguments\n"
+#~ "to run inside the container.\n"
+#~ "\n"
+#~ "'tcpSocket': Attempts to open a TCP socket connection to the container. "
+#~ "The action is\n"
+#~ "considered successful if a connection can be established. 'tcpSocket' "
+#~ "actions require a\n"
+#~ "port number to specify where to attempt the connection.\n"
+#~ "\n"
+#~ "'sleep': Waits for a specified duration before proceeding. 'sleep' "
+#~ "actions accept a\n"
+#~ "duration in seconds to wait.\n"
+#~ msgstr ""
+#~ "Sets lifecycle handlers for an application.\n"
+#~ "\n"
+#~ "Lifecycle handlers allow you to run actions at specific points in a "
+#~ "container's lifecycle.\n"
+#~ "Two types of lifecycle handlers are supported: 'postStart' and "
+#~ "'preStop'.\n"
+#~ "\n"
+#~ "A 'postStart' handler runs immediately after a container is created. If "
+#~ "the handler fails,\n"
+#~ "the container is terminated and restarted according to its restart "
+#~ "policy.\n"
+#~ "\n"
+#~ "A 'preStop' handler runs immediately before a container is terminated. "
+#~ "This handler must\n"
+#~ "complete before the container termination signal is sent. If the handler "
+#~ "fails, the\n"
+#~ "container enters a termination grace period and is then forcefully "
+#~ "terminated.\n"
+#~ "\n"
+#~ "Each lifecycle handler can be configured with one of the following action "
+#~ "types:\n"
+#~ "\n"
+#~ "'httpGet': Performs an HTTP GET request to the container. The action is "
+#~ "considered\n"
+#~ "successful if the response status code is in the 200-399 range. 'httpGet' "
+#~ "actions require\n"
+#~ "a port number to specify where to send the HTTP request.\n"
+#~ "\n"
+#~ "'exec': Executes a command inside the container. The action is considered "
+#~ "successful if\n"
+#~ "the command exits with status code 0. 'exec' actions accept a list of "
+#~ "command arguments\n"
+#~ "to run inside the container.\n"
+#~ "\n"
+#~ "'tcpSocket': Attempts to open a TCP socket connection to the container. "
+#~ "The action is\n"
+#~ "considered successful if a connection can be established. 'tcpSocket' "
+#~ "actions require a\n"
+#~ "port number to specify where to attempt the connection.\n"
+#~ "\n"
+#~ "'sleep': Waits for a specified duration before proceeding. 'sleep' "
+#~ "actions accept a\n"
+#~ "duration in seconds to wait.\n"
+
+#~ msgid "The HTTP headers to send for 'httpGet' actions, separated by commas"
+#~ msgstr "The HTTP headers to send for 'httpGet' actions, separated by commas"
+
+#~ msgid ""
+#~ "The arguments required for the lifecycle action. 'exec' accepts a list of "
+#~ "arguments;\n"
+#~ "                  'sleep' accepts duration in seconds; 'httpGet' and "
+#~ "'tcpSocket' accept a port number."
+#~ msgstr ""
+#~ "The arguments required for the lifecycle action. 'exec' accepts a list of "
+#~ "arguments;\n"
+#~ "                  'sleep' accepts duration in seconds; 'httpGet' and "
+#~ "'tcpSocket' accept a port number."
+
 #~ msgid "The following compatible plugins are available:"
 #~ msgstr "The following compatible plugins are available:"
 
+#~ msgid ""
+#~ "The healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
+#~ "'readinessProbe'"
+#~ msgstr ""
+#~ "The healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
+#~ "'readinessProbe'"
+
+#~ msgid "The lifecycle handler, such as 'postStart' 'preStop'"
+#~ msgstr "The lifecycle handler, such as 'postStart' 'preStop'"
+
+#~ msgid "The port exposed by this service"
+#~ msgstr "The port exposed by this service"
+
+#~ msgid "The relative URL path for 'httpGet' actions"
+#~ msgstr "The relative URL path for 'httpGet' actions"
+
 #~ msgid "Unable to find any drycc plugins in your PATH"
 #~ msgstr "Unable to find any drycc plugins in your PATH"
+
+#~ msgid "procfile type which should handle the request, e.g. webhooks"
+#~ msgstr "procfile type which should handle the request, e.g. webhooks"
+
+#~ msgid ""
+#~ "the healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
+#~ "'readinessProbe'"
+#~ msgstr ""
+#~ "the healthcheck probe, such as 'startupProbe' 'livenessProbe' or "
+#~ "'readinessProbe'"
+
+#~ msgid ""
+#~ "the lifecycle action type, such as 'httpGet', 'exec', 'sleep' or "
+#~ "'tcpSocket'"
+#~ msgstr ""
+#~ "the lifecycle action type, such as 'httpGet', 'exec', 'sleep' or "
+#~ "'tcpSocket'"
+
+#~ msgid "the lifecycle handler type, such as 'postStart' or 'preStop'"
+#~ msgstr "the lifecycle handler type, such as 'postStart' or 'preStop'"

@@ -342,29 +342,6 @@ func (c *HealthCheckCompletion) CompletionFunc(cmd *cobra.Command, args []string
 	return healthcheckProbeActionTypeCompletion.CompletionFunc(cmd, args, toComplete)
 }
 
-// ServiceProtocolCompletion provides completion for service protocols
-type ServiceProtocolCompletion struct {
-	ArgsLen    int
-	ConfigFile *string
-}
-
-// CompletionFunc returns a list of service protocols for completion
-func (c *ServiceProtocolCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	protocols := []string{"TCP", "UDP", "TLS", "SCTP"}
-	if c.ArgsLen < 0 || len(args) == c.ArgsLen {
-
-		var results []string
-		for _, protocol := range protocols {
-			if strings.HasPrefix(protocol, toComplete) {
-				results = append(results, protocol)
-			}
-		}
-		return results, cobra.ShellCompDirectiveNoFileComp
-
-	}
-	return nil, cobra.ShellCompDirectiveNoFileComp
-}
-
 // KeyCompletion provides completion for SSH key names
 type KeyCompletion struct {
 	ArgsLen    int
@@ -760,7 +737,7 @@ type ServiceCompletion struct {
 // CompletionFunc returns a list of services for completion
 func (c *ServiceCompletion) CompletionFunc(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if appID, s, err := loader.LoadAppSettings(*c.ConfigFile, *c.AppID); err == nil && (c.ArgsLen < 0 || len(args) == c.ArgsLen) {
-		if services, err := services.List(s.Client, appID); err == nil {
+		if services, _, err := services.List(s.Client, appID, -1); err == nil {
 			var results []string
 			for _, service := range services {
 				if strings.HasPrefix(service.Ptype, toComplete) {
