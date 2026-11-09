@@ -740,8 +740,8 @@ func (c *ServiceCompletion) CompletionFunc(_ *cobra.Command, args []string, toCo
 		if services, _, err := services.List(s.Client, appID, -1); err == nil {
 			var results []string
 			for _, service := range services {
-				if strings.HasPrefix(service.Ptype, toComplete) {
-					results = append(results, service.Ptype)
+				if strings.HasPrefix(service.Name, toComplete) {
+					results = append(results, service.Name)
 				}
 			}
 			return results, cobra.ShellCompDirectiveNoFileComp

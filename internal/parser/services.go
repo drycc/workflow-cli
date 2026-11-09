@@ -50,14 +50,14 @@ func servicesList(cmdr *commands.DryccCmd) *cobra.Command {
 func servicesInfo(cmdr *commands.DryccCmd) *cobra.Command {
 	serviceCompletion := completion.ServiceCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
-		Use:               "info <ptype>",
+		Use:               "info <name>",
 		Args:              cobra.ExactArgs(1),
 		Short:             i18n.T("Show service information"),
 		Long:              i18n.T("Shows detailed information about a service"),
 		ValidArgsFunction: serviceCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
-			ptype := args[0]
-			return cmdr.ServicesInfo(app, ptype)
+			name := args[0]
+			return cmdr.ServicesInfo(app, name)
 		},
 	}
 
@@ -81,14 +81,14 @@ func servicesApply(cmdr *commands.DryccCmd) *cobra.Command {
 func servicesRemove(cmdr *commands.DryccCmd) *cobra.Command {
 	serviceCompletion := completion.ServiceCompletion{AppID: &app, ArgsLen: 0, ConfigFile: &cmdr.ConfigFile}
 	cmd := &cobra.Command{
-		Use:               "remove <ptype>",
+		Use:               "remove <name>",
 		Args:              cobra.ExactArgs(1),
 		Short:             i18n.T("Remove a service"),
 		Long:              i18n.T("Removes a service from an application"),
 		ValidArgsFunction: serviceCompletion.CompletionFunc,
 		RunE: func(_ *cobra.Command, args []string) error {
-			ptype := args[0]
-			return cmdr.ServicesRemove(app, ptype)
+			name := args[0]
+			return cmdr.ServicesRemove(app, name)
 		},
 	}
 

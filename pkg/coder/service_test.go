@@ -11,6 +11,7 @@ func TestServiceCoderDecode(t *testing.T) {
 	t.Parallel()
 
 	input := `
+name = "example-go-worker"
 ptype = "worker"
 
 [[ports]]
@@ -27,6 +28,9 @@ target_port = 8080
 	c := &ServiceCoder{}
 	if err := c.Decode([]byte(input)); err != nil {
 		t.Fatalf("Decode failed: %v", err)
+	}
+	if c.Request.Name != "example-go-worker" {
+		t.Errorf("expected Name=example-go-worker, got %s", c.Request.Name)
 	}
 	if c.Request.Ptype != "worker" {
 		t.Errorf("expected Ptype=worker, got %s", c.Request.Ptype)
@@ -57,6 +61,7 @@ func TestServiceCoderEncode(t *testing.T) {
 	c := &ServiceCoder{
 		Info: api.ServiceInfo{
 			Domain: "example-go-worker.example-go.svc",
+			Name:   "example-go-worker",
 			Ptype:  "worker",
 			Ports: []api.ServicePort{
 				{Port: 5000, Protocol: "TCP", TargetPort: 5000},
@@ -81,8 +86,11 @@ func TestServiceCoderEncode(t *testing.T) {
 	if strings.Contains(toml, "5000.0") {
 		t.Errorf("integer should not be rendered as float, got:\n%s", toml)
 	}
-	if strings.Contains(toml, "name =") || strings.Contains(toml, "tcp-5000") {
-		t.Errorf("names should not be rendered, got:\n%s", toml)
+	if !strings.Contains(toml, `name = "example-go-worker"`) {
+		t.Errorf("expected service name in output, got:\n%s", toml)
+	}
+	if strings.Contains(toml, "tcp-5000") {
+		t.Errorf("port names should not be rendered, got:\n%s", toml)
 	}
 }
 
@@ -92,6 +100,7 @@ func TestServiceCoderRoundTrip(t *testing.T) {
 	original := &ServiceCoder{
 		Info: api.ServiceInfo{
 			Domain: "example-go-worker.example-go.svc",
+			Name:   "example-go-worker",
 			Ptype:  "worker",
 			Ports: []api.ServicePort{
 				{Port: 5000, Protocol: "TCP", TargetPort: 5000},
@@ -106,6 +115,9 @@ func TestServiceCoderRoundTrip(t *testing.T) {
 	decoded := &ServiceCoder{}
 	if err := decoded.Decode(encoded); err != nil {
 		t.Fatalf("Decode failed: %v", err)
+	}
+	if decoded.Request.Name != "example-go-worker" {
+		t.Errorf("expected Name=example-go-worker, got %s", decoded.Request.Name)
 	}
 	if decoded.Request.Ptype != "worker" {
 		t.Errorf("expected Ptype=worker, got %s", decoded.Request.Ptype)

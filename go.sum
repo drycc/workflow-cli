@@ -21,6 +21,8 @@ github.com/drycc/controller-sdk-go v0.0.0-20261106130145-22de2576cc47 h1:3+WhtTz
 github.com/drycc/controller-sdk-go v0.0.0-20261106130145-22de2576cc47/go.mod h1:Kj+DWtWtdGJRwwvcQNyxX1Qk1bpO4j6TwBhRmKk4+nM=
 github.com/drycc/controller-sdk-go v0.0.0-20261106131338-8d7d754f0349 h1:TEBRLxsxER9M9zfUlYYjCB+h7Mm1wjeykB369YHuIyA=
 github.com/drycc/controller-sdk-go v0.0.0-20261106131338-8d7d754f0349/go.mod h1:o4uhn/JcQy/9BBZ+T8GfzzevBFv55cFoIy8kXC33aFE=
+github.com/drycc/controller-sdk-go v0.0.0-20261109090558-70789f3d4b79 h1:u61ORGq0aSyLKph6vISWBQEiGZj8NR/j5dl+Jnhilj4=
+github.com/drycc/controller-sdk-go v0.0.0-20261109090558-70789f3d4b79/go.mod h1:o4uhn/JcQy/9BBZ+T8GfzzevBFv55cFoIy8kXC33aFE=
 github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf h1:CYy3NoPhfFhkGAbEppTOQfY/HC2s0FJDcBgbtRKeweg=
 github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf/go.mod h1:BrrNrNskHKm+nJYhXfGuI114w8nupi0AMo8QZHID7CM=
 github.com/fatih/color v1.19.0 h1:Zp3PiM21/9Ld6FzSKyL5c/BULoe/ONr9KlbYVOfG8+w=
