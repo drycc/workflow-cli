@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/chai2010/gettext-go v1.0.3
 	github.com/containerd/console v1.0.5
-	github.com/drycc/controller-sdk-go v0.0.0-20261109090558-70789f3d4b79
+	github.com/drycc/controller-sdk-go v0.0.0-20261119031750-0705aed795c7
 	github.com/drycc/pkg v0.0.0-20261119022624-5732d8e5557b
 	github.com/minio/selfupdate v0.6.0
 	github.com/olekukonko/tablewriter v1.1.5

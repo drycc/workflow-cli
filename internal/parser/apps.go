@@ -27,6 +27,8 @@ func NewAppsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.AddCommand(appsInfo(cmdr))
 	cmd.AddCommand(appsOpen(cmdr))
 	cmd.AddCommand(appsRun(cmdr))
+	cmd.AddCommand(appsArchive(cmdr))
+	cmd.AddCommand(appsUnarchive(cmdr))
 	cmd.AddCommand(appsDestroy(cmdr))
 	cmd.AddCommand(appsTransfer(cmdr))
 	return cmd
@@ -142,6 +144,40 @@ func appsRun(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.Flags().StringSliceVarP(&flags.mounts, "mount", "m", nil, i18n.T("Volume mounts in format 'volume:path'"))
 	cmd.Flags().Uint32VarP(&flags.timeout, "timeout", "t", 3600, i18n.T("Command execution timeout in seconds"))
 	cmd.Flags().Uint32VarP(&flags.expires, "expires", "e", 3600, i18n.T("Retention time of records in seconds"))
+
+	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	cmd.RegisterFlagCompletionFunc("app", appCompletion.CompletionFunc)
+	return cmd
+}
+
+// AppsArchive creates the apps archive command
+func appsArchive(cmdr *commands.DryccCmd) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "archive",
+		Short: i18n.T("Archive an application"),
+		RunE: func(_ *cobra.Command, _ []string) error {
+			return cmdr.AppArchive(app)
+		},
+	}
+
+	cmd.Flags().StringVarP(&app, "app", "a", "", i18n.T("The uniquely identifiable name for the application"))
+
+	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	cmd.RegisterFlagCompletionFunc("app", appCompletion.CompletionFunc)
+	return cmd
+}
+
+// AppsUnarchive creates the apps unarchive command
+func appsUnarchive(cmdr *commands.DryccCmd) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unarchive",
+		Short: i18n.T("Unarchive an application"),
+		RunE: func(_ *cobra.Command, _ []string) error {
+			return cmdr.AppUnarchive(app)
+		},
+	}
+
+	cmd.Flags().StringVarP(&app, "app", "a", "", i18n.T("The uniquely identifiable name for the application"))
 
 	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
 	cmd.RegisterFlagCompletionFunc("app", appCompletion.CompletionFunc)

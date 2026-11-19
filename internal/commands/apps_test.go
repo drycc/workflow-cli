@@ -301,6 +301,48 @@ func TestAppTransfer(t *testing.T) {
 `, "output")
 }
 
+func TestAppArchive(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/archive", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		assert.Equal(t, http.MethodPost, r.Method)
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	err = cmdr.AppArchive("lorem-ipsum")
+	assert.NoError(t, err)
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), "Archiving lorem-ipsum... done\n")
+}
+
+func TestAppUnarchive(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/unarchive", func(w http.ResponseWriter, r *http.Request) {
+		testutil.SetHeaders(w)
+		assert.Equal(t, http.MethodPost, r.Method)
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	err = cmdr.AppUnarchive("lorem-ipsum")
+	assert.NoError(t, err)
+	testutil.AssertOutput(t, testutil.StripProgress(b.String()), "Unarchiving lorem-ipsum... done\n")
+}
+
 func TestRemoteExists(t *testing.T) {
 	cf, server, err := testutil.NewTestServerAndClient()
 	if err != nil {

@@ -235,6 +235,48 @@ func parseMount(volumeVars []string) (map[string]any, error) {
 	return volumeMap, nil
 }
 
+// AppArchive archives an app.
+func (d *DryccCmd) AppArchive(appID string) error {
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Archiving %s... ", appID)
+	quit := progress(d.WOut)
+	err = apps.Archive(s.Client, appID)
+	quit <- true
+	<-quit
+
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}
+
+// AppUnarchive unarchives an app.
+func (d *DryccCmd) AppUnarchive(appID string) error {
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	d.Printf("Unarchiving %s... ", appID)
+	quit := progress(d.WOut)
+	err = apps.Unarchive(s.Client, appID)
+	quit <- true
+	<-quit
+
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Println("done")
+	return nil
+}
+
 // AppDestroy destroys an app.
 func (d *DryccCmd) AppDestroy(appID, confirm string) error {
 	gitSession := false

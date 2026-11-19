@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: EMAIL\n"
-"POT-Creation-Date: 2026-11-06 20:52+0800\n"
+"POT-Creation-Date: 2026-11-19 11:21+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,6 +133,10 @@ msgstr ""
 msgid "Apply service configuration"
 msgstr "Apply service configuration"
 
+#: internal/parser/apps.go:157
+msgid "Archive an application"
+msgstr "Archive an application"
+
 #: internal/parser/certs.go:135
 msgid "Attach a certificate to a domain"
 msgstr ""
@@ -173,7 +177,7 @@ msgstr ""
 msgid "Clear the current user session"
 msgstr ""
 
-#: internal/parser/apps.go:143
+#: internal/parser/apps.go:145
 msgid "Command execution timeout in seconds"
 msgstr ""
 
@@ -190,7 +194,7 @@ msgstr ""
 msgid "Configure automatic certificate management issuer details"
 msgstr ""
 
-#: internal/parser/apps.go:44
+#: internal/parser/apps.go:46
 msgid "Create a new application"
 msgstr ""
 
@@ -202,7 +206,7 @@ msgstr ""
 msgid "Create a workspace"
 msgstr "Create a workspace"
 
-#: internal/parser/apps.go:45
+#: internal/parser/apps.go:47
 msgid ""
 "Creates a new application. If no <id> is provided, one will be generated "
 "automatically"
@@ -237,7 +241,7 @@ msgstr ""
 msgid "Describe a process type"
 msgstr ""
 
-#: internal/parser/apps.go:161
+#: internal/parser/apps.go:197
 msgid "Destroy an application"
 msgstr ""
 
@@ -281,7 +285,7 @@ msgstr ""
 msgid "Displays the currently logged in user"
 msgstr ""
 
-#: internal/parser/apps.go:56
+#: internal/parser/apps.go:58
 msgid "Do not create a 'drycc' git remote"
 msgstr ""
 
@@ -379,7 +383,7 @@ msgstr ""
 msgid "List SSL certificates for an application"
 msgstr ""
 
-#: internal/parser/apps.go:65
+#: internal/parser/apps.go:67
 msgid "List accessible applications"
 msgstr ""
 
@@ -487,7 +491,7 @@ msgstr ""
 msgid "List volumes in the application"
 msgstr ""
 
-#: internal/parser/apps.go:66
+#: internal/parser/apps.go:68
 msgid ""
 "Lists applications visible to the current user in the specified workspace"
 msgstr ""
@@ -657,7 +661,7 @@ msgstr "Manage workspaces"
 msgid "Max replicas to scale up to"
 msgstr ""
 
-#: internal/parser/apps.go:23 internal/parser/apps.go:72
+#: internal/parser/apps.go:23 internal/parser/apps.go:74
 msgid "Maximum number of results to display"
 msgstr ""
 
@@ -681,7 +685,7 @@ msgstr ""
 msgid "Mount a volume to process of the application"
 msgstr ""
 
-#: internal/parser/git.go:42 internal/parser/apps.go:55
+#: internal/parser/git.go:42 internal/parser/apps.go:57
 msgid "Name of remote to create"
 msgstr ""
 
@@ -701,11 +705,11 @@ msgstr ""
 msgid "Name of the certificate to reference it by"
 msgstr ""
 
-#: internal/parser/apps.go:99
+#: internal/parser/apps.go:101
 msgid "Open the application in a browser"
 msgstr ""
 
-#: internal/parser/apps.go:100
+#: internal/parser/apps.go:102
 msgid "Opens a URL to the application in the default browser"
 msgstr ""
 
@@ -787,7 +791,7 @@ msgstr ""
 msgid "Prints info about a particular release"
 msgstr ""
 
-#: internal/parser/apps.go:82
+#: internal/parser/apps.go:84
 msgid "Prints info about the current application"
 msgstr ""
 
@@ -925,7 +929,7 @@ msgstr ""
 msgid "Restart application process types"
 msgstr ""
 
-#: internal/parser/apps.go:144
+#: internal/parser/apps.go:146
 msgid "Retention time of records in seconds"
 msgstr ""
 
@@ -937,11 +941,11 @@ msgstr ""
 msgid "Rolls back to a previous application release"
 msgstr ""
 
-#: internal/parser/apps.go:133
+#: internal/parser/apps.go:135
 msgid "Run a command in an ephemeral app container"
 msgstr ""
 
-#: internal/parser/apps.go:134
+#: internal/parser/apps.go:136
 msgid "Runs a command inside an ephemeral app container"
 msgstr ""
 
@@ -1313,7 +1317,7 @@ msgstr ""
 msgid "Simulate an update, only print the version info."
 msgstr ""
 
-#: internal/parser/apps.go:168
+#: internal/parser/apps.go:204
 msgid ""
 "Skips the prompt for the application name. \n"
 "<app> is the uniquely identifiable name for the application"
@@ -1394,7 +1398,7 @@ msgid "The email address of the user to invite"
 msgstr "The email address of the user to invite"
 
 #: internal/parser/shortcuts.go:53 internal/parser/volumes.go:235
-#: internal/parser/apps.go:129
+#: internal/parser/apps.go:131
 msgid "The filesystem path"
 msgstr ""
 
@@ -1618,7 +1622,7 @@ msgstr ""
 msgid "The role to assign: admin, member, or viewer"
 msgstr "The role to assign: admin, member, or viewer"
 
-#: internal/parser/shortcuts.go:54 internal/parser/apps.go:130
+#: internal/parser/shortcuts.go:54 internal/parser/apps.go:132
 msgid "The shell command to run inside the container"
 msgstr ""
 
@@ -1658,9 +1662,10 @@ msgstr ""
 #: internal/parser/tags.go:25 internal/parser/timeouts.go:21
 #: internal/parser/volumes.go:22 internal/parser/pts.go:21
 #: internal/parser/pts.go:134 internal/parser/releases.go:32
-#: internal/parser/apps.go:88 internal/parser/apps.go:106
-#: internal/parser/apps.go:141 internal/parser/apps.go:167
-#: internal/parser/apps.go:190 internal/parser/addons.go:23
+#: internal/parser/apps.go:90 internal/parser/apps.go:108
+#: internal/parser/apps.go:143 internal/parser/apps.go:163
+#: internal/parser/apps.go:180 internal/parser/apps.go:203
+#: internal/parser/apps.go:226 internal/parser/addons.go:23
 msgid "The uniquely identifiable name for the application"
 msgstr ""
 
@@ -1724,7 +1729,7 @@ msgstr ""
 #: internal/parser/shortcuts.go:52 internal/parser/volumes.go:58
 #: internal/parser/volumes.go:118 internal/parser/volumes.go:213
 #: internal/parser/volumes.go:233 internal/parser/volumes.go:258
-#: internal/parser/apps.go:128
+#: internal/parser/apps.go:130
 msgid "The volume name"
 msgstr ""
 
@@ -1755,11 +1760,11 @@ msgstr ""
 msgid "To proceed, type 'yes'"
 msgstr ""
 
-#: internal/parser/apps.go:181
+#: internal/parser/apps.go:217
 msgid "Transfer app to another workspace"
 msgstr "Transfer app to another workspace"
 
-#: internal/parser/apps.go:182
+#: internal/parser/apps.go:218
 msgid "Transfer application to another workspace."
 msgstr "Transfer application to another workspace."
 
@@ -1770,6 +1775,10 @@ msgstr ""
 #: internal/parser/autoscale.go:63
 msgid "Turn on autoscale for an app"
 msgstr ""
+
+#: internal/parser/apps.go:174
+msgid "Unarchive an application"
+msgstr "Unarchive an application"
 
 #: internal/parser/domains.go:75
 msgid "Unbinds a domain for an application"
@@ -1849,11 +1858,11 @@ msgstr ""
 msgid "View autorollback info for an application"
 msgstr ""
 
-#: internal/parser/apps.go:81
+#: internal/parser/apps.go:83
 msgid "View info about an application"
 msgstr ""
 
-#: internal/parser/apps.go:142
+#: internal/parser/apps.go:144
 msgid "Volume mounts in format 'volume:path'"
 msgstr ""
 

@@ -19,6 +19,8 @@ type Commander interface {
 	AppOpen(string) error
 	AppLogs(string, int, bool, int) error
 	AppRun(string, string, []string, uint32, uint32) error
+	AppArchive(string) error
+	AppUnarchive(string) error
 	AppDestroy(string, string) error
 	AppTransfer(string, string) error
 	AddonsList(string, int) error
