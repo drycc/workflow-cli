@@ -7,7 +7,7 @@ require (
 	github.com/chai2010/gettext-go v1.0.3
 	github.com/containerd/console v1.0.5
 	github.com/drycc/controller-sdk-go v0.0.0-20261109090558-70789f3d4b79
-	github.com/drycc/pkg v0.0.0-20250917064731-345368da3dbf
+	github.com/drycc/pkg v0.0.0-20261119022624-5732d8e5557b
 	github.com/minio/selfupdate v0.6.0
 	github.com/olekukonko/tablewriter v1.1.5
 	github.com/spf13/cobra v1.10.2
@@ -26,7 +26,6 @@ require (
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/goccy/go-json v0.12.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-runewidth v0.0.31 // indirect
