@@ -25,6 +25,7 @@ func NewAppsCommand(cmdr *commands.DryccCmd) *cobra.Command {
 	cmd.AddCommand(appsCreate(cmdr))
 	cmd.AddCommand(appsList(cmdr))
 	cmd.AddCommand(appsInfo(cmdr))
+	cmd.AddCommand(appsQuota(cmdr))
 	cmd.AddCommand(appsOpen(cmdr))
 	cmd.AddCommand(appsRun(cmdr))
 	cmd.AddCommand(appsArchive(cmdr))
@@ -84,6 +85,24 @@ func appsInfo(cmdr *commands.DryccCmd) *cobra.Command {
 		Long:  i18n.T("Prints info about the current application"),
 		RunE: func(_ *cobra.Command, _ []string) error {
 			return cmdr.AppInfo(app)
+		},
+	}
+
+	cmd.Flags().StringVarP(&app, "app", "a", "", i18n.T("The uniquely identifiable name for the application"))
+
+	appCompletion := completion.AppCompletion{ArgsLen: -1, ConfigFile: &cmdr.ConfigFile}
+	cmd.RegisterFlagCompletionFunc("app", appCompletion.CompletionFunc)
+	return cmd
+}
+
+// AppsQuota creates the apps quota command
+func appsQuota(cmdr *commands.DryccCmd) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "quota",
+		Short: i18n.T("View resource quota for an application"),
+		Long:  i18n.T("Prints resource quota and usage for the current application"),
+		RunE: func(_ *cobra.Command, _ []string) error {
+			return cmdr.AppQuota(app)
 		},
 	}
 

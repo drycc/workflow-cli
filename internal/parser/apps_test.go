@@ -6,11 +6,11 @@ import (
 	"github.com/drycc/workflow-cli/internal/commands"
 )
 
-func TestAppsArchiveCommands(t *testing.T) {
+func TestAppsCommandsWithAppFlag(t *testing.T) {
 	t.Parallel()
 
 	cmd := NewAppsCommand(&commands.DryccCmd{})
-	for _, name := range []string{"archive", "unarchive"} {
+	for _, name := range []string{"archive", "unarchive", "quota"} {
 		t.Run(name, func(t *testing.T) {
 			subcmd, _, err := cmd.Find([]string{name})
 			if err != nil {

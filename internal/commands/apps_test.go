@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/drycc/workflow-cli/pkg/git"
@@ -236,6 +237,67 @@ Labels:
               Key:                                    team
               Value:                                  frontend
 `)
+}
+
+func TestAppQuota(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/quota", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		testutil.SetHeaders(w)
+		fmt.Fprint(w, `{
+			"name": "drycc-app",
+			"hard": {
+				"pods": "50",
+				"requests.cpu": "10"
+			},
+			"used": {
+				"pods": "12",
+				"requests.cpu": "2500m"
+			}
+		}`)
+	})
+
+	err = cmdr.AppQuota("lorem-ipsum")
+	assert.NoError(t, err)
+	output := b.String()
+	assert.Contains(t, output, "Name:")
+	assert.Contains(t, output, "drycc-app")
+	assert.Regexp(t, `RESOURCE\s+HARD\s+USED`, output)
+	assert.Regexp(t, `pods\s+50\s+12`, output)
+	assert.Regexp(t, `requests\.cpu\s+10\s+2500m`, output)
+	assert.Less(t, strings.Index(output, "pods"), strings.Index(output, "requests.cpu"))
+}
+
+func TestAppQuotaEmptyUsed(t *testing.T) {
+	t.Parallel()
+	cf, server, err := testutil.NewTestServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	var b bytes.Buffer
+	cmdr := DryccCmd{WOut: &b, ConfigFile: cf}
+
+	server.Mux.HandleFunc("/v2/apps/lorem-ipsum/quota", func(w http.ResponseWriter, _ *http.Request) {
+		testutil.SetHeaders(w)
+		fmt.Fprint(w, `{
+			"name": "drycc-app",
+			"hard": {"pods": "50"},
+			"used": {}
+		}`)
+	})
+
+	err = cmdr.AppQuota("lorem-ipsum")
+	assert.NoError(t, err)
+	assert.Regexp(t, `pods\s+50\s+<none>`, b.String())
 }
 
 func TestAppDestroy(t *testing.T) {

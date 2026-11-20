@@ -4,6 +4,7 @@ package commands
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -173,6 +174,38 @@ func (d *DryccCmd) AppInfo(appID string) error {
 		}
 	} else {
 		table.Append([]string{"Labels:", safeGetString("")})
+	}
+	table.Render()
+	return nil
+}
+
+// AppQuota prints an app's resource quota and current usage.
+func (d *DryccCmd) AppQuota(appID string) error {
+	appID, s, err := loader.LoadAppSettings(d.ConfigFile, appID)
+	if err != nil {
+		return err
+	}
+
+	quota, err := apps.Quota(s.Client, appID)
+	if d.checkAPICompatibility(s.Client, err) != nil {
+		return err
+	}
+
+	d.Printf("Name: %s\n\n", quota.Name)
+
+	resources := make([]string, 0, len(quota.Hard))
+	for resource := range quota.Hard {
+		resources = append(resources, resource)
+	}
+	sort.Strings(resources)
+
+	table := d.getDefaultFormatTable([]string{"RESOURCE", "HARD", "USED"})
+	for _, resource := range resources {
+		table.Append([]string{
+			resource,
+			quota.Hard[resource],
+			safeGetString(quota.Used[resource]),
+		})
 	}
 	table.Render()
 	return nil

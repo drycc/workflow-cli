@@ -16,6 +16,7 @@ type Commander interface {
 	AppCreate(string, string, bool) error
 	AppsList(int) error
 	AppInfo(string) error
+	AppQuota(string) error
 	AppOpen(string) error
 	AppLogs(string, int, bool, int) error
 	AppRun(string, string, []string, uint32, uint32) error

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL\n"
-"POT-Creation-Date: 2026-11-19 11:21+0800\n"
+"POT-Creation-Date: 2026-11-20 15:39+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,7 +130,7 @@ msgstr "应用路由配置"
 msgid "Apply service configuration"
 msgstr "应用服务配置"
 
-#: internal/parser/apps.go:157
+#: internal/parser/apps.go:176
 msgid "Archive an application"
 msgstr "归档应用"
 
@@ -174,7 +174,7 @@ msgstr "清理未使用的进程类型"
 msgid "Clear the current user session"
 msgstr "清除当前用户会话"
 
-#: internal/parser/apps.go:145
+#: internal/parser/apps.go:164
 msgid "Command execution timeout in seconds"
 msgstr "命令执行超时时间（秒）"
 
@@ -191,7 +191,7 @@ msgstr "要解绑的域名通用名称"
 msgid "Configure automatic certificate management issuer details"
 msgstr "配置自动证书管理颁发者详情"
 
-#: internal/parser/apps.go:46
+#: internal/parser/apps.go:47
 msgid "Create a new application"
 msgstr "创建新应用"
 
@@ -203,7 +203,7 @@ msgstr "创建应用卷"
 msgid "Create a workspace"
 msgstr "创建工作空间"
 
-#: internal/parser/apps.go:47
+#: internal/parser/apps.go:48
 msgid ""
 "Creates a new application. If no <id> is provided, one will be generated "
 "automatically"
@@ -241,7 +241,7 @@ msgstr "按进程类型部署最新版本"
 msgid "Describe a process type"
 msgstr "描述进程类型定义"
 
-#: internal/parser/apps.go:197
+#: internal/parser/apps.go:216
 msgid "Destroy an application"
 msgstr "销毁应用"
 
@@ -285,7 +285,7 @@ msgstr "显示客户端版本信息"
 msgid "Displays the currently logged in user"
 msgstr "显示当前登录用户信息"
 
-#: internal/parser/apps.go:58
+#: internal/parser/apps.go:59
 msgid "Do not create a 'drycc' git remote"
 msgstr "不创建drycc Git远程仓库"
 
@@ -381,7 +381,7 @@ msgstr "列出登录用户的SSH密钥"
 msgid "List SSL certificates for an application"
 msgstr "列出应用SSL证书"
 
-#: internal/parser/apps.go:67
+#: internal/parser/apps.go:68
 msgid "List accessible applications"
 msgstr "列出可访问应用"
 
@@ -489,7 +489,7 @@ msgstr "列出应用标签"
 msgid "List volumes in the application"
 msgstr "列出应用卷"
 
-#: internal/parser/apps.go:68
+#: internal/parser/apps.go:69
 msgid ""
 "Lists applications visible to the current user in the specified workspace"
 msgstr "列出指定工作空间中当前用户可见的应用"
@@ -658,7 +658,7 @@ msgstr "管理工作空间"
 msgid "Max replicas to scale up to"
 msgstr "可扩展的最大副本数"
 
-#: internal/parser/apps.go:23 internal/parser/apps.go:74
+#: internal/parser/apps.go:23 internal/parser/apps.go:75
 msgid "Maximum number of results to display"
 msgstr "最多显示结果数量"
 
@@ -682,7 +682,7 @@ msgstr "探测失败后需连续成功的最小次数（判定为成功）"
 msgid "Mount a volume to process of the application"
 msgstr "将卷挂载到应用进程"
 
-#: internal/parser/git.go:42 internal/parser/apps.go:57
+#: internal/parser/git.go:42 internal/parser/apps.go:58
 msgid "Name of remote to create"
 msgstr "要创建的远程名称"
 
@@ -702,11 +702,11 @@ msgstr "要解绑域名的证书名称"
 msgid "Name of the certificate to reference it by"
 msgstr "证书引用名称"
 
-#: internal/parser/apps.go:101
+#: internal/parser/apps.go:120
 msgid "Open the application in a browser"
 msgstr "在浏览器中打开应用"
 
-#: internal/parser/apps.go:102
+#: internal/parser/apps.go:121
 msgid "Opens a URL to the application in the default browser"
 msgstr "通过默认浏览器打开应用URL"
 
@@ -788,7 +788,7 @@ msgstr "显示应用标签列表"
 msgid "Prints info about a particular release"
 msgstr "显示特定版本信息"
 
-#: internal/parser/apps.go:84
+#: internal/parser/apps.go:85
 msgid "Prints info about the current application"
 msgstr "显示当前应用信息"
 
@@ -799,6 +799,10 @@ msgstr "显示当前应用是否启用自动部署"
 #: internal/parser/autorollback.go:34
 msgid "Prints info about the current application's autorollback if or not"
 msgstr "显示当前应用是否启用自动回滚"
+
+#: internal/parser/apps.go:103
+msgid "Prints resource quota and usage for the current application"
+msgstr "显示当前应用的资源配额和用量"
 
 #: internal/parser/config.go:159
 msgid "Prompts for each value to be overwritten"
@@ -923,7 +927,7 @@ msgstr "重启应用或进程类型"
 msgid "Restart application process types"
 msgstr "重启应用进程类型"
 
-#: internal/parser/apps.go:146
+#: internal/parser/apps.go:165
 msgid "Retention time of records in seconds"
 msgstr "日志记录保留时间（秒）"
 
@@ -935,11 +939,11 @@ msgstr "回滚到之前版本"
 msgid "Rolls back to a previous application release"
 msgstr "回滚到应用之前的版本"
 
-#: internal/parser/apps.go:135
+#: internal/parser/apps.go:154
 msgid "Run a command in an ephemeral app container"
 msgstr "在临时应用容器中运行命令"
 
-#: internal/parser/apps.go:136
+#: internal/parser/apps.go:155
 msgid "Runs a command inside an ephemeral app container"
 msgstr "在临时应用容器内部运行命令"
 
@@ -1322,7 +1326,7 @@ msgstr "显示附加到应用程序的 addon 的连接详情（如主机、端�
 msgid "Simulate an update, only print the version info."
 msgstr "模拟更新，仅显示版本信息"
 
-#: internal/parser/apps.go:204
+#: internal/parser/apps.go:223
 msgid ""
 "Skips the prompt for the application name. \n"
 "<app> is the uniquely identifiable name for the application"
@@ -1405,7 +1409,7 @@ msgid "The email address of the user to invite"
 msgstr "要邀请用户的邮箱地址"
 
 #: internal/parser/shortcuts.go:53 internal/parser/volumes.go:235
-#: internal/parser/apps.go:131
+#: internal/parser/apps.go:150
 msgid "The filesystem path"
 msgstr "文件系统路径"
 
@@ -1629,7 +1633,7 @@ msgstr "应用版本（如 '1'）"
 msgid "The role to assign: admin, member, or viewer"
 msgstr "要分配的角色：admin、member 或 viewer"
 
-#: internal/parser/shortcuts.go:54 internal/parser/apps.go:132
+#: internal/parser/shortcuts.go:54 internal/parser/apps.go:151
 msgid "The shell command to run inside the container"
 msgstr "容器内要执行的Shell命令"
 
@@ -1669,10 +1673,11 @@ msgstr "路由唯一名称"
 #: internal/parser/tags.go:25 internal/parser/timeouts.go:21
 #: internal/parser/volumes.go:22 internal/parser/pts.go:21
 #: internal/parser/pts.go:134 internal/parser/releases.go:32
-#: internal/parser/apps.go:90 internal/parser/apps.go:108
-#: internal/parser/apps.go:143 internal/parser/apps.go:163
-#: internal/parser/apps.go:180 internal/parser/apps.go:203
-#: internal/parser/apps.go:226 internal/parser/addons.go:23
+#: internal/parser/apps.go:91 internal/parser/apps.go:109
+#: internal/parser/apps.go:127 internal/parser/apps.go:162
+#: internal/parser/apps.go:182 internal/parser/apps.go:199
+#: internal/parser/apps.go:222 internal/parser/apps.go:245
+#: internal/parser/addons.go:23
 msgid "The uniquely identifiable name for the application"
 msgstr "应用唯一标识名称"
 
@@ -1736,7 +1741,7 @@ msgstr "要查询对应版本的超时设置"
 #: internal/parser/shortcuts.go:52 internal/parser/volumes.go:58
 #: internal/parser/volumes.go:118 internal/parser/volumes.go:213
 #: internal/parser/volumes.go:233 internal/parser/volumes.go:258
-#: internal/parser/apps.go:130
+#: internal/parser/apps.go:149
 msgid "The volume name"
 msgstr "卷名称"
 
@@ -1767,11 +1772,11 @@ msgstr "继续操作请输入 \"yes\""
 msgid "To proceed, type 'yes'"
 msgstr "继续操作请输入 'yes'"
 
-#: internal/parser/apps.go:217
+#: internal/parser/apps.go:236
 msgid "Transfer app to another workspace"
 msgstr "将应用转移到另一个工作空间"
 
-#: internal/parser/apps.go:218
+#: internal/parser/apps.go:237
 msgid "Transfer application to another workspace."
 msgstr "将应用转移到另一个工作空间。"
 
@@ -1783,7 +1788,7 @@ msgstr "关闭应用自动扩缩容"
 msgid "Turn on autoscale for an app"
 msgstr "开启应用自动扩缩容"
 
-#: internal/parser/apps.go:174
+#: internal/parser/apps.go:193
 msgid "Unarchive an application"
 msgstr "恢复已归档的应用"
 
@@ -1865,11 +1870,15 @@ msgstr "查看应用路由能力信息"
 msgid "View autorollback info for an application"
 msgstr "查看应用自动回滚信息"
 
-#: internal/parser/apps.go:83
+#: internal/parser/apps.go:84
 msgid "View info about an application"
 msgstr "查看应用信息"
 
-#: internal/parser/apps.go:144
+#: internal/parser/apps.go:102
+msgid "View resource quota for an application"
+msgstr "查看应用资源配额"
+
+#: internal/parser/apps.go:163
 msgid "Volume mounts in format 'volume:path'"
 msgstr "卷挂载格式 '卷名:挂载路径'"
 
